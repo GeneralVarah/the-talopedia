@@ -8,23 +8,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with: { node-version: 22, cache: npm }
+      # Runs before the build, not after it: the build reads the outputs below, and a
+      # step cannot read outputs from a step that has not run yet.
+      - uses: actions/configure-pages@v6
+        id: pages
       - run: npm ci
-      # Set BASE_PATH to /<repo>/ if this is a project site rather than <user>.github.io.
+      # base_path is "/<repo>" for a project site and "/" for <user>.github.io, so the
+      # site follows a rename on its own. Set a BASE_PATH repository variable to override.
       - run: npm run build
         env:
-          SITE_URL: ${{ steps.pages.outputs.origin || 'https://example.github.io' }}
-          BASE_PATH: ${{ vars.BASE_PATH || '/' }}
-      - uses: actions/configure-pages@v5
-        id: pages
-      - uses: actions/upload-pages-artifact@v3
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+          BASE_PATH: ${{ vars.BASE_PATH || steps.pages.outputs.base_path }}
+      - uses: actions/upload-pages-artifact@v5
         with: { path: dist }
   deploy:
     needs: build
     runs-on: ubuntu-latest
     environment: { name: github-pages, url: "${{ steps.deployment.outputs.page_url }}" }
     steps:
-      - uses: actions/deploy-pages@v4
+      - uses: actions/deploy-pages@v5
         id: deployment

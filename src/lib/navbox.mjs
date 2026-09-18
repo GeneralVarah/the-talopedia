@@ -57,13 +57,21 @@ export function renderNavbox(id, fallbackTitle = '') {
  */
 export function resolveHtml(html = '') {
   return html
+    // First, before anything is expanded below. A <figure> written straight into the
+    // markdown is raw HTML: Astro never sees its <img> and so never puts the base path
+    // on it, which 404s every picture wherever the site is served from a subpath. The
+    // navboxes and icons expanded afterwards build their own URLs through url() already,
+    // and running this over their output would prefix them a second time.
+    .replace(/(<img\b[^>]*?\ssrc=")(\/(?!\/)[^"]*)"/g, (_, head, path) => {
+      // A body holds both kinds: a raw <figure> from the markdown, whose path is bare,
+      // and an :img[...] token, which was built through url() while the markdown
+      // compiled and already carries the base. Prefixing the second one again is how
+      // every flag on the front page turned into a broken image.
+      const base = url('/').replace(/\/$/, '');
+      return `${head}${base && path.startsWith(base + '/') ? path : url(path)}"`;
+    })
     .replace(/<div data-nb="([^"]+)"><\/div>/g, (_, id) => renderNavbox(id))
     .replace(/<a data-wl="([^"]+)"(?: data-d="([^"]*)")?><\/a>/g,
       (_, slug, d) => link(unesc(slug), d === undefined ? undefined : unesc(d)))
-    .replace(/<i data-ico="([^"]+)"><\/i>/g, (_, slug) => icon(unesc(slug)))
-    // A <figure> written straight into the markdown is raw HTML: Astro never sees its
-    // <img> and so never puts the base path on it, which 404s every picture wherever
-    // the site is served from a subpath rather than the domain root. Every rendered
-    // body passes through here, so this is the one place it needs doing.
-    .replace(/(<img\b[^>]*?\ssrc=")(\/(?!\/)[^"]*)"/g, (_, head, path) => `${head}${url(path)}"`);
+    .replace(/<i data-ico="([^"]+)"><\/i>/g, (_, slug) => icon(unesc(slug)));
 }
