@@ -1,0 +1,64 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Search results">
+  <div id="sr-list" class="sr-page"></div>
+</Base>
+
+<script>
+  import { search } from '../lib/search-client.js';
+
+  const q = new URLSearchParams(location.search).get('q') || '';
+  const list = document.getElementById('sr-list');
+  // Base already owns the page heading; fill it in rather than adding a second one.
+  document.querySelector('.title-block h1').textContent = q ? `Search results for “${q}”` : 'Search';
+  const note = document.createElement('span');
+  note.className = 'byline';
+  document.querySelector('.title-block .subline').append(note);
+
+  const box = document.getElementById('search-q');
+  if (box) box.value = q;
+
+  if (!q) {
+    note.textContent = 'Type a term in the search box above.';
+  } else {
+    // Every match, not a preview: this is the page the Search button leads to.
+    search(q, 500).then(({ titled, mentions }) => {
+      if (!titled.length && !mentions.length) note.textContent = `No articles match “${q}”.`;
+      const group = (label, items, kind) => {
+        if (!items.length) return;
+        const h = document.createElement('h2');
+        h.textContent = label;
+        const n = document.createElement('span');
+        n.className = 'sr-count';
+        n.textContent = items.length;
+        h.append(n);
+        list.append(h);
+        for (const it of items) {
+          const a = document.createElement('a');
+          a.className = 'sr sr-' + kind;
+          a.href = it.url;
+          const t = document.createElement('b');
+          t.textContent = it.title;
+          a.append(t);
+          if (kind === 'title' && it.type) {
+            const s = document.createElement('span');
+            s.className = 'sr-type';
+            s.textContent = it.type;
+            a.append(s);
+          }
+          if (it.excerpt) {
+            const e = document.createElement('span');
+            e.className = 'sr-ex';
+            e.innerHTML = it.excerpt;
+            a.append(e);
+          }
+          list.append(a);
+        }
+      };
+      group('Articles', titled, 'title');
+      group('Mentions', mentions, 'mention');
+    });
+  }
+</script>

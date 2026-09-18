@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Infobox from '../components/Infobox.astro';
+import Navbox from '../components/Navbox.astro';
+import { coordsFor, nation, mapUrl } from '../lib/registry.mjs';
+import { resolveHtml } from '../lib/navbox.mjs';
+
+export async function getStaticPaths() {
+  const all = await getCollection('articles');
+  // `home` is served at / by index.astro.
+  return all.filter((e) => e.id !== 'home').map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const headings = entry.rendered?.metadata?.headings ?? [];
+const html = resolveHtml(entry.rendered?.html ?? '');
+const lede = entry.body?.replace(/<[^>]+>/g, '').replace(/\[\[([^\]|]+?)(?:\|([^\]]+?))?\]\]/g, '$2$1').slice(0, 200);
+// Explicit coords win; otherwise the map's own table answers for this subject.
+const found = d.coords ? { position: d.coords } : coordsFor(d.title, entry.id);
+// Nations link by their registry name, cities by the map's own spelling.
+const href = found?.type === 'nation' ? mapUrl(nation(d.nation)?.name ?? d.title, 'nation')
+  : found?.kind === 'city' ? mapUrl(found.name, 'city')
+  : null;
+const coords = found && { ...found, href };
+---
+<Base title={d.title} description={lede} headings={headings} coords={coords} nationId={d.nation} authorIds={d.authors} slug={entry.id}>
+  {d.ooc && (
+    <p class="notice">
+      This article contains out-of-character (OOC) information. Some details presented here are
+      not publicly available in-character (IC).
+    </p>
+  )}
+  <article class="article" data-pagefind-body>
+    {d.infobox.length > 0 && (
+      <Infobox title={d.title} nativeTitle={d.nativeTitle} romaji={d.romaji} rows={d.infobox} />
+    )}
+    <Fragment set:html={html} />
+  </article>
+  {(d.navbox ?? d.nation) && <Navbox id={d.navbox ?? d.nation} title="Navigation" />}
+</Base>

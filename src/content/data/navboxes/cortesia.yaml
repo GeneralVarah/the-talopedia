@@ -1,0 +1,75 @@
+title: "Cortesian Articles"
+crumb: "[[portal:cortesia|Portal:Cortesia]] • [[cortesia|Overview]]"
+groups:
+  - label: "History"
+    rows:
+      - label: "Antiquity"
+        items:
+          - "early-cortese-peoples"
+          - "warring-states-period"
+          - "podboj-ojczyzny|Podbój Ojczyzny"
+      - label: "Medieval Era"
+        items:
+          - "unification-of-cortesia"
+          - "the-great-fire"
+          - "first-peasants-revolt|First Peasants’ Revolt"
+          - "cortesian-golden-age"
+          - "nitravian-rebellion"
+          - "second-peasants-revolt|Second Peasants’ Revolt"
+      - label: "Pre-Modern era"
+        items:
+          - "rudanian-subjugation"
+          - "treaty-of-menisku"
+          - "cortesian-war-of-independence"
+      - label: "Post-Great War Era"
+        items:
+          - "second-turulian-war"
+  - label: "Politics"
+    rows:
+      - label: "Government"
+        items:
+          - "rada-federalna"
+          - "list-of-member-states"
+      - label: "Military"
+        items:
+          - "cortesian-states-armed-forces"
+  - label: "Economy"
+    rows:
+      - items:
+          - "list-of-notable-companies"
+  - label: "Geography"
+    rows:
+      - label: "Elevations"
+        items:
+          - "zelazny-mountains|Żelazny Mountains"
+      - label: "Bodies of Water"
+        items:
+          - "modrawa-river"
+          - "bystrawice-river"
+          - "czernawa-river|Czernáwa River"
+          - "danau-river"
+  - label: "Society"
+    rows:
+      - label: "Notable Cities"
+        items:
+          - "corslawa"
+          - "jelgawa"
+          - "stalowice"
+          - "czo-now|Czółnów"
+          - "kretme"
+          - "kresow|Kresów"
+      - label: "Demographics"
+        items:
+          - "cortesian"
+          - "nitravian"
+          - "rudanyan"
+          - "sidanyan"
+          - "alemannian"
+      - label: "Culture"
+        items:
+          - "list-of-cortesian-festivals-and-holidays"
+  - label: "Characters"
+    rows:
+      - label: "Historical Figures"
+        items:
+          - "members-of-the-former-cortesian-monarchy"

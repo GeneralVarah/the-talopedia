@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const all = await getCollection('articles');
+  const portals = await getCollection('portals');
+  return [
+    ...all.filter((e) => e.id !== 'home').map((e) => ({ params: { slug: e.id }, props: { entry: e, portal: false } })),
+    ...portals.map((e) => ({ params: { slug: `portal/${e.id}` }, props: { entry: e, portal: true } })),
+  ];
+}
+
+const { entry, portal } = Astro.props;
+const d = entry.data;
+// The stored file as it is on disk, so an editor sees exactly what they are changing.
+const fm = Object.entries(d)
+  .filter(([k, v]) => k !== 'infobox' && v != null && v !== '' && v !== false && !(Array.isArray(v) && !v.length))
+  .map(([k, v]) => `${k}: ${Array.isArray(v) ? `[${v.join(', ')}]` : JSON.stringify(v)}`);
+if (d.infobox?.length) fm.push(`infobox: (${d.infobox.length} rows)`);
+const source = ['---', ...fm, '---', '', entry.body].join('\n');
+---
+
+<Base title={d.title} slug={portal ? `portal:${entry.id}` : entry.id} view="source">
+  <pre class="source">{source}</pre>
+</Base>

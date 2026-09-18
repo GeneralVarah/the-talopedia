@@ -1,0 +1,60 @@
+title: "Arvernois Articles"
+crumb: "[[portal:arverne|Portal:Arverne]]"
+groups:
+  - label: "History"
+    rows:
+      - label: "Antiquity"
+        items:
+          - "celtic-tribes"
+          - "rumaic-rule"
+      - label: "Medieval Era"
+        items:
+          - "arverni-empire"
+          - "kingdom-of-arverne"
+      - label: "Colonial Era"
+        items:
+          - "fall-of-the-lyonarais-dynasty"
+          - "assassination-of-france-leupont|Assassination of Francè Leupont"
+  - label: "Politics"
+    rows:
+      - items:
+          - "notable-political-parties"
+      - label: "Government"
+        items:
+          - "administrative-subdivisions"
+      - label: "Military"
+        items:
+          - "arvernois-military"
+  - label: "Economy"
+    rows:
+      - items:
+          - "notable-arvernois-colonies"
+  - label: "Geography"
+    rows:
+      - label: "Elevations"
+        items:
+          - "massif-central"
+      - label: "Bodies of Water"
+        items:
+          - "sequane-river"
+          - "lake-lyonara"
+  - label: "Society"
+    rows:
+      - items:
+          - "lutece|Lutèce"
+      - label: "Demographics"
+        items:
+          - "list-of-ethnicities"
+      - label: "Culture"
+        items:
+          - "championnait-arvernois"
+  - label: "Characters"
+    rows:
+      - label: "Historical Figures"
+        items:
+          - "vercantorix"
+          - "varron"
+          - "napolyon-bonparterre"
+      - label: "Presidential Republic"
+        items:
+          - "henri-charbonneau"

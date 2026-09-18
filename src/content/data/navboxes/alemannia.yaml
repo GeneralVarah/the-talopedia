@@ -1,0 +1,62 @@
+title: "Alemannian Articles"
+crumb: "[[portal:alemannia|Portal:Alemannia]] • [[alemannia|Overview]]"
+groups:
+  - label: "History"
+    rows:
+      - label: "Antiquity"
+        items:
+          - "rumaic-era"
+      - label: "Medieval Era"
+        items:
+          - "cevarene-wars|Čevarene Wars"
+          - "thirty-years-war|Thirty Years’ War"
+      - label: "Early Modern Era"
+        items:
+          - "arvenois-holy-evrian-war|Arvenois-Holy Evrian War"
+          - "great-war"
+          - "holy-evrian-civil-war"
+  - label: "Politics"
+    rows:
+      - label: "Government"
+        items:
+          - "administrative-subdivisions"
+          - "list-of-alemannian-ministers"
+      - label: "Military"
+        items:
+          - "army"
+          - "navy"
+          - "air-force"
+  - label: "Economy"
+    rows:
+      - items:
+          - "notable-alemannian-companies"
+  - label: "Geography"
+    rows:
+      - label: "Elevations"
+        items:
+          - "alps"
+      - label: "Bodies of Water"
+        items:
+          - "ymir"
+          - "danau"
+          - "alvis"
+          - "visera"
+  - label: "Society"
+    rows:
+      - items:
+          - "alemannian-cities-by-urban-population"
+          - "franmark"
+      - label: "Demographics"
+        items:
+          - "hollmariens"
+          - "suevians"
+          - "bairathian"
+          - "low-alemannians"
+          - "cevarini|Čevarini"
+          - "halvorians"
+  - label: "Characters"
+    rows:
+      - label: "Historical Figures"
+        items:
+          - "list-of-monarchs-of-the-hee-arlbern-and-ymiria|List of Monarchs of the HEE, Arlbern and Ymiria"
+          - "list-of-alemannian-federal-councillors"

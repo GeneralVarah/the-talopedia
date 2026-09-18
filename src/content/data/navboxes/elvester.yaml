@@ -1,0 +1,96 @@
+title: "Elvesterian Articles"
+crumb: "[[portal:elvester|Portal:Elvester]] • [[elvester|Overview]]"
+groups:
+  - label: "History"
+    rows:
+      - label: "Antiquity"
+        items:
+          - "pre-rumaic-settlements"
+          - "rumaic-era"
+          - "post-rumaic-era"
+      - label: "Kingdom of Brant"
+        items:
+          - "the-autumn-wars"
+          - "first-skjarnish-invasion"
+          - "second-skjarnish-invasion"
+          - "the-scouring"
+          - "the-time-of-strife"
+          - "first-brant-dale-war|First Brant-Dale War"
+          - "second-brant-dale-war|Second Brant-Dale War"
+          - "maerwyn-usurpation"
+          - "caerwyn-rebellion"
+      - label: "The Empire of Elvester"
+        items:
+          - "reign-of-caermond"
+          - "the-war-of-the-tulips"
+          - "early-colonialism"
+          - "era-of-napolyon"
+          - "white-dock-rebellion"
+          - "admiralty-era"
+          - "imperial-restoration"
+          - "great-war"
+      - label: "Events of the Roleplay"
+        items:
+          - "april-2nd-attacks"
+  - label: "Politics"
+    rows:
+      - label: "Notable Families"
+        items:
+          - "caerwyn-halbrecht|Caerwyn-Halbrecht"
+          - "ironhall"
+          - "scott"
+          - "carrow"
+      - label: "Government"
+        items:
+          - "administrative-subdivisions"
+          - "list-of-elvesterian-ministers-and-nobles"
+      - label: "Military"
+        items:
+          - "imperial-army"
+          - "imperial-navy"
+          - "imperial-air-force"
+  - label: "Economy"
+    rows:
+      - items:
+          - "list-of-notable-companies"
+      - label: "Top 5 Companies"
+        items:
+          - "whytleaf-benning|Whytleaf & Benning"
+          - "crown-maritime-and-trading-company"
+          - "ashwood-industrial-group"
+          - "wellington-group"
+          - "wilbur-incorporated"
+  - label: "Geography"
+    rows:
+      - items:
+          - "brant"
+          - "eir"
+          - "daleland"
+          - "southmarch"
+      - label: "Bodies of Water"
+        items:
+          - "river-albion"
+          - "river-egdy"
+          - "river-angwyn"
+  - label: "Society"
+    rows:
+      - label: "Demographics"
+        items:
+          - "brantish"
+          - "eirish"
+          - "daleish"
+          - "southmarcher"
+  - label: "Characters"
+    rows:
+      - label: "Historical Figures"
+        items:
+          - "caermond-the-eagle"
+          - "list-of-emperors"
+      - label: "Government Officials"
+        items:
+          - "emperor-emeric-ii|Emperor Emeric II"
+          - "earl-stanley-montford"
+          - "ernest-rowan"
+      - label: "Miscellaneous"
+        items:
+          - "list-of-side-characters"

@@ -1,0 +1,122 @@
+title: "Skjarnish Articles"
+crumb: "[[portal:skjarnland|Portal:Skjarnland]] • [[skjarnland|Overview]]"
+groups:
+  - label: "History"
+    rows:
+      - label: "Antiquity"
+        items:
+          - "prehistoric-skjarnland"
+      - label: "Early Kingdoms Era"
+        items:
+          - "jorundian-reforms"
+      - label: "Viking Era"
+        items:
+          - "great-host"
+          - "faraland"
+          - "viking-settlement"
+      - label: "High and Late Medieval Period"
+        items:
+          - "nazarisation-of-skjarnland"
+          - "danyrian-century"
+          - "suebian-war"
+          - "war-of-the-three-crowns"
+      - label: "Unification and Age of Exploration"
+        items:
+          - "skjarnish-unification"
+          - "skjarnish-colonialism"
+          - "reformation-in-skjarnland"
+      - label: "Great Power Era"
+        items:
+          - "skjarnish-intervention-in-the-twenty-five-years-war|Skjarnish Intervention in the Twenty-Five Years’ War"
+          - "great-suebian-war"
+          - "great-northern-war"
+      - label: "Industrial Age"
+        items:
+          - "industrialisation-of-skjarnland"
+      - label: "Great War"
+        items:
+          - "great-war-in-skjarnland"
+          - "northern-front"
+      - label: "Post-Great War"
+        items:
+          - "skjarnish-period-of-troubles"
+          - "stjernberg-military-reforms"
+      - label: "Events of the Roleplay"
+        items:
+          - "1934-political-crisis"
+  - label: "Politics"
+    rows:
+      - label: "Government"
+        items:
+          - "counties-of-skjarnland"
+          - "municipalities-of-skjarnland"
+          - "malmros-government"
+      - label: "Military"
+        items:
+          - "skjarnish-armed-forces"
+  - label: "Economy"
+    rows:
+      - items:
+          - "economy-of-skjarnland"
+          - "list-of-notable-skjarnish-companies"
+  - label: "Geography"
+    rows:
+      - items:
+          - "skjarnland-proper"
+          - "norrvynia"
+          - "danyria"
+          - "malschellskobbarna"
+          - "spetsbergen"
+          - "vikomte-islands"
+          - "helluland"
+          - "nordstjarneo|Nordstjärneö"
+          - "adelskoldland|Adelsköldland"
+      - label: "Elevations"
+        items:
+          - "skjarnish-mountain-range"
+          - "galdhopiggen|Galdhöpiggen"
+          - "kebnekaise"
+      - label: "Bodies of Water"
+        items:
+          - "lake-lagrebothnia"
+          - "lake-ovrebothnia"
+          - "aegisvan"
+          - "glaum-river"
+          - "gautsalven-skaralven|Gautsälven-Skärälven"
+          - "stral-river|Strål River"
+          - "dan-river"
+          - "torno-river"
+          - "klyft-river"
+  - label: "Society"
+    rows:
+      - label: "Notable Cities"
+        items:
+          - "stralholm|Strålholm"
+          - "havnia|Hävnia"
+          - "kjellberg"
+          - "alvskrona|Älvskrona"
+      - label: "Demographics"
+        items:
+          - "skjarnians"
+          - "norrvynians"
+          - "danyrians"
+          - "sjaedrin"
+          - "iskarn"
+          - "karjans"
+          - "maleshi"
+      - label: "Culture"
+        items:
+          - "allskyarnskan|Allskyärnskan"
+  - label: "Characters"
+    rows:
+      - label: "Historical Figures"
+        items:
+          - "list-of-monarchs-of-skjarnland"
+          - "list-of-prime-ministers-of-skjarnland"
+      - label: "Parliamentary Figures"
+        items:
+          - "joakim-helgi"
+          - "goran-malmros|Göran Malmros"
+          - "nils-borgelin"
+          - "leif-edvinsson"
+          - "jens-mauritzen"

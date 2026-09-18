@@ -1,0 +1,2712 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { TEMPLATES } from '../lib/templates.mjs';
+import { ARTICLE_TYPES } from '../content.config';
+import { nations, url } from '../lib/registry.mjs';
+import fs from 'node:fs';
+import { parse as parseYaml } from 'yaml';
+
+const existing = [
+  ...(await getCollection('articles')).map((e) => ({ slug: e.id, title: e.data.title })),
+  // A portal is edited like anything else; the prefix is what tells the two apart,
+  // since a portal and its nation's article share a slug.
+  ...(await getCollection('portals')).map((e) => ({ slug: 'portal:' + e.id, title: e.data.title })),
+  // Navboxes are YAML rather than a collection, so they are read straight off disk.
+  ...fs.readdirSync('src/content/data/navboxes').filter((f) => f.endsWith('.yaml')).map((f) => {
+    const id = f.replace(/\.yaml$/, '');
+    const d = parseYaml(fs.readFileSync(`src/content/data/navboxes/${f}`, 'utf8')) || {};
+    return { slug: 'navbox:' + id, title: `Navbox: ${d.title || id}` };
+  }),
+].sort((a, b) => a.title.localeCompare(b.title));
+const nationList = nations().map((n) => ({ id: n.id, name: n.name }));
+const FLAGS = Object.fromEntries(nations().filter((n) => n.flag).map((n) => [n.id, n.flag]));
+// A nation's own name, for labelling its flag in the icon picker: "E.S.U.", not "Esu".
+const NATION_NAMES = Object.fromEntries(nations().map((n) => [n.id, n.name]));
+const DEV = import.meta.env.DEV;
+---
+<Base title="Editor" chrome={false} wide>
+  <div class="ed">
+    <div class="ed-tools">
+      <div class="drop">
+        <button id="file" type="button">File <span class="caret">▾</span></button>
+        <div class="drop-menu list" id="file-menu" hidden>
+          <button id="new" type="button">New article</button>
+          <button id="new-portal" type="button">New portal</button>
+          <button id="new-navbox" type="button">New navbox</button>
+          <div class="menu-sep"></div>
+          <input id="file-q" type="search" placeholder="Search articles" autocomplete="off" />
+          <div class="menu-list" id="file-list"></div>
+        </div>
+      </div>
+
+      <span class="div"></span>
+      <button id="undo" type="button" title="Undo (⌘Z)" disabled>
+        <svg viewBox="0 0 16 16"><path d="M3 7h7a3.5 3.5 0 0 1 0 7H7"/><path d="M5.5 4.5 3 7l2.5 2.5"/></svg>
+      </button>
+      <button id="redo" type="button" title="Redo (⇧⌘Z)" disabled>
+        <svg viewBox="0 0 16 16"><path d="M13 7H6a3.5 3.5 0 0 0 0 7h3"/><path d="M10.5 4.5 13 7l-2.5 2.5"/></svg>
+      </button>
+
+      <span class="div"></span>
+      <button data-cmd="bold" title="Bold (⌘B)"><b>B</b></button>
+      <button data-cmd="italic" title="Italic (⌘I)"><i>I</i></button>
+      <button data-cmd="superscript" title="Superscript"><span class="xs">x<sup>2</sup></span></button>
+      <button data-cmd="subscript" title="Subscript"><span class="xs">x<sub>2</sub></span></button>
+      <button data-cmd="link" title="Link (⌘K)">
+        <svg viewBox="0 0 16 16"><path d="M6.5 9.5a3 3 0 0 0 4.24 0l2-2a3 3 0 1 0-4.24-4.25l-1 1M9.5 6.5a3 3 0 0 0-4.24 0l-2 2a3 3 0 1 0 4.24 4.25l1-1"/></svg>
+      </button>
+
+      <span class="div"></span>
+      <div class="drop">
+        <button id="style" type="button" title="Insert text">
+          <svg viewBox="0 0 16 16"><path d="M3 4V2.6h10V4M8 2.8v10.4M6 13.4h4"/></svg>
+          Text <span class="caret">▾</span>
+        </button>
+        <div class="drop-menu list" id="style-menu" hidden>
+          <button data-add="para"><span class="sty sty-para">Paragraph</span></button>
+          <button data-add="section"><span class="sty sty-section">Heading</span></button>
+          <button data-add="subsection"><span class="sty sty-subsection">Sub-heading</span></button>
+          <button data-add="list"><span class="sty sty-list">Bulleted list</span></button>
+        </div>
+      </div>
+      <div class="drop">
+        <button id="insert" type="button" title="Insert media">
+          <svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.5"/><circle cx="5.6" cy="6.4" r="1.1"/><path d="m2.6 11.4 3.2-3 2.4 2.2 2.6-2.5 3.2 3"/></svg>
+          Media <span class="caret">▾</span>
+        </button>
+        <div class="drop-menu wide" id="insert-menu" hidden>
+          <div class="mp-tabs">
+            <button type="button" class="on" data-pane="images">Images</button>
+            <button type="button" data-pane="icons">Icons</button>
+            <button type="button" data-pane="tables">Table</button>
+          </div>
+
+          <div class="mp-pane" id="pane-images">
+            <input id="mp-q" type="search" placeholder="Search every image, media included" autocomplete="off" />
+            <div class="mp-row">
+              <span class="mp-lbl">Insert as</span>
+              <span class="mp-seg">
+                <button type="button" class="on" data-as="image">Static</button>
+                <button type="button" data-as="float">Floating</button>
+                <button type="button" data-as="grid">Grid</button>
+              </span>
+            </div>
+            <div class="mp-row">
+              <span class="mp-lbl">Upload</span>
+              <button id="mp-add" type="button" class="mp-file-btn">Choose files…</button>
+              <input id="mp-file" type="file" accept="image/*" multiple hidden />
+            </div>
+            <div class="mp-queue" id="mp-queue" hidden>
+              <div id="mp-queue-list"></div>
+              <button id="mp-upload" type="button" class="primary" disabled>Upload</button>
+            </div>
+            <div class="mp-body" id="mp-images"></div>
+          </div>
+
+          <div class="mp-pane" id="pane-icons" hidden>
+            <input id="mp-iq" type="search" placeholder="Search icons" autocomplete="off" />
+            <div class="mp-body" id="mp-icons"></div>
+          </div>
+
+          <div class="mp-pane" id="pane-tables" hidden>
+            <div class="tbl-pick" id="tbl-pick"></div>
+            <p class="tbl-size"><span id="tbl-label">0 × 0</span></p>
+          </div>
+        </div>
+      </div>
+
+      <span class="spacer"></span>
+      <span id="status" class="status"></span>
+      <span class="save-group">
+        {DEV ? (
+          <Fragment>
+            <input id="slug" type="text" placeholder="file-name" spellcheck="false" />
+            <button id="save" type="button" class="primary">Save</button>
+          </Fragment>
+        ) : (
+          /* Writing to disk needs the dev server. On the published site the same
+             button hands you the file instead. */
+          <button id="save-dl" type="button" class="primary"
+            title="Download this page as Markdown, or as a zip when it carries new images">Download</button>
+        )}
+      </span>
+      <button id="settings-btn" type="button" title="Page settings">
+        <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.4v2M8 12.6v2M14.6 8h-2M3.4 8h-2M12.7 3.3l-1.4 1.4M4.7 11.3l-1.4 1.4M12.7 12.7l-1.4-1.4M4.7 4.7 3.3 3.3"/></svg>
+      </button>
+      <div class="drop">
+        <button id="more" type="button" title="More">⋯</button>
+        <div class="drop-menu right list" id="more-menu" hidden>
+          <button id="download">Download .md</button>
+          <button id="copy">Copy Markdown</button>
+          <button id="source">View Markdown</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ed-settings" id="settings" hidden>
+      <div class="set-grid">
+        <label>Title <span class="req-star">*</span><input id="f-title" type="text" placeholder="Nichirin" /></label>
+        <label id="crumb-field" hidden>Breadcrumb <span class="opt">navbox</span>
+          <input id="f-crumb" type="text" placeholder="[[portal:nichirin|Portal:Nichirin]] • [[nichirin|Overview]]" /></label>
+        <label id="native-field">Native title <span class="opt">optional</span>
+          <textarea id="f-native" rows="2" placeholder="宮本幕府"
+            title="One line per official language"></textarea></label>
+        <label id="romaji-field">Romanization <span class="opt">optional</span>
+          <input id="f-romaji" type="text" placeholder="Miyamoto Bakufu" /></label>
+        <label id="type-field">Article type<select id="f-type">{ARTICLE_TYPES.map((t) => <option value={t}>{t}</option>)}</select></label>
+        <label id="nation-field">Associated nation<select id="f-nation"><option value="">(none)</option>
+          {nationList.map((n) => <option value={n.id}>{n.name}</option>)}</select></label>
+        <label id="authors-field">Author(s)<input id="f-authors" type="text" placeholder="nichirin, alemannia" /></label>
+        <label id="coords-field" hidden>Coordinates
+          <input id="f-coords" type="text" placeholder="35.68°N 139.69°E" /></label>
+        <label id="icon-field">Icon <span class="opt">optional</span>
+          <input id="f-icon" type="text" placeholder="/assets/flags/nichirin.png" /></label>
+        <label id="banner-field" hidden>Banner <span class="opt">portal</span>
+          <span class="f-with-btn">
+            <input id="f-banner" class="path" type="text" placeholder="/assets/media/nichirin-portal-banner.jpg" />
+            <button id="f-banner-pick" type="button">Choose…</button>
+          </span></label>
+        <label id="welcome-field" hidden>Welcome line <span class="opt">portal</span>
+          <input id="f-welcome" type="text" placeholder="「日輪へようこそ！」" /></label>
+      </div>
+      <div class="set-toggles">
+        <label class="check"><input id="f-ooc" type="checkbox" /> Contains out-of-character information</label>
+        <label class="check"><input id="f-navbox-on" type="checkbox" checked /> Display navbox
+          <span class="opt" id="navbox-note"></span></label>
+      </div>
+    </div>
+
+    <div class="ed-main">
+    <aside class="ed-rail">
+      <div class="toc-head"><b>Contents</b><button id="ed-toc-toggle" type="button">hide</button></div>
+      <ul class="toc-list" id="ed-toc"></ul>
+    </aside>
+    <div class="ed-canvas">
+      <p class="notice" id="ooc-note" hidden>
+        This article contains out-of-character (OOC) information. Some details presented here are
+        not publicly available in-character (IC).
+      </p>
+      <h1 id="canvas-title" contenteditable="true" spellcheck="false" data-ph="Article title"></h1>
+      <div class="canvas-sub"><span id="canvas-by"></span></div>
+
+      <div class="article">
+        <aside class="infobox ib-edit">
+          <table class="ib"><tbody id="ib">
+            <tr><td class="ib-head" colspan="2">
+              <b id="ib-title">Untitled</b>
+              <span class="native" id="ib-native"></span>
+              <span class="romaji" id="ib-romaji"></span>
+            </td></tr>
+          </tbody></table>
+          <div class="ib-add"><button id="ib-first" type="button">+ Add a field</button></div>
+        </aside>
+        <div class="portal-note" id="portal-note" hidden>
+          <h2>A portal is a template</h2>
+          <p>Three things are yours to set: the <b>banner</b> and the <b>welcome line</b>,
+             both in page settings, and the nation's <b>navbox</b>.</p>
+          <p>The opening paragraph is not written here. It is taken from the nation's
+             overview article automatically, as soon as one exists —
+             <span id="portal-overview"></span></p>
+          <p><button id="go-navbox" type="button">Edit this nation's navbox</button></p>
+        </div>
+        <div id="body"></div>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="link-pop" id="link-pop" hidden>
+      <div class="lp-row">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h7"/></svg>
+        <input id="lp-text" type="text" placeholder="Text to display" autocomplete="off" />
+      </div>
+      <div class="lp-row">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.4 10.4 14 14"/></svg>
+        <input id="lp-target" type="text" placeholder="Search for an article or paste a link" autocomplete="off" />
+        <button id="lp-apply" type="button">Apply</button>
+      </div>
+      <div class="lp-list" id="lp-list"></div>
+      <button id="lp-remove" type="button" class="lp-remove" hidden>Remove link</button>
+    </div>
+
+    <div class="ed-source" id="source-panel" hidden>
+      <div class="src-head"><b>Markdown</b><button id="source-close" type="button">Close</button></div>
+      <pre id="preview"></pre>
+    </div>
+  </div>
+
+  <script is:inline define:vars={{ TEMPLATES, BASE: url('/'), DEV, FLAGS, NATION_NAMES, ARTICLES: existing }}>
+    const $ = (s, r = document) => r.querySelector(s);
+    const el = (t, c, txt) => { const n = document.createElement(t); if (c) n.className = c; if (txt != null) n.textContent = txt; return n; };
+    const q = (s) => '"' + String(s ?? '').replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
+    const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    // What is open: an article, a nation portal, or a navbox. Each lives in its own
+    // directory and writes a different file, and a portal and a navbox both share
+    // their slug with the nation's article, so the kind cannot be read off the name.
+    let pageKind = 'article';
+    let navboxLead = '';
+    // A portal's body is not editable here. Two nations have no overview article yet
+    // and their portal still carries its own paragraph, so whatever was loaded is
+    // written back rather than dropped.
+    let portalBody = '';
+
+    /* ---------- names ---------- */
+    const SMALL = /^(of|the|and|in|on|at|to|a|an|for|from|by|de|von)$/;
+    const pretty = (s) => s.split('-').map((w, i) =>
+      i > 0 && SMALL.test(w) ? w : w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    let TITLES = {};
+    const ICONS = { ...FLAGS };
+    const titlesReady = fetch(`${BASE.replace(/\/$/, '')}/articles.json`)
+      .then((r) => r.json())
+      .then((l) => { for (const a of l) { TITLES[a.slug] = a.title; if (a.icon && !ICONS[a.slug]) ICONS[a.slug] = a.icon; } })
+      .catch(() => {});
+    const displayOf = (slug) => TITLES[slug] || pretty(slug);
+
+    // Arrows and flags are shown as themselves, not as :up or :flag[nichirin].
+    const ARROW = { up: '\u25B2', down: '\u25BC' };
+    function tokenHtml(kind, arg) {
+      if (kind === 'up' || kind === 'down') {
+        return `<span class="tok arrow ${kind}" data-tok="${kind}" contenteditable="false">${ARROW[kind]}</span>`;
+      }
+      // :img carries its own path; :icon and :flag look the subject up in the registry.
+      const src = srcFor(kind === 'img' ? arg : ICONS[arg]);
+      return src
+        ? `<img class="tok ico" data-tok="${kind}" data-slug="${arg}" src="${src}" alt="" contenteditable="false">`
+        : `<span class="tok missing" data-tok="${kind}" data-slug="${arg}" contenteditable="false">:${kind}[${arg}]</span>`;
+    }
+
+    /* ---------- markdown <-> editable html ---------- */
+    function mdToHtml(md) {
+      return esc(md)
+        .replace(/&lt;br\s*\/?&gt;/g, '<br>')
+        .replace(/:(icon|flag|img)\[([^\]]+?)\]/g, (_, k, a) => tokenHtml(k, a.trim()))
+        .replace(/:(up|down)\b/g, (_, k) => tokenHtml(k))
+        .replace(/\[\[([^\]|]+?)\|([^\]]+?)\]\]/g, (_, s, d) => `<a href="#" data-slug="${s}">${d}</a>`)
+        .replace(/\[\[([^\]|]+?)\]\]/g, (_, s) => `<a href="#" data-slug="${s}">${displayOf(s)}</a>`)
+        .replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g, '<a href="$2">$1</a>')
+        .replace(/&lt;(sup|sub)&gt;([\s\S]*?)&lt;\/\1&gt;/g, '<$1>$2</$1>')
+        .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+        .replace(/\*([^*]+)\*/g, '<i>$1</i>');
+    }
+
+    function htmlToMd(node, br = ' ') {
+      let out = '';
+      for (const n of node.childNodes) {
+        if (n.nodeType === 3) { out += n.nodeValue; continue; }
+        if (n.nodeType !== 1) continue;
+        const tag = n.tagName.toLowerCase();
+        if (tag === 'br') { out += br; continue; }
+        const tok = n.dataset?.tok;
+        if (tok) { out += tok === 'up' || tok === 'down' ? `:${tok}` : `:${tok}[${n.dataset.slug}]`; continue; }
+        const inner = htmlToMd(n, br);
+        if (tag === 'b' || tag === 'strong') out += inner.trim() ? `**${inner}**` : '';
+        else if (tag === 'i' || tag === 'em') out += inner.trim() ? `*${inner}*` : '';
+        // Markdown has no superscript, so these stay as the HTML they are.
+        else if (tag === 'sup' || tag === 'sub') out += inner.trim() ? `<${tag}>${inner}</${tag}>` : '';
+        else if (tag === 'a') {
+          const slug = n.dataset.slug;
+          if (slug) out += displayOf(slug) === inner ? `[[${slug}]]` : `[[${slug}|${inner}]]`;
+          else out += `[${inner}](${n.getAttribute('href')})`;
+        } else if (tag === 'div' || tag === 'p') out += (out && !out.endsWith(br) ? br : '') + inner;
+        else out += inner;
+      }
+      return out;
+    }
+
+    /** Strip a pasted fragment down to what this editor can represent. */
+    function keepTokens(html) {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const KEEP = new Set(['B', 'STRONG', 'I', 'EM', 'SUP', 'SUB', 'BR']);
+      const walk = (node) => {
+        let out = '';
+        for (const n of node.childNodes) {
+          if (n.nodeType === 3) { out += esc(n.nodeValue); continue; }
+          if (n.nodeType !== 1) continue;
+          const tag = n.tagName;
+          if (tag === 'IMG' && n.dataset.tok) {
+            out += tokenHtml(n.dataset.tok, n.dataset.slug || n.getAttribute('src'));
+          } else if (tag === 'SPAN' && n.dataset.tok) {
+            out += tokenHtml(n.dataset.tok, n.dataset.slug || '');
+          } else if (tag === 'A' && n.dataset.slug) {
+            out += `<a href="#" data-slug="${esc(n.dataset.slug)}">${walk(n)}</a>`;
+          } else if (tag === 'BR') {
+            out += '<br>';
+          } else if (KEEP.has(tag)) {
+            out += `<${tag.toLowerCase()}>${walk(n)}</${tag.toLowerCase()}>`;
+          } else {
+            out += walk(n);
+          }
+        }
+        return out;
+      };
+      return walk(doc.body);
+    }
+
+    /** Fill a table from tab-separated text, growing it to fit. */
+    function pasteGrid(startCell, text) {
+      const table = startCell.closest('.ed-tbl');
+      const grid = text.replace(/\r/g, '').replace(/\n+$/, '').split('\n').map((r) => r.split('\t'));
+      const row0 = startCell.parentElement;
+      const r0 = [...table.tBodies[0].rows].indexOf(row0);
+      const c0 = [...row0.children].indexOf(startCell);
+      for (let r = 0; r < grid.length; r++) {
+        while (table.tBodies[0].rows.length <= r0 + r) table._addRow();
+        const tr = table.tBodies[0].rows[r0 + r];
+        for (let c = 0; c < grid[r].length; c++) {
+          while ([...tr.children].filter((x) => !x.classList.contains('row-x')).length <= c0 + c) {
+            table._addCol();
+          }
+          const td = tr.children[c0 + c];
+          if (!td || td.classList.contains('row-x')) continue;
+          td.querySelector('.ce').innerHTML = mdToHtml(grid[r][c].trim());
+        }
+      }
+      sync();
+    }
+
+    /** Every editable surface: plain text in, plain text out, no pasted styling. */
+    function editable(html, ph, onEnter) {
+      const d = el('div', 'ce');
+      d.contentEditable = 'true';
+      d.spellcheck = false;
+      if (ph) d.dataset.ph = ph;
+      d.innerHTML = html || '';
+      d.addEventListener('paste', (e) => {
+        const dt = e.clipboardData || window.clipboardData;
+        const text = dt.getData('text/plain');
+        const html = dt.getData('text/html');
+        const cell = d.closest('td, th');
+        e.preventDefault();
+        // A grid from Sheets fills the table rather than crushing into one cell.
+        if (cell && /[\t\n]/.test(text.trim()) && cell.closest('.ed-tbl')) {
+          pasteGrid(cell, text);
+          return;
+        }
+        // Flags, icons and links survive a copy between fields; everything else
+        // arrives as plain text, because the editor has no styling to paste into.
+        if (html && /data-tok=|data-slug=/.test(html)) {
+          document.execCommand('insertHTML', false, keepTokens(html));
+          return;
+        }
+        document.execCommand('insertText', false, text);
+      });
+      d.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); onEnter?.(d, e); }
+      });
+      d.addEventListener('input', sync);
+      d.addEventListener('focusin', () => { focused = d; });
+      return d;
+    }
+
+    let focused = null;      // last focused rich-text surface
+    let lastPath = null;     // last focused image path field
+    // Which of the two was touched most recently, and the last block in the article
+    // body the writer stood in. Without these a picked image lands wherever it last
+    // landed: in a stale path field, or at the end of the article.
+    let focusedAt = 0, lastPathAt = 0;
+    let lastBodyBlk = null;
+    const lineBreak = () => document.execCommand('insertLineBreak');
+    // mousedown fires before focus moves, so this survives clicking a toolbar menu.
+    for (const ev of ['focusin', 'mousedown', 'keyup']) {
+      document.addEventListener(ev, (e) => {
+        const p = e.target.closest?.('input.path');
+        if (p) { lastPath = p; lastPathAt = Date.now(); }
+        let c = e.target.closest?.('.ce');
+        if (!c && e.target.closest?.('.ed-tbl')) {
+          const n = getSelection().anchorNode;
+          c = (n?.nodeType === 1 ? n : n?.parentElement)?.closest?.('.ce');
+        }
+        if (c) {
+          focused = c; focusedAt = Date.now();
+          // By id, not by the `body` binding: this listener is registered before that
+          // const is initialised, and touching it early would throw in the handler.
+          const blk = c.closest('.blk');
+          if (blk?.parentElement?.id === 'body') lastBodyBlk = blk;
+        }
+      }, true);
+    }
+    const activeField = () => {
+      const a = document.activeElement;
+      if (a?.matches?.('input.path')) return a;
+      // A field the writer has left only stays the target while it is still the most
+      // recent thing they touched. Once the caret is back in the article, the article wins.
+      return lastPath?.isConnected && lastPathAt >= focusedAt ? lastPath : null;
+    };
+    // The caret, as it was before the toolbar took focus.
+    let caret = null;
+    document.addEventListener('selectionchange', () => {
+      const sel = getSelection();
+      if (!sel.rangeCount) return;
+      const n = sel.anchorNode;
+      const host = (n?.nodeType === 1 ? n : n?.parentElement)?.closest?.('.ce, .ed-tbl');
+      if (host) caret = sel.getRangeAt(0).cloneRange();
+    });
+
+    /** Put the caret back and insert there, in a plain field or a table cell. */
+    function insertAtCaret(html) {
+      const where = activeText();
+      if (!where) return false;
+      // A table cell is not its own editing host; the table is.
+      const host = where.closest('.ed-tbl') || where;
+      const sel = getSelection();
+      // Read the target range before touching focus: focusing a host that is not
+      // already focused collapses the caret to its start, which in a table means
+      // the header cell rather than the one the writer clicked.
+      const range = sel.rangeCount && host.contains(sel.anchorNode) ? sel.getRangeAt(0).cloneRange()
+        : caret && host.contains(caret.startContainer) ? caret.cloneRange()
+        : null;
+      if (document.activeElement !== host) host.focus();
+      if (range) { sel.removeAllRanges(); sel.addRange(range); }
+      document.execCommand('insertHTML', false, html);
+      // Inserting at a cell boundary can drop the content beside the .ce wrapper
+      // rather than inside it, where the serializer would never see it again.
+      const cellNow = (sel.anchorNode?.nodeType === 1 ? sel.anchorNode : sel.anchorNode?.parentElement)
+        ?.closest?.('td, th');
+      if (cellNow) {
+        const box = cellNow.querySelector('.ce');
+        if (box) {
+          const stray = [...cellNow.childNodes].filter(
+            (n) => n !== box && !(n.nodeType === 1 && n.tagName === 'BUTTON'));
+          stray.reverse().forEach((n) => box.insertBefore(n, box.firstChild));
+        }
+      }
+      caret = sel.rangeCount ? sel.getRangeAt(0).cloneRange() : caret;
+      sync();
+      return true;
+    }
+
+    const ceOf = (n) => (n?.nodeType === 1 ? n : n?.parentElement)?.closest?.('.ce') || null;
+    const activeText = () => {
+      const a = document.activeElement;
+      if (a?.classList?.contains('ce')) return a;
+      // Inside a table the host is the table itself, so read the cell from the
+      // selection, falling back to the caret remembered before the toolbar stole focus.
+      const live = ceOf(getSelection().anchorNode);
+      if (live) return live;
+      const saved = caret && ceOf(caret.startContainer);
+      if (saved?.isConnected) return saved;
+      return focused?.isConnected ? focused : null;
+    };
+
+    /* ---------- controls ---------- */
+    function controls(node, extra = []) {
+      const c = el('div', 'ctl');
+      const add = (label, title, fn) => {
+        const b = el('button', null, label); b.type = 'button'; b.title = title;
+        b.onmousedown = (e) => e.preventDefault();
+        b.onclick = () => { fn(); sync(); };
+        c.append(b);
+      };
+      for (const [label, title, fn] of extra) add(label, title, fn);
+      add('↑', 'Move up', () => node.previousElementSibling?.before(node));
+      add('↓', 'Move down', () => node.nextElementSibling?.after(node));
+      add('✕', 'Remove', () => node.remove());
+      return c;
+    }
+
+    /* ---------- infobox ---------- */
+    const ib = $('#ib');
+
+    function ibRow(r = {}) {
+      const kind = r.pair ? 'pair'
+        : r.section != null ? 'section'
+        : r.image != null ? 'image'
+        : r.label == null ? 'full' : 'row';
+      const tr = el('tr', kind === 'section' ? 'ib-section' : kind === 'pair' ? 'ib-pair' : null);
+      tr.dataset.kind = kind;
+
+      if (kind === 'section') {
+        const td = el('td'); td.colSpan = 2;
+        const c = controls(tr);
+        c.prepend(ibAddMenu(tr));
+        td.append(editable(esc(r.section || ''), 'Heading', lineBreak), c);
+        tr.append(td);
+      } else if (kind === 'image') {
+        const td = el('td', 'ib-media'); td.colSpan = 2;
+        const img = el('img'); img.alt = '';
+        const src = el('input', 'path'); src.placeholder = '/assets/flags/nichirin.png'; src.value = r.image || '';
+        const paint = () => {
+          if (src.value) { img.src = srcFor(src.value); img.hidden = false; } else img.hidden = true;
+        };
+        img.onerror = () => { img.hidden = true; };
+        src.oninput = () => { paint(); sync(); };
+        paint();
+        const c = controls(tr);
+        c.prepend(ibAddMenu(tr));
+        td.append(img, src, editable(esc(r.caption || ''), 'Caption', lineBreak), c);
+        tr.append(td);
+      } else if (kind === 'pair') {
+        // Two lists side by side, as the belligerents of a war. One item per line.
+        const c = controls(tr);
+        c.prepend(ibAddMenu(tr));
+        (r.pair.length ? r.pair : [{}, {}]).slice(0, 2).forEach((col, i) => {
+          const td = el('td');
+          td.append(editable(mdToHtml(col.heading || ''), 'Side', lineBreak));
+          td.firstChild.classList.add('pair-head');
+          td.append(editable((col.items || []).map(mdToHtml).join('<br>'), 'One per line', lineBreak));
+          if (i === 1) td.append(c);
+          tr.append(td);
+        });
+      } else if (kind === 'full') {
+        // A value with no field name, spanning both columns, as a casualty total.
+        const td = el('td', 'ib-full'); td.colSpan = 2;
+        const c = controls(tr);
+        c.prepend(ibAddMenu(tr));
+        const lines = Array.isArray(r.value) ? r.value : (r.value ? [r.value] : []);
+        td.append(editable(lines.map(mdToHtml).join('<br>'), 'Full-width value', lineBreak), c);
+        tr.append(td);
+      } else {
+        const th = el('th'); if (r.sub) th.className = 'sub';
+        th.append(editable(mdToHtml(r.label || ''), 'Field', lineBreak));
+        const td = el('td');
+        const lines = Array.isArray(r.value) ? r.value : (r.value ? [r.value] : []);
+        const c = controls(tr, [['⇥', 'Indent as a sub-field', () => th.classList.toggle('sub')]]);
+        c.prepend(ibAddMenu(tr));
+        td.append(editable(lines.map(mdToHtml).join('<br>'), 'Value', lineBreak), c);
+        tr.append(th, td);
+      }
+      return tr;
+    }
+
+    const setInfobox = (rows) => {
+      [...ib.querySelectorAll('tr[data-kind]')].forEach((r) => r.remove());
+      rows.forEach((r) => ib.append(ibRow(r)));
+    };
+
+    function readInfobox() {
+      return [...ib.querySelectorAll('tr[data-kind]')].map((tr) => {
+        const ce = (sel) => tr.querySelector(sel);
+        if (tr.dataset.kind === 'section') return { section: htmlToMd(ce('.ce')).trim() };
+        if (tr.dataset.kind === 'image') {
+          return { image: ce('input.path').value.trim(), caption: htmlToMd(ce('.ce')).trim() };
+        }
+        const asLines = (cell) => htmlToMd(cell, '\n').split('\n').map((x) => x.trim()).filter(Boolean);
+        if (tr.dataset.kind === 'pair') {
+          return { pair: [...tr.querySelectorAll('td')].map((td) => {
+            const [head, items] = td.querySelectorAll('.ce');
+            return { heading: htmlToMd(head).trim(), items: asLines(items) };
+          }) };
+        }
+        if (tr.dataset.kind === 'full') {
+          const lines = asLines(ce('.ce'));
+          return { value: lines.length > 1 ? lines : (lines[0] ?? '') };
+        }
+        const [labelCell, valueCell] = tr.querySelectorAll('.ce');
+        const lines = htmlToMd(valueCell, '\n').split('\n').map((s) => s.trim()).filter(Boolean);
+        const o = { label: htmlToMd(labelCell).trim(), value: lines.length > 1 ? lines : (lines[0] ?? '') };
+        if (tr.querySelector('th')?.classList.contains('sub')) o.sub = true;
+        return o;
+      });
+    }
+
+    const SEEDS = {
+      Field: () => ({ label: '', value: '' }),
+      Heading: () => ({ section: '' }),
+      Image: () => ({ image: '', caption: '' }),
+      'Two lists': () => ({ pair: [{ heading: '', items: [] }, { heading: '', items: [] }] }),
+      'Full-width value': () => ({ value: '' }),
+    };
+
+    /** The + on a row's controls, which adds the next row right below it. */
+    function ibAddMenu(tr) {
+      const wrap = el('div', 'ctl-add');
+      const b = el('button', null, '+');
+      b.type = 'button';
+      b.title = 'Add a row below';
+      const menu = el('div', 'drop-menu ctl-menu');
+      menu.hidden = true;
+      for (const [label, seed] of Object.entries(SEEDS)) {
+        const item = el('button', null, label);
+        item.type = 'button';
+        item.onmousedown = (e) => e.preventDefault();
+        item.onclick = () => {
+          menu.hidden = true;
+          const row = ibRow(seed());
+          tr.after(row);
+          (row.querySelector('.ce') || row.querySelector('input'))?.focus();
+          sync();
+        };
+        menu.append(item);
+      }
+      b.onmousedown = (e) => e.preventDefault();
+      b.onclick = (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.drop-menu').forEach((m) => { if (m !== menu) m.hidden = true; });
+        menu.hidden = !menu.hidden;
+      };
+      wrap.append(b, menu);
+      return wrap;
+    }
+
+    $('#ib-first').onclick = () => {
+      const row = ibRow({});
+      ib.append(row);
+      row.querySelector('.ce')?.focus();
+      sync();
+    };
+
+    /* ---------- body blocks ---------- */
+    const body = $('#body');
+    const TEXT = { section: 'h2', subsection: 'h3', para: 'p', list: 'ul' };
+    const LABEL = {
+      section: 'Section', subsection: 'Subsection', para: 'Paragraph',
+      list: 'List', image: 'Image', float: 'Floating image', grid: 'Image grid', table: 'Table',
+    };
+
+    function block(kind, data = {}) {
+      const b = el('div', `blk blk-${kind}`);
+      b.dataset.kind = kind;
+      b.append(el('span', 'blk-tag', LABEL[kind] || kind));
+
+      if (kind in TEXT) {
+        if (kind === 'list') {
+          const ul = el('ul', 'ce-list');
+          const item = (html) => {
+            const li = el('li');
+            li.append(editable(html, 'List item', (d) => {
+              const next = item('');
+              li.after(next);
+              next.querySelector('.ce').focus();
+              sync();
+            }));
+            return li;
+          };
+          (data.items?.length ? data.items : ['']).forEach((i) => ul.append(item(mdToHtml(i))));
+          b.append(ul);
+        } else {
+          const ph = kind === 'section' ? 'Section heading'
+            : kind === 'subsection' ? 'Subsection heading' : 'Write here';
+          b.append(editable(mdToHtml(data.text || ''), ph, () => {
+            const n = block('para');
+            b.after(n);
+            n.querySelector('.ce').focus();
+            sync();
+          }));
+        }
+      } else if (kind === 'image') {
+        b.append(figure(data));
+      } else if (kind === 'grid') {
+        const wrap = el('div', 'imgrid');
+        const addOne = (d = {}) => {
+          const f = figure(d, true);
+          wrap.append(f);
+          return f;
+        };
+        (data.items?.length ? data.items : [{}, {}]).forEach(addOne);
+        const add = el('button', 'sub-add', '+ Image');
+        add.type = 'button';
+        add.onclick = (e) => {
+          e.stopPropagation();          // or the document handler shuts the menu again
+          addOne().querySelector('input').focus();
+          sync();
+          openMedia();
+        };
+        b.append(wrap, add);
+      } else if (kind === 'float') {
+        const f = figure(data, false);
+        f.classList.add('float-edit', data.align === 'left' ? 'float-left' : 'float-right');
+        f.style.width = `${data.width || 300}px`;
+        const bar = el('div', 'float-bar');
+        const side = el('button', null, data.align === 'left' ? '\u25e7 Left' : 'Right \u25e8');
+        side.type = 'button';
+        side.onclick = () => {
+          const left = f.classList.toggle('float-left');
+          f.classList.toggle('float-right', !left);
+          side.textContent = left ? '\u25e7 Left' : 'Right \u25e8';
+          sync();
+        };
+        const size = el('span', 'float-size');
+        const showSize = () => { size.textContent = `${Math.round(parseFloat(f.style.width))}px`; };
+        showSize();
+        bar.append(side, size);
+        bar.onmousedown = (e) => e.preventDefault();   // flipping the side keeps the caret
+        // Drag the edge to size it, the way a word processor does.
+        const grip = el('div', 'float-grip');
+        grip.title = 'Drag to resize';
+        grip.onmousedown = (e) => {
+          e.preventDefault();
+          const x0 = e.clientX, w0 = parseFloat(f.style.width);
+          const dir = f.classList.contains('float-left') ? 1 : -1;
+          const move = (ev) => {
+            const w = Math.max(120, Math.min(720, w0 + dir * (ev.clientX - x0)));
+            f.style.width = `${Math.round(w)}px`;
+            showSize();
+          };
+          const up = () => {
+            removeEventListener('mousemove', move);
+            removeEventListener('mouseup', up);
+            sync();
+          };
+          addEventListener('mousemove', move);
+          addEventListener('mouseup', up);
+        };
+        f.append(grip, bar);
+        b.append(f);
+      } else if (kind === 'table') {
+        // The picker gives a size; a loaded article gives the cells themselves.
+        const seed = data.rows?.length ? data.rows
+          : data.cols ? Array.from({ length: data.rows || 2 },
+              (_, r) => Array.from({ length: data.cols }, () => r === 0 ? 'Column' : ''))
+          : null;
+        b.append(tableEditor(seed));
+      }
+
+      const ctl = controls(b);
+      if (kind === 'float') b.querySelector('figure').append(ctl);
+      else b.append(ctl);
+      return b;
+    }
+
+    function figure(d = {}, removable = false) {
+      const f = el('figure');
+      const img = el('img'); img.alt = '';
+      // Nobody types a path any more; the Media panel fills it. The field stays
+      // because it is what the panel aims at, and stays out of sight otherwise.
+      const src = el('input', 'path'); src.value = d.src || '';
+      src.tabIndex = -1;
+      const choose = (e) => { e.stopPropagation(); src.focus(); openMedia(); };
+      // Only until a picture is chosen: an empty figure has nothing to see or aim at.
+      const empty = el('button', 'fig-empty', 'No picture'); empty.type = 'button';
+      empty.onclick = choose;
+      const paint = () => {
+        if (src.value) { img.src = srcFor(src.value); img.hidden = false; } else img.hidden = true;
+        empty.hidden = !!src.value;
+      };
+      img.onerror = () => { img.hidden = true; };
+      // In a row of pictures each one grows by its own shape, which is what puts
+      // them all on one height. The ratio is read off the picture itself.
+      img.onload = () => {
+        if (img.naturalHeight && f.closest('.imgrid')) {
+          f.style.flex = (img.naturalWidth / img.naturalHeight).toFixed(3);
+        }
+      };
+      src.oninput = () => { paint(); sync(); };
+      paint();
+      const cap = editable(esc(d.caption || ''), 'Caption', lineBreak);
+      cap.classList.add('cap');
+      // Change and remove sit together in the corner, out of the picture's way.
+      const tools = el('div', 'fig-tools');
+      const swap = el('button', null, '⇄'); swap.type = 'button'; swap.title = 'Change this picture';
+      swap.onmousedown = (e) => e.preventDefault();
+      swap.onclick = choose;
+      tools.append(swap);
+      if (removable) {
+        const x = el('button', null, '✕'); x.type = 'button'; x.title = 'Remove this picture';
+        x.onmousedown = (e) => e.preventDefault();
+        x.onclick = () => { f.remove(); sync(); };
+        tools.append(x);
+      }
+      f.append(img, empty, src, cap, tools);
+      return f;
+    }
+
+    function tableEditor(rows) {
+      const wrap = el('div', 'tbl-wrap');
+      const table = el('table', 'ed-tbl');
+      table.contentEditable = 'true';
+      table.spellcheck = false;
+      table.addEventListener('input', sync);
+      table.addEventListener('keydown', (e) => {
+        // Enter adds a line inside the cell; these hold lists of names.
+        if (e.key === 'Enter') { e.preventDefault(); lineBreak(); }
+      });
+      table.addEventListener('paste', (e) => {
+        const dt = e.clipboardData || window.clipboardData;
+        const text = dt.getData('text/plain');
+        const html = dt.getData('text/html');
+        const cellEl = getSelection().anchorNode?.parentElement?.closest('td, th');
+        e.preventDefault();
+        if (cellEl && /[\t\n]/.test(text.trim())) { pasteGrid(cellEl, text); return; }
+        if (html && /data-tok=|data-slug=/.test(html)) {
+          document.execCommand('insertHTML', false, keepTokens(html));
+          return;
+        }
+        document.execCommand('insertText', false, text);
+      });
+      const tbody = el('tbody');
+      table.append(tbody);
+
+      const cell = (tag, html) => {
+        const c = el(tag);
+        // Not editable on its own: the table is the single editing host, so a
+        // selection can run across cells and copy as a grid.
+        const inner = el('div', 'ce');
+        inner.innerHTML = html || '';
+        c.append(inner);
+        if (tag === 'th') {
+          const x = el('button', 'col-x', '✕'); x.type = 'button'; x.title = 'Delete column';
+          x.onmousedown = (e) => e.preventDefault();
+          x.onclick = () => {
+            const i = [...c.parentElement.children].indexOf(c);
+            [...tbody.rows].forEach((r) => r.cells[i]?.remove());
+            sync();
+          };
+          c.append(x);
+        }
+        return c;
+      };
+
+      const addRow = (cells, head = false) => {
+        const tr = el('tr');
+        cells.forEach((v) => tr.append(cell(head ? 'th' : 'td', mdToHtml(v))));
+        const x = el('td', 'row-x');
+        const btn = el('button', null, '✕'); btn.type = 'button'; btn.title = 'Delete row';
+        btn.onmousedown = (e) => e.preventDefault();
+        btn.onclick = () => { tr.remove(); sync(); };
+        x.append(btn);
+        tr.append(x);
+        tbody.append(tr);
+        return tr;
+      };
+
+      const seed = rows?.length ? rows : [['Column', 'Column'], ['', '']];
+      seed.forEach((r, i) => addRow(r, i === 0));
+
+      const addCol = () =>
+        [...tbody.rows].forEach((r, i) => r.insertBefore(cell(i === 0 ? 'th' : 'td', ''), r.lastElementChild));
+
+      // A pasted grid grows the table through the same helpers the buttons use.
+      table._addRow = () => addRow(new Array(tbody.rows[0].cells.length - 1).fill(''));
+      table._addCol = addCol;
+
+      // Selecting across cells and copying yields tab-separated text, so the
+      // table can go straight into a spreadsheet.
+      const asTsv = (sel) => {
+        const rows = [];
+        for (const tr of tbody.rows) {
+          const cells = [...tr.children].filter((c) => !c.classList.contains('row-x'));
+          const hit = cells.filter((c) => sel.containsNode(c, true));
+          if (hit.length) rows.push(hit.map((c) => tdText(c)).join('\t'));
+        }
+        return rows.join('\n');
+      };
+      const tdText = (c) => htmlToMd(c.querySelector('.ce'), ' ').replace(/\s+/g, ' ').trim();
+      const onCopy = (e) => {
+        const sel = getSelection();
+        if (!sel.rangeCount || sel.isCollapsed) return;
+        const within = table.contains(sel.anchorNode) && table.contains(sel.focusNode);
+        if (!within) return;
+        const startCell = sel.anchorNode.parentElement?.closest('td, th');
+        const endCell = sel.focusNode.parentElement?.closest('td, th');
+        if (startCell && startCell === endCell) return;   // a normal in-cell copy
+        const tsv = asTsv(sel);
+        if (!tsv) return;
+        e.preventDefault();
+        e.clipboardData.setData('text/plain', tsv);
+      };
+      table.addEventListener('copy', onCopy);
+      table.addEventListener('cut', onCopy);
+
+      const bar = el('div', 'tbl-bar');
+      const ar = el('button', null, '+ Row'); ar.type = 'button';
+      ar.onclick = () => { table._addRow(); sync(); };
+      const ac = el('button', null, '+ Column'); ac.type = 'button';
+      ac.onclick = () => { addCol(); sync(); };
+      bar.append(ar, ac);
+      wrap.append(table, bar);
+      return wrap;
+    }
+
+    function readBody() {
+      return [...body.children].map((b) => {
+        const kind = b.dataset.kind;
+        if (kind === 'image') {
+          const f = b.querySelector('figure');
+          return { kind, src: f.querySelector('input').value.trim(), caption: htmlToMd(f.querySelector('.cap')).trim() };
+        }
+        if (kind === 'float') {
+          const f = b.querySelector('figure');
+          return {
+            kind,
+            src: f.querySelector('input').value.trim(),
+            caption: htmlToMd(f.querySelector('.cap')).trim(),
+            align: f.classList.contains('float-left') ? 'left' : 'right',
+            width: Math.round(parseFloat(f.style.width) || 300),
+          };
+        }
+        if (kind === 'grid') return {
+          kind,
+          items: [...b.querySelectorAll('figure')].map((f) => ({
+            src: f.querySelector('input').value.trim(),
+            caption: htmlToMd(f.querySelector('.cap')).trim(),
+            flex: f.style.flex || '',
+          })),
+        };
+        if (kind === 'table') return {
+          kind,
+          rows: [...b.querySelectorAll('tbody tr')].map((tr) =>
+            [...tr.children].filter((c) => !c.classList.contains('row-x'))
+              .map((c) => htmlToMd(c.querySelector('.ce'), '<br>').trim())),
+        };
+        if (kind === 'list') return {
+          kind,
+          items: [...b.querySelectorAll('li .ce')].map((d) => htmlToMd(d).trim()).filter(Boolean),
+        };
+        return { kind, text: htmlToMd(b.querySelector('.ce')).trim() };
+      });
+    }
+
+    /* ---------- insert, relative to where the cursor is ---------- */
+    function insert(kind, data = {}) {
+      const n = block(kind, data);
+      const here = activeText()?.closest?.('.blk');
+      // The caret may be in the sidebar, which is no place to hang an article block;
+      // fall back to the last block of the body itself rather than to its end.
+      const at = here?.parentElement === body ? here
+        : lastBodyBlk?.isConnected && lastBodyBlk.parentElement === body ? lastBodyBlk : null;
+      if (at) at.after(n);
+      else body.append(n);
+      (n.querySelector('.ce') || n.querySelector('input'))?.focus();
+      sync();
+    }
+
+    /* ---------- serialize ---------- */
+    function toMarkdown() {
+      const v = (id) => $(id).value.trim();
+      if (pageKind === 'navbox') return navboxYaml();
+      const fm = [`title: ${q(v('#f-title'))}`];
+      if (pageKind === 'portal') {
+        fm.push(`nation: ${v('#f-nation')}`);
+        if (v('#f-banner')) fm.push(`banner: ${v('#f-banner')}`);
+        if (v('#f-welcome')) fm.push(`welcome: ${q(v('#f-welcome'))}`);
+        const kept = portalBody.trim();
+        return `---\n${fm.join('\n')}\n---\n${kept ? `\n${kept}\n` : ''}`;
+      }
+      const natives = v('#f-native').split('\n').map((x) => x.trim()).filter(Boolean);
+      if (natives.length === 1) fm.push(`nativeTitle: ${q(natives[0])}`);
+      else if (natives.length) {
+        fm.push('nativeTitle:');
+        natives.forEach((n) => fm.push(`  - ${q(n)}`));
+      }
+      if (v('#f-romaji')) fm.push(`romaji: ${q(v('#f-romaji'))}`);
+      fm.push(`type: ${v('#f-type')}`);
+      if (v('#f-nation')) fm.push(`nation: ${v('#f-nation')}`);
+      if (v('#f-icon')) fm.push(`icon: ${q(v('#f-icon'))}`);
+      // A communal article credits its writers but carries a navbox of its own.
+      const authors = v('#f-authors').split(',').map((a) => a.trim()).filter(Boolean);
+      if (authors.length) fm.push(`authors: [${authors.join(', ')}]`);
+      if (!$('#f-navbox-on').checked) fm.push('navbox: none');
+      else if (!v('#f-nation')) fm.push('navbox: site');
+      if (v('#f-coords')) fm.push(`coords: ${q(v('#f-coords'))}`);
+      if ($('#f-ooc').checked) fm.push('ooc: true');
+
+      // The type skeleton stays on screen to be filled in; only filled rows are written.
+      const some = (v) => (Array.isArray(v) ? v.length : v !== '');
+      const filled = readInfobox().filter((r) =>
+        r.pair ? r.pair.some((c) => c.heading !== '' || c.items.length)
+        : r.section != null ? r.section !== ''
+        : r.image != null ? r.image !== ''
+        : r.label == null ? some(r.value)
+        : r.label !== '' && some(r.value));
+      const rows = filled.filter((r, i) =>
+        r.section == null || (filled[i + 1] && filled[i + 1].section == null));
+
+      if (rows.length) {
+        fm.push('infobox:');
+        for (const r of rows) {
+          if (r.section != null) { fm.push(`  - { section: ${q(r.section)} }`); continue; }
+          if (r.image != null) { fm.push(`  - { image: ${q(r.image)}, caption: ${q(r.caption)} }`); continue; }
+          if (r.pair) {
+            fm.push('  - pair:');
+            for (const col of r.pair) {
+              fm.push(`      - heading: ${q(col.heading)}`);
+              fm.push('        items:');
+              col.items.forEach((it) => fm.push(`          - ${q(it)}`));
+            }
+            continue;
+          }
+          if (r.label == null) {
+            if (Array.isArray(r.value)) {
+              fm.push('  - value:');
+              r.value.forEach((l) => fm.push(`      - ${q(l)}`));
+            } else fm.push(`  - { value: ${q(r.value)} }`);
+            continue;
+          }
+          if (Array.isArray(r.value)) {
+            fm.push(`  - label: ${q(r.label)}`);
+            if (r.sub) fm.push('    sub: true');
+            fm.push('    value:');
+            r.value.forEach((l) => fm.push(`      - ${q(l)}`));
+          } else {
+            fm.push(`  - { label: ${q(r.label)}${r.sub ? ', sub: true' : ''}, value: ${q(r.value)} }`);
+          }
+        }
+      }
+
+      return `---\n${fm.join('\n')}\n---\n\n${bodyMarkdown()}\n`;
+    }
+
+    /* ---------- navboxes ----------
+       A navbox is the same tree the block editor already draws: a group is a heading,
+       a row is a subheading, and the row's articles are a list. So it is edited with
+       the blocks and controls everything else uses, and converted at the two ends. */
+
+    /** The stored groups, as blocks. */
+    function navboxBlocks(groups) {
+      const out = [];
+      for (const g of groups) {
+        out.push({ kind: 'section', text: g.label || '' });
+        for (const r of g.rows || []) {
+          if (r.label != null) out.push({ kind: 'subsection', text: r.label });
+          if (r.note != null) out.push({ kind: 'para', text: r.note });
+          // A stored item is a slug, or "slug|Display"; either way it is a link here,
+          // so it shows the article's real title and the link popover can edit it.
+          if (r.items?.length) {
+            out.push({
+              kind: 'list',
+              items: r.items.map((i) => (String(i).startsWith('[[') || String(i).startsWith('[')
+                ? String(i) : `[[${i}]]`)),
+            });
+          }
+        }
+      }
+      return out.length ? out : [{ kind: 'section', text: '' }];
+    }
+
+    /** Those blocks, back as the YAML file. */
+    function navboxYaml() {
+      const v = (id) => $(id).value.trim();
+      const lines = [];
+      if (v('#f-title')) lines.push(`title: ${q(v('#f-title'))}`);
+      if (v('#f-crumb')) lines.push(`crumb: ${q(v('#f-crumb'))}`);
+      const blocks = readBody().filter((b) => ['section', 'subsection', 'para', 'list'].includes(b.kind));
+      if (!blocks.length) { lines.push('groups: []'); return navboxLead + lines.join('\n') + '\n'; }
+      lines.push('groups:');
+
+      let open = false;                       // a row is waiting for its items
+      let group = false;                      // a group is open to hang rows on
+      // Nothing may sit above the first heading, or the file it writes is not a navbox.
+      const need = () => { if (!group) { lines.push('  - label: ""', '    rows:'); group = true; } };
+      const openRow = (label) => { need(); lines.push(`      - label: ${q(label)}`); open = true; };
+
+      for (const b of blocks) {
+        if (b.kind === 'section') {
+          lines.push(`  - label: ${q(b.text)}`, '    rows:');
+          open = false; group = true;
+        } else if (b.kind === 'subsection') {
+          openRow(b.text);
+        } else if (b.kind === 'para') {
+          need();
+          lines.push(`      - note: ${q(b.text)}`);
+          open = false;
+        } else if (b.kind === 'list') {
+          need();
+          // A list with no subheading over it is a row with items and no label.
+          if (!open) lines.push('      - items:');
+          else lines.push('        items:');
+          for (const it of b.items) {
+            const m = it.match(/^\[\[([^\]|]+?)(?:\|([^\]]+?))?\]\]$/);
+            lines.push(`          - ${q(m ? (m[2] ? `${m[1]}|${m[2]}` : m[1]) : it)}`);
+          }
+          open = false;
+        }
+      }
+      return navboxLead + lines.join('\n') + '\n';
+    }
+
+    /** The blocks of the article body alone, as markdown. A portal page has the
+        same body and none of the frontmatter, so both callers share this. */
+    function bodyMarkdown() {
+      const fig = (i) => {
+        const alt = (i.caption || '').replace(/"/g, '&quot;');
+        const style = i.flex ? ` style="flex:${parseFloat(i.flex).toFixed(3)}"` : '';
+        return `<figure${style}><img src="${i.src}" alt="${alt}"><figcaption>${i.caption}</figcaption></figure>`;
+      };
+      return readBody().map((b) => {
+        if (b.kind === 'section') return '## ' + b.text;
+        if (b.kind === 'subsection') return '### ' + b.text;
+        if (b.kind === 'para') return b.text;
+        if (b.kind === 'list') return b.items.map((i) => '- ' + i).join('\n');
+        if (b.kind === 'image') return b.src ? fig(b) : '';
+        if (b.kind === 'float') {
+          if (!b.src) return '';
+          const cls = `float float-${b.align === 'left' ? 'left' : 'right'}`;
+          const cap = b.caption ? `<figcaption>${b.caption}</figcaption>` : '<figcaption></figcaption>';
+          return `<figure class="${cls}" style="width:${b.width || 300}px">`
+            + `<img src="${b.src}" alt="${(b.caption || '').replace(/"/g, '&quot;')}">${cap}</figure>`;
+        }
+        if (b.kind === 'grid') {
+          const items = b.items.filter((i) => i.src);
+          return items.length ? '<div class="imgrid">\n' + items.map(fig).join('\n') + '\n</div>' : '';
+        }
+        if (b.kind === 'table') {
+          // A pipe inside a cell would split it, so it is escaped for GFM.
+          const cell = (c) => String(c).replace(/\|/g, '\\|');
+          const [head, ...rest] = b.rows;
+          if (!head) return '';
+          return ['| ' + head.map(cell).join(' | ') + ' |', '| ' + head.map(() => '---').join(' | ') + ' |',
+            ...rest.map((r) => '| ' + r.map(cell).join(' | ') + ' |')].join('\n');
+        }
+        return '';
+      }).filter(Boolean).join('\n\n');
+    }
+
+    /* ---------- parse an article body back into blocks ---------- */
+    function parseBody(md) {
+      const blocks = [];
+      for (const chunk of md.trim().split(/\n{2,}/)) {
+        const t = chunk.trim();
+        if (!t) continue;
+        if (t.startsWith('### ')) blocks.push({ kind: 'subsection', text: t.slice(4) });
+        else if (t.startsWith('## ')) blocks.push({ kind: 'section', text: t.slice(3) });
+        else if (t.startsWith('<div class="imgrid"')) {
+          blocks.push({
+            kind: 'grid',
+            items: [...t.matchAll(/<img src="([^"]*)"[^>]*>\s*<figcaption>([\s\S]*?)<\/figcaption>/g)]
+              .map((m) => ({ src: m[1], caption: m[2] })),
+          });
+        } else if (t.startsWith('<figure')) {
+          const m = t.match(/<img src="([^"]*)"[^>]*>\s*<figcaption>([\s\S]*?)<\/figcaption>/);
+          const cls = t.match(/^<figure class="([^"]*)"/)?.[1] || '';
+          if (cls.includes('float')) {
+            blocks.push({
+              kind: 'float', src: m?.[1] || '', caption: m?.[2] || '',
+              align: cls.includes('float-left') ? 'left' : 'right',
+              width: parseInt(t.match(/width:\s*(\d+)px/)?.[1] || '300', 10),
+            });
+          } else {
+            blocks.push({ kind: 'image', src: m?.[1] || '', caption: m?.[2] || '' });
+          }
+        } else if (/^\|/.test(t)) {
+          blocks.push({
+            kind: 'table',
+            rows: t.split('\n').filter((l) => !/^\|[\s|:-]+\|$/.test(l)).map((l) =>
+              l.replace(/^\||\|$/g, '').split(/(?<!\\)\|/).map((s) => s.trim().replace(/\\\|/g, '|'))),
+          });
+        } else if (t.split('\n').every((l) => l.startsWith('- '))) {
+          blocks.push({ kind: 'list', items: t.split('\n').map((l) => l.slice(2)) });
+        } else blocks.push({ kind: 'para', text: t.replace(/\n/g, ' ') });
+      }
+      return blocks;
+    }
+
+    /* ---------- canvas mirrors the settings ---------- */
+    function paintCanvas() {
+      const t = $('#f-title').value.trim();
+      $('#ib-title').textContent = t || 'Untitled';
+      $('#ib-native').innerHTML = $('#f-native').value.trim()
+        .split('\n').map((n) => esc(n.trim())).join('<br>');
+      $('#ib-romaji').textContent = $('#f-romaji').value.trim();
+      if ($('#canvas-title').textContent !== t && document.activeElement !== $('#canvas-title')) {
+        $('#canvas-title').textContent = t;
+      }
+      const nat = $('#f-nation');
+      const name = nat.value ? nat.options[nat.selectedIndex].text : '';
+      $('#canvas-by').innerHTML = name ? `By <a href="#">${esc(name)}</a>` : '';
+      $('#ooc-note').hidden = !$('#f-ooc').checked;
+    }
+
+    /* ---------- draft survives a reload ---------- */
+    const DRAFT = 'talopedia-draft';
+    const fields = ['#f-title', '#f-native', '#f-romaji', '#f-type', '#f-nation', '#f-icon',
+      '#f-authors', '#f-coords', '#f-banner', '#f-welcome', '#f-crumb'];
+    const snapshot = () => ({
+      meta: Object.fromEntries(fields.map((f) => [f, $(f).value])),
+      ooc: $('#f-ooc').checked,
+      navbox: $('#f-navbox-on').checked,
+      slug: DEV ? $('#slug').value : '',
+      // What is being edited, and the two things it holds that are never on screen.
+      // Without these an undo, or the reload after a save, turns a portal into an article.
+      kind: pageKind,
+      portalBody,
+      navboxLead,
+      infobox: readInfobox(),
+      blocks: readBody(),
+    });
+
+    function restore(d) {
+      for (const [f, v] of Object.entries(d.meta || {})) if ($(f)) $(f).value = v;
+      $('#f-ooc').checked = !!d.ooc;
+      $('#f-navbox-on').checked = d.navbox !== false;
+      if (DEV && d.slug) { $('#slug').value = d.slug; slugTouched = true; }
+      pageKind = d.kind || 'article';
+      portalBody = d.portalBody || '';
+      navboxLead = d.navboxLead || '';
+      setInfobox(d.infobox || []);
+      body.innerHTML = '';
+      (d.blocks || []).forEach((b) => body.append(block(b.kind, b)));
+      if (!body.children.length && pageKind !== 'portal') body.append(block('para'));
+      paintSettings();
+    }
+
+    let draftTimer;
+    function stash() {
+      clearTimeout(draftTimer);
+      draftTimer = setTimeout(() => {
+        try { sessionStorage.setItem(DRAFT, JSON.stringify(snapshot())); } catch {}
+      }, 400);
+    }
+
+    const tocToggle = $('#ed-toc-toggle');
+    tocToggle.onclick = () => {
+      tocToggle.textContent = $('.ed-rail').classList.toggle('collapsed') ? 'show' : 'hide';
+    };
+    // A long contents list above the article is in the way on a phone.
+    if (innerWidth <= 1000) { $('.ed-rail').classList.add('collapsed'); tocToggle.textContent = 'show'; }
+
+    function paintToc() {
+      const nav = $('#ed-toc');
+      nav.innerHTML = '';
+      const top = el('li', 'top');
+      const a0 = el('a', null, '(Top)');
+      a0.href = '#';
+      a0.onclick = (e) => { e.preventDefault(); scrollTo({ top: 0, behavior: 'smooth' }); };
+      top.append(a0);
+      nav.append(top);
+      let sub = null;
+      for (const b of body.children) {
+        const kind = b.dataset.kind;
+        if (kind !== 'section' && kind !== 'subsection') continue;
+        const text = b.querySelector('.ce')?.textContent.trim();
+        if (!text) continue;
+        const li = el('li');
+        const a = el('a', null, text);
+        a.href = '#';
+        a.onclick = (e) => {
+          e.preventDefault();
+          b.scrollIntoView({ block: 'center', behavior: 'smooth' });
+          b.querySelector('.ce')?.focus();
+        };
+        li.append(a);
+        if (kind === 'section') { nav.append(li); sub = null; }
+        else {
+          if (!sub) { sub = el('ul'); (nav.lastElementChild || nav).append(sub); }
+          sub.append(li);
+        }
+      }
+    }
+
+    // Coordinates only mean something for a nation or a city.
+    function paintSettings() {
+      const t = $('#f-type').value;
+      // A portal carries a banner and a welcome line and nothing else; a navbox carries
+      // a title and a breadcrumb. Neither has a type, a byline, coordinates or an infobox.
+      const art = pageKind === 'article', portal = pageKind === 'portal', nav = pageKind === 'navbox';
+      for (const [id, on] of [
+        ['#banner-field', portal], ['#welcome-field', portal], ['#crumb-field', nav],
+        ['#type-field', art], ['#authors-field', art], ['#icon-field', art],
+        ['#native-field', art], ['#romaji-field', art], ['#nation-field', !nav],
+      ]) $(id).hidden = !on;
+      $('#settings').querySelector('.set-toggles').hidden = !art;
+      document.querySelector('.ib-edit').hidden = !art;
+      // Only the types that sit somewhere on the map.
+      const PLACED = ['overview', 'city', 'subdivision', 'continent', 'geography'];
+      $('#coords-field').hidden = !art || !PLACED.includes(t);
+      // A portal has no body of its own to edit: the template is the page.
+      $('#portal-note').hidden = !portal;
+      body.hidden = portal;
+      document.querySelector('.ed').dataset.kind = pageKind;
+      if (portal) {
+        const n = $('#f-nation').value;
+        const named = n ? ($('#f-nation').selectedOptions[0]?.textContent || n) : 'this nation';
+        $('#portal-overview').textContent = n
+          ? `the overview article for ${named}.`
+          : 'choose the nation in page settings first.';
+        $('#go-navbox').disabled = !n;
+      }
+      $('#navbox-note').textContent = !$('#f-navbox-on').checked ? 'none'
+        : $('#f-nation').value ? `${$('#f-nation').selectedOptions[0].textContent}'s navbox`
+        : 'site navbox';
+    }
+    /* ---------- undo / redo ---------- */
+    // A snapshot stack rather than execCommand('undo'): adding or removing a
+    // block is not a text edit, so the browser's own history does not see it.
+    const past = [], future = [];
+    let quiet = false, lastPush = 0;
+
+    function paintHistory() {
+      $('#undo').disabled = past.length < 2;
+      $('#redo').disabled = !future.length;
+    }
+    function remember() {
+      if (quiet) return;
+      const now = JSON.stringify(snapshot());
+      if (past.length && past[past.length - 1] === now) return;
+      // Typing coalesces into one step; a structural change always starts a new one.
+      const t = Date.now();
+      if (past.length > 1 && t - lastPush < 600) past.pop();
+      lastPush = t;
+      past.push(now);
+      if (past.length > 80) past.shift();
+      future.length = 0;
+      paintHistory();
+    }
+    function step(from, to) {
+      if (from.length < 2) return;
+      to.push(from.pop());
+      quiet = true;
+      restore(JSON.parse(from[from.length - 1]));
+      quiet = false;
+      paintCanvas(); paintToc();
+      $('#preview').textContent = toMarkdown();
+      paintHistory();
+    }
+    $('#undo').onclick = () => step(past, future);
+    $('#redo').onclick = () => {
+      if (!future.length) return;
+      quiet = true;
+      const next = future.pop();
+      past.push(next);
+      restore(JSON.parse(next));
+      quiet = false;
+      paintCanvas(); paintToc();
+      $('#preview').textContent = toMarkdown();
+      paintHistory();
+    };
+
+    function sync() {
+      paintSettings();
+      paintCanvas();
+      paintToc();
+      $('#preview').textContent = toMarkdown();
+      remember();
+      stash();
+    }
+
+    /* ---------- open an existing article ---------- */
+    async function load(slug) {
+      await titlesReady;
+      pageKind = slug.startsWith('portal:') ? 'portal' : slug.startsWith('navbox:') ? 'navbox' : 'article';
+      const bare = slug.replace(/^(portal|navbox):/, '');
+      const path = pageKind === 'article' ? `/raw/${bare}.json` : `/raw/${pageKind}/${bare}.json`;
+      const r = await fetch(`${BASE.replace(/\/$/, '')}${path}`);
+      // A portal or navbox that does not exist yet is not an error: it is the one
+      // you are about to write, which is how a new nation gets either of them.
+      if (!r.ok) {
+        if (pageKind === 'article') { flash('Could not open that page.', true); return; }
+        blank(pageKind, bare);
+        flash(`New ${pageKind}: ${bare}. Nothing saved yet.`);
+        return;
+      }
+      const loaded = await r.json();
+      const { data, body: md } = loaded;
+      navboxLead = loaded.lead || '';
+      portalBody = pageKind === 'portal' ? (md || '') : '';
+      $('#f-crumb').value = data.crumb || '';
+      $('#f-banner').value = data.banner || '';
+      $('#f-welcome').value = data.welcome || '';
+      $('#f-title').value = data.title || '';
+      $('#f-native').value = [].concat(data.nativeTitle ?? []).join('\n');
+      $('#f-romaji').value = data.romaji || '';
+      $('#f-type').value = data.type || 'overview';
+      $('#f-nation').value = data.nation || '';
+      $('#f-icon').value = data.icon || '';
+      $('#f-authors').value = (data.authors || []).join(', ');
+      $('#f-navbox-on').checked = data.navbox !== 'none';
+      $('#f-coords').value = data.coords || '';
+      $('#f-ooc').checked = !!data.ooc;
+      if (DEV) { $('#slug').value = bare; slugTouched = true; }
+      setInfobox(data.infobox || []);
+      paintSettings();
+      body.innerHTML = '';
+      (pageKind === 'navbox' ? navboxBlocks(loaded.groups || []) : parseBody(md))
+        .forEach((b) => body.append(block(b.kind, b)));
+      if (!body.children.length) body.append(block('para'));
+      sync();
+      flash(`Opened ${data.title}.`);
+    }
+
+    /* ---------- chrome ---------- */
+    let statusTimer;
+    function flash(msg, bad = false) {
+      const s = $('#status');
+      s.textContent = msg;
+      s.className = 'status ' + (bad ? 'bad' : 'good');
+      clearTimeout(statusTimer);
+      statusTimer = setTimeout(() => { s.textContent = ''; s.className = 'status'; }, 4000);
+    }
+
+    function dropdown(btn, menu) {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.drop-menu').forEach((m) => { if (m !== menu) m.hidden = true; });
+        menu.hidden = !menu.hidden;
+        if (menu.hidden) return;
+        // A wide panel opened from the middle of the toolbar would run off the
+        // screen, so slide it back until it fits.
+        menu.style.left = '0px';
+        const r = menu.getBoundingClientRect();
+        const over = r.right - (innerWidth - 12);
+        if (over > 0) menu.style.left = `${-over}px`;
+      };
+    }
+    dropdown($('#file'), $('#file-menu'));
+    dropdown($('#insert'), $('#insert-menu'));
+
+    function paintFileList() {
+      const q = $('#file-q').value.trim().toLowerCase();
+      const list = $('#file-list');
+      list.innerHTML = '';
+      const hits = ARTICLES.filter((a) => !q || a.title.toLowerCase().includes(q) || a.slug.includes(q));
+      if (!hits.length) { list.innerHTML = '<p class="mp-empty">No article matches.</p>'; return; }
+      for (const a of hits) {
+        const b = el('button', null, a.title);
+        b.type = 'button';
+        b.onclick = () => { $('#file-menu').hidden = true; load(a.slug); };
+        list.append(b);
+      }
+    }
+    $('#file-q').oninput = paintFileList;
+    $('#file').addEventListener('click', () => {
+      if (!$('#file-menu').hidden) { paintFileList(); $('#file-q').focus(); }
+    });
+    dropdown($('#more'), $('#more-menu'));
+    dropdown($('#style'), $('#style-menu'));
+    dropdown($('#insert'), $('#insert-menu'));
+    document.addEventListener('click', () => document.querySelectorAll('.drop-menu').forEach((m) => m.hidden = true));
+    $('#settings-btn').onclick = () => { $('#settings').hidden = !$('#settings').hidden; };
+    $('#source').onclick = () => { $('#source-panel').hidden = false; };
+    $('#source-close').onclick = () => { $('#source-panel').hidden = true; };
+
+    document.querySelectorAll('[data-add]').forEach((b) => b.onclick = () => insert(b.dataset.add));
+
+    /* ---------- table size picker ---------- */
+    // Docs-style grid: hovering sizes the table, clicking inserts it.
+    const pick = $('#tbl-pick');
+    const MAXR = 8, MAXC = 8;
+    for (let r = 1; r <= MAXR; r++) {
+      for (let c = 1; c <= MAXC; c++) {
+        const cell = el('span', 'tbl-cell');
+        cell.dataset.r = r; cell.dataset.c = c;
+        cell.onmouseenter = () => {
+          $('#tbl-label').textContent = `${c} \u00d7 ${r}`;
+          pick.querySelectorAll('.tbl-cell').forEach((x) =>
+            x.classList.toggle('on', +x.dataset.r <= r && +x.dataset.c <= c));
+        };
+        cell.onmousedown = (e) => e.preventDefault();
+        cell.onclick = () => {
+          insert('table', { rows: r, cols: c });
+          document.querySelectorAll('.drop-menu').forEach((m) => m.hidden = true);
+        };
+        pick.append(cell);
+      }
+    }
+    pick.onmouseleave = () => {
+      $('#tbl-label').textContent = '0 \u00d7 0';
+      pick.querySelectorAll('.tbl-cell').forEach((x) => x.classList.remove('on'));
+    };
+
+    /* ---------- link popover ---------- */
+    const pop = $('#link-pop');
+    const lpText = $('#lp-text');
+    const lpTarget = $('#lp-target');
+    let savedRange = null;
+    let editingAnchor = null;
+
+    const closeLink = () => { pop.hidden = true; savedRange = null; editingAnchor = null; };
+
+    function anchorAtCaret() {
+      const sel = window.getSelection();
+      if (!sel.anchorNode) return null;
+      const node = sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement;
+      const a = node?.closest?.('a');
+      return a && a.closest('.ce') ? a : null;
+    }
+
+    function openLink() {
+      const where = activeText();
+      if (!where) { flash('Put the cursor in the text first.', true); return; }
+      const sel = window.getSelection();
+      savedRange = sel.rangeCount ? sel.getRangeAt(0).cloneRange() : null;
+      editingAnchor = anchorAtCaret();
+
+      lpText.value = editingAnchor ? editingAnchor.textContent : (sel.toString() || '');
+      lpTarget.value = editingAnchor
+        ? (editingAnchor.dataset.slug || editingAnchor.getAttribute('href') || '')
+        : '';
+      $('#lp-remove').hidden = !editingAnchor;
+
+      // Sit under the selection, or under the block if the caret is collapsed.
+      const box = (editingAnchor || where).getBoundingClientRect();
+      const r = savedRange && savedRange.getBoundingClientRect();
+      const anchorRect = r && r.width ? r : box;
+      pop.hidden = false;
+      const w = pop.offsetWidth;
+      pop.style.left = `${Math.max(12, Math.min(anchorRect.left, innerWidth - w - 12))}px`;
+      pop.style.top = `${Math.min(anchorRect.bottom + 8, innerHeight - pop.offsetHeight - 12)}px`;
+      paintLinkResults();
+      (lpText.value ? lpTarget : lpText).focus();
+      lpTarget.select?.();
+    }
+
+    function paintLinkResults() {
+      const q = lpTarget.value.trim().toLowerCase();
+      const list = $('#lp-list');
+      list.innerHTML = '';
+      if (/^https?:/i.test(q)) {
+        list.innerHTML = '<p class="lp-empty">External link. Apply to insert it.</p>';
+        return;
+      }
+      const hits = ARTICLES.filter((a) => !q || a.title.toLowerCase().includes(q) || a.slug.includes(q)).slice(0, 6);
+      for (const a of hits) {
+        const b = el('button', 'lp-hit');
+        b.type = 'button';
+        b.innerHTML = `<span class="lp-title">${esc(a.title)}</span><span class="lp-slug">${esc(a.slug)}</span>`;
+        b.onmousedown = (e) => e.preventDefault();
+        b.onclick = () => { lpTarget.value = a.slug; applyLink(); };
+        list.append(b);
+      }
+      const slug = slugify(q);
+      if (slug && !ARTICLES.some((a) => a.slug === slug)) {
+        const b = el('button', 'lp-hit new');
+        b.type = 'button';
+        b.innerHTML = `<span class="lp-title">Link to a new article</span><span class="lp-slug">${esc(slug)} — shows red until it is written</span>`;
+        b.onmousedown = (e) => e.preventDefault();
+        b.onclick = () => { lpTarget.value = slug; applyLink(); };
+        list.append(b);
+      }
+      if (!list.children.length) list.innerHTML = '<p class="lp-empty">Type a title, a slug, or a URL.</p>';
+    }
+
+    function restoreRange() {
+      if (!savedRange) return;
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(savedRange);
+    }
+
+    function applyLink() {
+      const target = lpTarget.value.trim();
+      if (!target) { lpTarget.focus(); return; }
+      const external = /^https?:/i.test(target);
+      const slug = external ? target : slugify(target);
+      const text = lpText.value.trim() || (external ? target : displayOf(slug));
+      const html = external
+        ? `<a href="${esc(target)}">${esc(text)}</a>`
+        : `<a href="#" data-slug="${esc(slug)}">${esc(text)}</a>`;
+      if (editingAnchor) {
+        editingAnchor.outerHTML = html;
+      } else {
+        const host = activeText();
+        host?.focus();
+        restoreRange();
+        document.execCommand('insertHTML', false, html);
+      }
+      closeLink();
+      sync();
+    }
+
+    $('#lp-apply').onclick = applyLink;
+    $('#lp-remove').onclick = () => {
+      if (editingAnchor) editingAnchor.replaceWith(document.createTextNode(editingAnchor.textContent));
+      closeLink();
+      sync();
+    };
+    lpTarget.oninput = paintLinkResults;
+    for (const input of [lpText, lpTarget]) {
+      input.onkeydown = (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); applyLink(); }
+        if (e.key === 'Escape') { e.preventDefault(); closeLink(); }
+      };
+    }
+    pop.addEventListener('mousedown', (e) => e.stopPropagation());
+    document.addEventListener('mousedown', (e) => { if (!pop.hidden && !pop.contains(e.target)) closeLink(); });
+
+    function runCmd(cmd) {
+      if (cmd === 'link') { openLink(); return; }
+      document.execCommand(cmd);
+      sync();
+    }
+    document.querySelectorAll('[data-cmd]').forEach((b) => b.onmousedown = (e) => {
+      e.preventDefault();
+      // Without this the same mousedown reaches the popover's outside-click closer.
+      e.stopPropagation();
+      runCmd(b.dataset.cmd);
+    });
+    addEventListener('keydown', (e) => {
+      if (!(e.metaKey || e.ctrlKey)) return;
+      const k = e.key.toLowerCase();
+      if (k === 'b' || k === 'i' || k === 'k') { e.preventDefault(); runCmd(k === 'k' ? 'link' : k === 'b' ? 'bold' : 'italic'); }
+      if (k === 'z') { e.preventDefault(); (e.shiftKey ? $('#redo') : $('#undo')).click(); }
+      if (k === 's' && DEV) { e.preventDefault(); $('#save').click(); }
+    });
+
+    // The canvas title is the real title field; the settings box is the same value.
+    $('#canvas-title').addEventListener('input', () => {
+      $('#f-title').value = $('#canvas-title').textContent.trim();
+      if (!slugTouched && DEV) $('#slug').value = slugify($('#f-title').value);
+      sync();
+    });
+    $('#canvas-title').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); body.querySelector('.ce')?.focus(); }
+    });
+    $('#canvas-title').addEventListener('paste', (e) => {
+      e.preventDefault();
+      document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain'));
+    });
+
+    $('#f-type').onchange = () => {
+      if (ib.querySelector('tr[data-kind]') && !confirm('Replace the sidebar with this type’s template?')) return;
+      setInfobox(TEMPLATES[$('#f-type').value] || []);
+      sync();
+    };
+    /** Clear the desk and start a page of the given kind. */
+    function blank(kind, slug = '') {
+      pageKind = kind; navboxLead = ''; portalBody = '';
+      $('#settings').querySelectorAll('input[type=text], textarea').forEach((i) => i.value = '');
+      $('#f-ooc').checked = false;
+      $('#f-navbox-on').checked = true;
+      $('#canvas-title').textContent = '';
+      if (DEV) { $('#slug').value = slug; slugTouched = !!slug; }
+      try { sessionStorage.removeItem(DRAFT); } catch {}
+      setInfobox(kind === 'article' ? (TEMPLATES[$('#f-type').value] || []) : []);
+      body.innerHTML = '';
+      // A portal has no body at all; a navbox opens on its first heading.
+      if (kind === 'article') body.append(block('para'));
+      else if (kind === 'navbox') body.append(block('section'));
+      // A portal or navbox is named after its nation, so the slug is the nation id.
+      if (slug && kind !== 'article') {
+        const opt = [...$('#f-nation').options].find((o) => o.value === slug);
+        if (opt) {
+          $('#f-nation').value = slug;
+          $('#f-title').value = kind === 'portal' ? `Portal:${opt.textContent}` : `${opt.textContent} Articles`;
+          if (kind === 'navbox') {
+            $('#f-crumb').value = `[[portal:${slug}|Portal:${opt.textContent}]] • [[${slug}|Overview]]`;
+          }
+        }
+      }
+      paintSettings();
+      sync();
+    }
+
+    const NEW = { '#new': 'article', '#new-portal': 'portal', '#new-navbox': 'navbox' };
+    for (const [id, kind] of Object.entries(NEW)) {
+      $(id).onclick = () => {
+        if (!confirm(`Discard this draft and start a new ${kind}?`)) return;
+        blank(kind);
+      };
+    }
+
+    // The nation is what a portal or a navbox is filed under, so it names the file.
+    $('#f-nation').addEventListener('change', () => {
+      if (pageKind === 'article' || !DEV) return;
+      const id = $('#f-nation').value;
+      const name = $('#f-nation').selectedOptions[0]?.textContent || id;
+      if (!id) return;
+      $('#slug').value = id;
+      if (!$('#f-title').value.trim()) {
+        $('#f-title').value = pageKind === 'portal' ? `Portal:${name}` : `${name} Articles`;
+      }
+      if (pageKind === 'navbox' && !$('#f-crumb').value.trim()) {
+        $('#f-crumb').value = `[[portal:${id}|Portal:${name}]] • [[${id}|Overview]]`;
+      }
+      sync();
+    });
+
+    $('#go-navbox').onclick = () => {
+      const id = $('#f-nation').value;
+      if (id) location.href = `${BASE.replace(/\/$/, '')}/edit?a=navbox:${id}`;
+    };
+    $('#f-banner-pick').onclick = () => { $('#f-banner').focus(); openMedia(); };
+    ['#f-type', '#f-nation', '#f-navbox-on'].forEach((id) => {
+      $(id).addEventListener('change', paintSettings);
+    });
+    $('#settings').addEventListener('input', () => { paintSettings(); sync(); });
+    $('#settings').addEventListener('change', sync);
+
+    const saveAs = (blob, name) => {
+      const a = el('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    };
+    async function downloadPage() {
+      const stem = slugify($('#f-title').value) || 'article';
+      const md = toMarkdown();
+      const used = [...staged.entries()].filter(([p]) => md.includes(p));
+      if (!used.length) { saveAs(new Blob([md], { type: 'text/markdown' }), `${stem}.md`); return; }
+      const entries = [{ name: `${stem}.md`, data: new TextEncoder().encode(md) }];
+      for (const [path, s] of used) {
+        entries.push({ name: path.replace(/^\//, ''), data: new Uint8Array(await s.file.arrayBuffer()) });
+      }
+      saveAs(zip(entries), `${stem}.zip`);
+      flash(`Zipped with ${used.length} image${used.length === 1 ? '' : 's'}.`);
+    }
+    $('#download').onclick = downloadPage;
+    $('#save-dl')?.addEventListener('click', downloadPage);
+    $('#copy').onclick = async () => {
+      await navigator.clipboard.writeText(toMarkdown());
+      flash('Markdown copied.');
+    };
+
+    /* ---------- save to disk (dev server only) ---------- */
+    const slugify = (s) => s.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    let slugTouched = false;
+
+    if (DEV) {
+      const slugBox = $('#slug');
+      slugBox.oninput = () => { slugTouched = true; };
+      $('#save').onclick = async () => {
+        const slug = slugify(slugBox.value || $('#f-title').value);
+        if (!slug) { flash('Give the article a title first.', true); return; }
+        slugBox.value = slug;
+        try {
+          const r = await fetch(`${BASE.replace(/\/$/, '')}/__save`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ slug, markdown: toMarkdown(), kind: pageKind }),
+          });
+          const out = await r.json();
+          if (!r.ok) throw new Error(out.error || r.statusText);
+          const line = `${out.created ? 'Created' : 'Updated'} ${out.file}`;
+          flash(line);
+          // Writing into src/ restarts the dev server, which reloads this page.
+          try { sessionStorage.setItem(DRAFT, JSON.stringify({ ...snapshot(), saved: line })); } catch {}
+        } catch (e) {
+          flash(`Not saved: ${e.message}`, true);
+        }
+      };
+    }
+
+    /* ---------- staged images (no server to upload to) ---------- */
+    const staged = new Map();           // '/assets/media/x.jpg' -> { file, url }
+    const slugFile = (n) => n.toLowerCase().replace(/[^a-z0-9.]+/g, '-').replace(/^-|-$/g, '');
+    const ALLOWED = /\.(png|jpe?g|webp|gif|avif)$/i;
+
+    /** Dev writes the file to disk; everywhere else it rides along in the zip. */
+    async function takeImage(file, chosen) {
+      if (!ALLOWED.test(file.name)) { flash(`${file.name} is not an allowed image type.`, true); return null; }
+      // Every upload is named by hand; that name, kebab-cased, is the filename
+      // the article and the zip export both carry.
+      const ext = (file.name.match(/\.[^.]+$/) || [''])[0].toLowerCase();
+      const name = chosen ? slugFile(chosen).replace(/\.[^.]*$/, '') + ext : slugFile(file.name);
+      if (DEV) {
+        const data = await new Promise((res) => {
+          const fr = new FileReader();
+          fr.onload = () => res(String(fr.result).split(',')[1]);
+          fr.readAsDataURL(file);
+        });
+        const r = await fetch(`${BASE.replace(/\/$/, '')}/__upload`, {
+          method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ name, data }),
+        });
+        const out = await r.json();
+        if (!r.ok) { flash(out.error || 'Upload failed.', true); return null; }
+        flash(`Uploaded ${out.path}`);
+        loadAssets(true);
+        return out.path;
+      }
+      let path = `/assets/media/${name}`;
+      for (let n = 2; staged.has(path); n++) path = `/assets/media/${name.replace(/(\.[^.]+)$/, `-${n}$1`)}`;
+      staged.set(path, { file, url: URL.createObjectURL(file) });
+      flash(`${name} will be included in the download.`);
+      paintAssets();
+      return path;
+    }
+
+    /** A staged file has no server path yet, so previews come from the blob. */
+    // A staged upload shows from memory; anything else is a site path, which on a
+    // project site lives under /<repo>/. Every <img> in the editor goes through here,
+    // or it 404s wherever the site is not served from the domain root.
+    const srcFor = (p) => staged.get(p)?.url || (String(p || '').startsWith('/')
+      ? BASE.replace(/\/$/, '') + p : p);
+
+    /* ---------- media panel ---------- */
+    let ASSETS = [];
+    let assetsLoaded = null;
+    const mpImages = $('#mp-images');
+    const mpIcons = $('#mp-icons');
+
+    function loadAssets(force = false) {
+      if (!force && assetsLoaded) return assetsLoaded;
+      assetsLoaded = fetch(`${BASE.replace(/\/$/, '')}/assets.json`)
+        .then((r) => r.json()).then((a) => { ASSETS = a; paintAssets(); })
+        .catch(() => { mpImages.innerHTML = '<p class="mp-empty">Could not read the asset list.</p>'; });
+      return assetsLoaded;
+    }
+
+    function paintAssets() {
+      const q = $('#mp-q').value.trim().toLowerCase();
+      const iq = $('#mp-iq').value.trim().toLowerCase();
+      // The loose files at the top of /assets are the site's own banner and logo and
+      // never belong in an article. media/ is 300-odd photos, a wall nobody browses, so
+      // it is reachable by searching rather than by scrolling.
+      const RANK = { staged: 0, media: 1, flags: 2, emblems: 3, subdivisions: 4 };
+      const rank = (g) => RANK[g] ?? 9;
+      const items = [
+        ...[...staged.entries()].map(([path, s]) => ({ path, name: path.split('/').pop(), group: 'staged', url: s.url })),
+        ...ASSETS.filter((a) => a.group !== 'assets'),
+      ]
+        .filter((a) => (q
+          ? a.name.toLowerCase().includes(q) || a.group.toLowerCase().includes(q)
+          : a.group !== 'media'))
+        .sort((a, b) => rank(a.group) - rank(b.group) || a.name.localeCompare(b.name));
+
+      mpImages.innerHTML = '';
+      if (!items.length) { mpImages.innerHTML = '<p class="mp-empty">Nothing matches.</p>'; }
+      let group = null;
+      for (const a of items) {
+        if (a.group !== group) { group = a.group; mpImages.append(el('div', 'mp-group', group)); }
+        const b = el('button', 'mp-thumb');
+        b.type = 'button';
+        b.title = a.path;
+        const img = el('img'); img.src = srcFor(a.path); img.alt = '';
+        b.append(img, el('span', null, a.name));
+        b.onmousedown = (e) => e.preventDefault();
+        b.onclick = () => useImage(a.path);
+        mpImages.append(b);
+      }
+
+      // Inline icons: the trend arrows, then nation flags, then articles with an icon.
+      mpIcons.innerHTML = '';
+      const arrows = [
+        { kind: 'up', label: 'Up', terms: 'up rise increase arrow green' },
+        { kind: 'down', label: 'Down', terms: 'down fall decrease arrow red' },
+      ].filter((a) => !iq || a.terms.includes(iq));
+      if (arrows.length) mpIcons.append(el('div', 'mp-group', 'arrows'));
+      for (const a of arrows) {
+        const b = el('button', 'mp-icon');
+        b.type = 'button';
+        b.title = `:${a.kind}`;
+        b.append(el('span', `tok arrow ${a.kind}`, ARROW[a.kind]), el('span', null, a.label));
+        b.onmousedown = (e) => e.preventDefault();
+        b.onclick = () => insertToken(a.kind);
+        mpIcons.append(b);
+      }
+      const icons = Object.entries(ICONS)
+        // A nation names itself: the flag registry knows "E.S.U." where the slug reads esu.
+        .map(([slug, src]) => ({ slug, src, kind: FLAGS[slug] ? 'flag' : 'icon', label: NATION_NAMES[slug] || displayOf(slug) }))
+        .filter((i) => !iq || i.label.toLowerCase().includes(iq) || i.slug.includes(iq))
+        .sort((a, b) => a.kind.localeCompare(b.kind) || a.label.localeCompare(b.label));
+      if (!icons.length && !arrows.length) { mpIcons.innerHTML = '<p class="mp-empty">Nothing matches.</p>'; }
+      let kind = null;
+      for (const i of icons) {
+        if (i.kind !== kind) { kind = i.kind; mpIcons.append(el('div', 'mp-group', kind === 'flag' ? 'flags' : 'emblems')); }
+        const b = el('button', 'mp-icon');
+        b.type = 'button';
+        b.title = `:${i.kind}[${i.slug}]`;
+        const img = el('img'); img.src = srcFor(i.src); img.alt = '';
+        b.append(img, el('span', null, i.label));
+        b.onmousedown = (e) => e.preventDefault();
+        b.onclick = () => insertToken(i.kind, i.slug);
+        mpIcons.append(b);
+      }
+    }
+
+    const fill = (input, path) => {
+      input.value = path;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.focus();
+    };
+
+    /** Clicking an image fills whichever image field you were last in, else adds a block. */
+    // Static, floating or a grid: whichever the Media panel is set to.
+    let insertAs = 'image';
+
+    function useImage(path) {
+      const field = activeField();
+      if (field) return fill(field, path);
+      const near = activeText()?.closest?.('figure, tr[data-kind="image"]');
+      if (near) return fill(near.querySelector('input.path'), path);
+      // A grid the writer is already standing in gains another picture.
+      const grid = activeText()?.closest?.('.blk-grid');
+      if (insertAs === 'grid' && grid) {
+        const f = figure({ src: path }, true);
+        (grid.querySelector('.imgrid') || grid).append(f);
+        sync();
+        return;
+      }
+      // block() already carries the path in; hunting down "the last block of this
+      // kind" afterwards filled whichever figure happened to sit lowest on the page.
+      insert(insertAs, insertAs === 'grid' ? { items: [{ src: path, caption: '' }] } : { src: path });
+    }
+
+    function insertToken(kind, slug) {
+      const mark = 'tok-' + Date.now();
+      const html = tokenHtml(kind, slug).replace('<img ', `<img data-new="${mark}" `) + '\u00a0';
+      if (!insertAtCaret(html)) {
+        flash('Put the cursor where the icon should go.', true);
+        return;
+      }
+      // execCommand leaves a trailing <br> after the inserted run; a table cell
+      // would serialize that as a line break, so drop the one we just caused.
+      const img = document.querySelector(`[data-new="${mark}"]`);
+      if (img) {
+        let n = img.nextSibling;
+        while (n && n.nodeType === 3 && !n.nodeValue.trim()) n = n.nextSibling;
+        if (n && n.nodeName === 'BR') n.remove();
+        img.removeAttribute('data-new');
+      }
+      sync();
+    }
+
+    const PANES = ['images', 'icons', 'tables'];
+    /** Open the Media panel on its image list, to fill whichever field was just focused. */
+    function openMedia() {
+      document.querySelectorAll('.drop-menu').forEach((m) => { m.hidden = m.id !== 'insert-menu'; });
+      document.querySelectorAll('#insert-menu > .mp-tabs button')
+        .forEach((x) => x.classList.toggle('on', x.dataset.pane === 'images'));
+      for (const p of PANES) $('#pane-' + p).hidden = p !== 'images';
+      loadAssets();
+      $('#mp-q').focus();
+    }
+    document.querySelectorAll('#insert-menu > .mp-tabs button').forEach((b) => b.onclick = () => {
+      document.querySelectorAll('#insert-menu > .mp-tabs button')
+        .forEach((x) => x.classList.toggle('on', x === b));
+      for (const p of PANES) $('#pane-' + p).hidden = b.dataset.pane !== p;
+    });
+    document.querySelectorAll('[data-as]').forEach((b) => b.onclick = () => {
+      document.querySelectorAll('[data-as]').forEach((x) => x.classList.toggle('on', x === b));
+      insertAs = b.dataset.as;
+    });
+    $('#mp-q').oninput = paintAssets;
+    $('#mp-iq').oninput = paintAssets;
+    // The menu stays open while you browse it, unlike a one-shot command.
+    $('#insert-menu').addEventListener('click', (e) => e.stopPropagation());
+    // Nothing in the panel may take focus, or the caret in the article is lost
+    // before the chosen image or icon can be inserted at it.
+    $('#insert-menu').addEventListener('mousedown', (e) => {
+      if (e.target.closest('input, textarea')) return;
+      e.preventDefault();
+    });
+    $('#insert').addEventListener('mousedown', (e) => e.preventDefault());
+    $('#insert').addEventListener('click', () => { if (!$('#insert-menu').hidden) loadAssets(); });
+    $('#mp-add').onclick = () => $('#mp-file').click();
+
+    /* ---------- upload queue: name every file first ---------- */
+    let queue = [];
+    const qList = $('#mp-queue-list');
+    const qBox = $('#mp-queue');
+    const qBtn = $('#mp-upload');
+
+    function paintQueue() {
+      qBox.hidden = !queue.length;
+      qList.innerHTML = '';
+      queue.forEach((item, i) => {
+        const row = el('div', 'mp-qrow');
+        const thumb = el('img'); thumb.src = item.url; thumb.alt = '';
+        const name = el('input'); name.type = 'text'; name.placeholder = 'Name this image';
+        name.value = item.name;
+        name.oninput = () => { queue[i].name = name.value; refreshBtn(); };
+        const ext = el('span', 'mp-qext', (item.file.name.match(/\.[^.]+$/) || [''])[0].toLowerCase());
+        const x = el('button', 'mp-qx', '\u2715'); x.type = 'button';
+        x.onclick = () => { URL.revokeObjectURL(item.url); queue.splice(i, 1); paintQueue(); };
+        row.append(thumb, name, ext, x);
+        qList.append(row);
+      });
+      refreshBtn();
+    }
+    const refreshBtn = () => {
+      qBtn.disabled = !queue.length || queue.some((q) => !slugFile(q.name).replace(/\.[^.]*$/, ''));
+    };
+
+    function enqueue(files) {
+      for (const f of files) {
+        if (!ALLOWED.test(f.name)) { flash(`${f.name} is not an allowed image type.`, true); continue; }
+        queue.push({ file: f, name: '', url: URL.createObjectURL(f) });
+      }
+      paintQueue();
+      qList.querySelector('input')?.focus();
+    }
+
+    qBtn.onclick = async () => {
+      const items = queue.slice();
+      queue = []; paintQueue();
+      for (const it of items) {
+        await takeImage(it.file, it.name);
+        URL.revokeObjectURL(it.url);
+      }
+      flash(`Uploaded ${items.length} image${items.length === 1 ? '' : 's'}.`);
+    };
+
+    $('#mp-file').onchange = (e) => { enqueue(e.target.files); e.target.value = ''; };
+    const pane = $('#pane-images');
+    pane.addEventListener('dragover', (e) => { e.preventDefault(); pane.classList.add('over'); });
+    pane.addEventListener('dragleave', () => pane.classList.remove('over'));
+    pane.addEventListener('drop', (e) => {
+      e.preventDefault(); pane.classList.remove('over');
+      enqueue([...(e.dataTransfer?.files || [])].filter((f) => f.type.startsWith('image/')));
+    });
+
+    // Dropping a file anywhere on the canvas files it and puts it in the article.
+    const canvas = $('.ed-canvas');
+    canvas.addEventListener('dragover', (e) => { e.preventDefault(); canvas.classList.add('drop'); });
+    canvas.addEventListener('dragleave', () => canvas.classList.remove('drop'));
+    canvas.addEventListener('drop', async (e) => {
+      const files = [...(e.dataTransfer?.files || [])].filter((f) => f.type.startsWith('image/'));
+      if (!files.length) return;
+      e.preventDefault();
+      canvas.classList.remove('drop');
+      // Dropped files go to the naming queue like any other upload.
+      enqueue(files);
+      $('#insert').click();
+    });
+    canvas.addEventListener('paste', async (e) => {
+      const files = [...(e.clipboardData?.files || [])].filter((f) => f.type.startsWith('image/'));
+      if (!files.length) return;
+      e.preventDefault();
+      for (const f of files) {
+        const path = await takeImage(f);
+        if (path) useImage(path);
+      }
+    });
+
+    /* ---------- zip, store-only, so images travel with the article ---------- */
+    const CRC = (() => {
+      const t = new Uint32Array(256);
+      for (let n = 0; n < 256; n++) {
+        let c = n;
+        for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+        t[n] = c >>> 0;
+      }
+      return (buf) => {
+        let crc = 0xffffffff;
+        for (let i = 0; i < buf.length; i++) crc = t[(crc ^ buf[i]) & 0xff] ^ (crc >>> 8);
+        return (crc ^ 0xffffffff) >>> 0;
+      };
+    })();
+
+    function zip(entries) {
+      const enc = new TextEncoder();
+      const parts = [], central = [];
+      let offset = 0;
+      for (const { name, data } of entries) {
+        const nameBytes = enc.encode(name);
+        const crc = CRC(data);
+        const lh = new DataView(new ArrayBuffer(30));
+        lh.setUint32(0, 0x04034b50, true);
+        lh.setUint16(4, 20, true);
+        lh.setUint32(14, crc, true);
+        lh.setUint32(18, data.length, true);
+        lh.setUint32(22, data.length, true);
+        lh.setUint16(26, nameBytes.length, true);
+        parts.push(new Uint8Array(lh.buffer), nameBytes, data);
+
+        const cd = new DataView(new ArrayBuffer(46));
+        cd.setUint32(0, 0x02014b50, true);
+        cd.setUint16(4, 20, true);
+        cd.setUint16(6, 20, true);
+        cd.setUint32(16, crc, true);
+        cd.setUint32(20, data.length, true);
+        cd.setUint32(24, data.length, true);
+        cd.setUint16(28, nameBytes.length, true);
+        cd.setUint32(42, offset, true);
+        central.push(new Uint8Array(cd.buffer), nameBytes);
+        offset += 30 + nameBytes.length + data.length;
+      }
+      const cdSize = central.reduce((n, c) => n + c.length, 0);
+      const end = new DataView(new ArrayBuffer(22));
+      end.setUint32(0, 0x06054b50, true);
+      end.setUint16(8, entries.length, true);
+      end.setUint16(10, entries.length, true);
+      end.setUint32(12, cdSize, true);
+      end.setUint32(16, offset, true);
+      return new Blob([...parts, ...central, new Uint8Array(end.buffer)], { type: 'application/zip' });
+    }
+
+    /* ---------- boot ---------- */
+    let booted = null;
+    try { booted = JSON.parse(sessionStorage.getItem(DRAFT) || 'null'); } catch {}
+    const want = new URLSearchParams(location.search).get('a');
+    if (want) {
+      setInfobox([]);
+      body.append(block('para'));
+      load(want);
+    } else if (booted) {
+      restore(booted);
+      if (booted.saved) flash(`${booted.saved} — draft restored.`);
+    } else {
+      setInfobox(TEMPLATES.overview);
+      body.append(block('para'));
+    }
+    sync();
+    titlesReady.then(() => { sync(); paintAssets(); });
+    loadAssets();
+  </script>
+
+  <style is:inline>
+    .ed { padding-bottom: 60px; min-width: 0; }
+
+    /* ---- toolbar ---- */
+    .ed-tools {
+      position: sticky; top: calc(var(--mast) + 12px); z-index: 20;
+      display: flex; align-items: center; gap: 2px; flex-wrap: wrap;
+      margin: 12px 24px; padding: 6px;
+      background: var(--lift); border: 1px solid var(--rule); border-radius: 9px;
+      box-shadow: 0 2px 14px rgb(0 0 0 / .45);
+    }
+    .ed-tools .div { width: 1px; height: 20px; background: var(--rule); margin: 0 7px; flex: none; }
+    .ed-tools .spacer { flex: 1; min-width: 12px; }
+    /* The toolbar's own controls only: this used to match every button nested in
+       a menu as well, which squashed the media thumbnails to toolbar height. */
+    .ed-tools > button, .ed-tools > .drop > button, .ed-tools > .save-group button {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      height: 30px; min-width: 30px; padding: 0 10px;
+      font: 13px/1 var(--body); color: var(--ink);
+      background: transparent; border: 1px solid transparent; border-radius: 6px; cursor: pointer;
+    }
+    .ed-tools > button:hover, .ed-tools > .drop > button:hover { background: var(--band); }
+    .ed-tools > button:active, .ed-tools > .drop > button:active { background: var(--rule); }
+    .ed-tools > button svg, .ed-tools > .drop > button svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
+    .ed-tools select, .ed-tools input {
+      height: 30px; font: 13px var(--body); color: var(--ink);
+      background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 0 8px;
+    }
+    .ed-tools select { max-width: 190px; cursor: pointer; }
+    .ed-tools select:focus, .ed-tools input:focus { outline: none; border-color: var(--link); }
+    /* Must out-specify the toolbar's own button rule above, hence button.primary. */
+    .ed-tools button.primary {
+      height: 30px; background: #3d6b53; border: 1px solid #4a7d62; border-radius: 6px;
+      color: #f2f7f3; font: 600 13px var(--body); padding: 0 16px; cursor: pointer;
+    }
+    .ed-tools button.primary:hover { background: #48795f; }
+    .save-group { display: inline-flex; gap: 6px; align-items: center; }
+    .save-group input { width: 160px; font-family: ui-monospace, monospace; font-size: 12px; }
+    .caret { font-size: 9px; opacity: .6; }
+    .status { font-size: 12.5px; color: var(--muted); padding: 0 10px; white-space: nowrap; }
+    .status.good { color: #79c07f; }
+    .status.bad { color: var(--link-new); }
+
+    .drop { position: relative; }
+    .drop-menu {
+      position: absolute; top: calc(100% + 8px); left: 0; z-index: 30; min-width: 200px;
+      display: flex; flex-direction: column; padding: 5px;
+      background: var(--lift); border: 1px solid var(--rule); border-radius: 8px;
+      box-shadow: 0 10px 28px rgb(0 0 0 / .55);
+    }
+    .drop-menu.right { left: auto; right: 0; }
+    .drop-menu[hidden] { display: none; }
+    /* A title too long for one line wraps, so the row grows and the text stays left:
+       a button centres its text by default and a fixed height would clip the second line. */
+    .drop-menu.list button, .ctl-menu button {
+      justify-content: flex-start; text-align: left; width: 100%;
+      padding: 6px 10px; height: auto; min-height: 32px; line-height: 1.35;
+    }
+
+    .drop-menu .menu-sep { height: 1px; background: var(--rule); margin: 5px 0; }
+    .drop-menu input[type=search] {
+      height: 30px; margin: 0 0 6px; font: 12.5px var(--body); padding: 0 8px;
+      color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 6px;
+    }
+    .drop-menu input[type=search]:focus { outline: none; border-color: var(--link); }
+    .menu-list { max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; }
+
+    /* ---- layout ---- */
+    .ed-main { display: flex; align-items: flex-start; gap: 20px; padding: 0 24px; min-width: 0; }
+    .ed-rail {
+      flex: none; width: 210px; font-size: 13.5px;
+      position: sticky; top: calc(var(--mast) + 74px);
+      max-height: calc(100vh - var(--mast) - 96px); overflow-y: auto;
+      padding-top: 16px;
+    }
+    .ed-rail .toc-head { margin-bottom: 8px; }
+    .ed-rail .toc-head b { font-size: 15px; }
+    .ed-rail .toc-list a { cursor: pointer; }
+
+    /* ---- media picker ---- */
+    .drop-menu.wide { width: 420px; padding: 0; overflow: hidden; }
+    .mp-tabs { display: flex; border-bottom: 1px solid var(--rule); }
+    .mp-tabs button {
+      flex: 1; height: 38px; font: 13px var(--body); color: var(--muted);
+      background: none; border: 0; border-bottom: 2px solid transparent; cursor: pointer;
+      border-radius: 0; justify-content: center;
+    }
+    .mp-tabs button:hover { color: var(--ink); background: var(--band); }
+    .mp-tabs button.on { color: var(--ink); border-bottom-color: var(--link); }
+    #mp-q, #mp-iq {
+      display: block; box-sizing: border-box; width: 100%; height: 30px;
+      margin: 10px 0 8px; padding: 0 9px; font: 12.5px var(--body);
+      color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 6px;
+    }
+    #mp-q:focus, #mp-iq:focus { outline: none; border-color: var(--link); }
+    /* One gutter for the whole pane, so nothing sits proud of the panel edge. */
+    .mp-pane { padding: 0 12px 10px; }
+    .mp-pane.over { box-shadow: inset 0 0 0 2px var(--link); }
+    .mp-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .mp-lbl {
+      flex: none; width: 74px; white-space: nowrap;
+      font: 11px var(--body); color: var(--muted);
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+    .mp-seg { display: flex; }
+    .mp-seg button {
+      font: 12px var(--body); color: var(--muted); background: transparent;
+      border: 1px solid var(--rule); border-right-width: 0; padding: 4px 11px; cursor: pointer;
+    }
+    .mp-seg button:first-child { border-radius: 5px 0 0 5px; }
+    .mp-seg button:last-child { border-right-width: 1px; border-radius: 0 5px 5px 0; }
+    .mp-seg button:hover { color: var(--ink); }
+    .mp-seg button.on { color: var(--ink); background: var(--band); border-color: var(--link); }
+    .mp-seg button.on + button { border-left-color: var(--link); }
+    .mp-file-btn {
+      font: 12px var(--body); color: var(--ink); background: var(--band);
+      border: 1px solid var(--rule); border-radius: 5px; padding: 4px 12px; cursor: pointer;
+    }
+    .mp-file-btn:hover { background: var(--hair); }
+    .mp-body { max-height: min(340px, 45vh); overflow-y: auto; margin: 0 -4px; padding: 0 4px 4px; }
+    .mp-body[hidden] { display: none; }
+    .mp-group {
+      font: 10px var(--body); text-transform: uppercase; letter-spacing: .07em;
+      color: var(--muted); padding: 10px 2px 5px;
+    }
+    #mp-images { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; align-content: start; }
+    #mp-images .mp-group, #mp-images .mp-empty { grid-column: 1 / -1; }
+    .mp-thumb {
+      display: flex; flex-direction: column; gap: 4px; padding: 4px; height: auto;
+      /* A grid item defaults to min-width:auto, so a 1600px image widens its
+         column and the third one falls off the panel. */
+      min-width: 0;
+      background: none; border: 1px solid transparent; border-radius: 6px; cursor: pointer;
+    }
+    .mp-thumb img { width: 100%; min-width: 0; height: 54px; object-fit: contain; border-radius: 3px; background: var(--paper); }
+    .mp-thumb span { font-size: 10.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
+    .mp-thumb:hover { border-color: var(--rule); background: var(--band); }
+    .mp-icon {
+      display: flex; align-items: center; gap: 9px; width: 100%; padding: 5px 6px; height: auto;
+      background: none; border: 0; border-radius: 6px; cursor: pointer; text-align: left;
+    }
+    .mp-icon img { width: 22px; height: 15px; object-fit: contain; flex: none; }
+    .mp-icon .tok.arrow { width: 22px; flex: none; text-align: center; margin: 0; font-size: 13px; }
+    .mp-icon span { font-size: 12.5px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .mp-icon:hover { background: var(--band); }
+    .mp-empty { font-size: 12px; color: var(--muted); padding: 10px 2px; margin: 0; }
+    .mp-foot { padding: 8px; border-top: 1px solid var(--rule); }
+    .mp-foot button {
+      width: 100%; height: 30px; font: 12.5px var(--body); color: var(--ink);
+      background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; cursor: pointer;
+      justify-content: center;
+    }
+    .mp-foot button:hover { background: var(--band); }
+    .ed-canvas.drop { outline: 2px dashed var(--link); outline-offset: -10px; border-radius: 10px; }
+
+    /* ---- settings strip ---- */
+    /* The panel is a plain stack: a grid of fields, then the switches under a rule.
+       It used to be a three-column grid holding those two as its children, which
+       squeezed every field into the first third and left the rest of the strip bare. */
+    .ed-settings {
+      margin: 0 24px 14px; padding: 16px 20px 18px;
+      background: var(--lift); border: 1px solid var(--rule); border-radius: 9px;
+    }
+    /* Any author rule that sets `display` beats the browser's own [hidden] rule, which
+       is why hidden settings fields kept showing. One line covers every case rather
+       than chasing each selector that happens to set a display. */
+    .ed [hidden], .ed-settings[hidden] { display: none !important; }
+    /* A block, not a column flex: the name, its asterisk and its "optional" are one
+       inline line that way, instead of each landing on a line of its own. */
+    .ed-settings label { display: block; font: 500 12px/1.4 var(--body); color: var(--ink); }
+    .ed-settings label > input, .ed-settings label > select,
+    .ed-settings label > textarea, .ed-settings label > .f-with-btn {
+      display: block; width: 100%; margin-top: 5px;
+    }
+    .ed-settings label > .f-with-btn { display: flex; }
+    .ed-settings input, .ed-settings select, .ed-settings textarea {
+      box-sizing: border-box; font: 13.5px var(--body); padding: 7px 9px; color: var(--ink);
+      background: var(--paper); border: 1px solid var(--rule); border-radius: 5px;
+    }
+    .ed-settings input:focus, .ed-settings select:focus, .ed-settings textarea:focus {
+      outline: none; border-color: var(--link);
+    }
+    .ed-settings input::placeholder, .ed-settings textarea::placeholder { color: #5c656e; }
+    .ed-settings textarea { resize: vertical; line-height: 1.45; min-height: 34px; }
+    .ed-settings .check {
+      display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 400;
+      color: var(--ink); cursor: pointer;
+    }
+    .ed-settings .check input { width: auto; margin: 0; }
+
+    /* ---- canvas ---- */
+    .ed-canvas { flex: 1; min-width: 0; max-width: 1020px; padding: 14px 8px 60px 104px; }
+    #canvas-title {
+      font: 400 32px/1.25 var(--display); margin: 0 0 8px; outline: none;
+      padding-bottom: 10px; border-bottom: 1px solid var(--rule);
+    }
+    .canvas-sub { font-size: 13px; color: var(--muted); min-height: 1.3em; margin-bottom: 16px; }
+    .canvas-sub a { color: var(--link); }
+
+    /* ---- editable surfaces ---- */
+    .ce { outline: none; border-radius: 2px; }
+    .ce:empty::before { content: attr(data-ph); color: #6b7177; pointer-events: none; }
+    .ce:focus { box-shadow: 0 0 0 2px rgb(100 133 209 / .35); }
+    .ce a { color: var(--link); }
+    .ce a[data-slug] { border-bottom: 1px dotted currentColor; }
+    .tok { user-select: all; }
+    .tok.arrow { font-size: .78em; margin-right: .25em; }
+    .tok.arrow.up { color: #00c22e; }
+    .tok.arrow.down { color: #f00; }
+    .tok.ico { height: 1em; width: auto; vertical-align: -.12em; box-sizing: border-box; border: 1px solid #fff; }
+    .tok.missing { font: 11px ui-monospace, monospace; color: var(--link-new); }
+    input.path {
+      display: block; width: 100%; margin: 4px 0; font: 11.5px/1.4 ui-monospace, monospace;
+      padding: 4px 6px; color: var(--muted); background: var(--paper);
+      border: 1px solid var(--hair); border-radius: 2px;
+    }
+    input.path:focus { color: var(--ink); border-color: var(--link); outline: none; }
+
+    /* ---- infobox ---- */
+    /* Blocks are positioned, so the floated sidebar needs to be lifted above them
+       or every click on it lands on the paragraph behind. */
+    .ib-edit { background: var(--lift); position: relative; z-index: 2; }
+    .ib-edit .ib-head { position: relative; }
+    .ib-edit td, .ib-edit th { position: relative; }
+    .ib-edit .ib-head b { min-height: 1.2em; }
+    .ib-edit .ib-media img { max-width: 100%; margin-bottom: 4px; }
+    .ib-edit .ib-pair td { width: 50%; vertical-align: top; }
+    .ib-edit .ib-pair .pair-head { font-weight: 700; margin-bottom: 4px; }
+    .ib-edit .ib-full { text-align: center; }
+    /* ---- toolbar additions ---- */
+    .ed-tools button[disabled] { opacity: .35; cursor: default; }
+    .ed-tools button[disabled]:hover { background: transparent; }
+    .xs { font: 13px var(--body); }
+    .xs sup, .xs sub { font-size: .72em; }
+    /* Each style names itself in its own style, as a word processor does. */
+    .sty-para { font: 14px var(--body); }
+    .sty-section { font: 400 20px/1.2 var(--display); }
+    .sty-subsection { font: 700 15px var(--body); }
+    .sty-list { font: 14px var(--body); }
+    .sty-list::before { content: '\2022  '; color: var(--muted); }
+    .mp-queue { margin-bottom: 10px; }
+    .mp-qrow { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .mp-qrow img { width: 34px; height: 26px; object-fit: cover; border: 1px solid var(--rule); border-radius: 3px; }
+    .mp-qrow input {
+      flex: 1; min-width: 0; font: 13px var(--body); padding: 5px 8px; color: var(--ink);
+      background: var(--paper); border: 1px solid var(--rule); border-radius: 4px;
+    }
+    .mp-qrow input:focus { outline: none; border-color: var(--link); }
+    .mp-qext { font: 11px ui-monospace, monospace; color: var(--muted); }
+    .mp-qx { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 13px; }
+    .mp-qx:hover { color: var(--ink); }
+    #mp-upload { width: 100%; margin-top: 4px; }
+    #mp-upload[disabled] { opacity: .4; cursor: default; }
+    .mp-pane { display: block; }
+    .mp-pane[hidden] { display: none; }
+    #insert-menu { max-width: calc(100vw - 24px); }
+    .tbl-pick {
+      display: grid; grid-template-columns: repeat(8, 20px); gap: 3px;
+      padding: 12px 12px 6px; justify-content: center;
+    }
+    .tbl-cell {
+      width: 20px; height: 18px; border: 1px solid var(--rule);
+      border-radius: 2px; background: var(--paper); cursor: pointer;
+    }
+    .tbl-cell.on { background: var(--link); border-color: var(--link); }
+    .tbl-size { margin: 0; padding: 0 12px 12px; text-align: center; font-size: 12px; color: var(--muted); }
+    /* ---- the portal template ---- */
+    .f-with-btn { display: flex; gap: 6px; }
+    .f-with-btn input { flex: 1; min-width: 0; }
+    .f-with-btn button {
+      flex: none; font: 12px var(--body); color: var(--ink); background: var(--band);
+      border: 1px solid var(--rule); border-radius: 4px; padding: 0 10px; cursor: pointer;
+    }
+    .f-with-btn button:hover { background: var(--hair); }
+    .portal-note {
+      border: 1px solid var(--rule); border-left: 4px solid var(--link);
+      background: var(--band); padding: 16px 20px; border-radius: 4px;
+    }
+    .portal-note h2 { font: 400 20px/1.3 var(--display); margin: 0 0 10px; }
+    .portal-note p { font-size: 13.5px; line-height: 1.65; color: var(--muted); margin: 0 0 10px; }
+    .portal-note p:last-child { margin: 14px 0 0; }
+    .portal-note b { color: var(--ink); font-weight: 600; }
+    .portal-note button {
+      font: 12.5px var(--body); color: var(--ink); background: var(--paper);
+      border: 1px solid var(--rule); border-radius: 4px; padding: 6px 13px; cursor: pointer;
+    }
+    .portal-note button:hover:not(:disabled) { background: var(--lift); }
+    .portal-note button:disabled { opacity: .45; cursor: default; }
+    /* Nothing is inserted into a portal, and it has no headings to list. */
+    .ed[data-kind="portal"] .drop:has(#style),
+    .ed[data-kind="portal"] .drop:has(#insert),
+    .ed[data-kind="portal"] [data-cmd],
+    .ed[data-kind="portal"] #undo,
+    .ed[data-kind="portal"] #redo,
+    .ed[data-kind="portal"] .ed-rail { display: none; }
+
+    /* ---- page settings ---- */
+    /* Four columns at most: wider than that and a dozen fields scatter across the
+       screen with nothing to tie them together. */
+    .set-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 20px; align-items: start; }
+    @media (min-width: 900px)  { .set-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @media (min-width: 1240px) { .set-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+    .set-toggles {
+      display: flex; flex-wrap: wrap; gap: 10px 28px;
+      margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--rule);
+    }
+    .ed-settings .opt { font-size: 11px; color: var(--muted); font-weight: 400; margin-left: 4px; }
+    .req-star { color: #d88; margin-left: 2px; }
+    /* ---- floating image ---- */
+    /* The block deliberately contains nothing: the picture floats out of it, which is
+       the only way the paragraphs after it can wrap around it, as the article does.
+       Any containment here (overflow, a bar in the flow) both stops the wrap and
+       clips the move/remove controls, which sit outside the block in the gutter. */
+    .blk-float { margin-top: 12px; }
+    .float-edit { position: relative; z-index: 3; margin: 0; max-width: 100%; }
+    .float-edit.float-right { float: right; margin-left: 20px; }
+    .float-edit.float-left { float: left; margin-right: 20px; }
+    .float-edit img { width: 100%; height: auto; display: block; }
+    .float-grip {
+      position: absolute; top: 34%; width: 12px; height: 34px; cursor: ew-resize;
+      background: var(--link); border-radius: 3px; opacity: 0; transition: opacity .12s;
+    }
+    .float-edit.float-right .float-grip { left: -6px; }
+    .float-edit.float-left .float-grip { right: -6px; }
+    .float-edit:hover .float-grip { opacity: .85; }
+    .float-bar {
+      position: absolute; top: 0; left: 0; z-index: 4;
+      display: flex; align-items: center; gap: 5px; padding: 5px;
+      opacity: 0; transition: opacity .12s;
+    }
+    .float-edit:hover .float-bar, .float-edit:focus-within .float-bar { opacity: 1; }
+    .float-edit > .ctl { top: 5px; right: 5px; left: auto; z-index: 6; }
+    .float-edit:hover > .ctl, .float-edit:focus-within > .ctl, .float-edit > .ctl:hover {
+      visibility: visible; opacity: 1;
+    }
+    /* The picture overlaps the blocks it floats past, so those blocks are hovered at
+       the same time and would raise their own controls in the gutter beside it. While
+       the pointer is on the picture, the picture's controls are the only ones. */
+    #body:has(.float-edit:hover) .blk > .ctl { visibility: hidden; opacity: 0; }
+    .float-bar button, .float-size {
+      font: 12px var(--body); color: var(--ink); background: var(--lift);
+      border: 1px solid var(--rule); border-radius: 4px; padding: 3px 9px;
+    }
+    .float-bar button { cursor: pointer; }
+    .float-bar button:hover { background: var(--band); }
+    .ib-add { display: flex; gap: 4px; padding: 7px; border-top: 1px solid var(--hair); }
+    .ib-add button {
+      flex: 1; font: 11.5px var(--body); color: var(--muted); background: transparent;
+      border: 1px dashed var(--rule); border-radius: 3px; padding: 5px 4px; cursor: pointer;
+    }
+    .ib-add button:hover { color: var(--ink); border-style: solid; background: var(--band); }
+
+    /* ---- block chrome ---- */
+    /* Spacing lives on the block, not the text inside it, so the gutter label and
+       controls line up with the line you are actually looking at. */
+    .blk { position: relative; }
+    .blk-section { margin-top: 26px; }
+    .blk-subsection { margin-top: 18px; }
+    .blk-para, .blk-list, .blk-table, .blk-image, .blk-grid { margin: 12px 0; }
+    .blk-section .ce { font: 400 24px/1.3 var(--display); padding-bottom: 5px; border-bottom: 1px solid var(--rule); }
+    .blk-subsection .ce { font: 700 17px/1.3 var(--body); }
+    .ce-list { margin: 0; padding-left: 22px; }
+    .ce-list li { margin: 3px 0; }
+
+    #body { padding-left: 96px; margin-left: -96px; }
+    .blk-tag {
+      position: absolute; left: -96px; top: 1px; width: 88px; text-align: right;
+      font: 10px var(--body); text-transform: uppercase; letter-spacing: .06em;
+      color: #5c656e; opacity: 0; pointer-events: none;
+    }
+    .blk:hover > .blk-tag, .blk:focus-within > .blk-tag { opacity: 1; }
+
+    /* Controls sit outside the content: in the gutter for blocks, beside the sidebar
+       for its rows. A transparent border bridges the visual gap so the pointer can
+       travel from the content to the buttons without the cluster vanishing. */
+    .ctl {
+      position: absolute; z-index: 5; display: flex; gap: 2px;
+      padding: 2px; background: var(--lift); border: 1px solid var(--rule); border-radius: 5px;
+      background-clip: padding-box;
+      visibility: hidden; opacity: 0; transition: opacity .1s;
+    }
+    .blk > .ctl { top: 18px; right: 100%; left: auto; border-right: 9px solid transparent; }
+    .blk:hover > .ctl, .blk:focus-within > .ctl, .blk > .ctl:hover,
+    .ib-edit tr:hover .ctl, .ib-edit tr:focus-within .ctl, .ib-edit .ctl:hover {
+      visibility: visible; opacity: 1;
+    }
+    .ctl button {
+      font: 11px/1 var(--body); color: var(--muted);
+      background: none; border: 0; padding: 3px 5px; cursor: pointer; border-radius: 3px;
+      display: flex; align-items: center; justify-content: center; min-width: 18px; min-height: 18px;
+    }
+    .ctl button:hover { color: var(--ink); background: var(--band); }
+
+    /* ---- sidebar rail: its own controls, outside the box ---- */
+    .ib-edit .ctl {
+      left: 100%; right: auto; top: 1px;
+      flex-direction: column; width: 33px; padding: 3px;
+      border-left: 9px solid transparent;
+    }
+    .ib-edit .ctl button { padding: 3px 0; width: 100%; }
+    /* Only shown while the sidebar has no rows to hover. */
+    .ib-add { padding: 7px; border-top: 1px solid var(--hair); }
+    .ib-edit:has(tr[data-kind]) .ib-add { display: none; }
+    .ib-add button {
+      width: 100%; font: 11.5px var(--body); color: var(--muted); background: transparent;
+      border: 1px dashed var(--rule); border-radius: 5px; padding: 6px 4px; cursor: pointer;
+    }
+    .ib-add button:hover { color: var(--ink); border-style: solid; background: var(--band); }
+
+    .ctl-add { position: relative; width: 100%; }
+    .ctl-menu {
+      right: calc(100% + 6px); left: auto; top: -4px; min-width: 116px;
+    }
+    .ctl-menu button { height: 30px; padding: 0 10px; justify-content: flex-start; }
+
+    @media (max-width: 1260px) {
+      /* Not enough room beside the sidebar, so the controls go back inside it. */
+      .ib-edit .ctl { left: auto; right: 2px; flex-direction: row; width: auto; }
+      .ctl-menu { right: auto; left: calc(100% + 6px); }
+    }
+
+    /* ---- figures ---- */
+    .blk figure { margin: 16px 0; }
+    .blk figure img { max-width: 100%; display: block; }
+    .blk .cap { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .blk .imgrid figure { margin: 0; position: relative; }
+    .blk figure { position: relative; }
+    .blk figure input.path { position: absolute; width: 1px; height: 1px; padding: 0; border: 0; opacity: 0; }
+    .blk figure img { cursor: pointer; }
+    .fig-empty {
+      width: 100%; height: 76px; font: 11.5px var(--body); color: var(--muted);
+      background: transparent; border: 1px dashed var(--rule); border-radius: 4px; cursor: pointer;
+    }
+    .fig-empty:hover { color: var(--ink); border-style: solid; }
+    .fig-empty[hidden] { display: none; }
+    .fig-tools {
+      position: absolute; top: 3px; right: 3px; display: flex; gap: 3px;
+      opacity: 0; transition: opacity .12s;
+    }
+    .fig-tools button {
+      font: 11px/1 var(--body); color: var(--muted); background: var(--lift);
+      border: 1px solid var(--rule); border-radius: 3px; padding: 3px 6px; cursor: pointer;
+    }
+    .fig-tools button:hover { color: var(--ink); background: var(--band); }
+    .blk figure:hover .fig-tools, .blk figure:focus-within .fig-tools { opacity: 1; }
+    .sub-add {
+      font: 12px var(--body); color: var(--muted); background: transparent;
+      border: 1px dashed var(--rule); border-radius: 3px; padding: 5px 12px; cursor: pointer;
+    }
+    .sub-add:hover { color: var(--ink); border-style: solid; }
+
+    /* ---- tables ---- */
+    .tbl-wrap { margin: 16px 0; overflow-x: auto; max-width: 100%; min-width: 0; }
+    /* max-content plus a scrolling wrapper: the table keeps its real width and the
+       wrapper scrolls, instead of the table squeezing and spilling its cells. */
+    .ed-tbl { width: max-content; min-width: 100%; }
+    .ed-tbl { border-collapse: collapse; font-size: 14px; }
+    .ed-tbl th, .ed-tbl td { border: 1px solid var(--hair); padding: 5px 9px; vertical-align: top; position: relative; min-width: 90px; }
+    .ed-tbl th { background: var(--band); font-weight: 700; }
+    .ed-tbl .row-x, .ed-tbl tr:first-child .row-x { border: 0; background: none; min-width: 0; padding: 0 2px; }
+    .ed-tbl .row-x button, .col-x {
+      font-size: 10px; line-height: 1; color: var(--muted); background: none;
+      border: 0; cursor: pointer; padding: 3px 4px; opacity: 0;
+    }
+    .col-x { position: absolute; top: 1px; right: 1px; }
+    .ed-tbl tr:hover .row-x button, .ed-tbl th:hover .col-x { opacity: 1; }
+    .ed-tbl .row-x button:hover, .col-x:hover { color: var(--link-new); }
+    .tbl-bar { display: flex; gap: 6px; margin-top: 6px; }
+    .tbl-bar button {
+      font: 12px var(--body); color: var(--muted); background: transparent;
+      border: 1px dashed var(--rule); border-radius: 3px; padding: 4px 11px; cursor: pointer;
+    }
+    .tbl-bar button:hover { color: var(--ink); border-style: solid; }
+
+    /* ---- link popover ---- */
+    .link-pop {
+      position: fixed; z-index: 60; width: min(340px, calc(100vw - 24px)); padding: 10px;
+      max-height: min(80vh, 560px); overflow-y: auto;
+      background: var(--lift); border: 1px solid var(--rule); border-radius: 9px;
+      box-shadow: 0 12px 32px rgb(0 0 0 / .6);
+    }
+    .link-pop[hidden] { display: none; }
+    .lp-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .lp-row svg { width: 15px; height: 15px; flex: none; fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-linecap: round; }
+    .lp-row input {
+      flex: 1; min-width: 0; height: 32px; padding: 0 9px; font: 13.5px var(--body);
+      color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 6px;
+    }
+    .lp-row input:focus { outline: none; border-color: var(--link); }
+    #lp-apply {
+      height: 32px; padding: 0 14px; font: 13px var(--body); font-weight: 600; color: #f2f7f3;
+      background: #3d6b53; border: 1px solid #4a7d62; border-radius: 6px; cursor: pointer;
+    }
+    #lp-apply:hover { background: #48795f; }
+    .lp-list { max-height: 210px; overflow-y: auto; }
+    .lp-hit {
+      display: flex; flex-direction: column; gap: 1px; width: 100%; text-align: left;
+      padding: 6px 8px; background: none; border: 0; border-radius: 6px; cursor: pointer;
+    }
+    .lp-hit:hover { background: var(--band); }
+    .lp-title { font-size: 13px; color: var(--ink); }
+    .lp-hit.new .lp-title { color: var(--link-new); }
+    .lp-slug { font: 11px ui-monospace, monospace; color: var(--muted); }
+    .lp-empty { font-size: 12px; color: var(--muted); margin: 0; padding: 8px; }
+    .lp-remove {
+      width: 100%; margin-top: 6px; height: 30px; font: 12.5px var(--body); color: var(--link-new);
+      background: transparent; border: 1px solid var(--rule); border-radius: 6px; cursor: pointer;
+    }
+    .lp-remove:hover { background: var(--band); }
+    .lp-remove[hidden] { display: none; }
+
+    /* ---- source panel ---- */
+    .ed-source {
+      position: fixed; right: 0; bottom: 0; top: var(--mast); width: min(520px, 46vw); z-index: 25;
+      display: flex; flex-direction: column;
+      background: var(--lift); border-left: 1px solid var(--rule);
+    }
+    .ed-source[hidden] { display: none; }
+    .src-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-size: 13px; }
+    .src-head button { font: 12px var(--body); color: var(--muted); background: none; border: 1px solid var(--rule); border-radius: 3px; padding: 4px 10px; cursor: pointer; }
+    #preview { flex: 1; overflow: auto; margin: 0; padding: 14px; font-size: 12px; line-height: 1.55; color: #cfd6db; background: #0b0e11; }
+
+    .ed-rail.collapsed .toc-list { display: none; }
+
+    /* ---- narrow: controls join the flow instead of floating beside the content ---- */
+    @media (max-width: 1000px) {
+      .blk > .ctl {
+        position: static; display: none; width: max-content;
+        margin-top: 6px; border-right-width: 1px;
+      }
+      .blk:hover > .ctl, .blk:focus-within > .ctl, .blk > .ctl:hover {
+        display: flex; visibility: visible; opacity: 1;
+      }
+      .ib-edit .ctl {
+        position: static; left: auto; right: auto; top: auto; display: none;
+        flex-direction: row; width: max-content; margin-top: 6px; border-left-width: 1px;
+      }
+      .ib-edit tr:hover .ctl, .ib-edit tr:focus-within .ctl, .ib-edit .ctl:hover {
+        display: flex; visibility: visible; opacity: 1;
+      }
+      .ib-edit .ctl button { width: auto; min-width: 26px; }
+      .ctl-add { width: auto; }
+      .ctl-menu { left: 0; right: auto; top: calc(100% + 4px); }
+    }
+
+    /* ---- phone: the toolbar menus span the toolbar rather than overflowing ---- */
+    @media (max-width: 700px) {
+      .ed-tools { gap: 3px; padding: 5px; margin: 8px 10px; }
+      .ed-tools .div { margin: 0 3px; }
+      .ed-tools > button, .ed-tools > .drop > button { padding: 0 8px; }
+      .ed-tools .drop { position: static; }
+      .ed-tools .drop-menu { left: 8px; right: 8px; width: auto; min-width: 0; }
+      .ed-tools .drop-menu.wide { width: auto; }
+      .save-group { flex: 1; min-width: 0; }
+      .save-group input { width: 100%; min-width: 0; }
+      .status { order: 99; width: 100%; padding: 2px 4px; white-space: normal; }
+      #mp-images { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ---- short viewports (landscape phones) keep nothing pinned ---- */
+    @media (max-height: 560px) {
+      .ed-tools { position: static; }
+      .ed-rail { position: static; max-height: none; }
+      .drop-menu { max-height: 68vh; overflow-y: auto; }
+      .link-pop { max-height: 82vh; }
+    }
+
+    /* ---- touch: no hover, so targets grow and focus does the revealing ---- */
+    @media (hover: none) {
+      .ed-tools button { height: 36px; min-width: 36px; }
+      .ed-tools select, .ed-tools input { height: 36px; }
+      .ctl button { min-width: 30px; min-height: 30px; padding: 5px 8px; }
+      .mp-thumb img { height: 64px; }
+      .mp-icon { padding: 9px 6px; }
+      .drop-menu.list button, .ctl-menu button { height: 38px; }
+      .ib-add button { padding: 10px 4px; }
+    }
+
+    @media (max-width: 1000px) {
+      .ed-tools, .ed-settings { margin-left: 14px; margin-right: 14px; }
+      .ed-main { flex-direction: column; align-items: stretch; padding: 0 14px; gap: 0; }
+      .ed, .ed-canvas, .ed-rail { min-width: 0; max-width: 100%; }
+      .ed-rail { position: static; width: 100%; max-height: none; padding-top: 10px; }
+      .ed-rail .toc-list { max-height: 40vh; overflow-y: auto; }
+      .ed-canvas { padding: 14px 0; max-width: none; width: 100%; }
+      .drop-menu.wide { width: min(420px, calc(100vw - 28px)); }
+      .ed-settings { grid-template-columns: 1fr; }
+      #body { padding-left: 0; margin-left: 0; }
+      .blk-tag { display: none; }
+      .ed-source { width: 100%; }
+    }
+  </style>
+</Base>

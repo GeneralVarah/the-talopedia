@@ -1,0 +1,33 @@
+# The front page navigation. A bare nation id picks up its flag automatically, and
+# a nation with `portal: true` in nations.yaml renders bold and links to its portal.
+groups:
+  - label: Nations
+    rows:
+      - note: "**Bold** denotes nations with nation portals."
+      - label: Evria
+        items: [alemannia, arverne, cortesia, east-astriya, elvester, karjania, kemet, livonia,
+                rudania, selmira, shivon, sidanya, skjarnland, slytlia, turulia, vicily, varahmehr]
+      - label: Valtheria
+        items: [axerfreditenshin, cahaya, furan, giathka, guandong, nichirin, nozhnorstan,
+                perovska, seignid]
+      - label: Elysia
+        items: [auritania, esu, hollosend, ponurvia, salishia]
+      - label: Pelagonia
+        items: [arunya, eivorie, noradia, recolotta]
+  - label: World History
+    rows:
+      - items: ["[[napolyonic-wars|The Napolyonic Wars]]", "[[great-war|The Great War]]"]
+  - label: Geography
+    rows:
+      - items: [list-of-named-geographical-features]
+      - label: Continents
+        items: [evria, valtheria, elysia, pelagonia, hyperborea, tartarus]
+      - label: Bodies of Water
+        items: [eastern-panthalassan-ocean, western-panthalassan-ocean, hyperborean-ocean]
+  - label: Beyond Avium
+    rows:
+      - items: [aquila-galaxy]
+      - label: Ignis System
+        items: [ignis-system, hephae, surtara, avium, baunerth, argentis, celithea]
+      - label: The Greater Universe
+        items: [list-of-known-external-celestial-bodies]

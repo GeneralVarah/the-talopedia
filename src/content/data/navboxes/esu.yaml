@@ -1,0 +1,82 @@
+title: "Elysian Articles"
+crumb: "[[portal:esu|Portal:E.S.U.]] • [[elysian-state-of-unity|Overview]]"
+groups:
+  - label: "History"
+    rows:
+      - label: "Pre-colonial"
+        items:
+          - "notable-elysian-native-tribes|Notable Elysian native tribes"
+      - label: "Rumaic and Elvesterian colonization"
+        items:
+          - "territoria-elysiaca"
+          - "commonwealth-of-elysia"
+          - "elysian-revolutionary-war|Elysian Revolutionary war"
+      - label: "United States of Elysia"
+        items:
+          - "remington-wesley-treaty|Remington-Wesley Treaty"
+          - "years-of-oppression"
+      - label: "Events of the Roleplay"
+        items:
+          - "elysian-civil-war"
+          - "majesty-crisis|MAJESTY Crisis"
+  - label: "Politics"
+    rows:
+      - items:
+          - "gestaltism"
+      - label: "Government"
+        items:
+          - "politburo-of-the-gestaltist-party-of-the-unity-state"
+      - label: "Military"
+        items:
+          - "grand-army-of-unity"
+          - "us-navy|US. Navy"
+          - "us-air-force|US. Air Force"
+          - "us-ranger-corps|US. Ranger Corps"
+          - "majesty|MAJESTY"
+  - label: "Economy"
+    rows:
+      - items:
+          - "notable-elysian-state-enterprises|Notable Elysian state enterprises"
+  - label: "Geography"
+    rows:
+      - items:
+          - "list-of-elysian-national-parks"
+      - label: "Elevations"
+        items:
+          - "mount-dolor"
+          - "apalchen-mountains"
+      - label: "Bodies of Water"
+        items:
+          - "the-great-lakes"
+  - label: "Society"
+    rows:
+      - label: "Demographics"
+        items:
+          - "rumaic-elysian|Rumaic-Elysian"
+      - label: "Culture"
+        items:
+          - "blue-moon"
+          - "velvet-avenue"
+  - label: "Characters"
+    rows:
+      - label: "Historical Figures"
+        items:
+          - "vergilius-mountbatten"
+          - "vincent-stone"
+      - label: "People of Note"
+        items:
+          - "archer-maine"
+          - "george-elwood"
+          - "arianne-malloran"
+          - "alyssa-traton"
+          - "cassandra-conway"
+      - label: "Politburo Ministers"
+        items:
+          - "elias-gray"
+          - "gabriel-snipes"
+          - "robert-strandburg"
+          - "rebecca-graves"
+          - "peter-handel|Peter Händel"
+          - "jasmine-petrova"
+          - "richard-dumier"
+          - "robyn-tivruski"

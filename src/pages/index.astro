@@ -1,0 +1,93 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { navbox, nations, url } from '../lib/registry.mjs';
+import { resolveHtml } from '../lib/navbox.mjs';
+
+// The front page is an ordinary article, so it opens in the editor like any other.
+export const HOME = 'home';
+
+const all = await getCollection('articles');
+const home = all.find((e) => e.id === HOME);
+const articles = all.filter((e) => e.id !== HOME);
+const portals = await getCollection('portals');
+
+// Curated navboxes go stale silently. Say so at build time rather than never.
+for (const p of portals) {
+  const box = navbox(p.data.nation);
+  if (!box) continue;
+  const listed = new Set(box.groups.flatMap((g) => (g.rows || [g]).flatMap((r) => r.items || [])));
+  for (const m of (box.crumb || '').matchAll(/\[\[([^\]|]+)/g)) listed.add(m[1]);
+  const orphans = articles.filter((a) => a.data.nation === p.data.nation && !listed.has(a.id));
+  if (orphans.length) {
+    console.warn(`[navbox] ${p.data.nation}: not listed in the navbox -> ${orphans.map((o) => o.id).join(', ')}`);
+  }
+}
+
+const rendered = home?.rendered ?? null;
+const count = articles.length;
+const stats = [
+  { n: count, label: count === 1 ? 'article' : 'articles' },
+  { n: nations().length, label: 'nations' },
+];
+
+/**
+ * Each `## Section` of the front page becomes its own panel, as on Wikipedia's main page.
+ * Introduction is the exception: its text belongs in the banner panel, under the counters.
+ */
+function splitHome(html = '') {
+  const parts = html.split(/(?=<h2\b)/);
+  const lede = parts[0].startsWith('<h2') ? '' : parts.shift() ?? '';
+  let intro = '';
+  const boxes = [];
+  for (const chunk of parts) {
+    const end = chunk.indexOf('</h2>') + 5;
+    const head = chunk.slice(0, end);
+    const rest = chunk.slice(end);
+    if (/id="introduction"/.test(head)) { intro = rest; continue; }
+    boxes.push(`<section class="hbox">${head}<div class="hbox-body">${rest}</div></section>`);
+  }
+  return { lede, intro, body: boxes.join('') };
+}
+
+const { lede, intro, body } = splitHome(resolveHtml(home?.rendered?.html));
+// Introduction has no panel of its own, so it gets no contents entry either.
+const headings = (rendered?.metadata?.headings ?? []).filter((h) => h.slug !== 'introduction');
+---
+<Base title={home?.data.title ?? 'The Talopedia'} headings={headings} chrome={false}>
+  <div class="article home" data-pagefind-body>
+    <section class="hbox home-hero">
+      <img class="home-banner" src={url('/assets/talopedia-banner.png')} alt="The Talopedia" />
+      <div class="home-count">
+        <p class="home-stats">
+          {stats.map((s) => (
+            <span><b data-count={s.n}>{s.n}</b>{s.label}</span>
+          ))}
+        </p>
+      </div>
+      {intro && <div class="home-intro" set:html={intro} />}
+    </section>
+    {lede && <Fragment set:html={lede} />}
+    {body
+      ? <Fragment set:html={body} />
+      : <p>The front page lives in <code>src/content/articles/home.md</code>.</p>}
+  </div>
+  <script is:inline>
+    // The figures settle in on load; static if the reader asked for less motion.
+    addEventListener('DOMContentLoaded', () => {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      for (const el of document.querySelectorAll('.home-stats b')) {
+        const to = Number(el.dataset.count) || 0;
+        if (to < 2) continue;
+        const start = performance.now();
+        const step = (t) => {
+          const k = Math.min(1, (t - start) / 700);
+          el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3)));
+          if (k < 1) requestAnimationFrame(step);
+        };
+        el.textContent = '0';
+        requestAnimationFrame(step);
+      }
+    });
+  </script>
+</Base>

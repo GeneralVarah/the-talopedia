@@ -1,0 +1,127 @@
+title: "Varahmehri Articles"
+crumb: "[[portal:varahmehr|Portal:Varahmehr]] • [[varahmehr|Overview]]"
+groups:
+  - label: "History"
+    rows:
+      - label: "Antiquity"
+        items:
+          - "the-tribes-of-varahmehr"
+      - label: "The Six Lands"
+        items:
+          - "nourestan"
+          - "shushestan"
+          - "ahanestan"
+          - "dashtestan"
+          - "azadestan-e-kuchak|Azadestan-e Kuchak"
+          - "farzanestan|Farzānestan"
+          - "sofreh-ye-shesh|Sofreh-ye Shesh"
+      - label: "The Compact Era"
+        items:
+          - "ymirian-arrival"
+          - "demonstration-of-1874"
+          - "three-years-of-the-compact"
+          - "ruz-e-peyman|Ruz-e Peymān"
+      - label: "Events of the Roleplay"
+        items:
+          - "end-of-isolationism"
+          - "nichirin-oil-deal"
+          - "the-southern-question"
+  - label: "Politics"
+    rows:
+      - label: "Four Major Factions"
+        items:
+          - "peyman-daran|Peymān-dārān"
+          - "risheh-daran|Risheh-dārān"
+          - "mardom-e-kar|Mardom-e Kār"
+          - "azadi-khahan|Āzādi-khāhān"
+          - "list-of-parties-in-varahmehr"
+      - label: "Government"
+        items:
+          - "administrative-subdivisions"
+          - "list-of-varahmehri-officials"
+      - label: "Military"
+        items:
+          - "defence-force-of-varahmehr"
+          - "sepah-e-melli|Sepāh-e Mellī"
+          - "niru-ye-ostani|Niru-ye Ostānī"
+  - label: "Economy"
+    rows:
+      - items:
+          - "list-of-notable-companies"
+      - label: "Main Industries"
+        items:
+          - "manufacturing"
+          - "oil-and-gas"
+          - "maritime-trade"
+          - "banking-and-finance"
+          - "agriculture"
+      - label: "Currency"
+        items:
+          - "dinar-e-azad|Dinar-e Āzad"
+          - "bayt-al-mal|Bayt al-Māl"
+  - label: "Geography"
+    rows:
+      - items:
+          - "nourestan"
+          - "dashtestan"
+          - "ahanestan"
+          - "shushestan"
+          - "azadestan-e-kuchak|Azadestan-e Kuchak"
+          - "farzanestan|Farzānestan"
+          - "nabataean-desert"
+      - label: "Elevations"
+        items:
+          - "highlands-of-nourestan"
+          - "kuh-khorshid"
+          - "mithra-mountains"
+      - label: "Bodies of Water"
+        items:
+          - "ghlat-river"
+          - "lake-dakhli"
+          - "nan-river"
+          - "barkeh-basin"
+          - "lake-avanak|Lake Āvanak"
+          - "daria-bay"
+  - label: "Society"
+    rows:
+      - label: "Notable Cities"
+        items:
+          - "nourabad"
+          - "kuhestan"
+          - "shushabad"
+          - "sabzavar"
+          - "rahgozar|Rāhgozar"
+          - "golestan"
+      - label: "Demographics"
+        items:
+          - "mehrani|Mehrāni"
+          - "shushtari"
+          - "dashti"
+          - "kuhi"
+          - "arabi"
+          - "historical-communities"
+      - label: "Culture"
+        items:
+          - "mithraism"
+          - "shahadism"
+          - "hasmoneanism"
+          - "farzanestani-atheism|Farzānestani Atheism"
+          - "national-holidays"
+  - label: "Characters"
+    rows:
+      - label: "Historical Figures"
+        items:
+          - "enarat-nazeri"
+          - "the-nouri"
+          - "shura-ye-dasht|Shurā-ye Dasht"
+          - "mehrdad-nouri-fard|Mehrdad Nouri-Fard"
+          - "list-of-vazir-e-azami|List of Vazir-e Azami"
+          - "esther-bahram"
+      - label: "People of Note"
+        items:
+          - "nozar-shariati"
+          - "hesam-pakdel"
+          - "behruz-sepehr"
+      - label: "Miscellaneous"
+        items:
+          - "list-of-side-characters"

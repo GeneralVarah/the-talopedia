@@ -1,0 +1,6 @@
+---
+import { renderNavbox } from '../lib/navbox.mjs';
+const { id, title = '' } = Astro.props;
+const html = renderNavbox(id, title);
+---
+{html && <Fragment set:html={html} />}

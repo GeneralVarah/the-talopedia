@@ -1,0 +1,52 @@
+title: "Shivonite Articles"
+crumb: "[[portal:shivon|Portal:Shivon]] • [[shivon|Overview]]"
+groups:
+  - label: "History"
+    rows:
+      - label: "The Bronze Age"
+        items:
+          - "eretz"
+          - "the-hasmenionian-empire"
+      - label: "The Iron Age"
+        items:
+          - "the-second-hasmenionian-empire"
+      - label: "The Medieval Era"
+        items:
+          - "weakening-of-the-hasmenionian-empire"
+      - label: "Colonial Era"
+        items:
+          - "the-fall-of-the-empire"
+          - "founding-of-shivon"
+  - label: "Politics"
+    rows:
+      - label: "Government"
+        items:
+          - "democracy"
+      - label: "Military"
+        items:
+          - "shivonite-armed-forces"
+  - label: "Geography"
+    rows:
+      - label: "Elevations"
+        items:
+          - "mount-hermon"
+      - label: "Bodies of Water"
+        items:
+          - "the-dead-sea"
+  - label: "Society"
+    rows:
+      - label: "Demographics"
+        items:
+          - "hasmenians"
+          - "nabataeans"
+      - label: "Culture"
+        items:
+          - "hasmoneanism"
+  - label: "Characters"
+    rows:
+      - label: "Historical Figures"
+        items:
+          - "king-kazammar-the-great"
+      - label: "Main Characters"
+        items:
+          - "thomas-illyon-binkowicz"

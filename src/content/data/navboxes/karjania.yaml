@@ -1,0 +1,115 @@
+title: "Karjanian Articles"
+crumb: "[[portal:karjania|Portal:Karjania]] • [[karjania|Overview]]"
+groups:
+  - label: "History"
+    rows:
+      - label: "Antiquity"
+        items:
+          - "ancient-karjania"
+      - label: "Karjanian Confederation"
+        items:
+          - "treaty-of-roudanjarvi|Treaty of Roudanjärvi"
+          - "treaty-of-helkanmaa"
+          - "age-of-the-republic"
+          - "mamme"
+          - "rulers-of-the-karjanian-confederation"
+          - "rudanian-karjanian-conflicts|Rudanian-Karjanian Conflicts"
+          - "golden-100-years|Golden 100 years"
+      - label: "Events of the Roleplay"
+        items:
+          - "karjanian-civil-war"
+          - "free-esti-state"
+  - label: "Politics"
+    rows:
+      - label: "Government"
+        items:
+          - "administrative-subdivisions"
+          - "karjanian-communist-congress"
+      - label: "Military"
+        items:
+          - "karjanian-defence-forces"
+  - label: "Economy"
+    rows:
+      - items:
+          - "list-of-notable-companies"
+      - label: "Karjanian Economy"
+        items:
+          - "karjanian-markka"
+  - label: "Geography"
+    rows:
+      - items:
+          - "list-of-karjanian-cities"
+          - "routanmaa"
+          - "helkanmaa"
+          - "estiland"
+          - "frederikka-islands"
+          - "inkeria"
+          - "kullanmaan-territory"
+          - "cuohpajalla|Cuohpajálla"
+          - "jaamaa|Jäämaa"
+          - "saamit-land"
+          - "little-rudania|Little-Rudania"
+      - label: "Elevations"
+        items:
+          - "saamit-mountains"
+          - "northern-routan-hills"
+          - "peak-petri"
+          - "olaf-peak"
+          - "kuolan-mountains"
+      - label: "Bodies of Water"
+        items:
+          - "lake-aaninen|Lake Ääninen"
+          - "lake-laatokka"
+          - "lake-valive"
+          - "lake-inkeri"
+          - "rivers-of-karjania"
+          - "routan-lakeland"
+  - label: "Society"
+    rows:
+      - label: "Notable Cities"
+        items:
+          - "pietari"
+          - "roudanjarvi|Roudanjärvi"
+          - "arkankeli"
+          - "murmanska|Murmánska"
+      - label: "Religion in Karjania"
+        items:
+          - "nazarism-in-karjania"
+          - "karjanian-folk-religions"
+      - label: "Culture"
+        items:
+          - "culture-of-karjania"
+          - "football-in-karjania"
+          - "taistojen-tiella|Taistojen Tiellä"
+          - "sport-in-karjania"
+          - "red-arena"
+          - "list-of-karjanian-sport-competition-winners"
+  - label: "Miscellaneous"
+    rows:
+      - label: "Historical Figures"
+        items:
+          - "list-of-karjanian-kings"
+      - label: "Socialist Leaders"
+        items:
+          - "yrio-sinnar|Yriö Sinnar"
+          - "noaa-laukkanen"
+      - label: "Languages"
+        items:
+          - "saamit-language"
+          - "esti-language"
+          - "routan"
+          - "helkan"
+          - "thulean"
+          - "frederikka-islander"
+          - "amassan"
+      - label: "Ethnicities"
+        items:
+          - "routans"
+          - "esti-people"
+          - "inkerians"
+          - "saamit-people"
+          - "helkans"
+          - "thuleans"
+          - "amassans"
+          - "frederikkese-people|Frederikkese people"
+          - "norsunluurannikkese-people|Norsunluurannikkese people"

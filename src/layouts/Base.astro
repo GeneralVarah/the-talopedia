@@ -1,0 +1,265 @@
+---
+import '../styles/global.css';
+import { url, nation, exists } from '../lib/registry.mjs';
+import { renderInline } from '../lib/inline.mjs';
+
+const { title, description, headings = [], coords = null, chrome = true, nationId = null, authorIds = null, wide = false, slug = null, editSlug = null, editLabel = 'Edit', view = 'article' } = Astro.props;
+// A portal's slug carries the prefix its links use; on disk and in the URL it sits
+// under /portal/. The editor is passed the prefixed form, which is what it opens by.
+const pagePath = slug ? (slug.startsWith('portal:') ? `/portal/${slug.slice(7)}` : `/${slug}`) : null;
+
+// Attribution is the writing nation, or nations: each flag, then the name
+// linking to its portal. A communal article can list more than one.
+const credits = (authorIds ?? (nationId ? [nationId] : [])).filter((id) => nation(id));
+// A nation without a portal links to its own overview article instead, and one
+// with neither is named without a link rather than pointing at a red one.
+const cite = (id) => {
+  const name = nation(id).name;
+  const to = exists('portal:' + id) ? 'portal:' + id : exists(id) ? id : null;
+  return `:flag[${id}] ` + (to ? `[[${to}|${name}]]` : name);
+};
+const byline = credits.length ? renderInline(credits.map(cite).join(' and ')) : null;
+
+// Contents is two levels deep, the same as the article: section and subsection.
+const toc = [];
+for (const h of headings) {
+  if (h.depth === 2) toc.push({ ...h, kids: [] });
+  else if (h.depth === 3 && toc.length) toc[toc.length - 1].kids.push(h);
+}
+---
+<!doctype html>
+<html lang="en" data-base={url("/")}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title ? `${title} — The Talopedia` : 'The Talopedia'}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="icon" type="image/png" sizes="500x500" href={url('/favicon.png')} />
+    <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
+  </head>
+  <body>
+    <header class="masthead">
+      <div class="menu-wrap">
+        <button id="menu-toggle" class="hamburger" type="button" aria-label="Main menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="menu" id="menu" hidden>
+          <a href={url('/')}>Index</a>
+          <a href={url('/edit')}>Editor</a>
+        </nav>
+      </div>
+      <a class="brand" href={url('/')}><img src={url('/assets/talopedia-logo.png')} alt="The Talopedia" /></a>
+      <form class="search-slot" id="search-form" action={url('/search')} method="get" role="search">
+        <div id="search">
+          <svg class="search-ico" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" /><path d="M11 11l4 4" /></svg>
+          <input id="search-q" name="q" type="search" autocomplete="off" placeholder="Search the Talopedia" aria-label="Search the Talopedia" />
+        </div>
+        <button class="search-go" type="submit">Search</button>
+        <div class="search-drop" id="search-drop" hidden></div>
+      </form>
+    </header>
+
+    <div class:list={['shell', toc.length === 0 && 'no-rail']}>
+      {toc.length > 0 && (
+      <aside class="rail">
+        {(
+          <nav class="toc" id="toc">
+            <div class="toc-head">
+              <b>Contents</b>
+              <button id="toc-toggle" type="button">hide</button>
+            </div>
+            <ul class="toc-list">
+              <li class="top"><a href="#">(Top)</a></li>
+              {toc.map((h) => (
+                <li>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                  {h.kids.length > 0 && (
+                    <ul>{h.kids.map((k) => <li><a href={`#${k.slug}`}>{k.text}</a></li>)}</ul>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+      </aside>
+      )}
+
+      <main class:list={['content', wide && 'wide']}>
+        {chrome && (
+          <div class="title-block">
+            <h1>{title}</h1>
+            {slug && (
+              <nav class="tabs" aria-label="Views">
+                <span class="tabs-l">
+                  {view === 'article'
+                    ? <span class="tab on">Article</span>
+                    : <a class="tab" href={url(pagePath)}>Article</a>}
+                  {view === 'source'
+                    ? <span class="tab on">Source</span>
+                    : <a class="tab" href={url(`/source${pagePath}`)}>Source</a>}
+                </span>
+                <span class="tabs-r">
+                  <a class="tab" href={url(`/edit?a=${encodeURIComponent(editSlug || slug)}`)}>{editLabel}</a>
+                </span>
+              </nav>
+            )}
+            <div class="subline">
+              {byline && <span class="byline">By <span set:html={byline} /></span>}
+              {coords && (
+                <span class="coords">
+                  <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.6" /><ellipse cx="8" cy="8" rx="3" ry="6.6" /><path d="M1.6 8h12.8M2.9 4.4h10.2M2.9 11.6h10.2" /></svg>
+                  {coords.href
+                    ? <a href={coords.href} target="_blank" rel="noopener">{coords.position}</a>
+                    : coords.position}
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+        <slot />
+      </main>
+    </div>
+
+    <script>
+      import { search, href } from '../lib/search-client.js';
+
+      addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('search-form');
+        const input = document.getElementById('search-q');
+        const drop = document.getElementById('search-drop');
+        let seq = 0;
+
+        const row = (h, kind) => {
+          const a = document.createElement('a');
+          a.className = 'sr sr-' + kind;
+          a.href = h.url;
+          const t = document.createElement('b');
+          t.textContent = h.title;
+          a.append(t);
+          if (kind === 'title' && h.type) {
+            const s = document.createElement('span');
+            s.className = 'sr-type';
+            s.textContent = h.type;
+            a.append(s);
+          }
+          if (h.excerpt) {
+            const e = document.createElement('span');
+            e.className = 'sr-ex';
+            e.innerHTML = h.excerpt;
+            a.append(e);
+          }
+          return a;
+        };
+
+        async function run() {
+          const q = input.value.trim();
+          const mine = ++seq;
+          if (!q) { drop.hidden = true; drop.replaceChildren(); return; }
+          const { titled, mentions, hasMore } = await search(q, 6);
+          if (mine !== seq) return;                       // a later keystroke won
+          drop.replaceChildren();
+          if (!titled.length && !mentions.length) {
+            const p = document.createElement('p');
+            p.className = 'sr-none';
+            p.textContent = `No articles match ${q}.`;
+            drop.append(p);
+          }
+          const group = (label, items, kind) => {
+            if (!items.length) return;
+            const h = document.createElement('p');
+            h.className = 'sr-head';
+            h.textContent = label;
+            drop.append(h, ...items.slice(0, 6).map((x) => row(x, kind)));
+          };
+          group('Articles', titled, 'title');
+          group('Mentions', mentions, 'mention');
+          if (titled.length > 6 || hasMore || mentions.length) {
+            const all = document.createElement('a');
+            all.className = 'sr-all';
+            all.href = href('/search') + '?q=' + encodeURIComponent(q);
+            all.textContent = `See all results for ${q}`;
+            drop.append(all);
+          }
+          drop.hidden = false;
+        }
+
+        let t;
+        input.addEventListener('input', () => { clearTimeout(t); t = setTimeout(run, 120); });
+        input.addEventListener('focus', () => { if (input.value.trim()) run(); });
+        document.addEventListener('click', (e) => {
+          if (!form.contains(e.target)) drop.hidden = true;
+        });
+        input.addEventListener('keydown', (e) => { if (e.key === 'Escape') drop.hidden = true; });
+      });
+    </script>
+
+    <div id="lightbox" hidden>
+      <button id="lb-close" type="button" aria-label="Close">&#10005;</button>
+      <figure>
+        <img id="lb-img" alt="" />
+        <figcaption><b id="lb-name"></b><span id="lb-dim"></span></figcaption>
+      </figure>
+    </div>
+
+    <script is:inline>
+      addEventListener('DOMContentLoaded', () => {
+        // Any picture in the article opens full size, named and measured. The
+        // image itself is a plain <img>, so the browser's own right-click menu
+        // still offers Save Image As.
+        const lb = document.getElementById('lightbox');
+        const lbImg = document.getElementById('lb-img');
+        const close = () => { lb.hidden = true; lbImg.removeAttribute('src'); };
+        document.getElementById('lb-close').onclick = close;
+        lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+        addEventListener('keydown', (e) => { if (e.key === 'Escape' && !lb.hidden) close(); });
+        document.addEventListener('click', (e) => {
+          const img = e.target.closest?.('.article img, .infobox img');
+          // Inline flags and arrows are punctuation, not pictures.
+          if (!img || img.classList.contains('ico') || img.classList.contains('tri')) return;
+          if (img.closest('a')) return;
+          lbImg.src = img.currentSrc || img.src;
+          document.getElementById('lb-name').textContent = decodeURIComponent(
+            (img.getAttribute('src') || '').split('/').pop());
+          const show = () => {
+            document.getElementById('lb-dim').textContent =
+              `${lbImg.naturalWidth} \u00d7 ${lbImg.naturalHeight}`;
+          };
+          lbImg.complete ? show() : (lbImg.onload = show);
+          lb.hidden = false;
+        });
+        // Everything sticky hangs off the masthead, whose height depends on the logo.
+        const mast = document.querySelector('.masthead');
+        const measure = () =>
+          document.documentElement.style.setProperty('--mast', `${Math.round(mast.getBoundingClientRect().height)}px`);
+        measure();
+        addEventListener('resize', measure);
+        if (window.ResizeObserver) new ResizeObserver(measure).observe(mast);
+
+        const menu = document.getElementById('menu');
+        const menuBtn = document.getElementById('menu-toggle');
+        menuBtn.onclick = (e) => {
+          e.stopPropagation();
+          menu.hidden = !menu.hidden;
+          menuBtn.setAttribute('aria-expanded', String(!menu.hidden));
+        };
+        document.addEventListener('click', (e) => {
+          if (!menu.hidden && !menu.contains(e.target)) {
+            menu.hidden = true;
+            menuBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+        addEventListener('keydown', (e) => { if (e.key === 'Escape') menu.hidden = true; });
+
+        const toc = document.getElementById('toc');
+        const tt = document.getElementById('toc-toggle');
+        if (tt) {
+          // Narrow screens put Contents above the article, so it starts folded.
+          if (innerWidth <= 1000) { toc.classList.add('collapsed'); tt.textContent = 'show'; }
+          tt.onclick = () => {
+            tt.textContent = toc.classList.toggle('collapsed') ? 'show' : 'hide';
+          };
+        }
+      });
+    </script>
+  </body>
+</html>
