@@ -16,6 +16,9 @@ where revision history, diffs, blame and revert come from at no cost.
       data/navboxes/<id>.yaml    curated blocks: <nation> attaches to that nation's
                                  articles, `site` is the front page navigation
 
+Every page carries a tab bar: **Article** and **Source** on the left, **Edit** on the right. Edit
+opens that page in the editor with its content already loaded.
+
 ## The syntax editors can use
 
 Everything below works in an article body, in a sidebar value, and in a navbox entry.
@@ -28,6 +31,7 @@ Everything below works in an article body, in a sidebar value, and in a navbox e
 | `[text](https://…)` | an external link |
 | `:icon[masashi-miyamoto]` | that subject's flag or emblem, inline |
 | `:flag[nichirin]` | the same thing, read better for nations |
+| `:img[/assets/flags/kemet.png]` | an inline image by path, for anything with no article |
 | `:up` / `:down` | the green and red statistic arrows |
 | `**bold**`, `*italic*` | bold, italic, and they nest around a link |
 | `[[#section-id\|Text]]` | a jump to a heading on the same page |
@@ -35,7 +39,7 @@ Everything below works in an article body, in a sidebar value, and in a navbox e
 
 Links, icons and navboxes are written into the markdown as markers and resolved on every page
 render, not while the markdown is compiled. Astro caches each file's compiled HTML, so anything
-resolved at compile time would freeze until that particular file was edited next — a rename would
+resolved at compile time would freeze until that particular file was edited next: a rename would
 reach the renamed article and nothing else. Editing `src/lib` itself still needs `npm run clean`,
 because that cache lives in `node_modules/.astro`.
 
@@ -46,10 +50,24 @@ nations with nation portals" on the front page means; nothing is maintained by h
 There are no font, size, colour or spacing controls anywhere, because the stylesheet is the
 Manual of Style. A section header is Georgia 26 because it is a section header.
 
+## Article types
+
+The type in an article's frontmatter picks the sidebar skeleton the editor starts you with. Each
+skeleton comes from the articles that already exist, so the fields are the ones those articles
+already carry.
+
+    overview  city  subdivision  continent  geography  celestial
+    character  military  organization  company
+    ideology  religion  ethnicity  event  list
+
+A `subdivision` is a province, county or territory inside a nation; `geography` is a landform
+such as a range, a lake or a river; `celestial` is a planet, a moon or a star system. Changing
+an article's type asks before it replaces the sidebar.
+
 ## Renaming things
 
 A link stores a slug and renders the title it finds, so changing one `title:` line renames that
-subject across every article, sidebar and navbox at once. The two cases that needs more:
+subject across every article, sidebar and navbox at once. Two cases need more than that:
 
     npm run retcon -- slug niiyama tohara       the slug itself changes: moves the file,
                                                 rewrites every [[ref]], navbox entry and icon
@@ -75,44 +93,77 @@ index to `dist/` for the deployed site.
 
 ## Publishing
 
-Push to `main`. `.github/workflows/deploy.yml` builds and deploys to GitHub Pages.
-If the repo is not named `<username>.github.io`, set a repository variable `BASE_PATH` to
-`/<repo-name>/`.
+Push to `main`. `.github/workflows/deploy.yml` builds and deploys to GitHub Pages. It reads the
+site's own URL and base path from `actions/configure-pages`, so a project site at
+`<user>.github.io/<repo>/` works with no configuration and survives a rename. A `BASE_PATH`
+repository variable overrides it if you ever need to.
 
-## The contributor loop
+## The editor
 
-1. Contributor opens `/edit`, writes, presses **Download .md**.
+`/edit` is one page. The toolbar runs: **File**, undo and redo, bold / italic / superscript /
+subscript / link, a **Text** menu for paragraphs, headings and lists, a **Media** menu for
+pictures, icons and tables, then the save button and page settings.
+
+File opens anything already published: articles, the twelve nation portals, and the navboxes. It
+also starts new ones: **New article**, **New portal**, **New navbox**.
+
+Empty rows from a type's skeleton are never written out, nor is a section heading with nothing
+under it, so you can leave the template's unused fields on screen.
+
+### Getting work into the repo
+
+1. Contributor opens `/edit`, writes, presses **Download**.
 2. They send you the file. Images go with it.
 3. You drop it into `src/content/articles/`, drop images into `public/assets/media/`, commit, push.
 
-`/edit` can reopen anything already published through the dropdown at the top, so revising an
-article does not mean retyping it.
-
 ### Writing locally
 
-On `npm run dev` the editor grows a **Save to articles** button that writes straight into
-`src/content/articles/<name>.md`, no download and no copy-paste. The endpoint behind it is a Vite
+On `npm run dev` the save button reads **Save** and writes straight into
+`src/content/articles/<name>.md`, skipping the download step. A portal saves to
+`src/content/portals/`, a navbox to `src/content/data/navboxes/`. The endpoint behind it is a Vite
 dev middleware marked `apply: 'serve'`, so it exists only while you are developing; the deployed
-site has no write path of any kind and no Save button.
+site has no write path of any kind, and there the same button reads **Download** instead.
 
 Writing into `src/` restarts the dev server and reloads the page, so the editor keeps a draft in
 `sessionStorage` and restores it on load. That also means an accidental refresh costs nothing.
 **New** clears it.
 
-Empty rows from a type's skeleton are never written out, nor is a section heading with nothing
-under it, so you can leave the template's unused fields on screen.
+### Pictures
 
-### Images
+**Media** opens three tabs: Images, Icons, Table.
 
-**Media** in the toolbar opens a picker with two tabs. *Images* lists everything under
-`public/assets/`; clicking one fills the image field you were last in, or adds an image block.
-*Inline icons* lists nation flags and article icons, and clicking one drops a `:flag[...]` or
-`:icon[...]` token at the cursor.
+Images starts with a search box, then **Insert as**, which is where a picture gets its shape:
 
-New images: drag a file onto the article, paste one, or use the button at the foot of the picker.
+- **Static** puts it in a block the width of the column.
+- **Floating** sits it left or right with the text wrapping around it. Drag its edge to resize.
+- **Grid** makes a row of pictures. Widths follow each picture's shape so they all come out the
+  same height. A grid is always one row; add a second grid if you want a second row.
 
-- On `npm run dev` it uploads to `public/assets/media/`, never overwriting (a clash becomes
+Under that is **Upload**, then everything already in `public/assets/`. Flags, emblems and
+subdivision images are listed to browse; `media/` is three hundred-odd files, too many to
+scroll, so it turns up when you search.
+
+Every upload is named before it goes anywhere. That name, kebab-cased, becomes the filename.
+
+Pictures have no path box. Hover one and two buttons appear in its corner: ⇄ to change it, ✕ to
+remove it. An empty slot shows a dashed strip until you pick something.
+
+New images: drag a file onto the article, paste one, or press Upload.
+
+- On `npm run dev` they go to `public/assets/media/`, never overwriting (a clash becomes
   `name-2.jpg`). PNG, JPEG, WebP, GIF and AVIF only.
 - On the published site there is no server, so the file rides along instead: **Download** produces
   a `.zip` of the article plus its images rather than a bare `.md`. Unzip it, drop the markdown in
   `src/content/articles/` and the `assets/media/` folder into `public/`.
+
+### Portals and navboxes
+
+A nation portal is a template. Three things are yours to set: the banner,
+the welcome line, and the nation's navbox. The opening paragraph is taken from that nation's
+overview article automatically, so there is only one copy to keep current.
+Nations with no overview yet keep their own paragraph until one exists.
+
+A navbox is edited with the same blocks as everything else: a group is a Section heading, a row is
+a Subsection, and the articles in that row are a bulleted list of links. Reorder, delete, undo and
+the link picker all work the way they do in an article. The **Edit** tab on a portal goes straight
+to that nation's navbox, since the portal itself has nothing else to write.
