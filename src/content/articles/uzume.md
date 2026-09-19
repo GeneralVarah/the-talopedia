@@ -26,7 +26,6 @@ infobox:
   - { section: "Zhengyu Name" }
   - { label: "Hanzi", value: "梁微曦" }
   - { label: "Pinyin", value: "Liáng Wēi Xī" }
-  - { label: "Literal Meaning", value: "\"Faint daybreak, of the Liang family.\"" }
 ---
 
 **Liang Weixi** (梁微曦; born March 28, 1895), codenamed **Uzume** (鈿女), is a Guandongese intelligence operative serving as Head of [[seele]] Operations in [[valtheria]]. Born in Kaiguan during the Xing dynasty in Guandong, she served as a rear-echelon medic with the Xing army during the Great War before her capture by Nichirian forces in September 1916. Her fluency in Nichirian led to her assignment as a translator during her captivity and, subsequently, to her recruitment into SEELE's inaugural Valtherian field unit, the *Yagara*, in November 1917. She is responsible for overseeing and coordinating SEELE's intelligence network across Valtheria, with particular expertise in chemical analysis and applications of chemical warfare.
