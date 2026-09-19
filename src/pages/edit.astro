@@ -2815,21 +2815,73 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
        the article keeps the link. Only hosts that serve a stable direct link are taken,
        because the alternative is an article whose pictures quietly vanish. */
 
-    const HOSTS = ['i.ibb.co', 'ibb.co', 'i.imgur.com', 'imgur.com', 'files.catbox.moe'];
+    const HOSTS = ['i.ibb.co', 'ibb.co', 'i.imgur.com', 'imgur.com', 'files.catbox.moe',
+      'drive.google.com', 'lh3.googleusercontent.com'];
     const hostOf = (u) => { try { return new URL(u).hostname.toLowerCase().replace(/^www\./, ''); } catch { return ''; } };
     const allowed = (u) => HOSTS.includes(hostOf(u));
+
+    /**
+     * Neither Drive nor Photos hands you a picture's own address. The share button gives
+     * a page, and the picture sits at a fixed address elsewhere. Drive writes the file's
+     * id into every shape of link it produces, so that address can be built here. Photos
+     * does not, and its share page refuses cross-origin reads, so the address has to come
+     * off the picture itself with Copy image address.
+     */
+    const DRIVE_ID = /(?:\/file\/d\/|[?&](?:id|docid)=|\/d\/)([A-Za-z0-9_-]{20,})/;
+    const PHOTO_ID = /^https:\/\/lh3\.googleusercontent\.com\/(pw\/[A-Za-z0-9_-]+)/;
+    // Wider than any column on the site, and Google does the scaling rather than the reader.
+    const SIZE = 2000;
+
+    function normaliseLink(u) {
+      const host = hostOf(u);
+      if (host !== 'drive.google.com' && host !== 'lh3.googleusercontent.com') return u;
+      const photo = u.match(PHOTO_ID);
+      // Whatever size the copied address asked for is dropped: a pasted one often carries
+      // a crop, and every picture here should arrive whole and at a predictable width.
+      if (photo) return `https://lh3.googleusercontent.com/${photo[1]}=w${SIZE}`;
+      const id = (u.match(DRIVE_ID) || [])[1];
+      // Drive's own /thumbnail address only redirects here, and carries a query string
+      // that the markdown escapes twice on the way to the page. This form has neither.
+      return id ? `https://lh3.googleusercontent.com/d/${id}=w${SIZE}` : u;
+    }
+
+    /** What is wrong with this link, or '' if nothing is. */
+    function linkTrouble(u) {
+      const host = hostOf(u);
+      if (!host) return 'That is not a link.';
+      if (host === 'photos.google.com' || host.endsWith('goo.gl')) {
+        return 'That is the share page rather than the picture. Open it, right-click the '
+          + 'picture, Copy image address, and paste that.';
+      }
+      if (!allowed(u)) {
+        return /discord/.test(host)
+          ? 'Discord links expire after a few days. Upload it to imgbb instead.'
+          : `${host} is not on the list.`;
+      }
+      if (host === 'drive.google.com' && !DRIVE_ID.test(u)) {
+        return 'That Drive link has no file id in it. Use Share \u2192 Copy link.';
+      }
+      if (host === 'lh3.googleusercontent.com' && !PHOTO_ID.test(u) && !DRIVE_ID.test(u)) {
+        return 'That is a Google address but not a picture. Use Copy image address.';
+      }
+      return '';
+    }
 
     function linkNote() {
       const raw = $('#mp-link').value.trim();
       const note = $('#mp-link-note');
-      if (!raw) { note.textContent = `Accepted: ${HOSTS.filter((h) => !h.startsWith('i.')).join(', ')}`; note.className = 'mp-hint'; return; }
+      if (!raw) {
+        note.textContent = 'Accepted: imgbb, imgur, catbox, Google Drive, Google Photos';
+        note.className = 'mp-hint';
+        return;
+      }
+      const bad = linkTrouble(raw);
       const host = hostOf(raw);
-      if (!host) { note.textContent = 'That is not a link.'; note.className = 'mp-hint bad'; return; }
-      if (allowed(raw)) { note.textContent = `${host} \u2713`; note.className = 'mp-hint ok'; return; }
-      note.textContent = /discord/.test(host)
-        ? 'Discord links expire after a few days. Upload it to imgbb instead.'
-        : `${host} is not on the list. Upload it to imgbb instead.`;
-      note.className = 'mp-hint bad';
+      note.textContent = bad
+        || (PHOTO_ID.test(raw) ? 'Google Photos \u2713  the picture must be shared'
+        : host.includes('google') ? 'Google Drive \u2713  the file must be shared with anyone who has the link'
+        : `${host} \u2713`);
+      note.className = 'mp-hint ' + (bad ? 'bad' : 'ok');
     }
 
     // The picture the Media panel was opened for. Working this out from whatever has
@@ -2960,8 +3012,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const go = () => {
         const u = $('#mp-link').value.trim();
         if (!u) return;
-        if (!allowed(u)) { linkNote(); flash('That host is not accepted.', true); return; }
-        useImage(u);
+        const bad = linkTrouble(u);
+        if (bad) { linkNote(); flash(bad, true); return; }
+        useImage(normaliseLink(u));
         $('#mp-link').value = '';
         linkNote();
       };

@@ -1,6 +1,5 @@
 ---
-import { renderInline } from '../lib/inline.mjs';
-import { url } from '../lib/registry.mjs';
+import { renderInline, asset } from '../lib/inline.mjs';
 const { title, nativeTitle, romaji, rows = [] } = Astro.props;
 // Italics mark a transliteration. When the native name is already in Latin script
 // the second line is another language's name, not a romanisation, so it stays upright.
@@ -31,7 +30,7 @@ const lines = (v) => (Array.isArray(v) ? v : [v]).filter((x) => x != null && x !
           <tr><td class="ib-media ib-media-row" colspan="2">
             {r.images.filter((im) => im.src).map((im) => (
               <figure style="margin:0">
-                <img src={url(im.src)} alt={im.caption || title} />
+                <img src={asset(im.src)} alt={im.caption || title} />
                 {im.caption && <figcaption set:html={renderInline(im.caption)} />}
               </figure>
             ))}
@@ -39,7 +38,7 @@ const lines = (v) => (Array.isArray(v) ? v : [v]).filter((x) => x != null && x !
         ) : r.image ? (
           <tr><td class="ib-media" colspan="2">
             <figure style="margin:0">
-              <img src={url(r.image)} alt={r.caption || title} />
+              <img src={asset(r.image)} alt={r.caption || title} />
               {r.caption && <figcaption set:html={renderInline(r.caption)} />}
             </figure>
           </td></tr>
