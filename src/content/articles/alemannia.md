@@ -75,7 +75,7 @@ infobox:
   - { label: "Alpha-3 Code", value: "ALE" }
 ---
 
-**Alemannia**, formally the **Alemannian Confederation**, is a country located in Central [[evria]]. Bounded by the Tethys Sea to the Southeast, the North Sea to the Northwest and the Livonian Sea to the northeast, it borders Arvene to the south, [[skjarnland]] to the west, Turulia to the east, [[cortesia]] to the north, [[shivon]], Selmira and [[varahmehr]] through the Divian Territory and Kinshu through the Neuhollmar Territory. With a population exceeding 157.8 million people and 95.4 million people in its oversea territories, it is the eighth-most populous country before the ESU and after Hollosend. Mainland Ymiria is divided into 43 Federal States, 11 of them being City-States. The capital of Alemannia is Franmark with a population of roughly 801 thousand making it the 10th biggest city in the nation while its biggest city, Eisenfeld, has a population exceeding 5.1 million.
+**Alemannia**, formally the **Alemannian Confederation**, is a country located in Central [[evria]]. Bounded by the Tethys Sea to the Southeast, the North Sea to the Northwest and the Livonian Sea to the northeast, it borders Arvene to the south, [[skjarnland]] to the west, Turulia to the east, [[cortesia]] to the north, [[shivon]], Selmira and [[varahmehr]] through the Divian Territory and Kinshu through the Neuhollmar Territory. With a population exceeding 157.8 million people and 95.4 million people in its oversea territories, it is the eighth-most populous country before the ESU and after Hollosend. Mainland Alemannia is divided into 43 Federal States, 11 of them being City-States. The capital of Alemannia is Franmark with a population of roughly 801 thousand making it the 10th biggest city in the nation while its biggest city, Eisenfeld, has a population exceeding 5.1 million.
 
 ## Etymology
 
@@ -247,7 +247,3 @@ Alemannian citizenship is granted according to jus sanguinis, which means that a
 | 8 | Amberdam | 1,197,000 | :img[/assets/old-media/subdivisions/alemannia-sub-8.png] Amberdam |
 | 9 | Kolmar | 1,018,000 | :img[/assets/old-media/subdivisions/alemannia-sub-9.png] Kolmar |
 | 10 | Franmark | 801,000 | :img[/assets/old-media/subdivisions/alemannia-sub-10.png] Franmark |
-
-<div class="imgrid">
-<figure style="flex:1.501"><img src="/assets/old-media/media/alemannia-12.png" alt=""><figcaption></figcaption></figure>
-</div>
