@@ -614,7 +614,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         // Both shapes of a picture row: one picture, or the list of two.
         : (r.image != null || r.images) ? 'image'
         : r.label == null ? 'full' : 'row';
-      const tr = el('tr', kind === 'section' ? 'ib-section' : kind === 'pair' ? 'ib-pair' : null);
+      const tr = el('tr', kind === 'section' ? 'ib-section' : kind === 'pair' ? 'ib-pair'
+        : kind === 'office' ? 'ib-office' : null);
       tr.dataset.kind = kind;
 
       if (kind === 'section') {
@@ -677,11 +678,16 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       } else if (kind === 'office') {
         // An office and the term served in it. Two rows read as two separate things,
         // so this is one row holding both, the way the old documents had it.
-        const td = el('td', 'ib-office'); td.colSpan = 2;
+        const td = el('td'); td.colSpan = 2;
         const c = controls(tr);
         c.prepend(ibAddMenu(tr));
-        td.append(editable(mdToHtml(r.office || ''), 'Office', lineBreak),
-                  editable(mdToHtml(r.term || ''), 'Term', lineBreak), c);
+        const post = editable(mdToHtml(r.office || ''), 'Office', lineBreak);
+        const term = editable(mdToHtml(r.term || ''), 'Term', lineBreak);
+        // Named so the band is set the same here as on the page: the editor shows
+        // the row, not a pair of boxes standing in for it.
+        post.classList.add('off-post');
+        term.classList.add('off-term');
+        td.append(post, term, c);
         tr.append(td);
       } else if (kind === 'full') {
         // A value with no field name, spanning both columns, as a casualty total.

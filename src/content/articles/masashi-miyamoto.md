@@ -5,7 +5,7 @@ type: character
 nation: nichirin
 infobox:
   - { image: "https://lh3.googleusercontent.com/pw/AP1GczNEHSyso2K9OAjlY2kaGJJusu5STapO9Os5Gb65XGp8sh_5saXjpbZIQ7Fnw2BeqJa3DheiC9laZc_bACI1hwdf8lYD56eO_fOycP-9KJZqfVAynQJi4Yn4NP6Dz-4rKcvbXgZhvqc6qUSObR4DZjXS=w2000", caption: "" }
-  - { office: "Sei’i Tai Shogun", term: "Incumbent | October 1, 1923 –" }
+  - { office: "Sei'I Tai Shogun", term: "Incumbent | October 1, 1923 –" }
   - { label: "Preceded by", value: "Masanori Miyamoto" }
   - label: "Senior Shogunal Advisors"
     value:
