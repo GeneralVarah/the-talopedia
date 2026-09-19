@@ -4,7 +4,7 @@ nativeTitle: "Karjanmaan Jalkapallomaajoukkue"
 type: organization
 nation: karjania
 infobox:
-  - { image: "https://i.postimg.cc/QMh3tbwS/Untitled468-20260607105226.png", caption: "Emblem" }
+  - { image: "https://i.ibb.co/DgzhDMbh/Untitled468-20260607105226.png", caption: "Emblem" }
   - { label: "Nickname", value: "Leijonat (The Lions)" }
   - { label: "Association", value: "Karjanian Football Association" }
   - { label: "Confederation", value: "Eastern" }
