@@ -19,8 +19,14 @@ infobox:
       - "[「旭日昇天」](https://www.youtube.com/watch?v=fOsAyzzPLGE)"
       - "*Kyokujitsu Shōten*"
       - "\"Ascension of the Rising Sun\""
-  - { label: "Capital", value: "[[shinkeisei]]" }
-  - { label: "Largest City", value: "Shinkeisei" }
+  - label: "Capital"
+    value:
+      - "+"
+      - "FieldHeadingImageTwo listsFull-width value⇥↑↓✕:img[/assets/flags/shinkeisei.png] [[shinkeisei]]"
+  - label: "Largest City"
+    value:
+      - "+"
+      - "FieldHeadingImageTwo listsFull-width value⇥↑↓✕:img[/assets/flags/shinkeisei.png] Shinkeisei"
   - { section: "Administration" }
   - { label: "Government", value: "Unitary hereditary military dictatorship" }
   - { label: "Sei'i Tai Shogun", sub: true, value: "[[masashi-miyamoto]]" }
@@ -211,7 +217,7 @@ Nichirian citizenship is conferred *jure soli*, meaning that any person born wit
 | 1 | [[shinkeisei]]<br>新恵星 | 36,955,000 | :img[/assets/old-media/subdivisions/shinkeisei.jpg] Shinkeisei SAR |
 | 2 | [[naginomiya]]<br>凪宮 | 25,811,000 | :img[/assets/old-media/subdivisions/naginomiya.jpg] Naginomiya SAR |
 | 3 | [[takarazuka]]<br>鷹羅塚 | 18,922,000 | :img[/assets/old-media/subdivisions/takarazuka.jpg] Takarazuka SAR |
-| 4 | [[chukyo|Chūkyō]]<br>中京 | 9,512,000 | :img[/assets/old-media/subdivisions/chūkyō.jpg] Chūkyō |
+| 4 | [[chukyo | Chūkyō]]<br>中京 | 9,512,000 | :img[/assets/old-media/subdivisions/chūkyō.jpg] Chūkyō |
 | 5 | [[mizuhara]]<br>水原 | 8,111,000 | :img[/assets/old-media/subdivisions/mizuhara.jpg] Mizuhara SAR |
 | 6 | Kamabuchi<br>釜淵 | 7,700,000 | :img[/assets/old-media/subdivisions/kamabuchi.jpg] Kamabuchi |
 | 7 | Kōrihama<br>氷浜 | 7,189,000 | :img[/assets/old-media/subdivisions/kōrihama.jpg] Kōrihama |
