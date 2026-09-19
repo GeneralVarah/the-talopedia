@@ -5,14 +5,16 @@ type: character
 nation: nichirin
 infobox:
   - { image: "/assets/old-media/media/akane-shikinami-hoffmann-1.jpg", caption: "" }
+  - { office: "Senior Shogunal Advisor", term: "Incumbent | June 21, 1926 –" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
+  - { office: "Chief Liaison Officer", term: "Incumbent | June 21, 1926 –" }
   - { label: "Shogun", value: "Masashi Miyamoto" }
   - { label: "Preceded by", value: "Position Established" }
   - label: "Deputies"
     value:
       - "Mieko Kuroda"
       - "Yoshiyuki Kaji"
-  - { section: "SED Liaison Officer for the White Army September 22, 1922 – December 21, 1924" }
+  - { office: "SED Liaison Officer for the White Army", term: "September 22, 1922 – December 21, 1924" }
   - { label: "Handler", value: "Timo Werner" }
   - { label: "Commander", value: "Semen Voronovkin" }
   - { label: "Preceded by", value: "Position Established" }

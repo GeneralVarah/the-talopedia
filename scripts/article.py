@@ -78,7 +78,10 @@ class Doc:
                     link = f'[{body}]({target})'
                 out.append(lead + link + tail)
             elif ch.tag == W + 'r':
-                t = ''.join(x.text or '' for x in ch.iter(W + 't'))
+                # A break inside a run is a real line break. Dropping it welded an
+                # office heading to the term under it: "Senior Prosecutor19 October".
+                t = ''.join('\n' if x.tag == W + 'br' else (x.text or '')
+                            for x in ch.iter() if x.tag in (W + 't', W + 'br'))
                 if not t:
                     continue
                 pr = ch.find(W + 'rPr')
@@ -159,11 +162,21 @@ def parse_article(path):
             infobox.append({'image': imgs[2][0], 'caption': '' if junk(label) else plain(label)})
         elif label and not junk(label):
             lab = plain(label)
-            # A caption whose picture is missing is not a section heading.
+            # A caption whose picture is missing is not a section heading. Matching
+            # " of " anywhere as well used to stand in for "Coat of Arms", and took
+            # Minister of Justice, Director of Intelligence and every other office
+            # with it. The names below are anchored, which is enough on its own.
             if re.match(r'^(location|flag|emblem|coat of arms|map|seal|logo|portrait|insignia)\b',
-                        lab, re.I) or ' of ' in lab.lower():
+                        lab, re.I):
                 continue
-            infobox.append({'section': lab})
+            # An office block is the office on one line and the term served on the
+            # next, and the two belong together. A band with no second line is a plain
+            # heading: "Personal Details" is not an office and carries no term.
+            head, *term = [x.strip() for x in lab.split('\n') if x.strip()]
+            if term:
+                infobox.append({'office': head, 'term': ' '.join(term)})
+            else:
+                infobox.append({'section': head})
 
     return doc, header, infobox, body_parts
 

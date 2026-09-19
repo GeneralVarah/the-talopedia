@@ -161,12 +161,31 @@ that already point into the archive keep working.
 nation's name and is picked from the Icons tab rather than pasted.
 
 Only hosts that serve a stable direct link are accepted, because the alternative is an
-article whose pictures quietly vanish: `ibb.co`, `imgur.com`, `files.catbox.moe`. Discord
-attachment links carry signed URLs that expire within days and are refused with a note
-saying so. The list is `HOSTS` in `src/pages/edit.astro`.
+article whose pictures quietly vanish: `ibb.co`, `imgur.com`, `files.catbox.moe`, and
+Google Drive and Google Photos. Discord attachment links carry signed URLs that expire
+within days and are refused with a note saying so. The list is `HOSTS` in
+`src/pages/edit.astro`.
+
+Google is worth its own paragraph, because a Google One plan covers Drive and Photos
+together and a plan bought for one is already paying for the other.
+
+- **Drive.** Share the file with anyone who has the link, copy that link, paste it. The
+  editor reads the file id out of it and keeps only that.
+- **Photos.** Share the picture, open the share link, right-click the picture, **Copy
+  image address**, paste that. The short `photos.app.goo.gl` link is a page rather than a
+  picture, and that page refuses to be read from another site, so the editor cannot make
+  the swap for you. It says as much if you paste one.
+
+Either way what gets stored is `lh3.googleusercontent.com/...=w2000`: Google's own image
+server, no query string, and Google does the resizing. A picture that stops being shared
+stops loading, which is the one thing to keep in mind.
 
 `npm run dev` keeps **Upload**, so pictures added while developing still land in the
 archive and stay versioned. The published editor has the link field only.
+
+A sidebar picture row holds one picture, or two side by side: open its ⇄ and pick
+*Static* or *Grid*. Two is the limit, because a sidebar column is narrow. Floating is not
+offered there, since the column is already the frame.
 
 **Shape** is optional. Left on *Original* a picture keeps its own proportions; choosing a
 ratio cuts it to exactly that shape, which is what lines a grid row up and what stops the

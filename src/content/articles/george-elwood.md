@@ -5,9 +5,12 @@ ooc: true
 nation: esu
 infobox:
   - { image: "/assets/old-media/media/george-elwood-1.jpg", caption: "" }
+  - { office: "Member of the Politburo", term: "Incumbent | October 14th, 1922 –" }
   - { label: "Supreme Protector", value: "[[archer-maine]]" }
+  - { office: "Director of the State Intelligence Service", term: "Incumbent | June 1st, 1929 –" }
   - { label: "Supreme Protector", value: "Archer Maine" }
   - { label: "Preceded by", value: "Office Established" }
+  - { office: "Director of the Military Intelligence Service", term: "October 14th, 1922 – May 31st, 1929" }
   - { label: "Supreme Protector", value: "Archer Maine" }
   - { label: "Preceded by", value: "Myron Lowry" }
   - { label: "Succeeded by", value: "Office Defunct" }

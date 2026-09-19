@@ -31,6 +31,10 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 <Base title="Editor" chrome={false} wide>
   <div class="ed">
     <div class="ed-tools">
+      <button id="back" type="button" title="Back to the article" disabled>
+        <svg viewBox="0 0 16 16"><path d="M13.2 8H3.4M7.6 3.8 3.2 8l4.4 4.2"/></svg>
+      </button>
+      <span class="div"></span>
       <div class="drop">
         <button id="file" type="button">File <span class="caret">▾</span></button>
         <div class="drop-menu list" id="file-menu" hidden>
@@ -141,6 +145,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         </div>
       </div>
 
+      <button id="settings-btn" type="button" title="Page settings"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="4.6"/><circle cx="8" cy="8" r="2.1"/><path d="M8 1.7v2.3M8 12v2.3M14.3 8H12M4 8H1.7M12.46 3.54 10.83 5.17M5.17 10.83 3.54 12.46M12.46 12.46 10.83 10.83M5.17 5.17 3.54 3.54"/></svg></button>
+
       <span class="spacer"></span>
       <span id="status" class="status"></span>
       <span class="save-group">
@@ -159,9 +165,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           Changes <span class="cart-n" id="cart-n">0</span>
         </button>
       </span>
-      <button id="settings-btn" type="button" title="Page settings">
-        <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.4v2M8 12.6v2M14.6 8h-2M3.4 8h-2M12.7 3.3l-1.4 1.4M4.7 11.3l-1.4 1.4M12.7 12.7l-1.4-1.4M4.7 4.7 3.3 3.3"/></svg>
-      </button>
       <div class="drop">
         <button id="more" type="button" title="More">⋯</button>
         <div class="drop-menu right list" id="more-menu" hidden>
@@ -552,10 +555,18 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const cellNow = (sel.anchorNode?.nodeType === 1 ? sel.anchorNode : sel.anchorNode?.parentElement)
         ?.closest?.('td, th');
       if (cellNow) {
-        const box = cellNow.querySelector('.ce');
+        // The writer's own box, and only one sitting directly in the cell: a picture
+        // row holds a box per picture, and sweeping into the first would swallow the
+        // rest of the row.
+        const box = [...cellNow.children].find((n) => n.classList.contains('ce'));
+        // What execCommand can strand beside it is text or an inline mark. Everything
+        // else in the cell is the editor's own furniture and stays where it is.
+        // Rescuing by exclusion instead put the row controls' own labels into two
+        // published articles, since a control is a div and only buttons were skipped.
+        const loose = (n) => n.nodeType === 3
+          || (n.nodeType === 1 && /^(IMG|A|I|B|EM|STRONG|SPAN|BR|CODE|SUP|SUB)$/.test(n.tagName));
         if (box) {
-          const stray = [...cellNow.childNodes].filter(
-            (n) => n !== box && !(n.nodeType === 1 && n.tagName === 'BUTTON'));
+          const stray = [...cellNow.childNodes].filter((n) => n !== box && loose(n));
           stray.reverse().forEach((n) => box.insertBefore(n, box.firstChild));
         }
       }
@@ -598,10 +609,13 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 
     function ibRow(r = {}) {
       const kind = r.pair ? 'pair'
+        : r.office != null ? 'office'
         : r.section != null ? 'section'
-        : r.image != null ? 'image'
+        // Both shapes of a picture row: one picture, or the list of two.
+        : (r.image != null || r.images) ? 'image'
         : r.label == null ? 'full' : 'row';
-      const tr = el('tr', kind === 'section' ? 'ib-section' : kind === 'pair' ? 'ib-pair' : null);
+      const tr = el('tr', kind === 'section' ? 'ib-section' : kind === 'pair' ? 'ib-pair'
+        : kind === 'office' ? 'ib-office' : null);
       tr.dataset.kind = kind;
 
       if (kind === 'section') {
@@ -612,29 +626,42 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         tr.append(td);
       } else if (kind === 'image') {
         const td = el('td', 'ib-media'); td.colSpan = 2;
-        const img = el('img'); img.alt = '';
-        // Same as a picture in the article: the path is what the Media panel fills in,
-        // never something typed, so it stays out of the way.
-        const src = el('input', 'path'); src.value = r.image || '';
-        src.tabIndex = -1;
-        const choose = (e) => { e.stopPropagation(); openFor(src); };
-        const empty = el('button', 'fig-empty', 'No picture'); empty.type = 'button';
-        empty.onclick = choose;
-        const paint = () => {
-          if (src.value) { img.src = srcFor(src.value); img.hidden = false; } else img.hidden = true;
-          empty.hidden = !!src.value;
+
+        /** One picture slot: the picture, its caption, and the button that changes it. */
+        const slot = (d = {}) => {
+          const box = el('div', 'ib-slot');
+          const img = el('img'); img.alt = '';
+          // Same as a picture in the article: the path is what the Media panel fills
+          // in, never something typed, so it stays out of the way.
+          const src = el('input', 'path'); src.value = d.src || '';
+          src.tabIndex = -1;
+          const choose = (e) => { e.stopPropagation(); openFor(src); };
+          const empty = el('button', 'fig-empty', 'No picture'); empty.type = 'button';
+          empty.onclick = choose;
+          const paint = () => {
+            if (src.value) { img.src = srcFor(src.value); img.hidden = false; } else img.hidden = true;
+            empty.hidden = !!src.value;
+          };
+          img.onerror = () => { img.hidden = true; };
+          src.oninput = () => { paint(); sync(); };
+          paint();
+          const tools = el('div', 'fig-tools');
+          const swap = el('button', null, '⇄'); swap.type = 'button'; swap.title = 'Change this picture';
+          swap.onmousedown = (e) => e.preventDefault();
+          swap.onclick = choose;
+          tools.append(swap);
+          box.append(img, empty, src, editable(esc(d.caption || ''), 'Caption', lineBreak), tools);
+          return box;
         };
-        img.onerror = () => { img.hidden = true; };
-        src.oninput = () => { paint(); sync(); };
-        paint();
-        const tools = el('div', 'fig-tools');
-        const swap = el('button', null, '⇄'); swap.type = 'button'; swap.title = 'Change this picture';
-        swap.onmousedown = (e) => e.preventDefault();
-        swap.onclick = choose;
-        tools.append(swap);
+
+        // One picture, or two side by side. A sidebar column is narrow, so two is
+        // as many as will read.
+        const held = r.images?.length ? r.images.slice(0, 2) : [{ src: r.image || '', caption: r.caption || '' }];
+        held.forEach((d) => td.append(slot(d)));
+        td.dataset.slots = held.length;
         const c = controls(tr);
         c.prepend(ibAddMenu(tr));
-        td.append(img, empty, src, editable(esc(r.caption || ''), 'Caption', lineBreak), tools, c);
+        td.append(c);
         tr.append(td);
       } else if (kind === 'pair') {
         // Two lists side by side, as the belligerents of a war. One item per line.
@@ -648,6 +675,20 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           if (i === 1) td.append(c);
           tr.append(td);
         });
+      } else if (kind === 'office') {
+        // An office and the term served in it. Two rows read as two separate things,
+        // so this is one row holding both, the way the old documents had it.
+        const td = el('td'); td.colSpan = 2;
+        const c = controls(tr);
+        c.prepend(ibAddMenu(tr));
+        const post = editable(mdToHtml(r.office || ''), 'Office', lineBreak);
+        const term = editable(mdToHtml(r.term || ''), 'Term', lineBreak);
+        // Named so the band is set the same here as on the page: the editor shows
+        // the row, not a pair of boxes standing in for it.
+        post.classList.add('off-post');
+        term.classList.add('off-term');
+        td.append(post, term, c);
+        tr.append(td);
       } else if (kind === 'full') {
         // A value with no field name, spanning both columns, as a casualty total.
         const td = el('td', 'ib-full'); td.colSpan = 2;
@@ -678,8 +719,19 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       return [...ib.querySelectorAll('tr[data-kind]')].map((tr) => {
         const ce = (sel) => tr.querySelector(sel);
         if (tr.dataset.kind === 'section') return { section: htmlToMd(ce('.ce')).trim() };
+        if (tr.dataset.kind === 'office') {
+          const [post, term] = tr.querySelectorAll('.ce');
+          return { office: htmlToMd(post).trim(), term: htmlToMd(term).trim() };
+        }
         if (tr.dataset.kind === 'image') {
-          return { image: ce('input.path').value.trim(), caption: htmlToMd(ce('.ce')).trim() };
+          const slots = [...tr.querySelectorAll('.ib-slot')].map((b) => ({
+            src: b.querySelector('input.path').value.trim(),
+            caption: htmlToMd(b.querySelector('.ce')).trim(),
+          }));
+          // One picture writes the plain form it always had; two write a list.
+          return slots.length > 1
+            ? { images: slots }
+            : { image: slots[0]?.src ?? '', caption: slots[0]?.caption ?? '' };
         }
         const asLines = (cell) => htmlToMd(cell, '\n').split('\n').map((x) => x.trim()).filter(Boolean);
         if (tr.dataset.kind === 'pair') {
@@ -700,13 +752,17 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       });
     }
 
-    const SEEDS = {
-      Field: () => ({ label: '', value: '' }),
-      Heading: () => ({ section: '' }),
-      Image: () => ({ image: '', caption: '' }),
-      'Two lists': () => ({ pair: [{ heading: '', items: [] }, { heading: '', items: [] }] }),
-      'Full-width value': () => ({ value: '' }),
-    };
+    // The three rows every infobox is made of, then the two that answer a shape a
+    // plain field cannot. A null is the line between the two groups.
+    const SEEDS = [
+      ['Heading', () => ({ section: '' })],
+      ['Field', () => ({ label: '', value: '' })],
+      ['Image', () => ({ image: '', caption: '' })],
+      null,
+      ['Full-Width Value', () => ({ value: '' })],
+      ['Parallel Lists', () => ({ pair: [{ heading: '', items: [] }, { heading: '', items: [] }] })],
+      ['Occupation', () => ({ office: '', term: '' })],
+    ];
 
     /** The + on a row's controls, which adds the next row right below it. */
     function ibAddMenu(tr) {
@@ -716,7 +772,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       b.title = 'Add a row below';
       const menu = el('div', 'drop-menu ctl-menu');
       menu.hidden = true;
-      for (const [label, seed] of Object.entries(SEEDS)) {
+      for (const entry of SEEDS) {
+        if (!entry) { menu.append(el('div', 'menu-sep')); continue; }
+        const [label, seed] = entry;
         const item = el('button', null, label);
         item.type = 'button';
         item.onmousedown = (e) => e.preventDefault();
@@ -1290,7 +1348,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const some = (v) => (Array.isArray(v) ? v.length : v !== '');
       const filled = readInfobox().filter((r) =>
         r.pair ? r.pair.some((c) => c.heading !== '' || c.items.length)
+        : r.office != null ? r.office !== '' || r.term !== ''
         : r.section != null ? r.section !== ''
+        : r.images ? r.images.some((i) => i.src)
         : r.image != null ? r.image !== ''
         : r.label == null ? some(r.value)
         : r.label !== '' && some(r.value));
@@ -1300,7 +1360,21 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       if (rows.length) {
         fm.push('infobox:');
         for (const r of rows) {
+          if (r.office != null) { fm.push(`  - { office: ${q(r.office)}, term: ${q(r.term)} }`); continue; }
           if (r.section != null) { fm.push(`  - { section: ${q(r.section)} }`); continue; }
+          if (r.images) {
+            // Only filled slots are written, and one of them is the plain single form,
+            // or the file would change shape again the next time it was saved.
+            const got = r.images.filter((i) => i.src);
+            if (got.length > 1) {
+              fm.push('  - images:');
+              for (const im of got) fm.push(`      - { src: ${q(im.src)}, caption: ${q(im.caption)} }`);
+            } else {
+              const one = got[0] || { src: '', caption: '' };
+              fm.push(`  - { image: ${q(one.src)}, caption: ${q(one.caption)} }`);
+            }
+            continue;
+          }
           if (r.image != null) { fm.push(`  - { image: ${q(r.image)}, caption: ${q(r.caption)} }`); continue; }
           if (r.pair) {
             fm.push('  - pair:');
@@ -1637,6 +1711,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           : 'choose the nation in page settings first.';
         $('#go-navbox').disabled = !n;
       }
+      // Where this page lives when it is not being edited. A navbox has no page of
+      // its own, so the portal carrying it is the nearest thing to go back to.
+      const to = !pageSlug ? ''
+        : pageKind === 'article' ? (pageSlug === 'home' ? '/' : `/${pageSlug}`)
+        : pageKind === 'navbox' && pageSlug === 'site' ? '/'
+        : `/portal/${pageSlug}`;
+      $('#back').dataset.to = to;
+      $('#back').disabled = !to;
+
       $('#navbox-note').textContent = !$('#f-navbox-on').checked ? 'none'
         : $('#f-nation').value ? `${$('#f-nation').selectedOptions[0].textContent}'s navbox`
         : 'site navbox';
@@ -1793,6 +1876,11 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       pickTarget = null;      // the panel is shut; it is not aimed at anything now
     });
     $('#settings-btn').onclick = () => { $('#settings').hidden = !$('#settings').hidden; };
+
+    $('#back').onclick = () => {
+      const to = $('#back').dataset.to;
+      if (to) location.href = BASE.replace(/\/$/, '') + to;
+    };
     $('#source').onclick = () => { $('#source-panel').hidden = false; };
     $('#source-close').onclick = () => { $('#source-panel').hidden = true; };
 
@@ -2259,6 +2347,18 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             if (!/^\s*- /.test(l)) continue;
             const body = l.replace(/^\s*- /, '');
             if (body.startsWith('{')) { rows.push(inlineObj(body)); continue; }
+            if (/^images:/.test(body)) {
+              const images = [];
+              let k2 = k + 1;
+              while (k2 < block.length && indent(block[k2]) > indent(l)) {
+                const im = block[k2].match(/^\s*- (\{.*\})\s*$/);
+                if (im) images.push(inlineObj(im[1]));
+                k2++;
+              }
+              rows.push({ images });
+              k = k2 - 1;
+              continue;
+            }
             if (/^pair:/.test(body)) {
               const pair = [];
               let k2 = k + 1;
@@ -2768,27 +2868,111 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
        the article keeps the link. Only hosts that serve a stable direct link are taken,
        because the alternative is an article whose pictures quietly vanish. */
 
-    const HOSTS = ['i.ibb.co', 'ibb.co', 'i.imgur.com', 'imgur.com', 'files.catbox.moe'];
+    const HOSTS = ['i.ibb.co', 'ibb.co', 'i.imgur.com', 'imgur.com', 'files.catbox.moe',
+      'drive.google.com', 'lh3.googleusercontent.com'];
     const hostOf = (u) => { try { return new URL(u).hostname.toLowerCase().replace(/^www\./, ''); } catch { return ''; } };
     const allowed = (u) => HOSTS.includes(hostOf(u));
+
+    /**
+     * Neither Drive nor Photos hands you a picture's own address. The share button gives
+     * a page, and the picture sits at a fixed address elsewhere. Drive writes the file's
+     * id into every shape of link it produces, so that address can be built here. Photos
+     * does not, and its share page refuses cross-origin reads, so the address has to come
+     * off the picture itself with Copy image address.
+     */
+    const DRIVE_ID = /(?:\/file\/d\/|[?&](?:id|docid)=|\/d\/)([A-Za-z0-9_-]{20,})/;
+    const PHOTO_ID = /^https:\/\/lh3\.googleusercontent\.com\/(pw\/[A-Za-z0-9_-]+)/;
+    // Wider than any column on the site, and Google does the scaling rather than the reader.
+    const SIZE = 2000;
+
+    function normaliseLink(u) {
+      const host = hostOf(u);
+      if (host !== 'drive.google.com' && host !== 'lh3.googleusercontent.com') return u;
+      const photo = u.match(PHOTO_ID);
+      // Whatever size the copied address asked for is dropped: a pasted one often carries
+      // a crop, and every picture here should arrive whole and at a predictable width.
+      if (photo) return `https://lh3.googleusercontent.com/${photo[1]}=w${SIZE}`;
+      const id = (u.match(DRIVE_ID) || [])[1];
+      // Drive's own /thumbnail address only redirects here, and carries a query string
+      // that the markdown escapes twice on the way to the page. This form has neither.
+      return id ? `https://lh3.googleusercontent.com/d/${id}=w${SIZE}` : u;
+    }
+
+    /** What is wrong with this link, or '' if nothing is. */
+    function linkTrouble(u) {
+      const host = hostOf(u);
+      if (!host) return 'That is not a link.';
+      if (host === 'photos.google.com' || host.endsWith('goo.gl')) {
+        return 'That is the share page rather than the picture. Open it, right-click the '
+          + 'picture, Copy image address, and paste that.';
+      }
+      if (!allowed(u)) {
+        return /discord/.test(host)
+          ? 'Discord links expire after a few days. Upload it to imgbb instead.'
+          : `${host} is not on the list.`;
+      }
+      if (host === 'drive.google.com' && !DRIVE_ID.test(u)) {
+        return 'That Drive link has no file id in it. Use Share \u2192 Copy link.';
+      }
+      if (host === 'lh3.googleusercontent.com' && !PHOTO_ID.test(u) && !DRIVE_ID.test(u)) {
+        return 'That is a Google address but not a picture. Use Copy image address.';
+      }
+      return '';
+    }
 
     function linkNote() {
       const raw = $('#mp-link').value.trim();
       const note = $('#mp-link-note');
-      if (!raw) { note.textContent = `Accepted: ${HOSTS.filter((h) => !h.startsWith('i.')).join(', ')}`; note.className = 'mp-hint'; return; }
+      if (!raw) {
+        note.textContent = 'Accepted: imgbb, imgur, catbox, Google Drive, Google Photos';
+        note.className = 'mp-hint';
+        return;
+      }
+      const bad = linkTrouble(raw);
       const host = hostOf(raw);
-      if (!host) { note.textContent = 'That is not a link.'; note.className = 'mp-hint bad'; return; }
-      if (allowed(raw)) { note.textContent = `${host} \u2713`; note.className = 'mp-hint ok'; return; }
-      note.textContent = /discord/.test(host)
-        ? 'Discord links expire after a few days. Upload it to imgbb instead.'
-        : `${host} is not on the list. Upload it to imgbb instead.`;
-      note.className = 'mp-hint bad';
+      note.textContent = bad
+        || (PHOTO_ID.test(raw) ? 'Google Photos \u2713  the picture must be shared'
+        : host.includes('google') ? 'Google Drive \u2713  the file must be shared with anyone who has the link'
+        : `${host} \u2713`);
+      note.className = 'mp-hint ' + (bad ? 'bad' : 'ok');
     }
 
     // The picture the Media panel was opened for. Working this out from whatever has
     // focus does not survive the panel taking focus itself, so the caller says outright.
     let pickTarget = null;
-    const openFor = (field) => { pickTarget = field; openMedia(); };
+    const openFor = (field) => {
+      pickTarget = field;
+      // A sidebar picture cannot float: the column is the frame. Choosing Static or a
+      // Grid there changes how many pictures the row holds instead.
+      const inSidebar = !!field?.closest?.('.ib-media');
+      document.querySelector('[data-as="float"]')?.toggleAttribute('hidden', inSidebar);
+      if (inSidebar) {
+        const slots = field.closest('.ib-media').querySelectorAll('.ib-slot').length;
+        const want = slots > 1 ? 'grid' : 'image';
+        document.querySelectorAll('[data-as]').forEach((x) => x.classList.toggle('on', x.dataset.as === want));
+        insertAs = want;
+      }
+      openMedia();
+    };
+
+    /** Make a sidebar picture row hold one picture or two. */
+    function setSidebarSlots(cell, n) {
+      const tr = cell.closest('tr');
+      const rows = readInfobox();
+      const i = [...ib.querySelectorAll('tr[data-kind]')].indexOf(tr);
+      if (i < 0) return;
+      const cur = rows[i];
+      const held = cur.images || [{ src: cur.image || '', caption: cur.caption || '' }];
+      if (held.length === n) return;
+      const next = n > held.length ? [...held, { src: '', caption: '' }] : held.slice(0, n);
+      rows[i] = next.length > 1
+        ? { images: next }
+        : { image: next[0].src, caption: next[0].caption };
+      // Rebuilt from the row data rather than by moving nodes, so every slot comes
+      // out with its own handlers.
+      setInfobox(rows);
+      sync();
+    }
 
     // Static, floating or a grid: whichever the Media panel is set to, and the shape
     // the picture is cut to, which is its own proportions unless one is chosen.
@@ -2858,6 +3042,10 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     document.querySelectorAll('[data-as]').forEach((b) => b.onclick = () => {
       document.querySelectorAll('[data-as]').forEach((x) => x.classList.toggle('on', x === b));
       insertAs = b.dataset.as;
+      // Aimed at the sidebar, this is a choice about that row rather than about what
+      // the next insert will be.
+      const cell = pickTarget?.closest?.('.ib-media');
+      if (cell) setSidebarSlots(cell, insertAs === 'grid' ? 2 : 1);
     });
     document.querySelectorAll('[data-ratio]').forEach((b) => b.onclick = () => {
       document.querySelectorAll('[data-ratio]').forEach((x) => x.classList.toggle('on', x === b));
@@ -2877,8 +3065,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const go = () => {
         const u = $('#mp-link').value.trim();
         if (!u) return;
-        if (!allowed(u)) { linkNote(); flash('That host is not accepted.', true); return; }
-        useImage(u);
+        const bad = linkTrouble(u);
+        if (bad) { linkNote(); flash(bad, true); return; }
+        useImage(normaliseLink(u));
         $('#mp-link').value = '';
         linkNote();
       };
@@ -3542,12 +3731,14 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       border: 1px solid var(--rule); border-radius: 3px; padding: 3px 6px; cursor: pointer;
     }
     .fig-tools button:hover { color: var(--ink); background: var(--band); }
-    .blk figure:hover .fig-tools, .blk figure:focus-within .fig-tools,
-    .ib-media:hover .fig-tools, .ib-media:focus-within .fig-tools { opacity: 1; }
+    .blk figure:hover .fig-tools, .blk figure:focus-within .fig-tools { opacity: 1; }
     /* The sidebar's picture cell behaves like a figure: hidden path, corner button. */
     .ib-media { position: relative; }
+    .ib-media[data-slots="2"] { display: flex; gap: 8px; align-items: flex-start; }
+    .ib-slot { position: relative; flex: 1; min-width: 0; }
     .ib-media input.path { position: absolute; width: 1px; height: 1px; padding: 0; border: 0; opacity: 0; }
     .ib-media .fig-empty { height: 60px; }
+    .ib-slot:hover .fig-tools, .ib-slot:focus-within .fig-tools { opacity: 1; }
     .sub-add {
       font: 12px var(--body); color: var(--muted); background: transparent;
       border: 1px dashed var(--rule); border-radius: 3px; padding: 5px 12px; cursor: pointer;

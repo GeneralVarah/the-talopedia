@@ -12,7 +12,10 @@ const ARROW = {
  * Where a picture lives. A path inside the site is answered under its base; a link to
  * an image host is already whole and is left exactly as it was written.
  */
-export const asset = (p) => (/^(https?:)?\/\//i.test(p) ? p : url(p));
+export const asset = (p) => {
+  const whole = p.replace(/&(?:amp;|#x26;|#38;)/gi, '&');
+  return /^(https?:)?\/\//i.test(whole) ? whole : url(p);
+};
 
 export function icon(slug) {
   const src = iconFor(slug);

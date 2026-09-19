@@ -7,6 +7,7 @@ nation: nichirin
 infobox:
   - { image: "/assets/old-media/media/uzume-1.jpg", caption: "" }
   - { image: "/assets/old-media/media/uzume-2.jpg", caption: "" }
+  - { office: "Head of SEELE Operations In Valtheria", term: "1 March, 1922 –" }
   - { label: "SEELE Director of Intelligence", value: "Hideaki Katsuragi" }
   - { label: "Preceded by", value: "Position Established" }
   - { section: "Personal Details" }
