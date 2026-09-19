@@ -263,10 +263,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             <li>Copy it. Starts with <code>ghp_</code>. Shown once.</li>
             <li>Paste in box above.</li>
           </ol>
-          <p class="pub-note">Not a member of <b id="pub-repo"></b>? Fine. Work goes to your own
-            fork, arrives as a pull request.</p>
-          <p class="pub-note">Token stays in this browser. Goes only to GitHub.
-            <b>Forget token</b> wipes it.</p>
+          <p class="pub-note">Your token stays in this browser and goes only to GitHub.</p>
         </details>
 
         <p class="pub-status" id="pub-status"></p>
@@ -2525,7 +2522,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         $('#pub-token').value = token.get();
         $('#pub-make').href = 'https://github.com/settings/tokens/new?scopes=public_repo'
           + `&description=${encodeURIComponent('The Talopedia editor')}`;
-        $('#pub-repo').textContent = REPO;
         $('#pub-help').open = !token.get();
         pubSay(token.get() ? '' : 'Paste a token to push.');
       };
