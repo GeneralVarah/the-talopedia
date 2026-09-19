@@ -5,6 +5,9 @@ ooc: true
 nation: esu
 infobox:
   - { image: "/assets/old-media/media/archer-maine-1.jpg", caption: "Official Portrait, 1934" }
+  - { section: "Supreme Protector of the Unity State" }
+  - { value: "Incumbent (1922 - Present)" }
+  - { section: "Chairman of the Communist Party of Elysia" }
   - { label: "Preceded by", value: "Office Established" }
   - label: "Preceded by"
     value:

@@ -5,6 +5,8 @@ type: character
 nation: varahmehr
 infobox:
   - { image: "/assets/old-media/media/hesam-pakdel-1.jpg", caption: "Official portrait, c. 1929" }
+  - { section: "Corporate Director of Kār-e Mehr Industrial Supply" }
+  - { value: "Incumbent | 1914 –" }
   - { label: "Preceded by", value: "Position Established" }
   - { section: "Personal Details" }
   - label: "Ethnicity"

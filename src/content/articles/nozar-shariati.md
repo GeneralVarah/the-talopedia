@@ -5,6 +5,8 @@ type: character
 nation: varahmehr
 infobox:
   - { image: "/assets/old-media/media/nozar-shariati-1.jpg", caption: "Portrait - A. Mozaffari, 1929" }
+  - { section: "Vazir-e Azam" }
+  - { value: "Incumbent | 1924 –" }
   - { label: "Faction", value: "Peymān-dārān" }
   - { label: "Term", value: "2nd (re-elected 1929)" }
   - { section: "Personal Details" }
