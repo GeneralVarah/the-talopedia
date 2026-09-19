@@ -412,10 +412,40 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       return out;
     }
 
+    /**
+     * Word processors mark emphasis with styles rather than tags, so a tag list alone
+     * reads a Google Docs paste as unformatted. These answer the same question the
+     * tags do, and Docs' own wrapper is the reason the negative cases are checked:
+     * every copied run arrives inside a <b style="font-weight:normal">.
+     */
+    function marksOf(n) {
+      const st = n.style || {};
+      const w = st.fontWeight;
+      const bold = w ? (w === 'bold' || w === 'bolder' || Number(w) >= 600)
+                     : (n.tagName === 'B' || n.tagName === 'STRONG');
+      const italic = st.fontStyle ? st.fontStyle === 'italic'
+                                  : (n.tagName === 'I' || n.tagName === 'EM');
+      const va = st.verticalAlign;
+      const sup = va === 'super' || n.tagName === 'SUP';
+      const sub = va === 'sub' || n.tagName === 'SUB';
+      return [bold && 'b', italic && 'i', sup && 'sup', sub && 'sub'].filter(Boolean);
+    }
+
+    /** A link's real target. Google rewrites every one it copies through a redirect. */
+    function hrefOf(n) {
+      const raw = n.getAttribute('href') || '';
+      const m = raw.match(/^https?:\/\/(?:www\.)?google\.[a-z.]+\/url\?(.*)$/i);
+      if (!m) return raw;
+      const q = new URLSearchParams(m[1]).get('q');
+      return q || raw;
+    }
+
     /** Strip a pasted fragment down to what this editor can represent. */
     function keepTokens(html) {
       const doc = new DOMParser().parseFromString(html, 'text/html');
-      const KEEP = new Set(['B', 'STRONG', 'I', 'EM', 'SUP', 'SUB', 'BR']);
+      // A block on the clipboard is a line here: the editor's own blocks are made by
+      // the writer, never by whatever the text was pasted out of.
+      const BLOCK = new Set(['P', 'DIV', 'LI', 'TR', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6']);
       const walk = (node) => {
         let out = '';
         for (const n of node.childNodes) {
@@ -424,17 +454,24 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           const tag = n.tagName;
           if (tag === 'IMG' && n.dataset.tok) {
             out += tokenHtml(n.dataset.tok, n.dataset.slug || n.getAttribute('src'));
-          } else if (tag === 'SPAN' && n.dataset.tok) {
-            out += tokenHtml(n.dataset.tok, n.dataset.slug || '');
-          } else if (tag === 'A' && n.dataset.slug) {
-            out += `<a href="#" data-slug="${esc(n.dataset.slug)}">${walk(n)}</a>`;
-          } else if (tag === 'BR') {
-            out += '<br>';
-          } else if (KEEP.has(tag)) {
-            out += `<${tag.toLowerCase()}>${walk(n)}</${tag.toLowerCase()}>`;
-          } else {
-            out += walk(n);
+            continue;
           }
+          if (tag === 'SPAN' && n.dataset.tok) {
+            out += tokenHtml(n.dataset.tok, n.dataset.slug || '');
+            continue;
+          }
+          if (tag === 'BR') { out += '<br>'; continue; }
+          if (tag === 'STYLE' || tag === 'SCRIPT' || tag === 'IMG') continue;
+
+          let inner = walk(n);
+          for (const mark of marksOf(n)) inner = inner.trim() ? `<${mark}>${inner}</${mark}>` : inner;
+          if (tag === 'A') {
+            const href = n.dataset.slug ? '#' : hrefOf(n);
+            const slug = n.dataset.slug ? ` data-slug="${esc(n.dataset.slug)}"` : '';
+            if (href && inner.trim()) inner = `<a href="${esc(href)}"${slug}>${inner}</a>`;
+          }
+          if (BLOCK.has(tag) && out && !out.endsWith('<br>') && inner.trim()) out += '<br>';
+          out += inner;
         }
         return out;
       };
@@ -481,10 +518,13 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           pasteGrid(cell, text);
           return;
         }
-        // Flags, icons and links survive a copy between fields; everything else
-        // arrives as plain text, because the editor has no styling to paste into.
-        if (html && /data-tok=|data-slug=/.test(html)) {
-          document.execCommand('insertHTML', false, keepTokens(html));
+        // Bold, italics, superscript and links come across from wherever the text
+        // was copied. Everything else is dropped, because the stylesheet is the
+        // Manual of Style and there is nothing else to paste into.
+        const clean = plainPaste || !html ? '' : keepTokens(html);
+        plainPaste = false;
+        if (clean.replace(/<[^>]*>/g, '').trim()) {
+          document.execCommand('insertHTML', false, clean);
           return;
         }
         document.execCommand('insertText', false, text);
@@ -496,6 +536,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       d.addEventListener('focusin', () => { focused = d; });
       return d;
     }
+
+    /**
+     * Set by the shortcut for pasting without formatting, and read by the next paste.
+     * The event itself does not say which shortcut opened it.
+     */
+    let plainPaste = false;
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === 'v' || e.key === 'V')) plainPaste = true;
+    }, true);
 
     let focused = null;      // last focused rich-text surface
     let lastPath = null;     // last focused image path field
@@ -1735,7 +1784,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     // A snapshot stack rather than execCommand('undo'): adding or removing a
     // block is not a text edit, so the browser's own history does not see it.
     const past = [], future = [];
-    let quiet = false, lastPush = 0;
+    let quiet = false, lastPush = 0, runStart = 0;
 
     function paintHistory() {
       $('#undo').disabled = past.length < 2;
@@ -1745,36 +1794,44 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       if (quiet) return;
       const now = JSON.stringify(snapshot());
       if (past.length && past[past.length - 1] === now) return;
-      // Typing coalesces into one step; a structural change always starts a new one.
+      // Typing coalesces into one step, but a run has a ceiling. Coalescing on the
+      // pause alone meant an uninterrupted stretch of typing became a single step, so
+      // one undo threw away everything back to the last time the writer stopped.
       const t = Date.now();
-      if (past.length > 1 && t - lastPush < 600) past.pop();
+      if (past.length > 1 && t - lastPush < 600 && t - runStart < 1500) past.pop();
+      else runStart = t;
       lastPush = t;
       past.push(now);
       if (past.length > 80) past.shift();
       future.length = 0;
       paintHistory();
     }
-    function step(from, to) {
-      if (from.length < 2) return;
-      to.push(from.pop());
+    /**
+     * Put a remembered state back without the page moving under the writer. restore()
+     * rebuilds the body and the sidebar, which drops the scroll position to wherever
+     * the shorter document ends; put it back where it was.
+     */
+    function apply(state) {
+      const y = window.scrollY;
       quiet = true;
-      restore(JSON.parse(from[from.length - 1]));
+      restore(state);
       quiet = false;
       paintCanvas(); paintToc();
       $('#preview').textContent = toMarkdown();
       paintHistory();
+      window.scrollTo(0, y);
+    }
+    function step(from, to) {
+      if (from.length < 2) return;
+      to.push(from.pop());
+      apply(JSON.parse(from[from.length - 1]));
     }
     $('#undo').onclick = () => step(past, future);
     $('#redo').onclick = () => {
       if (!future.length) return;
-      quiet = true;
       const next = future.pop();
       past.push(next);
-      restore(JSON.parse(next));
-      quiet = false;
-      paintCanvas(); paintToc();
-      $('#preview').textContent = toMarkdown();
-      paintHistory();
+      apply(JSON.parse(next));
     };
 
     function sync() {
@@ -2720,7 +2777,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     const slugify = (s) => s.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     let slugTouched = false;
 
-    $('#f-slug').oninput = () => { slugTouched = true; };
+    $('#f-slug').oninput = () => { slugTouched = true; showUrl($('#f-slug').value); };
     if (DEV) {
       const slugBox = $('#slug');
       // Typing in either box is the same act, and both show the same name.
@@ -2985,7 +3042,22 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     /** The file name this page is saved under, wherever it was typed. Declared
         rather than assigned: it is called from further up the file than it sits. */
     function slugValue() { return $('#f-slug').value || $('#slug')?.value || ''; }
-    function setSlug(v) { $('#f-slug').value = v; if ($('#slug')) $('#slug').value = v; }
+    function setSlug(v) {
+      $('#f-slug').value = v;
+      if ($('#slug')) $('#slug').value = v;
+      showUrl(v);
+    }
+
+    /**
+     * Keep the address bar naming the page that would be written. A new page made by
+     * copying an old one used to leave the old one's address on screen, which reads
+     * like the original is still open and about to be written over.
+     */
+    function showUrl(slug) {
+      const prefix = pageKind === 'article' ? '' : `${pageKind}:`;
+      const q = slug ? `?a=${encodeURIComponent(prefix + slug)}` : '';
+      history.replaceState(null, '', location.pathname + q);
+    }
 
     // The picture the Media panel was opened for. Working this out from whatever has
     // focus does not survive the panel taking focus itself, so the caller says outright.
