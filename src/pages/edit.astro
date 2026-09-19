@@ -613,16 +613,28 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       } else if (kind === 'image') {
         const td = el('td', 'ib-media'); td.colSpan = 2;
         const img = el('img'); img.alt = '';
-        const src = el('input', 'path'); src.placeholder = '/assets/flags/nichirin.png'; src.value = r.image || '';
+        // Same as a picture in the article: the path is what the Media panel fills in,
+        // never something typed, so it stays out of the way.
+        const src = el('input', 'path'); src.value = r.image || '';
+        src.tabIndex = -1;
+        const choose = (e) => { e.stopPropagation(); openFor(src); };
+        const empty = el('button', 'fig-empty', 'No picture'); empty.type = 'button';
+        empty.onclick = choose;
         const paint = () => {
           if (src.value) { img.src = srcFor(src.value); img.hidden = false; } else img.hidden = true;
+          empty.hidden = !!src.value;
         };
         img.onerror = () => { img.hidden = true; };
         src.oninput = () => { paint(); sync(); };
         paint();
+        const tools = el('div', 'fig-tools');
+        const swap = el('button', null, '⇄'); swap.type = 'button'; swap.title = 'Change this picture';
+        swap.onmousedown = (e) => e.preventDefault();
+        swap.onclick = choose;
+        tools.append(swap);
         const c = controls(tr);
         c.prepend(ibAddMenu(tr));
-        td.append(img, src, editable(esc(r.caption || ''), 'Caption', lineBreak), c);
+        td.append(img, empty, src, editable(esc(r.caption || ''), 'Caption', lineBreak), tools, c);
         tr.append(td);
       } else if (kind === 'pair') {
         // Two lists side by side, as the belligerents of a war. One item per line.
@@ -798,9 +810,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         add.type = 'button';
         add.onclick = (e) => {
           e.stopPropagation();          // or the document handler shuts the menu again
-          addOne().querySelector('input').focus();
+          const fresh = addOne();
           sync();
-          openMedia();
+          openFor(fresh.querySelector('input.path'));
         };
         b.append(wrap, add);
       } else if (kind === 'float') {
@@ -896,7 +908,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       // because it is what the panel aims at, and stays out of sight otherwise.
       const src = el('input', 'path'); src.value = d.src || '';
       src.tabIndex = -1;
-      const choose = (e) => { e.stopPropagation(); src.focus(); openMedia(); };
+      const choose = (e) => { e.stopPropagation(); openFor(src); };
       // Only until a picture is chosen: an empty figure has nothing to see or aim at.
       const empty = el('button', 'fig-empty', 'No picture'); empty.type = 'button';
       empty.onclick = choose;
@@ -924,7 +936,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       lay.type = 'button';
       lay.onmousedown = (e) => e.preventDefault();
       lay.onclick = (e) => { e.stopPropagation(); cycleLayout(f); };
-      requestAnimationFrame(() => {
+      // A timer, not an animation frame: a frame never comes while the tab is in the
+      // background, and a picture added there would keep a blank, hidden button forever.
+      setTimeout(() => {
         const kind = f.closest('.blk')?.dataset.kind;
         if (!LAYOUTS.includes(kind)) { lay.hidden = true; return; }
         const next = LAYOUTS[(LAYOUTS.indexOf(kind) + 1) % LAYOUTS.length];
@@ -1774,7 +1788,10 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     dropdown($('#more'), $('#more-menu'));
     dropdown($('#style'), $('#style-menu'));
     dropdown($('#insert'), $('#insert-menu'));
-    document.addEventListener('click', () => document.querySelectorAll('.drop-menu').forEach((m) => m.hidden = true));
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.drop-menu').forEach((m) => m.hidden = true);
+      pickTarget = null;      // the panel is shut; it is not aimed at anything now
+    });
     $('#settings-btn').onclick = () => { $('#settings').hidden = !$('#settings').hidden; };
     $('#source').onclick = () => { $('#source-panel').hidden = false; };
     $('#source-close').onclick = () => { $('#source-panel').hidden = true; };
@@ -2569,6 +2586,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         pubSay(token.get() ? '' : 'Paste a token to push.');
       };
       $('#pub-close').onclick = () => { panel.hidden = true; };
+
       panel.onclick = (e) => { if (e.target === panel) panel.hidden = true; };
       $('#pub-token').oninput = () => token.set($('#pub-token').value.trim());
       $('#pub-forget').onclick = () => { token.set(''); $('#pub-token').value = ''; pubSay('Token forgotten.'); };
@@ -2767,12 +2785,23 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       note.className = 'mp-hint bad';
     }
 
+    // The picture the Media panel was opened for. Working this out from whatever has
+    // focus does not survive the panel taking focus itself, so the caller says outright.
+    let pickTarget = null;
+    const openFor = (field) => { pickTarget = field; openMedia(); };
+
     // Static, floating or a grid: whichever the Media panel is set to, and the shape
     // the picture is cut to, which is its own proportions unless one is chosen.
     let insertAs = 'image';
     let insertRatio = '';
 
     function useImage(path) {
+      // Whatever the panel was opened for wins, then a field still being typed in.
+      if (pickTarget?.isConnected) {
+        const t = pickTarget;
+        pickTarget = null;
+        return fill(t, path);
+      }
       const field = activeField();
       if (field) return fill(field, path);
       const near = activeText()?.closest?.('figure, tr[data-kind="image"]');
@@ -3513,7 +3542,12 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       border: 1px solid var(--rule); border-radius: 3px; padding: 3px 6px; cursor: pointer;
     }
     .fig-tools button:hover { color: var(--ink); background: var(--band); }
-    .blk figure:hover .fig-tools, .blk figure:focus-within .fig-tools { opacity: 1; }
+    .blk figure:hover .fig-tools, .blk figure:focus-within .fig-tools,
+    .ib-media:hover .fig-tools, .ib-media:focus-within .fig-tools { opacity: 1; }
+    /* The sidebar's picture cell behaves like a figure: hidden path, corner button. */
+    .ib-media { position: relative; }
+    .ib-media input.path { position: absolute; width: 1px; height: 1px; padding: 0; border: 0; opacity: 0; }
+    .ib-media .fig-empty { height: 60px; }
     .sub-add {
       font: 12px var(--body); color: var(--muted); background: transparent;
       border: 1px dashed var(--rule); border-radius: 3px; padding: 5px 12px; cursor: pointer;
