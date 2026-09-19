@@ -11,6 +11,18 @@
  */
 import { execFileSync } from 'node:child_process';
 
+/** Which nation each contributor writes for. A GitHub account is not a byline. */
+export const WRITES_FOR = {
+  that1sealguy: 'esu',
+  SwiftorArrow: 'skjarnland',
+  auroruse: 'nichirin',
+  'zezelandnationstates-hash': 'karjania',
+  Aetheryis: 'cortesia',
+  GeneralVarah: 'varahmehr',
+  'khanategolden-tech': 'shivon',
+  'mrrv533-creator': 'alemannia',
+};
+
 const git = (...args) =>
   execFileSync('git', args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
 

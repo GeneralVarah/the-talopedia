@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-import { contributors } from '../lib/contributors.mjs';
+import { contributors, WRITES_FOR } from '../lib/contributors.mjs';
+import { nation, url } from '../lib/registry.mjs';
 
 const board = contributors();
 const top = board?.[0]?.lines ?? 1;
@@ -26,7 +27,15 @@ const top = board?.[0]?.lines ?? 1;
               <tr>
                 <td class="rank">{i + 1}</td>
                 <td>
-                  <a href={`https://github.com/${c.name}`} rel="noopener">{c.name}</a>
+                  {(() => { const n = nation(WRITES_FOR[c.name]); return n ? (
+                    <>
+                      {n.flag && <img class="ico" src={url(n.flag)} alt="" loading="lazy" />}
+                      <a href={url(`/portal/${n.id}`)}>{n.name}</a>
+                      {' '}<a class="who" href={`https://github.com/${c.name}`} rel="noopener">({c.name})</a>
+                    </>
+                  ) : (
+                    <a class="who" href={`https://github.com/${c.name}`} rel="noopener">{c.name}</a>
+                  ); })()}
                   <span class="bar" style={`width:${Math.max(2, Math.round((c.lines / top) * 100))}%`}></span>
                 </td>
                 <td class="num">{c.lines.toLocaleString()}</td>
@@ -35,11 +44,6 @@ const top = board?.[0]?.lines ?? 1;
             ))}
           </tbody>
         </table>
-        <p class="note">
-          Lines of article, portal and navbox text added, counted from the commit history.
-          The conversion that first brought every article over from Google Docs is left out,
-          along with anything written with Claude, since neither says who wrote the prose.
-        </p>
       </>
     )}
   </div>
@@ -57,5 +61,6 @@ const top = board?.[0]?.lines ?? 1;
     display: block; height: 3px; margin-top: 5px; border-radius: 2px;
     background: var(--link); opacity: .55;
   }
-  .note { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .board .ico { margin-right: 5px; vertical-align: -2px; }
+  .board .who { color: var(--muted); }
 </style>
