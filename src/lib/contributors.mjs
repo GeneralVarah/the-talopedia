@@ -47,15 +47,23 @@ export function contributors() {
     const [hash, name, trailers = ''] = head.split('\t');
     if (hash === migration || /claude/i.test(trailers) || !name) continue;
     let added = 0;
+    const touched = [];
     for (const row of rows) {
       const [a, , path] = row.split('\t');
-      if (/^\d+$/.test(a) && path) added += Number(a);
+      if (!/^\d+$/.test(a) || !path) continue;
+      added += Number(a);
+      // Articles only for the count: a portal and a navbox are scaffolding around
+      // someone else's writing, and nobody would call editing one an article.
+      if (Number(a) && path.startsWith('src/content/articles/')) touched.push(path);
     }
     if (!added) continue;
-    const seen = tally.get(name) || { name, lines: 0, commits: 0 };
+    const seen = tally.get(name) || { name, lines: 0, commits: 0, articles: new Set() };
     seen.lines += added;
     seen.commits += 1;
+    for (const t of touched) seen.articles.add(t);
     tally.set(name, seen);
   }
-  return [...tally.values()].sort((a, b) => b.lines - a.lines || a.name.localeCompare(b.name));
+  return [...tally.values()]
+    .map((c) => ({ ...c, articles: c.articles.size }))
+    .sort((a, b) => b.lines - a.lines || a.name.localeCompare(b.name));
 }

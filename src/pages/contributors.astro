@@ -20,7 +20,7 @@ const top = board?.[0]?.lines ?? 1;
       <>
         <table class="board">
           <thead>
-            <tr><th class="rank"></th><th>Contributor</th><th class="num">Lines</th><th class="num">Edits</th></tr>
+            <tr><th class="rank"></th><th>Contributor</th><th class="num">Articles</th><th class="num">Lines</th><th class="num">Edits</th></tr>
           </thead>
           <tbody>
             {board.map((c, i) => (
@@ -38,6 +38,7 @@ const top = board?.[0]?.lines ?? 1;
                   ); })()}
                   <span class="bar" style={`width:${Math.max(2, Math.round((c.lines / top) * 100))}%`}></span>
                 </td>
+                <td class="num">{c.articles}</td>
                 <td class="num">{c.lines.toLocaleString()}</td>
                 <td class="num">{c.commits}</td>
               </tr>
