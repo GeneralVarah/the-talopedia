@@ -10,7 +10,7 @@ infobox:
   - { label: "SEELE Director of Intelligence", value: "Hideaki Katsuragi" }
   - { label: "Preceded by", value: "Position Established" }
   - { section: "Personal Details" }
-  - { label: "Nationality", value: "[[nichirin|Nichirian]]" }
+  - { label: "Nationality", value: ":flag[nichirin] [[nichirin|Nichirian]]" }
   - label: "Born"
     value:
       - "Kosumi Inari"
