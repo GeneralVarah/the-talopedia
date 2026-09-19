@@ -48,7 +48,14 @@ function custom(m, defer = false) {
   if (m[3]) {
     const arg = m[4].trim();
     // :img takes a path straight through; :icon and :flag look the subject up.
-    if (m[3] === 'img') return `<img class="ico" src="${esc(url(arg))}" alt="" loading="lazy">`;
+    if (m[3] === 'img') {
+      // :img[path] is an inline mark the size of the text beside it. :img[path|96]
+      // is the same picture at 96px, which is what a rank insignia in a table needs.
+      const [path, w] = arg.split('|');
+      const size = parseInt(w, 10);
+      const style = size > 0 ? ` style="width:${size}px;height:auto"` : '';
+      return `<img class="ico${size > 0 ? ' sized' : ''}" src="${esc(url(path.trim()))}"${style} alt="" loading="lazy">`;
+    }
     return defer ? `<i data-ico="${esc(arg)}"></i>` : icon(arg);
   }
   if (m[5]) return ARROW[m[5]];

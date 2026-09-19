@@ -52,6 +52,7 @@ infobox:
   - { label: "Annual Imports", value: "$2,608,000,000" }
   - { label: "Annual Exports", value: "$6,259,230,000" }
 ---
+
 The **Shogunate Armed Forces** (武幕軍, *Bubakugun;* **SAF**) serves as the military of [[nichirin]] and the ruling Bakufu. It is organized into three principal branches: the Ground Corps (陸軍, *Rikugun*), the Naval Corps (海軍, *Kaigun*), and the Aerial Corps (航空軍, *Kōkūgun*).
 
 ## History
@@ -82,85 +83,83 @@ The **Western Theater Command**, headquartered in Satsuno and commanded by Marsh
 
 ## Ranks
 
-| Pay Grade | Ground Corps | Naval Corps | Aerial Corps |
-| --- | --- | --- | --- |
-
-<div class="imgrid">
-<figure style="flex:1.0"><img src="/assets/media/shogunate-armed-forces-2.jpg" alt="大将 General"><figcaption>大将 General</figcaption></figure>
-<figure style="flex:1.0"><img src="/assets/media/shogunate-armed-forces-3.jpg" alt="提督 Admiral"><figcaption>提督 Admiral</figcaption></figure>
-<figure style="flex:1.0"><img src="/assets/media/shogunate-armed-forces-4.jpg" alt="代将 Commodore"><figcaption>代将 Commodore</figcaption></figure>
-</div>
-
-| O-8 | 中将 Middle General | 中提督 Middle Admiral | 中代将 Middle Commodore |
-| --- | --- | --- | --- |
-| O-7 | 少将 Junior General | 少提督 Junior Admiral | 少代将 Junior Commodore |
-| O-6 | 大副官 High Adjutor | 海大副官 High Sea-Adjutor | 空大副官 High Air-Adjutor |
-| O-5 | 中副官 Middle Adjutor | 海中副官 Middle Sea-Adjutor | 空中副官 Middle Air-Adjutor |
-| O-4 | 少副官 Junior Adjutor | 海少副官 Junior Sea-Adjutor | 空少副官 Junior Air-Adjutor |
-| O-3 | 大司令 High Commandant | 大艦長 High Skipper | 大飛行士 High Aviator |
-| O-2 | 中司令 Middle Commandant | 中艦長 Middle Skipper | 中飛行士 Middle Aviator |
-| O-1 | 少司令 Junior Commandant | 少艦長 Junior Skipper | 下飛行士 Low Aviator |
-| E-7 | 特務軍曹 Master Sergeant | 大上等兵曹 Master Chief Petty Officer | 特務空曹 Master Sergeant |
-| E-6 | 一等軍曹 Staff Sergeant | 上等兵曹 Chief Petty Officer | 一等空曹 Staff Sergeant |
-| E-5 | 二等軍曹 Sergeant | 一等兵曹 Petty Officer First Class | 二等空曹 Sergeant |
-| E-4 | 伍長 Corporal | 二等兵曹 Petty Officer Second Class | 空兵長 Leading Airman |
-| E-3 | 矛伍長 Spear Corporal | 三等兵曹 Petty Officer Third Class | 上等空兵 Senior Airman |
-| E-2 | 一等兵 Private First Class | 一等水兵 Seaman | 一等空兵 Airman |
-| E-1 | 二等兵 Private Second Class | 二等水兵 Seaman Apprentice | 二等空兵 Airman Apprentice |
+<table>
+<tr><th>Pay Grade</th><th>Ground Corps</th><th>Naval Corps</th><th>Aerial Corps</th></tr>
+<tr><td>O-10</td><td>:img[/assets/media/shogunate-armed-forces-2.jpg|96]<br>元帥堅塁大将<br>Marshal-General of the Bulwark</td><td>:img[/assets/media/shogunate-armed-forces-3.jpg|96]<br>元帥渦潮提督<br>Marshal-Admiral of the Maelstrom</td><td>:img[/assets/media/shogunate-armed-forces-4.jpg|96]<br>元帥蒼穹代将<br>Marshal-Commodore of the Firmament</td></tr>
+<tr><td>O-9</td><td>大将<br>General</td><td>提督<br>Admiral</td><td>代将<br>Commodore</td></tr>
+<tr><td>O-8</td><td>中将<br>Middle General</td><td>中提督<br>Middle Admiral</td><td>中代将<br>Middle Commodore</td></tr>
+<tr><td>O-7</td><td>少将<br>Junior General</td><td>少提督<br>Junior Admiral</td><td>少代将<br>Junior Commodore</td></tr>
+<tr><td>O-6</td><td>大副官<br>High Adjutor</td><td>海大副官<br>High Sea-Adjutor</td><td>空大副官<br>High Air-Adjutor</td></tr>
+<tr><td>O-5</td><td>中副官<br>Middle Adjutor</td><td>海中副官<br>Middle Sea-Adjutor</td><td>空中副官<br>Middle Air-Adjutor</td></tr>
+<tr><td>O-4</td><td>少副官<br>Junior Adjutor</td><td>海少副官<br>Junior Sea-Adjutor</td><td>空少副官<br>Junior Air-Adjutor</td></tr>
+<tr><td>O-3</td><td>大司令<br>High Commandant</td><td>大艦長<br>High Skipper</td><td>大飛行士<br>High Aviator</td></tr>
+<tr><td>O-2</td><td>中司令<br>Middle Commandant</td><td>中艦長<br>Middle Skipper</td><td>中飛行士<br>Middle Aviator</td></tr>
+<tr><td>O-1</td><td>少司令<br>Junior Commandant</td><td>少艦長<br>Junior Skipper</td><td>下飛行士<br>Low Aviator</td></tr>
+<tr><td>E-7</td><td>特務軍曹<br>Master Sergeant</td><td>大上等兵曹<br>Master Chief Petty Officer</td><td>特務空曹<br>Master Sergeant</td></tr>
+<tr><td>E-6</td><td>一等軍曹<br>Staff Sergeant</td><td>上等兵曹<br>Chief Petty Officer</td><td>一等空曹<br>Staff Sergeant</td></tr>
+<tr><td>E-5</td><td>二等軍曹<br>Sergeant</td><td>一等兵曹<br>Petty Officer First Class</td><td>二等空曹<br>Sergeant</td></tr>
+<tr><td>E-4</td><td>伍長<br>Corporal</td><td>二等兵曹<br>Petty Officer Second Class</td><td>空兵長<br>Leading Airman</td></tr>
+<tr><td>E-3</td><td>矛伍長<br>Spear Corporal</td><td>三等兵曹<br>Petty Officer Third Class</td><td>上等空兵<br>Senior Airman</td></tr>
+<tr><td>E-2</td><td>一等兵<br>Private First Class</td><td>一等水兵<br>Seaman</td><td>一等空兵<br>Airman</td></tr>
+<tr><td>E-1</td><td>二等兵<br>Private Second Class</td><td>二等水兵<br>Seaman Apprentice</td><td>二等空兵<br>Airman Apprentice</td></tr>
+</table>
 
 ## Statistics
 
 ### Ground Forces
 
-| Category | Type | Count |  |  |
-| --- | --- | --- | --- | --- |
-|  |  | Outdated | Modern | Advanced |
-| Infantry | Fit-for-Service | 104,000,000 |  |  |
-|  | Active Personnel | 2,900,000 |  |  |
-|  | Reserve Personnel | 7,250,000 |  |  |
-|  | Paramilitary | 0 |  |  |
-| Armor | Cavalry | 45,340 |  |  |
-|  | Armored Cars | 823 | 1,184 | 210 |
-|  | Tankettes | 1,387 | 1,823 | 210 |
-|  | Light Tanks | 1,224 | 1,189 | 434 |
-|  | Medium Tanks | 587 | 614 | 182 |
-|  | Heavy Tanks | 82 | 41 | 0 |
-| Artillery | Field Guns | 4,021 | 5,087 | 1,035 |
-|  | Heavy/Siege Artillery | 812 | 784 | 227 |
-|  | Anti-Aircraft Guns | 823 | 1,587 | 437 |
-|  | Anti-Tank Guns | 614 | 1,423 | 399 |
-|  | Mortars | 5,124 | 8,937 | 2,223 |
-| Support | Vehicles | 161,240 |  |  |
-|  | Engineers | 161,341 |  |  |
-|  | Signal Corps | 100,249 |  |  |
+<table>
+<tr><th rowspan="2">Category</th><th rowspan="2">Type</th><th colspan="3">Count</th></tr>
+<tr><th>Outdated</th><th>Modern</th><th>Advanced</th></tr>
+<tr><td rowspan="4">Infantry</td><td>Fit-for-Service</td><td colspan="3">104,000,000</td></tr>
+<tr><td>Active Personnel</td><td colspan="3">2,900,000</td></tr>
+<tr><td>Reserve Personnel</td><td colspan="3">7,250,000</td></tr>
+<tr><td>Paramilitary</td><td colspan="3">0</td></tr>
+<tr><td rowspan="6">Armor</td><td>Cavalry</td><td colspan="3">45,340</td></tr>
+<tr><td>Armored Cars</td><td>823</td><td>1,184</td><td>210</td></tr>
+<tr><td>Tankettes</td><td>1,387</td><td>1,823</td><td>210</td></tr>
+<tr><td>Light Tanks</td><td>1,224</td><td>1,189</td><td>434</td></tr>
+<tr><td>Medium Tanks</td><td>587</td><td>614</td><td>182</td></tr>
+<tr><td>Heavy Tanks</td><td>82</td><td>41</td><td>0</td></tr>
+<tr><td rowspan="5">Artillery</td><td>Field Guns</td><td>4,021</td><td>5,087</td><td>1,035</td></tr>
+<tr><td>Heavy/Siege Artillery</td><td>812</td><td>784</td><td>227</td></tr>
+<tr><td>Anti-Aircraft Guns</td><td>823</td><td>1,587</td><td>437</td></tr>
+<tr><td>Anti-Tank Guns</td><td>614</td><td>1,423</td><td>399</td></tr>
+<tr><td>Mortars</td><td>5,124</td><td>8,937</td><td>2,223</td></tr>
+<tr><td rowspan="3">Support</td><td>Vehicles</td><td colspan="3">161,240</td></tr>
+<tr><td>Engineers</td><td colspan="3">161,341</td></tr>
+<tr><td>Signal Corps</td><td colspan="3">100,249</td></tr>
+</table>
 
 ### Naval Forces
 
-| Category | Type | Count |  |  |
-| --- | --- | --- | --- | --- |
-|  |  | Outdated | Modern | Advanced |
-| Capital Ships | Battleships | 4 | 6 | 2 |
-|  | Light Cruisers | 5 | 26 | 19 |
-|  | Heavy Cruisers | 4 | 18 | 12 |
-|  | Battlecruisers | 1 | 2 | 2 |
-| Carriers | Fleet Carriers | 0 | 2 | 4 |
-|  | Light/Escort Carriers | 0 | 3 | 3 |
-| Smaller Vessels | Destroyers | 23 | 117 | 55 |
-|  | Torpedo Boats | 31 | 61 | 11 |
-|  | Submarines | 16 | 60 | 21 |
-|  | Gunboats | 51 | 62 | 11 |
-| Support | Transports | 71 |  |  |
-|  | Logistics Vessels | 122 |  |  |
+<table>
+<tr><th rowspan="2">Category</th><th rowspan="2">Type</th><th colspan="3">Count</th></tr>
+<tr><th>Outdated</th><th>Modern</th><th>Advanced</th></tr>
+<tr><td rowspan="4">Capital Ships</td><td>Battleships</td><td>4</td><td>6</td><td>2</td></tr>
+<tr><td>Light Cruisers</td><td>5</td><td>26</td><td>19</td></tr>
+<tr><td>Heavy Cruisers</td><td>4</td><td>18</td><td>12</td></tr>
+<tr><td>Battlecruisers</td><td>1</td><td>2</td><td>2</td></tr>
+<tr><td rowspan="2">Carriers</td><td>Fleet Carriers</td><td>0</td><td>2</td><td>4</td></tr>
+<tr><td>Light/Escort Carriers</td><td>0</td><td>3</td><td>3</td></tr>
+<tr><td rowspan="4">Smaller Vessels</td><td>Destroyers</td><td>23</td><td>117</td><td>55</td></tr>
+<tr><td>Torpedo Boats</td><td>31</td><td>61</td><td>11</td></tr>
+<tr><td>Submarines</td><td>16</td><td>60</td><td>21</td></tr>
+<tr><td>Gunboats</td><td>51</td><td>62</td><td>11</td></tr>
+<tr><td rowspan="2">Support</td><td>Transports</td><td colspan="3">71</td></tr>
+<tr><td>Logistics Vessels</td><td colspan="3">122</td></tr>
+</table>
 
 ### Air Forces
 
-| Category | Type | Count |  |  |
-| --- | --- | --- | --- | --- |
-|  |  | Outdated | Modern | Advanced |
-| Fighters | Biplane Fighters | 814 | 0 | 0 |
-|  | Monoplane Fighters | 0 | 1,623 | 1,624 |
-| Bombers | Tactical Bombers | 0 | 1,214 | 1,223 |
-|  | Strategic Bombers | 0 | 141 | 102 |
-|  | Attack Aircraft | 0 | 923 | 924 |
-| Support | Recon Aircraft | 307 | 612 | 294 |
-|  | Transports | 507 |  |  |
+<table>
+<tr><th rowspan="2">Category</th><th rowspan="2">Type</th><th colspan="3">Count</th></tr>
+<tr><th>Outdated</th><th>Modern</th><th>Advanced</th></tr>
+<tr><td rowspan="2">Fighters</td><td>Biplane Fighters</td><td>814</td><td>0</td><td>0</td></tr>
+<tr><td>Monoplane Fighters</td><td>0</td><td>1,623</td><td>1,624</td></tr>
+<tr><td rowspan="3">Bombers</td><td>Tactical Bombers</td><td>0</td><td>1,214</td><td>1,223</td></tr>
+<tr><td>Strategic Bombers</td><td>0</td><td>141</td><td>102</td></tr>
+<tr><td>Attack Aircraft</td><td>0</td><td>923</td><td>924</td></tr>
+<tr><td rowspan="2">Support</td><td>Recon Aircraft</td><td>307</td><td>612</td><td>294</td></tr>
+<tr><td>Transports</td><td colspan="3">507</td></tr>
+</table>

@@ -89,85 +89,83 @@ The **U.S. Special Operations Command** (SOCOM), headquartered in Nexus and comm
 
 ## Ranks
 
-| Pay Grade | Army | Navy | Air Force |
-| --- | --- | --- | --- |
-
-<div class="imgrid">
-<figure style="flex:1.5"><img src="/assets/flags/grand-army-of-unity.png" alt="General"><figcaption>General</figcaption></figure>
-<figure style="flex:1.5"><img src="/assets/media/grand-army-of-unity-4.png" alt="Admiral"><figcaption>Admiral</figcaption></figure>
-<figure style="flex:1.5"><img src="/assets/media/grand-army-of-unity-5.png" alt="Commander"><figcaption>Commander</figcaption></figure>
-</div>
-
-| O-8 | Lieutenant General | Vice-Admiral | Lieutenant Commander |
-| --- | --- | --- | --- |
-| O-7 | Major General | Commodore | Major Commander |
-| O-6 | Colonel | Lieutenant Commodore | Colonel |
-| O-5 | Major | Major Commodore | Major |
-| O-4 | Captain | Captain | Captain |
-| O-3 | 1st Lieutenant | 1st Lieutenant | 1st Lieutenant |
-| O-2 | 2nd Lieutenant | 2nd Lieutenant | 2nd Lieutenant |
-| O-1 | Ensign | Sub-Lieutenant | Ensign |
-| E-7 | Master Sergeant | Master Chief Petty Officer | Master Sergeant |
-| E-6 | Staff Sergeant | Chief Petty Officer | Staff Sergeant |
-| E-5 | Sergeant | Petty Officer First Class | Sergeant |
-| E-4 | Corporal | Petty Officer Second Class | Leading Airman |
-| E-3 | Lance Corporal | Petty Officer Third Class | Senior Airman |
-| E-2 | Private Second Class | Seaman | Airman |
-| E-1 | Recruit | Recruit | Recruit |
+<table>
+<tr><th>Pay Grade</th><th>Army</th><th>Navy</th><th>Air Force</th></tr>
+<tr><td>O-10</td><td>:img[/assets/flags/grand-army-of-unity.png|96]<br>General of the Army</td><td>:img[/assets/media/grand-army-of-unity-4.png|96]<br>Admiral of the Navy</td><td>:img[/assets/media/grand-army-of-unity-5.png|96]<br>General of the Air Force</td></tr>
+<tr><td>O-9</td><td>General</td><td>Admiral</td><td>Commander</td></tr>
+<tr><td>O-8</td><td>Lieutenant General</td><td>Vice-Admiral</td><td>Lieutenant Commander</td></tr>
+<tr><td>O-7</td><td>Major General</td><td>Commodore</td><td>Major Commander</td></tr>
+<tr><td>O-6</td><td>Colonel</td><td>Lieutenant Commodore</td><td>Colonel</td></tr>
+<tr><td>O-5</td><td>Major</td><td>Major Commodore</td><td>Major</td></tr>
+<tr><td>O-4</td><td>Captain</td><td>Captain</td><td>Captain</td></tr>
+<tr><td>O-3</td><td>1st Lieutenant</td><td>1st Lieutenant</td><td>1st Lieutenant</td></tr>
+<tr><td>O-2</td><td>2nd Lieutenant</td><td>2nd Lieutenant</td><td>2nd Lieutenant</td></tr>
+<tr><td>O-1</td><td>Ensign</td><td>Sub-Lieutenant</td><td>Ensign</td></tr>
+<tr><td>E-7</td><td>Master Sergeant</td><td>Master Chief Petty Officer</td><td>Master Sergeant</td></tr>
+<tr><td>E-6</td><td>Staff Sergeant</td><td>Chief Petty Officer</td><td>Staff Sergeant</td></tr>
+<tr><td>E-5</td><td>Sergeant</td><td>Petty Officer First Class</td><td>Sergeant</td></tr>
+<tr><td>E-4</td><td>Corporal</td><td>Petty Officer Second Class</td><td>Leading Airman</td></tr>
+<tr><td>E-3</td><td>Lance Corporal</td><td>Petty Officer Third Class</td><td>Senior Airman</td></tr>
+<tr><td>E-2</td><td>Private Second Class</td><td>Seaman</td><td>Airman</td></tr>
+<tr><td>E-1</td><td>Recruit</td><td>Recruit</td><td>Recruit</td></tr>
+</table>
 
 ## Statistics
 
 ### Ground Forces
 
-| Category | Type | Count |  |  |
-| --- | --- | --- | --- | --- |
-|  |  | Outdated | Modern | Advanced |
-| Infantry | Fit-for-Service | 29,461,680 |  |  |
-|  | Active Personnel | 2,300,000 |  |  |
-|  | Reserve Personnel | 1,182,710 |  |  |
-|  | Paramilitary | 0 |  |  |
-| Armor | Cavalry | 1,500 |  |  |
-|  | Armored Cars | 400 | 1,184 | 210 |
-|  | Tankettes | 200 | 50 | 0 |
-|  | Light Tanks | 200 | 1,200 | 600 |
-|  | Medium Tanks | 10 | 390 | 100 |
-|  | Heavy Tanks | 33 | 20 | 0 |
-| Artillery | Field Guns | 2,012 | 4,200 | 800 |
-|  | Heavy/Siege Artillery | 812 | 200 | 50 |
-|  | Anti-Aircraft Guns | 300 | 1,587 | 100 |
-|  | Anti-Tank Guns | 614 | 800 | 100 |
-|  | Mortars | 2,310 | 7,700 | 800 |
-| Support | Vehicles | 120,321 |  |  |
-|  | Engineers | 130,210 |  |  |
-|  | Signal Corps | 95,400 |  |  |
+<table>
+<tr><th rowspan="2">Category</th><th rowspan="2">Type</th><th colspan="3">Count</th></tr>
+<tr><th>Outdated</th><th>Modern</th><th>Advanced</th></tr>
+<tr><td rowspan="4">Infantry</td><td>Fit-for-Service</td><td colspan="3">29,461,680</td></tr>
+<tr><td>Active Personnel</td><td colspan="3">2,300,000</td></tr>
+<tr><td>Reserve Personnel</td><td colspan="3">1,182,710</td></tr>
+<tr><td>Paramilitary</td><td colspan="3">0</td></tr>
+<tr><td rowspan="6">Armor</td><td>Cavalry</td><td colspan="3">1,500</td></tr>
+<tr><td>Armored Cars</td><td>400</td><td>1,184</td><td>210</td></tr>
+<tr><td>Tankettes</td><td>200</td><td>50</td><td>0</td></tr>
+<tr><td>Light Tanks</td><td>200</td><td>1,200</td><td>600</td></tr>
+<tr><td>Medium Tanks</td><td>10</td><td>390</td><td>100</td></tr>
+<tr><td>Heavy Tanks</td><td>33</td><td>20</td><td>0</td></tr>
+<tr><td rowspan="5">Artillery</td><td>Field Guns</td><td>2,012</td><td>4,200</td><td>800</td></tr>
+<tr><td>Heavy/Siege Artillery</td><td>812</td><td>200</td><td>50</td></tr>
+<tr><td>Anti-Aircraft Guns</td><td>300</td><td>1,587</td><td>100</td></tr>
+<tr><td>Anti-Tank Guns</td><td>614</td><td>800</td><td>100</td></tr>
+<tr><td>Mortars</td><td>2,310</td><td>7,700</td><td>800</td></tr>
+<tr><td rowspan="3">Support</td><td>Vehicles</td><td colspan="3">120,321</td></tr>
+<tr><td>Engineers</td><td colspan="3">130,210</td></tr>
+<tr><td>Signal Corps</td><td colspan="3">95,400</td></tr>
+</table>
 
 ### Naval Forces
 
-| Category | Type | Count |  |  |
-| --- | --- | --- | --- | --- |
-|  |  | Outdated | Modern | Advanced |
-| Capital Ships | Battleships | 2 | 4 | 4 |
-|  | Light Cruisers | 3 | 6 | 2 |
-|  | Heavy Cruisers | 4 | 3 | 7 |
-|  | Battlecruisers | 6 | 8 | 6 |
-| Carriers | Fleet Carriers | 0 | 1 | 1 |
-|  | Light/Escort Carriers | 1 | 1 | 0 |
-| Smaller Vessels | Destroyers | 3 | 67 | 37 |
-|  | Torpedo Boats | 12 | 38 | 15 |
-|  | Submarines | 0 | 40 | 22 |
-|  | Gunboats | 62 | 23 | 10 |
-| Support | Transports | 45 |  |  |
-|  | Logistics Vessels | 140 |  |  |
+<table>
+<tr><th rowspan="2">Category</th><th rowspan="2">Type</th><th colspan="3">Count</th></tr>
+<tr><th>Outdated</th><th>Modern</th><th>Advanced</th></tr>
+<tr><td rowspan="4">Capital Ships</td><td>Battleships</td><td>2</td><td>4</td><td>4</td></tr>
+<tr><td>Light Cruisers</td><td>3</td><td>6</td><td>2</td></tr>
+<tr><td>Heavy Cruisers</td><td>4</td><td>3</td><td>7</td></tr>
+<tr><td>Battlecruisers</td><td>6</td><td>8</td><td>6</td></tr>
+<tr><td rowspan="2">Carriers</td><td>Fleet Carriers</td><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>Light/Escort Carriers</td><td>1</td><td>1</td><td>0</td></tr>
+<tr><td rowspan="4">Smaller Vessels</td><td>Destroyers</td><td>3</td><td>67</td><td>37</td></tr>
+<tr><td>Torpedo Boats</td><td>12</td><td>38</td><td>15</td></tr>
+<tr><td>Submarines</td><td>0</td><td>40</td><td>22</td></tr>
+<tr><td>Gunboats</td><td>62</td><td>23</td><td>10</td></tr>
+<tr><td rowspan="2">Support</td><td>Transports</td><td colspan="3">45</td></tr>
+<tr><td>Logistics Vessels</td><td colspan="3">140</td></tr>
+</table>
 
 ### Air Forces
 
-| Category | Type | Count |  |  |
-| --- | --- | --- | --- | --- |
-|  |  | Outdated | Modern | Advanced |
-| Fighters | Biplane Fighters | 300 | 0 | 0 |
-|  | Monoplane Fighters | 0 | 1,050 | 650 |
-| Bombers | Tactical Bombers | 0 | 531 | 500 |
-|  | Strategic Bombers | 0 | 241 | 550 |
-|  | Attack Aircraft | 0 | 600 | 924 |
-| Support | Recon Aircraft | 307 | 300 | 60 |
-|  | Transports | 507 |  |  |
+<table>
+<tr><th rowspan="2">Category</th><th rowspan="2">Type</th><th colspan="3">Count</th></tr>
+<tr><th>Outdated</th><th>Modern</th><th>Advanced</th></tr>
+<tr><td rowspan="2">Fighters</td><td>Biplane Fighters</td><td>300</td><td>0</td><td>0</td></tr>
+<tr><td>Monoplane Fighters</td><td>0</td><td>1,050</td><td>650</td></tr>
+<tr><td rowspan="3">Bombers</td><td>Tactical Bombers</td><td>0</td><td>531</td><td>500</td></tr>
+<tr><td>Strategic Bombers</td><td>0</td><td>241</td><td>550</td></tr>
+<tr><td>Attack Aircraft</td><td>0</td><td>600</td><td>924</td></tr>
+<tr><td rowspan="2">Support</td><td>Recon Aircraft</td><td>307</td><td>300</td><td>60</td></tr>
+<tr><td>Transports</td><td colspan="3">507</td></tr>
+</table>

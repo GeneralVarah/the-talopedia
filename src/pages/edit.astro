@@ -270,11 +270,15 @@ const DEV = import.meta.env.DEV;
       if (kind === 'up' || kind === 'down') {
         return `<span class="tok arrow ${kind}" data-tok="${kind}" contenteditable="false">${ARROW[kind]}</span>`;
       }
-      // :img carries its own path; :icon and :flag look the subject up in the registry.
-      const src = srcFor(kind === 'img' ? arg : ICONS[arg]);
+      // :img carries its own path and an optional pixel width; :icon and :flag look
+      // the subject up in the registry.
+      const [path, w] = kind === 'img' ? arg.split('|') : [arg];
+      const size = parseInt(w, 10);
+      const src = srcFor(kind === 'img' ? path.trim() : ICONS[arg]);
+      const style = size > 0 ? ` style="width:${size}px;height:auto"` : '';
       return src
-        ? `<img class="tok ico" data-tok="${kind}" data-slug="${arg}" src="${src}" alt="" contenteditable="false">`
-        : `<span class="tok missing" data-tok="${kind}" data-slug="${arg}" contenteditable="false">:${kind}[${arg}]</span>`;
+        ? `<img class="tok ico${size > 0 ? ' sized' : ''}" data-tok="${kind}" data-slug="${esc(arg)}" src="${src}"${style} alt="" contenteditable="false">`
+        : `<span class="tok missing" data-tok="${kind}" data-slug="${esc(arg)}" contenteditable="false">:${kind}[${arg}]</span>`;
     }
 
     /* ---------- markdown <-> editable html ---------- */
@@ -802,6 +806,33 @@ const DEV = import.meta.env.DEV;
       return f;
     }
 
+    /** A cell is a string, or an object once it carries a span or is a header. */
+    const cellText = (c) => (typeof c === 'string' ? c : c?.text ?? '');
+    const cellSpan = (c, k) => (typeof c === 'string' ? 1 : Math.max(1, c?.[k] ?? 1));
+    const cellHead = (c, r) => (typeof c === 'string' ? r === 0 : !!c?.head);
+
+    /**
+     * Where every cell sits once spans are accounted for. grid[r][c] is the element
+     * covering that square, so a cell with rowspan 4 appears at four rows.
+     */
+    function tableGrid(tbody) {
+      const grid = [];
+      [...tbody.rows].forEach((tr, r) => {
+        grid[r] ??= [];
+        let c = 0;
+        for (const td of [...tr.children]) {
+          if (td.classList.contains('row-x')) continue;
+          while (grid[r][c]) c++;
+          for (let i = 0; i < (td.rowSpan || 1); i++) {
+            grid[r + i] ??= [];
+            for (let j = 0; j < (td.colSpan || 1); j++) grid[r + i][c + j] = td;
+          }
+          c += td.colSpan || 1;
+        }
+      });
+      return grid;
+    }
+
     function tableEditor(rows) {
       const wrap = el('div', 'tbl-wrap');
       const table = el('table', 'ed-tbl');
@@ -828,29 +859,23 @@ const DEV = import.meta.env.DEV;
       const tbody = el('tbody');
       table.append(tbody);
 
-      const cell = (tag, html) => {
+      const cell = (tag, html, colspan = 1, rowspan = 1) => {
         const c = el(tag);
+        if (colspan > 1) c.colSpan = colspan;
+        if (rowspan > 1) c.rowSpan = rowspan;
         // Not editable on its own: the table is the single editing host, so a
         // selection can run across cells and copy as a grid.
         const inner = el('div', 'ce');
         inner.innerHTML = html || '';
         c.append(inner);
-        if (tag === 'th') {
-          const x = el('button', 'col-x', '✕'); x.type = 'button'; x.title = 'Delete column';
-          x.onmousedown = (e) => e.preventDefault();
-          x.onclick = () => {
-            const i = [...c.parentElement.children].indexOf(c);
-            [...tbody.rows].forEach((r) => r.cells[i]?.remove());
-            sync();
-          };
-          c.append(x);
-        }
         return c;
       };
 
-      const addRow = (cells, head = false) => {
+      const addRow = (cells, headRow = false) => {
         const tr = el('tr');
-        cells.forEach((v) => tr.append(cell(head ? 'th' : 'td', mdToHtml(v))));
+        cells.forEach((v) => tr.append(cell(
+          cellHead(v, headRow ? 0 : 1) ? 'th' : 'td',
+          mdToHtml(cellText(v)), cellSpan(v, 'colspan'), cellSpan(v, 'rowspan'))));
         const x = el('td', 'row-x');
         const btn = el('button', null, '✕'); btn.type = 'button'; btn.title = 'Delete row';
         btn.onmousedown = (e) => e.preventDefault();
@@ -864,23 +889,119 @@ const DEV = import.meta.env.DEV;
       const seed = rows?.length ? rows : [['Column', 'Column'], ['', '']];
       seed.forEach((r, i) => addRow(r, i === 0));
 
-      const addCol = () =>
-        [...tbody.rows].forEach((r, i) => r.insertBefore(cell(i === 0 ? 'th' : 'td', ''), r.lastElementChild));
+      // Column count is read off the grid, so a table carrying spans still grows right.
+      const width = () => tableGrid(tbody).reduce((w, r) => Math.max(w, r.length), 0);
+      const addCol = () => [...tbody.rows].forEach((r) => {
+        const head = r.firstElementChild?.tagName === 'TH';
+        r.insertBefore(cell(head ? 'th' : 'td', ''), r.lastElementChild);
+      });
 
-      // A pasted grid grows the table through the same helpers the buttons use.
-      table._addRow = () => addRow(new Array(tbody.rows[0].cells.length - 1).fill(''));
+      table._addRow = () => addRow(new Array(width()).fill(''));
       table._addCol = addCol;
+
+      /* ---------- merging ---------- */
+
+      /** The cells the writer has selected, or the one holding the caret. */
+      const picked = () => {
+        const sel = getSelection();
+        const all = [...tbody.querySelectorAll('td, th')].filter((c) => !c.classList.contains('row-x'));
+        const hit = sel.rangeCount && !sel.isCollapsed ? all.filter((c) => sel.containsNode(c, true)) : [];
+        if (hit.length) return hit;
+        const n = sel.anchorNode;
+        const one = (n?.nodeType === 1 ? n : n?.parentElement)?.closest?.('td, th');
+        return one && !one.classList.contains('row-x') ? [one] : [];
+      };
+
+      /** A selection is merged as the smallest rectangle covering everything in it. */
+      const mergeCells = () => {
+        const chosen = new Set(picked());
+        if (chosen.size < 2) { flash('Select the cells to merge first.', true); return; }
+        const grid = tableGrid(tbody);
+        let r1 = Infinity, c1 = Infinity, r2 = -1, c2 = -1;
+        grid.forEach((row, r) => row.forEach((td, c) => {
+          if (!chosen.has(td)) return;
+          r1 = Math.min(r1, r); c1 = Math.min(c1, c);
+          r2 = Math.max(r2, r); c2 = Math.max(c2, c);
+        }));
+        if (r2 < 0) return;
+        const keep = grid[r1][c1];
+        const gone = new Set();
+        for (let r = r1; r <= r2; r++) {
+          for (let c = c1; c <= c2; c++) {
+            const td = grid[r]?.[c];
+            if (td && td !== keep) gone.add(td);
+          }
+        }
+        // Nothing written is thrown away: what the other cells held is carried over.
+        const box = keep.querySelector('.ce');
+        for (const td of gone) {
+          const html = td.querySelector('.ce')?.innerHTML.trim();
+          if (html) box.innerHTML = box.innerHTML.trim() ? `${box.innerHTML}<br>${html}` : html;
+          td.remove();
+        }
+        keep.colSpan = c2 - c1 + 1;
+        keep.rowSpan = r2 - r1 + 1;
+        sync();
+      };
+
+      const splitCell = () => {
+        const chosen = picked().filter((c) => c.colSpan > 1 || c.rowSpan > 1);
+        if (!chosen.length) { flash('Put the cursor in a merged cell.', true); return; }
+        const grid = tableGrid(tbody);
+        for (const keep of chosen) {
+          let r1 = Infinity, c1 = Infinity;
+          grid.forEach((row, r) => row.forEach((td, c) => {
+            if (td !== keep) return;
+            r1 = Math.min(r1, r); c1 = Math.min(c1, c);
+          }));
+          const cs = keep.colSpan, rs = keep.rowSpan;
+          keep.colSpan = 1; keep.rowSpan = 1;
+          const tag = keep.tagName.toLowerCase();
+          for (let r = r1; r < r1 + rs; r++) {
+            const tr = tbody.rows[r];
+            if (!tr) continue;
+            // Walk the row's own cells to find where the new one belongs.
+            for (let c = c1; c < c1 + cs; c++) {
+              if (r === r1 && c === c1) continue;
+              const after = tableGrid(tbody)[r]?.slice(0, c).filter((x, i, a) => x && a.indexOf(x) === i).pop();
+              const fresh = cell(tag, '');
+              if (after && after.parentElement === tr) after.after(fresh);
+              else tr.insertBefore(fresh, tr.firstElementChild);
+            }
+          }
+        }
+        sync();
+      };
+
+      /** A header band can run to several rows, as a two-level column header does. */
+      const toggleHead = () => {
+        const chosen = picked();
+        if (!chosen.length) { flash('Put the cursor in the row first.', true); return; }
+        const rowsHit = [...new Set(chosen.map((c) => c.parentElement))];
+        const makeHead = rowsHit.some((tr) => tr.querySelector('td:not(.row-x)'));
+        for (const tr of rowsHit) {
+          for (const td of [...tr.children]) {
+            if (td.classList.contains('row-x')) continue;
+            const want = makeHead ? 'TH' : 'TD';
+            if (td.tagName === want) continue;
+            const fresh = cell(want.toLowerCase(), td.querySelector('.ce')?.innerHTML || '',
+              td.colSpan || 1, td.rowSpan || 1);
+            td.replaceWith(fresh);
+          }
+        }
+        sync();
+      };
 
       // Selecting across cells and copying yields tab-separated text, so the
       // table can go straight into a spreadsheet.
       const asTsv = (sel) => {
-        const rows = [];
+        const out = [];
         for (const tr of tbody.rows) {
           const cells = [...tr.children].filter((c) => !c.classList.contains('row-x'));
           const hit = cells.filter((c) => sel.containsNode(c, true));
-          if (hit.length) rows.push(hit.map((c) => tdText(c)).join('\t'));
+          if (hit.length) out.push(hit.map((c) => tdText(c)).join('\t'));
         }
-        return rows.join('\n');
+        return out.join('\n');
       };
       const tdText = (c) => htmlToMd(c.querySelector('.ce'), ' ').replace(/\s+/g, ' ').trim();
       const onCopy = (e) => {
@@ -900,14 +1021,22 @@ const DEV = import.meta.env.DEV;
       table.addEventListener('cut', onCopy);
 
       const bar = el('div', 'tbl-bar');
-      const ar = el('button', null, '+ Row'); ar.type = 'button';
-      ar.onclick = () => { table._addRow(); sync(); };
-      const ac = el('button', null, '+ Column'); ac.type = 'button';
-      ac.onclick = () => { addCol(); sync(); };
-      bar.append(ar, ac);
+      for (const [label, fn] of [
+        ['+ Row', () => { table._addRow(); sync(); }],
+        ['+ Column', () => { addCol(); sync(); }],
+        ['Merge', mergeCells],
+        ['Split', splitCell],
+        ['Header', toggleHead],
+      ]) {
+        const b = el('button', null, label); b.type = 'button';
+        b.onmousedown = (e) => e.preventDefault();
+        b.onclick = fn;
+        bar.append(b);
+      }
       wrap.append(table, bar);
       return wrap;
     }
+
 
     function readBody() {
       return [...body.children].map((b) => {
@@ -936,9 +1065,15 @@ const DEV = import.meta.env.DEV;
         };
         if (kind === 'table') return {
           kind,
-          rows: [...b.querySelectorAll('tbody tr')].map((tr) =>
-            [...tr.children].filter((c) => !c.classList.contains('row-x'))
-              .map((c) => htmlToMd(c.querySelector('.ce'), '<br>').trim())),
+          rows: [...b.querySelectorAll('tbody tr')].map((tr, r) =>
+            [...tr.children].filter((c) => !c.classList.contains('row-x')).map((c) => {
+              const text = htmlToMd(c.querySelector('.ce'), '<br>').trim();
+              const head = c.tagName === 'TH', cs = c.colSpan || 1, rs = c.rowSpan || 1;
+              // A plain cell stays a plain string, so a table with no spans and one
+              // header row serializes as the markdown table it has always been.
+              return cs === 1 && rs === 1 && head === (r === 0)
+                ? text : { text, ...(cs > 1 && { colspan: cs }), ...(rs > 1 && { rowspan: rs }), head };
+            })),
         };
         if (kind === 'list') return {
           kind,
@@ -1132,12 +1267,32 @@ const DEV = import.meta.env.DEV;
           return items.length ? '<div class="imgrid">\n' + items.map(fig).join('\n') + '\n</div>' : '';
         }
         if (b.kind === 'table') {
-          // A pipe inside a cell would split it, so it is escaped for GFM.
-          const cell = (c) => String(c).replace(/\|/g, '\\|');
           const [head, ...rest] = b.rows;
           if (!head) return '';
-          return ['| ' + head.map(cell).join(' | ') + ' |', '| ' + head.map(() => '---').join(' | ') + ' |',
-            ...rest.map((r) => '| ' + r.map(cell).join(' | ') + ' |')].join('\n');
+          // Markdown tables cannot express a merged cell or a second header row, so a
+          // table that carries either is written as HTML instead. Everything else keeps
+          // the pipe form, which stays readable in a diff.
+          // A pipe in a cell can be escaped for GFM, but not when it sits inside a
+          // token: :img[path|96] would come back as :img[path\|96]. Those go to HTML too.
+          if (b.rows.every((r) => r.every((c) => typeof c === 'string' && !c.includes('|')))) {
+            // A pipe inside a cell would split it, so it is escaped for GFM.
+            const cell = (c) => String(c).replace(/\|/g, '\\|');
+            return ['| ' + head.map(cell).join(' | ') + ' |', '| ' + head.map(() => '---').join(' | ') + ' |',
+              ...rest.map((r) => '| ' + r.map(cell).join(' | ') + ' |')].join('\n');
+          }
+          // Cell text is left as written, exactly as a figure's caption is: it may
+          // legitimately hold <br>, <sup> or a token, and escaping would print those.
+          const td = (c, r) => {
+            const text = typeof c === 'string' ? c : c.text ?? '';
+            const head2 = typeof c === 'string' ? r === 0 : !!c.head;
+            const cs = typeof c === 'string' ? 1 : c.colspan || 1;
+            const rs = typeof c === 'string' ? 1 : c.rowspan || 1;
+            const tag = head2 ? 'th' : 'td';
+            return `<${tag}${cs > 1 ? ` colspan="${cs}"` : ''}${rs > 1 ? ` rowspan="${rs}"` : ''}>`
+              + `${text}</${tag}>`;
+          };
+          return ['<table>', ...b.rows.map((r, i) => '<tr>' + r.map((c) => td(c, i)).join('') + '</tr>'),
+            '</table>'].join('\n');
         }
         return '';
       }).filter(Boolean).join('\n\n');
@@ -1169,6 +1324,18 @@ const DEV = import.meta.env.DEV;
           } else {
             blocks.push({ kind: 'image', src: m?.[1] || '', caption: m?.[2] || '' });
           }
+        } else if (t.startsWith('<table')) {
+          const doc = new DOMParser().parseFromString(t, 'text/html');
+          blocks.push({
+            kind: 'table',
+            rows: [...doc.querySelectorAll('tr')].map((tr, r) =>
+              [...tr.children].map((c) => {
+                const text = c.innerHTML.trim();
+                const head = c.tagName === 'TH', cs = c.colSpan || 1, rs = c.rowSpan || 1;
+                return cs === 1 && rs === 1 && head === (r === 0)
+                  ? text : { text, ...(cs > 1 && { colspan: cs }), ...(rs > 1 && { rowspan: rs }), head };
+              })),
+          });
         } else if (/^\|/.test(t)) {
           blocks.push({
             kind: 'table',
@@ -2584,6 +2751,9 @@ const DEV = import.meta.env.DEV;
     .col-x { position: absolute; top: 1px; right: 1px; }
     .ed-tbl tr:hover .row-x button, .ed-tbl th:hover .col-x { opacity: 1; }
     .ed-tbl .row-x button:hover, .col-x:hover { color: var(--link-new); }
+    .ed-tbl td[rowspan], .ed-tbl th[rowspan] { vertical-align: middle; }
+    .ed-tbl th[colspan] { text-align: center; }
+    .ed-tbl .ico.sized { display: block; margin: 2px 0 4px; }
     .tbl-bar { display: flex; gap: 6px; margin-top: 6px; }
     .tbl-bar button {
       font: 12px var(--body); color: var(--muted); background: transparent;

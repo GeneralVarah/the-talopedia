@@ -71,85 +71,83 @@ The **Southern Theater Command (MANSUR)**, headquartered in Santiago and command
 
 ## Ranks
 
-| Pay Grade | Glorious Army | Glorious Navy | Glorious Air Force |
-| --- | --- | --- | --- |
-
-<div class="imgrid">
-<figure style="flex:1.5"><img src="/assets/media/glorious-republic-armed-forces-2.png" alt="General de Brigada Brigadier General"><figcaption>General de Brigada Brigadier General</figcaption></figure>
-<figure style="flex:1.5"><img src="/assets/media/glorious-republic-armed-forces-3.png" alt="Vicealmirante Vice Admiral"><figcaption>Vicealmirante Vice Admiral</figcaption></figure>
-<figure style="flex:1.5"><img src="/assets/media/glorious-republic-armed-forces-4.png" alt="Vicemariscal del Aire Air Vice-Marshal"><figcaption>Vicemariscal del Aire Air Vice-Marshal</figcaption></figure>
-</div>
-
-| O-8 | *Teniente de Brigada* Brigadier Lieutenant | *Contraalmirante* Counter Admiral | *Comodoro del Aire* Air Commodore |
-| --- | --- | --- | --- |
-| O-7 | *Coronel* Colonel | *Capitán de Navío* Captain of the Navy | *Capitán de Grupo* Group Captain |
-| O-6 | *Teniente Coronel* Lieutenant Colonel | *Capítan de Fragata* Frigate Captain | *Commandante de Ala* Wing Commander |
-| O-5 | *Mayor* Major | *Capitán de Corbeta* Corvette Captain | *Líder de Escuadrón* Squadron Leader |
-| O-4 | *Capitán Mayor* Senior Captain | *Teniente de Navío* Lieutenant Commander | *Capitán* Captain |
-| O-3 | *Capitán* Captain | *Teniente de Fragata* Frigate Lieutenant | *Teniente de Aviación* Flight Lieutenant |
-| O-2 | *Teniente* Lieutenant | *Teniente de Corbeta* Corvette Lieutenant | *Oficial de Aviación* Flying Officer |
-| O-1 | *Subteniente* Sub-Lieutenant | *Guardiamarina* Gardes de la Marine | *Oficial Piloto* Pilot Officer |
-| E-7 | *Sargento Mayor* Sergeant Major | *Suboficial Jefe* Chief Petty Officer | *Sargento de Vuelo* Flight Sergeant |
-| E-6 | *Sargento Primero* First Sergeant | *Suboficial Primero* Petty Officer First Class | *Sargento Primero* First Sergeant |
-| E-5 | *Sargento Segundo* Second Sergeant | *Suboficial Segundo* Petty Officer Second Class | *Sargento Segundo* Second Sergeant |
-| E-4 | *Cabo Primero* First Corporal | *Suboficial Tercero* Petty Officer Third Class | *Cabo Primero* First Corporal |
-| E-3 | *Cabo Segundo* Second Corporal | *Marinero de Primera* Leading Seaman | *Cabo Segundo* Second Corporal |
-| E-2 | *Especialista* Specialist | *Marinero Cualificado* Able Seaman | *Especialista de Aire* Air Specialist |
-| E-1 | *Soldado* Private | *Marinero* Seaman | *Aviador* Airman |
+<table>
+<tr><th>Pay Grade</th><th>Glorious Army</th><th>Glorious Navy</th><th>Glorious Air Force</th></tr>
+<tr><td>O-10</td><td>:img[/assets/media/glorious-republic-armed-forces-2.png|96]<br>*General de Divisíon*<br>Divisional General</td><td>:img[/assets/media/glorious-republic-armed-forces-3.png|96]<br>*Almirante*<br>Admiral</td><td>:img[/assets/media/glorious-republic-armed-forces-4.png|96]<br>*Mariscal del Aire*<br>Air Marshal</td></tr>
+<tr><td>O-9</td><td>*General de Brigada*<br>Brigadier General</td><td>*Vicealmirante*<br>Vice Admiral</td><td>*Vicemariscal del Aire*<br>Air Vice-Marshal</td></tr>
+<tr><td>O-8</td><td>*Teniente de Brigada*<br>Brigadier Lieutenant</td><td>*Contraalmirante*<br>Counter Admiral</td><td>*Comodoro del Aire*<br>Air Commodore</td></tr>
+<tr><td>O-7</td><td>*Coronel*<br>Colonel</td><td>*Capitán de Navío*<br>Captain of the Navy</td><td>*Capitán de Grupo*<br>Group Captain</td></tr>
+<tr><td>O-6</td><td>*Teniente Coronel*<br>Lieutenant Colonel</td><td>*Capítan de Fragata*<br>Frigate Captain</td><td>*Commandante de Ala*<br>Wing Commander</td></tr>
+<tr><td>O-5</td><td>*Mayor*<br>Major</td><td>*Capitán de Corbeta*<br>Corvette Captain</td><td>*Líder de Escuadrón*<br>Squadron Leader</td></tr>
+<tr><td>O-4</td><td>*Capitán Mayor*<br>Senior Captain</td><td>*Teniente de Navío*<br>Lieutenant Commander</td><td>*Capitán*<br>Captain</td></tr>
+<tr><td>O-3</td><td>*Capitán*<br>Captain</td><td>*Teniente de Fragata*<br>Frigate Lieutenant</td><td>*Teniente de Aviación*<br>Flight Lieutenant</td></tr>
+<tr><td>O-2</td><td>*Teniente*<br>Lieutenant</td><td>*Teniente de Corbeta*<br>Corvette Lieutenant</td><td>*Oficial de Aviación*<br>Flying Officer</td></tr>
+<tr><td>O-1</td><td>*Subteniente*<br>Sub-Lieutenant</td><td>*Guardiamarina*<br>Gardes de la Marine</td><td>*Oficial Piloto*<br>Pilot Officer</td></tr>
+<tr><td>E-7</td><td>*Sargento Mayor*<br>Sergeant Major</td><td>*Suboficial Jefe*<br>Chief Petty Officer</td><td>*Sargento de Vuelo*<br>Flight Sergeant</td></tr>
+<tr><td>E-6</td><td>*Sargento Primero*<br>First Sergeant</td><td>*Suboficial Primero*<br>Petty Officer First Class</td><td>*Sargento Primero*<br>First Sergeant</td></tr>
+<tr><td>E-5</td><td>*Sargento Segundo*<br>Second Sergeant</td><td>*Suboficial Segundo*<br>Petty Officer Second Class</td><td>*Sargento Segundo*<br>Second Sergeant</td></tr>
+<tr><td>E-4</td><td>*Cabo Primero*<br>First Corporal</td><td>*Suboficial Tercero*<br>Petty Officer Third Class</td><td>*Cabo Primero*<br>First Corporal</td></tr>
+<tr><td>E-3</td><td>*Cabo Segundo*<br>Second Corporal</td><td>*Marinero de Primera*<br>Leading Seaman</td><td>*Cabo Segundo*<br>Second Corporal</td></tr>
+<tr><td>E-2</td><td>*Especialista*<br>Specialist</td><td>*Marinero Cualificado*<br>Able Seaman</td><td>*Especialista de Aire*<br>Air Specialist</td></tr>
+<tr><td>E-1</td><td>*Soldado*<br>Private</td><td>*Marinero*<br>Seaman</td><td>*Aviador*<br>Airman</td></tr>
+</table>
 
 ## Statistics
 
 ### Ground Forces
 
-| Category | Type | Count |  |  |
-| --- | --- | --- | --- | --- |
-|  |  | Outdated | Modern | Advanced |
-| Infantry | Fit-for-Service | 50,000,000 |  |  |
-|  | Active Personnel | 2,100,000 |  |  |
-|  | Reserve Personnel | 700,000 |  |  |
-|  | Paramilitary | 672,000 |  |  |
-| Armor | Cavalry | 29,305 |  |  |
-|  | Armored Cars | 2,223 | 794 | 159 |
-|  | Tankettes | 39 | 10 | 3 |
-|  | Light Tanks | 160 | 40 | 0 |
-|  | Medium Tanks | 0 | 0 | 0 |
-|  | Heavy Tanks | 0 | 0 | 0 |
-| Artillery | Field Guns | 443 | 258 | 37 |
-|  | Heavy/Siege Artillery | 468 | 167 | 33 |
-|  | Anti-Aircraft Guns | 899 | 240 | 60 |
-|  | Anti-Tank Guns | 54 | 14 | 4 |
-|  | Mortars | 2,696 | 2,426 | 270 |
-| Support | Vehicles | 20,273 |  |  |
-|  | Engineers | 61,210 |  |  |
-|  | Signal Corps | 31,592 |  |  |
+<table>
+<tr><th rowspan="2">Category</th><th rowspan="2">Type</th><th colspan="3">Count</th></tr>
+<tr><th>Outdated</th><th>Modern</th><th>Advanced</th></tr>
+<tr><td rowspan="4">Infantry</td><td>Fit-for-Service</td><td colspan="3">50,000,000</td></tr>
+<tr><td>Active Personnel</td><td colspan="3">2,100,000</td></tr>
+<tr><td>Reserve Personnel</td><td colspan="3">700,000</td></tr>
+<tr><td>Paramilitary</td><td colspan="3">672,000</td></tr>
+<tr><td rowspan="6">Armor</td><td>Cavalry</td><td colspan="3">29,305</td></tr>
+<tr><td>Armored Cars</td><td>2,223</td><td>794</td><td>159</td></tr>
+<tr><td>Tankettes</td><td>39</td><td>10</td><td>3</td></tr>
+<tr><td>Light Tanks</td><td>160</td><td>40</td><td>0</td></tr>
+<tr><td>Medium Tanks</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>Heavy Tanks</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td rowspan="5">Artillery</td><td>Field Guns</td><td>443</td><td>258</td><td>37</td></tr>
+<tr><td>Heavy/Siege Artillery</td><td>468</td><td>167</td><td>33</td></tr>
+<tr><td>Anti-Aircraft Guns</td><td>899</td><td>240</td><td>60</td></tr>
+<tr><td>Anti-Tank Guns</td><td>54</td><td>14</td><td>4</td></tr>
+<tr><td>Mortars</td><td>2,696</td><td>2,426</td><td>270</td></tr>
+<tr><td rowspan="3">Support</td><td>Vehicles</td><td colspan="3">20,273</td></tr>
+<tr><td>Engineers</td><td colspan="3">61,210</td></tr>
+<tr><td>Signal Corps</td><td colspan="3">31,592</td></tr>
+</table>
 
 ### Naval Forces
 
-| Category | Type | Count |  |  |
-| --- | --- | --- | --- | --- |
-|  |  | Outdated | Modern | Advanced |
-| Capital Ships | Battleships | 2 | 0 | 0 |
-|  | Light Cruisers | 0 | 0 | 0 |
-|  | Heavy Cruisers | 0 | 0 | 0 |
-|  | Battlecruisers | 0 | 0 | 0 |
-| Carriers | Fleet Carriers | 0 | 0 | 0 |
-|  | Light/Escort Carriers | 0 | 0 | 0 |
-| Smaller Vessels | Destroyers | 19 | 6 | 0 |
-|  | Torpedo Boats | 16 | 7 | 0 |
-|  | Submarines | 48 | 12 | 0 |
-|  | Gunboats | 31 | 13 | 0 |
-| Support | Transports | 60 |  |  |
-|  | Logistics Vessels | 86 |  |  |
+<table>
+<tr><th rowspan="2">Category</th><th rowspan="2">Type</th><th colspan="3">Count</th></tr>
+<tr><th>Outdated</th><th>Modern</th><th>Advanced</th></tr>
+<tr><td rowspan="4">Capital Ships</td><td>Battleships</td><td>2</td><td>0</td><td>0</td></tr>
+<tr><td>Light Cruisers</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>Heavy Cruisers</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>Battlecruisers</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td rowspan="2">Carriers</td><td>Fleet Carriers</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>Light/Escort Carriers</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td rowspan="4">Smaller Vessels</td><td>Destroyers</td><td>19</td><td>6</td><td>0</td></tr>
+<tr><td>Torpedo Boats</td><td>16</td><td>7</td><td>0</td></tr>
+<tr><td>Submarines</td><td>48</td><td>12</td><td>0</td></tr>
+<tr><td>Gunboats</td><td>31</td><td>13</td><td>0</td></tr>
+<tr><td rowspan="2">Support</td><td>Transports</td><td colspan="3">60</td></tr>
+<tr><td>Logistics Vessels</td><td colspan="3">86</td></tr>
+</table>
 
 ### Air Forces
 
-| Category | Type | Count |  |  |
-| --- | --- | --- | --- | --- |
-|  |  | Outdated | Modern | Advanced |
-| Fighters | Biplane Fighters | 67 | 0 | 0 |
-|  | Monoplane Fighters | 0 | 66 | 0 |
-| Bombers | Tactical Bombers | 0 | 0 | 0 |
-|  | Strategic Bombers | 0 | 0 | 0 |
-|  | Attack Aircraft | 145 | 36 | 0 |
-| Support | Recon Aircraft | 71 | 18 | 0 |
-|  | Transports | 281 |  |  |
+<table>
+<tr><th rowspan="2">Category</th><th rowspan="2">Type</th><th colspan="3">Count</th></tr>
+<tr><th>Outdated</th><th>Modern</th><th>Advanced</th></tr>
+<tr><td rowspan="2">Fighters</td><td>Biplane Fighters</td><td>67</td><td>0</td><td>0</td></tr>
+<tr><td>Monoplane Fighters</td><td>0</td><td>66</td><td>0</td></tr>
+<tr><td rowspan="3">Bombers</td><td>Tactical Bombers</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>Strategic Bombers</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>Attack Aircraft</td><td>145</td><td>36</td><td>0</td></tr>
+<tr><td rowspan="2">Support</td><td>Recon Aircraft</td><td>71</td><td>18</td><td>0</td></tr>
+<tr><td>Transports</td><td colspan="3">281</td></tr>
+</table>

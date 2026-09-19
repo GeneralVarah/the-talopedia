@@ -1,56 +1,150 @@
 # Curated. Entries are article slugs; the displayed name comes from that article's
 # `title:` field, so a rename here is a rename everywhere. Slugs with no article
 # render red, exactly as the Manual of Style asks.
-title: Nichirian Articles
+title: "Nichirian Articles"
 crumb: "[[portal:nichirin|Portal:Nichirin]] • [[nichirin|Overview]]"
 groups:
-  - label: History
+  - label: "History"
     rows:
-      - label: Antiquity
-        items: [proto-nichirian-chiefdoms]
-      - label: Imperial Era
-        items: [chukyo-confederation, yamashiro-code]
-      - label: Three Shogunates
-        items: [hayakawa-clan, kuronami-clan, age-of-chaos, miyamoto-clan, manshuan-campaigns, bakuraku-war, shinseiki-reforms]
-      - label: Events of the Roleplay
-        items: [1923-succession-crisis]
-  - label: Politics
+      - label: "Antiquity"
+        items:
+          - "proto-nichirian-chiefdoms"
+      - label: "Imperial Era"
+        items:
+          - "chukyo-confederation"
+          - "yamashiro-code"
+      - label: "Three Shogunates"
+        items:
+          - "hayakawa-clan"
+          - "kuronami-clan"
+          - "age-of-chaos"
+          - "miyamoto-clan"
+          - "manshuan-campaigns"
+          - "bakuraku-war"
+          - "shinseiki-reforms"
+      - label: "Events of the Roleplay"
+        items:
+          - "1923-succession-crisis"
+  - label: "Politics"
     rows:
-      - label: Government
-        items: [administrative-subdivisions, list-of-nichirian-ministers]
-      - label: Military
-        items: [shogunate-armed-forces, seele]
-  - label: Economy
+      - label: "Government"
+        items:
+          - "administrative-subdivisions"
+          - "list-of-nichirian-ministers"
+      - label: "Military"
+        items:
+          - "shogunate-armed-forces"
+          - "seele"
+  - label: "Economy"
     rows:
-      - items: [list-of-notable-companies]
+      - items:
+          - "list-of-notable-companies"
       - label: "“Big Four” Zaibatsu"
-        items: [tsukumo, echigoya, izumiya, nikaido]
-  - label: Geography
+        items:
+          - "tsukumo"
+          - "echigoya"
+          - "izumiya"
+          - "nikaido"
+  - label: "Geography"
     rows:
-      - items: [metropolitan-nichirin, tohanto, manshu, sangai, rensei-islands, karafuto, northern-kurile-islands, "horai-territory|Hōrai Territory", "kinshu|Kinshū"]
-      - label: Elevations
-        items: [greater-nichirian-alps, mount-soten, chohaku-mountains, toketsu-range, kyoyasu-range, ryozetsu-mountains]
-      - label: Bodies of Water
-        items: [haguregumo-river, lake-ryusei, karyoku-river, nanka-river, kyowa-river, shizuku-river, matsuhana-river, yawara-river, kokuryu-river, sumikuro-river]
-  - label: Society
+      - items:
+          - "metropolitan-nichirin"
+          - "tohanto"
+          - "manshu"
+          - "sangai"
+          - "rensei-islands"
+          - "karafuto"
+          - "northern-kurile-islands"
+          - "horai-territory|Hōrai Territory"
+          - "kinshu|Kinshū"
+      - label: "Elevations"
+        items:
+          - "greater-nichirian-alps"
+          - "mount-soten"
+          - "chohaku-mountains"
+          - "toketsu-range"
+          - "kyoyasu-range"
+          - "ryozetsu-mountains"
+      - label: "Bodies of Water"
+        items:
+          - "haguregumo-river"
+          - "lake-ryusei"
+          - "karyoku-river"
+          - "nanka-river"
+          - "kyowa-river"
+          - "shizuku-river"
+          - "matsuhana-river"
+          - "yawara-river"
+          - "kokuryu-river"
+          - "sumikuro-river"
+  - label: "Society"
     rows:
-      - label: Notable Cities
-        items: [shinkeisei, naginomiya, takarazuka, chukyo, mizuhara]
-      - label: Demographics
-        items: [nichirians, orughans, shoki, manshuans, samagirs, tungus, olchis, orochens, gilyaks, uilta, qiakala]
-      - label: Culture
-        items: [kaiseido, nichirian-division-one]
-  - label: Characters
+      - label: "Notable Cities"
+        items:
+          - "shinkeisei"
+          - "naginomiya"
+          - "takarazuka"
+          - "chukyo"
+          - "mizuhara"
+      - label: "Demographics"
+        items:
+          - "nichirians"
+          - "orughans"
+          - "shoki"
+          - "manshuans"
+          - "samagirs"
+          - "tungus"
+          - "olchis"
+          - "orochens"
+          - "gilyaks"
+          - "uilta"
+          - "qiakala"
+      - label: "Culture"
+        items:
+          - "kaiseido"
+          - "nichirian-division-one"
+  - label: "Characters"
     rows:
-      - label: Historical Figures
-        items: [kusanagi, list-of-emperors, list-of-shoguns]
-      - label: Inner Circle
-        items: [masashi-miyamoto, suiren-makinami, akane-shikinami-hoffmann, kanade-tachibana]
-      - label: Bakufu Ministers
-        items: [suzu-hibana, nariyoshi-miyagi, toranosuke-saionji, kenzo-kamiya, izumi-shizuhata, noboru-wakabayashi, fuka-asahina, munehiro-ogasawara, noriko-shiraishi, kriemhilt-von-bismarck, kurara-tendo]
-      - label: SEELE
-        items: [yui-shinazugawa, gendo-takahashi, uzume, futsunushi, yachimata, takemikazuchi]
-      - label: Civilians
-        items: [mayu-kitta, kyouko-katsuragi, mio-amemiya]
-      - label: Deceased
-        items: [hideki-otonashi, kishibe-toda, kiyonari-tsujimura, hideaki-katsuragi]
+      - label: "Historical Figures"
+        items:
+          - "kusanagi"
+          - "list-of-emperors"
+          - "list-of-shoguns"
+      - label: "Inner Circle"
+        items:
+          - "masashi-miyamoto"
+          - "suiren-makinami"
+          - "akane-shikinami-hoffmann"
+          - "kanade-tachibana"
+      - label: "Bakufu Ministers"
+        items:
+          - "suzu-hibana"
+          - "nariyoshi-miyagi"
+          - "toranosuke-saionji"
+          - "kenzo-kamiya"
+          - "izumi-shizuhata"
+          - "noboru-wakabayashi"
+          - "fuka-asahina"
+          - "munehiro-ogasawara"
+          - "noriko-shiraishi"
+          - "kriemhilt-von-bismarck"
+          - "kurara-tendo"
+      - label: "SEELE"
+        items:
+          - "yui-shinazugawa"
+          - "gendo-takahashi"
+          - "uzume|Uzume"
+          - "futsunushi"
+          - "yachimata|Yachimata"
+          - "takemikazuchi"
+      - label: "Civilians"
+        items:
+          - "mayu-kitta"
+          - "kyouko-katsuragi"
+          - "mio-amemiya"
+      - label: "Deceased"
+        items:
+          - "hideki-otonashi"
+          - "kishibe-toda"
+          - "kiyonari-tsujimura"
+          - "hideaki-katsuragi"

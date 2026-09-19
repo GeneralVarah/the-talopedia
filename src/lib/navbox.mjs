@@ -1,5 +1,5 @@
 import { navbox as read, nation, url } from './registry.mjs';
-import { renderInline, esc, unesc, link, icon } from './inline.mjs';
+import { renderInline, esc, unesc, link, icon, CUSTOM, custom } from './inline.mjs';
 
 /**
  * A navbox entry may be a bare slug, an explicit [[link]], or a nation id.
@@ -73,5 +73,17 @@ export function resolveHtml(html = '') {
     .replace(/<div data-nb="([^"]+)"><\/div>/g, (_, id) => renderNavbox(id))
     .replace(/<a data-wl="([^"]+)"(?: data-d="([^"]*)")?><\/a>/g,
       (_, slug, d) => link(unesc(slug), d === undefined ? undefined : unesc(d)))
-    .replace(/<i data-ico="([^"]+)"><\/i>/g, (_, slug) => icon(unesc(slug)));
+    .replace(/<i data-ico="([^"]+)"><\/i>/g, (_, slug) => icon(unesc(slug)))
+    // A raw <table> or <figcaption> written into the markdown is an HTML block, and
+    // the markdown parser never looks inside one, so any [[link]] or :img[] in there
+    // would print as itself. Nothing that came through the parser still carries this
+    // syntax by now, so a pass over the finished HTML only catches those blocks.
+    .replace(CUSTOM, (...m) => custom(m, false))
+    // Emphasis in those same blocks, and only in those: a cell rendered from a
+    // markdown table already holds finished HTML and has no marks left to convert,
+    // so this cannot reach it, and prose is left to the markdown parser.
+    .replace(/<(td|th|figcaption)\b([^>]*)>([\s\S]*?)<\/\1>/g, (_, tag, attrs, inner) =>
+      `<${tag}${attrs}>${inner
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*([^*]+)\*/g, '<em>$1</em>')}</${tag}>`);
 }

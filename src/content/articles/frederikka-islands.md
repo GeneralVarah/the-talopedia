@@ -49,7 +49,7 @@ The **Frederikka Islands**[ˈfre̞.de̞.rikːɑ ˈaɪləndz] (*Fredriikan Saaret
 
 ## Etymology
 
-The island's Karjanian and international name comes from Queen Frederikka of Karjania. She was the Queen of Karjania between 1578 and 1589, and was of [[skjarnish]] origin. This name was first used during the 1778 Revolution, and was made official in 1867. Before this, the islands were known by other names, including *Pig Islands (Siansaaret)*, *New Kivijärvi*and *Pietarisaaret.*In the period before Karjanian colonization, the islands were usually referred to as *North Andam Islands*. Indigenous languages have a variety of different names they refer to the territory as, including the Shompon *Buvealatakrau*, meaning “Island of the Buveala” and the Frederikkese *Holchu Nyiu*, meaning “Friendly Islands”.
+The island's Karjanian and international name comes from Queen Frederikka of Karjania. She was the Queen of Karjania between 1578 and 1589, and was of [[skjarnish]] origin. This name was first used during the 1778 Revolution, and was made official in 1867. Before this, the islands were known by other names, including *Pig Islands (Siansaaret)*, *New Kivijärvi*and *Pietarisaaret*. In the period before Karjanian colonization, the islands were usually referred to as *North Andam Islands*. Indigenous languages have a variety of different names they refer to the territory as, including the Shompon *Buvealatakrau*, meaning “Island of the Buveala” and the Frederikkese *Holchu Nyiu*, meaning “Friendly Islands”.
 
 ## History
 

@@ -129,42 +129,45 @@ The service-eligible population - citizens between approximately 18 and 35 - num
 
 ### Ground Forces
 
-| Category | Type | Count |  |  |
-| --- | --- | --- | --- | --- |
-|  |  | Outdated | Modern | Advanced |
-| Infantry | Fit-for-Service | 14,200,000 |  |  |
-|  | Active Personnel | 150,000 |  |  |
-|  | Reserve Personnel | 380,000 |  |  |
-|  | Paramilitary (Dehyāri-ye Dashtī) | ~22,000 (est.) |  |  |
-| Armor | Cavalry | 3,200 horses (4 regiments) |  |  |
-|  | Armored Cars | 42 | 18 | 0 |
-|  | Light Tanks | 14 | 0 | 0 |
-| Artillery | Field Guns (75-77mm) | 140 | 62 | 0 |
-|  | Mountain guns | 48 | 32 | 0 |
-|  | Howitzers (105mm) | 24 | 16 | 0 |
-|  | Anti-aircraft guns | 12 | 4 | 0 |
-| Support | Vehicles (motorized) | 820 | 340 | 0 |
-|  | Engineers | ~4,200 personnel |  |  |
-|  | Signal Corps | ~1,800 personnel |  |  |
+<table>
+<tr><th rowspan="2">Category</th><th rowspan="2">Type</th><th colspan="3">Count</th></tr>
+<tr><th>Outdated</th><th>Modern</th><th>Advanced</th></tr>
+<tr><td rowspan="4">Infantry</td><td>Fit-for-Service</td><td colspan="3">14,200,000</td></tr>
+<tr><td>Active Personnel</td><td colspan="3">150,000</td></tr>
+<tr><td>Reserve Personnel</td><td colspan="3">380,000</td></tr>
+<tr><td>Paramilitary (Dehyāri-ye Dashtī)</td><td colspan="3">~22,000 (est.)</td></tr>
+<tr><td rowspan="3">Armor</td><td>Cavalry</td><td colspan="3">3,200 horses (4 regiments)</td></tr>
+<tr><td>Armored Cars</td><td>42</td><td>18</td><td>0</td></tr>
+<tr><td>Light Tanks</td><td>14</td><td>0</td><td>0</td></tr>
+<tr><td rowspan="4">Artillery</td><td>Field Guns (75-77mm)</td><td>140</td><td>62</td><td>0</td></tr>
+<tr><td>Mountain guns</td><td>48</td><td>32</td><td>0</td></tr>
+<tr><td>Howitzers (105mm)</td><td>24</td><td>16</td><td>0</td></tr>
+<tr><td>Anti-aircraft guns</td><td>12</td><td>4</td><td>0</td></tr>
+<tr><td rowspan="3">Support</td><td>Vehicles (motorized)</td><td>820</td><td>340</td><td>0</td></tr>
+<tr><td>Engineers</td><td colspan="3">~4,200 personnel</td></tr>
+<tr><td>Signal Corps</td><td colspan="3">~1,800 personnel</td></tr>
+</table>
 
 ### Naval Forces
 
-| Category | Type | Count |  |  |
-| --- | --- | --- | --- | --- |
-|  |  | Outdated | Modern | Advanced |
-| Escort vessels | Armed escort frigates | 2 | 1 | 0 |
-|  | Coastal patrol craft | 6 | 4 | 0 |
-| Smaller Vessels | Destroyers | 8 | 4 | 0 |
-|  | Harbour defence craft | 12 | 3 | 0 |
-| Support | Transports | 18 | 6 | 0 |
-|  | Logistics Vessels | 14 | 4 | 0 |
+<table>
+<tr><th rowspan="2">Category</th><th rowspan="2">Type</th><th colspan="3">Count</th></tr>
+<tr><th>Outdated</th><th>Modern</th><th>Advanced</th></tr>
+<tr><td rowspan="2">Escort vessels</td><td>Armed escort frigates</td><td>2</td><td>1</td><td>0</td></tr>
+<tr><td>Coastal patrol craft</td><td>6</td><td>4</td><td>0</td></tr>
+<tr><td rowspan="2">Smaller Vessels</td><td>Destroyers</td><td>8</td><td>4</td><td>0</td></tr>
+<tr><td>Harbour defence craft</td><td>12</td><td>3</td><td>0</td></tr>
+<tr><td rowspan="2">Support</td><td>Transports</td><td>18</td><td>6</td><td>0</td></tr>
+<tr><td>Logistics Vessels</td><td>14</td><td>4</td><td>0</td></tr>
+</table>
 
 ### Air Forces
 
-| Category | Type | Count |  |  |
-| --- | --- | --- | --- | --- |
-|  |  | Outdated | Modern | Advanced |
-| Fighters | Biplane Fighters | 0 | 0 | 0 |
-| Recon | Recon aircraft | 0 | 0 | 0 |
-|  | Observation balloons | 4 | 2 | 0 |
-| Support | Transports | 0 | 0 | 0 |
+<table>
+<tr><th rowspan="2">Category</th><th rowspan="2">Type</th><th colspan="3">Count</th></tr>
+<tr><th>Outdated</th><th>Modern</th><th>Advanced</th></tr>
+<tr><td>Fighters</td><td>Biplane Fighters</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td rowspan="2">Recon</td><td>Recon aircraft</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>Observation balloons</td><td>4</td><td>2</td><td>0</td></tr>
+<tr><td>Support</td><td>Transports</td><td>0</td><td>0</td><td>0</td></tr>
+</table>
