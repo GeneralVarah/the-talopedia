@@ -246,27 +246,21 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             placeholder="github_pat_…" /></label>
         <details class="pub-help" id="pub-help">
           <summary>How to get a token</summary>
-          <p class="pub-note">One minute, once. GitHub cannot preset this form, so each step
-            has to be made by hand.</p>
+          <p class="pub-note">Half a minute, once. The link sets the one box that matters,
+            so there is nothing to hunt for.</p>
           <ol class="pub-steps">
             <li>Open <a id="pub-make" href="#" target="_blank" rel="noopener">the new token
-              page</a>. Sign in if asked.</li>
-            <li><b>Token name</b>: anything. <i>The Talopedia</i> does.</li>
-            <li><b>Expiration</b>: as long as you like. You will be asked again when it runs out.</li>
-            <li><b>Repository access</b>: choose <b>Only select repositories</b>, then pick
-              <b id="pub-repo"></b> from the list.
-              <span class="pub-warn">The option above it is selected by default and is read-only,
-              so leaving it as it comes will not work.</span></li>
-            <li><b>Permissions</b> &rarr; <b>Repository permissions</b>. The list is long and
-              alphabetical. Set two of them:
-              <ul>
-                <li><b>Contents</b> &rarr; Access: <b>Read and write</b></li>
-                <li><b>Pull requests</b> &rarr; Access: <b>Read and write</b></li>
-              </ul></li>
-            <li>Press <b>Generate token</b>, then copy it. It starts with
-              <code>github_pat_</code> and is shown only once.</li>
-            <li>Paste it above.</li>
+              page</a>. Sign in to GitHub if asked.</li>
+            <li>The name is filled in and <b>public_repo</b> is already ticked. Set
+              <b>Expiration</b> to whatever suits you.
+              <span class="pub-warn">Do not tick anything else. <b>public_repo</b> lets this
+              write to public repositories only, so nothing private is reachable.</span></li>
+            <li>Scroll down, press <b>Generate token</b>, and copy it. It starts with
+              <code>ghp_</code> and is shown only once. Paste it above.</li>
           </ol>
+          <p class="pub-note">You do not need to be a member of <b id="pub-repo"></b>. Without
+            write access your work goes to a fork of your own and arrives as a pull request
+            from there.</p>
           <p class="pub-note">The token is kept in this browser and sent only to GitHub.
             <b>Forget token</b> removes it.</p>
         </details>
@@ -2035,9 +2029,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         const msg = data.message || '';
         const why = /Bad credentials/i.test(msg)
           ? '. The token is wrong or has expired'
-          : /not accessible by personal access token|Not Found|Resource not accessible/i.test(msg)
-          ? '. The token is missing a permission: it needs this repository under Repository '
-            + 'access, with Contents and Pull requests both set to Read and write'
+          : /not accessible|Not Found|Resource not accessible/i.test(msg)
+          ? '. The token is missing the public_repo scope'
           : '';
         throw new Error(`${msg || r.statusText} (${opts.method || 'GET'} ${where})${why}.`);
       }
@@ -2093,24 +2086,35 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         const canPush = !!base.permissions?.push;
         const mine = (base.owner?.login || '').toLowerCase() === (me.login || '').toLowerCase();
 
-        // Owning the repository and still having no write access means the token is
-        // read-only. Forking it to yourself is not possible and not what is wanted.
-        if (mine && !canPush) {
-          throw new Error(`This token cannot write to ${REPO}. When you create it, set `
-            + `Repository access to "Only select repositories" and choose ${REPO}, then set `
-            + `Contents and Pull requests to "Read and write".`);
-        }
-
-        // No fork route: a fine-grained token only reaches repositories its owner owns,
-        // and opening the pull request needs Pull requests write on this one either way.
+        // Without write access the work goes to a fork of your own, which is how
+        // anyone contributes to a repository they are not a member of.
+        let work = REPO;
         if (!canPush) {
-          throw new Error(`${me.login} does not have write access to ${REPO}. `
-            + 'Ask the wiki admin to add you to the repository, then try again.');
+          if (mine) {
+            throw new Error(`This token cannot write to ${REPO}, which you own. `
+              + 'It needs the public_repo scope.');
+          }
+          pubSay(`Forking ${REPO}…`);
+          await gh(`/repos/${REPO}/forks`, { method: 'POST' });
+          work = `${me.login}/${base.name}`;
+          // A fork is made in the background, so wait for it to start answering.
+          for (let i = 0; i < 20; i++) {
+            try { await gh(`/repos/${work}`); break; }
+            catch { await new Promise((r) => setTimeout(r, 1500)); }
+          }
+          // An old fork still sits where it was left, and branching from there would
+          // put every change since then into the pull request.
+          try {
+            await gh(`/repos/${work}/merge-upstream`, {
+              method: 'POST', body: JSON.stringify({ branch: base.default_branch }),
+            });
+          } catch { /* a fresh fork is already level */ }
         }
-        const work = REPO;
 
         const main = base.default_branch;
-        const tip = await gh(`/repos/${REPO}/git/ref/heads/${main}`);
+        // The branch starts from wherever the work is going, so a fork branches from
+        // its own tip rather than from a commit it may not have.
+        const tip = await gh(`/repos/${work}/git/ref/heads/${main}`);
         const branch = `talopedia/${slug}-${Date.now().toString(36)}`;
         pubSay('Making a branch…');
         await gh(`/repos/${work}/git/refs`, {
@@ -2132,7 +2136,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           method: 'POST',
           body: JSON.stringify({
             title: `${$('#f-title').value || slug}`,
-            head: branch,
+            head: canPush ? branch : `${me.login}:${branch}`,
             base: main,
             body: `Written in the wiki editor by @${me.login}.\n\n`
               + `Page: \`${targetPath(slug)}\`${used.length ? `\nImages: ${used.length}` : ''}`,
@@ -2154,8 +2158,11 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#publish').onclick = () => {
         panel.hidden = false;
         $('#pub-token').value = token.get();
-        // The fine-grained form takes no parameters, so the link can only open the page.
-        $('#pub-make').href = 'https://github.com/settings/personal-access-tokens/new';
+        // The classic form takes its settings from the link, so the scope arrives ticked.
+        // public_repo rather than repo: this wiki is public, and repo would hand over
+        // every private repository the contributor can reach.
+        $('#pub-make').href = 'https://github.com/settings/tokens/new?scopes=public_repo'
+          + `&description=${encodeURIComponent('The Talopedia editor')}`;
         $('#pub-repo').textContent = REPO;
         $('#pub-help').open = !token.get();
         // Say which file this will touch, and whether it is a new one.
