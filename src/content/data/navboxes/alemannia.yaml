@@ -23,9 +23,7 @@ groups:
           - "list-of-alemannian-ministers"
       - label: "Military"
         items:
-          - "army"
-          - "navy"
-          - "air-force"
+          - "federal-armed-forces"
   - label: "Economy"
     rows:
       - items:

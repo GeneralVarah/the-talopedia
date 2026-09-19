@@ -272,8 +272,11 @@ pre.source {
 .article figure.float-right { float: right; clear: right; margin-left: 24px; }
 .article figure.float-left { float: left; clear: left; margin-right: 24px; }
 
-/* A standalone figure, not floated and not in a grid. */
-.article > figure:not(.float) { margin: 18px 0; }
+/* A standalone figure, not floated and not in a grid. It is its own formatting
+   context for the same reason the editor's image block is: the <img> inside is a
+   replaced element and may not overlap the infobox, so without this the picture
+   drops below the sidebar and leaves its own figure standing empty above it. */
+.article > figure:not(.float) { margin: 18px 0; display: flow-root; }
 .article > figure:not(.float) img { max-width: 100%; height: auto; display: block; }
 .article > figure:not(.float) figcaption {
   font-size: 12px; color: var(--muted); margin-top: 5px; line-height: 1.4;
