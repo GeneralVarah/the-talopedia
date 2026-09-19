@@ -1,114 +1,113 @@
 ---
-title: "Masashi Miyamoto"
-nativeTitle: "宮本 正志"
+title: "Suiren Makinami"
+nativeTitle: "真希波 水蓮"
 type: character
 nation: nichirin
 infobox:
-  - { image: "https://lh3.googleusercontent.com/pw/AP1GczNEHSyso2K9OAjlY2kaGJJusu5STapO9Os5Gb65XGp8sh_5saXjpbZIQ7Fnw2BeqJa3DheiC9laZc_bACI1hwdf8lYD56eO_fOycP-9KJZqfVAynQJi4Yn4NP6Dz-4rKcvbXgZhvqc6qUSObR4DZjXS=w2000", caption: "" }
-  - { office: "Sei'I Tai Shogun", term: "Incumbent | October 1, 1923 –" }
-  - { label: "Preceded by", value: "Masanori Miyamoto" }
-  - label: "Senior Shogunal Advisors"
-    value:
-      - "[[suiren-makinami]]"
-      - "[[kanade-tachibana]]"
-      - "[[akane-shikinami-hoffmann]]"
-  - { section: "Personal Details" }
-  - { label: "Nationality", value: "[[nichirin|Nichirian]]" }
-  - label: "Born"
-    value:
-      - "Masashi Miyamoto"
-      - "June 6, 1896"
-      - "Shinkeisei, Nichirin"
-  - label: "Parents"
+  - { image: "/assets/old-media/media/suiren-makinami-1.jpg", caption: "" }
+  - { office: "Senior Shogunal Advisor", term: "Incumbent | October 2, 1923 –" }
+  - { label: "Shogun", value: "[[masashi-miyamoto]]" }
+  - { office: "Marshal-Admiral of the Navy", term: "Incumbent | July 25, 1915 –" }
+  - label: "Shogun"
     value:
       - "Masanori Miyamoto"
-      - "Rie Takatsukasa"
-  - label: "Alma Mater"
+      - "Masashi Miyamoto"
+  - { label: "Preceded by", value: "Nobumasa Kurosawa" }
+  - { office: "Minister of Foreign Affairs", term: "December 11, 1924 – March 20, 1928" }
+  - label: "Shogun"
     value:
-      - "Takarazuka Imperial University (BSc, POLS)"
-      - "National War College (MSS)"
+      - "Masanori Miyamoto"
+      - "Masashi Miyamoto"
+  - { label: "Preceded by", value: "Yuriko Okamura" }
+  - { label: "Succeeded by", value: "[[nariyoshi-miyagi]]" }
+  - { section: "Personal Details" }
+  - label: "Nationality"
+    value:
+      - ":flag[nichirin] [[nichirin|Nichirian]]"
+      - ":flag[elvester] [[elvester|Elvesterian]]"
+  - label: "Born"
+    value:
+      - "Suiren Makinami"
+      - "March 31, 1894"
+      - "Tynemouth, Elvester"
+  - label: "Parents"
+    value:
+      - "Shinsuke Makinami"
+      - "Cecelia Sunderland"
+  - { label: "Alma Mater", value: "Chūkyō Naval Academy" }
   - { section: "Nichirian Name" }
-  - { label: "Kanji", value: "宮本 正志" }
-  - { label: "Aldrige Rōmaji", value: "Miyamoto Masashi" }
-  - { label: "Literal Meaning", value: "\"At the foot of the shrine, righteous will.\"" }
+  - { label: "Kanji", value: "真希波 水蓮" }
+  - { label: "Aldrige Rōmaji", value: "Makinami Suiren" }
 ---
 
-**Masashi Miyamoto** (宮本 正志; born June 6, 1896) is the 14th Shogun of [[nichirin]], having assumed power on October 1, 1923, following his father Masanori Miyamoto's debilitating illness. At twenty-seven, he became one of the youngest leaders in Nichirian history, inheriting a government marked by significant factional tension and assuming office in the aftermath of Keiko Miyamoto’s murder, a crime for which Foreign Minister Yuriko Okamura was convicted and executed by Shogunal order in December 1924. He is notable for his departure from his father's hardline policies, most significantly his initiation of the Tōhara Conference of March 1926, which normalized relations with Guandong following the Great War despite substantial internal opposition. He has governed without an immediate family since taking office, appointing advisors on the basis of demonstrated competence rather than factional affiliation, and is characterized by those within his administration as a leader who asks careful questions and delegates accordingly.
+**Suiren Makinami** (真希波 水蓮; born March 31, 1894) is a [[nichirin|Nichirian]] naval officer and government official serving as Marshal-Admiral of the Maelstrom of the [[nichirian-navy]] (元帥渦潮提督, *Gensui-Uzushio-Teitoku*) and Senior Shogunal Advisor under Shogun [[masashi-miyamoto]]. She previously served as interim Minister of Foreign Affairs from December 1924 to March 1928. Makinami is notable for her rapid ascension to Marshal-Admiral at the age of twenty-one following the death of Admiral Nobumasa Kurosawa during the Attack on [[naginomiya]] Harbor, one of the youngest officers to hold supreme naval command in modern history. Before her combat record, she served on the 1913-14 NCH Fubuki Hyperborean expedition, one of 22 survivors from a crew of 42. Her reorganization of Nichirian naval forces following Kurosawa's death and her subsequent victories in the Valtherian theater against the Xing Empire established Nichirian naval dominance and secured critical supply routes that proved decisive in the conflict's outcome.
 
 ## Early Life and Education
 
-Masashi Miyamoto was born on June 6, 1896, at [[shinkeisei]] Central Hospital in Mukōjima, Shinkeisei, the son of Shogun Masanori Miyamoto and his midaidokoro, Rie Takatsukasa. His sister, Keiko, was born in 1898, two years later. Despite his heritage, Masanori enrolled both children in ordinary schools in Shinkeisei rather than arranging private instruction, a decision that was unusual for a Shogunal household and whose reasoning Masanori never publicly disclosed.
+<figure class="float float-left" style="width:320px"><img src="/assets/old-media/media/suiren-makinami-2.jpg" alt="Makinami family portrait, c. 1899"><figcaption>Makinami family portrait, c. 1899</figcaption></figure>
 
-<div class="imgrid">
-<figure style="flex:1.339"><img src="/assets/old-media/media/masashi-miyamoto-2.jpg" alt="Masashi and Keiko in Shizuhata, c. 1906."><figcaption>Masashi and Keiko in Shizuhata, c. 1906.</figcaption></figure>
-</div>
+Suiren Makinami was born on March 31, 1894, in Tynemouth, [[elvester]], the daughter of Nichirian naval officer Shinsuke Makinami and Elvesterian writer Cecelia Sunderland. Her father's posting in Elvester was the circumstance of her birth; Tynemouth was a port city, and the household was effectively Nichirian in its internal organization despite its location. Shinsuke enforced Nichirian as the language of the home, making Makinami bilingual in practice but uneven in both directions.
 
-Among his classmates, Masashi was largely isolated as his peers were aware of his lineage and kept their distance accordingly. Keiko, two years his junior and subject to the same circumstances, became his closest companion throughout childhood and early adolescence, a closeness shaped in part by their shared position.
+In 1900, Shinsuke was reassigned to Nichirin. Makinami, then six years old, returned with him, while Sunderland remained in Tynemouth, though mother and daughter maintained correspondence through Makinami's childhood and into her early naval career. Makinami arrived in Nichirin speaking Nichirian imperfectly, with an accent her classmates noticed, and her father spent the following years working to correct it. She holds dual Nichirian and Elvesterian nationality.
 
-In 1910, Takatsukasa died of [parathyroid cancer](https://en.wikipedia.org/wiki/Parathyroid_carcinoma), leaving Masanori as the sole guardian of both children when Masashi was fourteen. Masanori did not substantially fill the domestic role his wife had held. The household continued to function under caretakers, but accounts from the period suggest Masashi and Keiko became more dependent on each other in the years following their mother's death.
+Shinsuke Makinami retired from the Nichirian Navy at the rank of Junior Admiral in 1908. Makinami enrolled at [[chukyo|Chūkyō]] Naval Academy in 1909, at the age of fifteen, a decision consistent with a childhood spent in proximity to naval operations and an apparent indifference to the civilian alternatives available to her. She graduated first in her class in 1912, completing the program ahead of the standard timeline at 18 years old.
 
-Masashi was accepted into [[takarazuka]] Imperial University in 1914, studying political science. His years at Takarazuka coincided with the entirety of the Great War, during which Nichirin mobilized significant military and economic resources. As heir apparent-designate, he was kept from active service, a decision consistent with Masanori's approach to succession, though it distinguished Masashi from much of the generation surrounding him.
+## Naval Career
 
-<div class="imgrid">
-<figure style="flex:1.792"><img src="/assets/old-media/media/masashi-miyamoto-3.jpg" alt="Masashi (first row, far left) attending a lecture at Takarazuka Imperial University, c. 1915."><figcaption>Masashi (first row, far left) attending a lecture at Takarazuka Imperial University, c. 1915.</figcaption></figure>
-</div>
+Following her graduation from Chūkyō Naval Academy in 1912, Makinami was assigned to the armored cruiser NCH Heitetsu as her first posting. She served aboard the Heitetsu for approximately one year before being reassigned to the research and survey vessel NCH Fubuki in preparation for a Hyperborean expedition departing in the autumn of 1913.
 
-Keiko, by contrast, was dispatched to the front in a supervisory capacity, an arrangement she reportedly strenuously objected to. The separation and the asymmetry of their wartime experiences introduced significant strain into their relationship. Masashi graduated in 1918 with a Bachelor of Science in Political Science as the war drew to a conclusion.
+### Fubuki Expedition
 
-He was declared heir apparent on March 12, 1919, following his graduation. Shortly thereafter, he enrolled at the National War College and completed a Master of Strategic Studies in 1922. It was during this period, after his graduation, that he began substantive engagement with his father's government, observing Masanori's administration from the inside for the first time. This apprenticeship lasted approximately one year before Masanori's health began to deteriorate.
+<figure class="float float-right" style="width:320px"><img src="/assets/old-media/media/suiren-makinami-3.jpg" alt="NCH Fubuki photographed by a relief vessel upon its discovery in April 1914."><figcaption>NCH Fubuki photographed by a relief vessel upon its discovery in April 1914.</figcaption></figure>
 
-## Rise to Power
+The Fubuki expedition set out in September 1913 with a crew of forty-two. Its objectives were a geological and cartographic survey of coastal [[hyperborea]]. The expedition encountered conditions that led to the progressive loss of crew members over the following months, and Makinami was among the 22 of 42 survivors who returned in February 1914 at only 19 years old. The full circumstances of the expedition remain classified; she has not publicly discussed the experience. Following her return, Makinami was promoted to the rank of High Sea-Adjutor for “exemplary conduct during the crisis” and reassigned to active fleet duties.
 
-On September 22, 1923, Masanori Miyamoto became bedridden due to complications from an undisclosed illness, leaving the government without an active head of state. An emergency assembly was convened on October 1, during which Masashi asserted his right to the regency as heir apparent. The session became contentious. Minister of Foreign Affairs Yuriko Okamura challenged his claim before the assembly, arguing that the exigencies of governance required action beyond hereditary entitlement, and proposed herself as an alternative steward. Keiko, present at the assembly, separately proposed shared oversight between herself and Masashi, citing petitions from prefectural governors concerned about unilateral action. Masashi rejected both positions and demanded that the assembly confirm him outright. The session ended without formal resolution, though Masashi assumed effective authority that evening.
+### Attack On Naginomiya Harbor
 
-The following day, Okamura transmitted telegrams to the prefectural governors of Nichirin, proposing provisional governance independent of the Shogunal line while Masanori remained incapacitated. The proposal was rejected by the overwhelming majority of Nichirian prefectures, and Okamura's attempt to build a political base outside Shinkeisei failed to gain traction beyond a handful of governors in the Sangai region. Masashi was recognized as Shogun across the remainder of the country at twenty-seven years old.
+The outbreak of war in [[evria]] in 1914 drew Nichirin into conflict with the Xing Empire in the Valtherian theater. Makinami was assigned to the armored cruiser NCH Nyumetsu at the time and participated in a series of engagements against Guandongese naval forces over the following year. Her conduct during these skirmishes was noted in fleet assessments as consistently effective under adverse conditions.
 
-### The Night of Falling Stars
+On July 25, 1915, a Guandongese naval offensive struck Naginomiya Harbor in a major coordinated attack during a naval conference, killing Marshal-Admiral Nobumasa Kurosawa and several other senior Nichirian naval commanders. The attack left the Nichirian Navy without effective high command at a critical stage of the war. Shogun Masanori Miyamoto personally selected Makinami as Kurosawa's replacement. She was twenty-one years old, held a junior rank relative to several surviving senior officers, and had only been in active naval service for three years. Naval historians have noted that the surviving senior officers were either implicated in the command failures that allowed the Naginomiya attack or carried factional ties that Masanori was unwilling to import into the naval command at a moment of crisis. Makinami had neither, and she was promoted to Marshal-Admiral on July 25, 1915.
 
-On March 4, 1924, while Masashi was attending the Second Tripartite Conference in Veynach, [[arlbern]], Keiko launched a military coup against his government, later nicknamed the Night of Falling Stars (星降る夜). Working with Commander Hozumi Yagura of the Imperial Guard, she ordered the seizure of all major communication hubs in Shinkeisei at 2100 hours, followed by the storming of government buildings across the capital. The Ministry of Defense, the Treasury, and most administrative buildings fell within hours. Several key officials escaped in the chaos, including Okamura, and gunfire at the Ministry of Foreign Affairs during the initial assault alerted nearby residential districts before the communications blackout was complete.
+<figure class="float float-left" style="width:320px"><img src="/assets/old-media/media/suiren-makinami-4.jpg" alt="Shogun Masanori Miyamoto promoting Makinami to Marshal-Admiral of the Maelstrom, Naginomiya, July 25, 1915."><figcaption>Shogun Masanori Miyamoto promoting Makinami to Marshal-Admiral of the Maelstrom, Naginomiya, July 25, 1915.</figcaption></figure>
 
-Keiko's proclamation broadcast, transmitted from the seized government radio station, was technically compromised and repeatedly interrupted. Before it could be stabilized, Marshal-Admiral [[suiren-makinami]], who had declared naval neutrality in any succession dispute, broadcast Masashi's response from Arlbern on a counter-signal, breaking the blackout and declaring the navy's support for the rightful Shogun. Advance units of the Army of the Haguregumo reached Shinkeisei within hours. Keiko's forces, outnumbered and with half her soldiers deserting, had no viable defensive position.
+### The Great War
 
-Keiko and a small group of loyalists, including a wounded Yagura, fled south by convoy toward Sangai. The convoy was ambushed near Kagamidaira by a detachment of the Army of the Matsuhana. Keiko escaped on foot, swam the Haguregumo River with her remaining loyalists, and reached the southern bank, where Okamura's forces were waiting. Okamura shot Keiko at the riverbank while Yagura and the remaining loyalists were executed.
+Makinami's first action as Marshal-Admiral was to reorganize the surviving Nichirian naval forces into a coherent command structure. Her tactical doctrine centered on massed battleship engagements supported by destroyer screens, exploiting Nichirian advantages in gunnery range by crossing the T formation to maximize broadside firepower while minimizing enemy return fire. She supplemented this with aggressive fleet maneuvers to achieve favorable positioning before engagement, often using night approaches to gain tactical surprise at dawn. She assumed command of the aircraft carrier NCH Fudō during this period, reflecting an early interest in carrier-based naval operations as a complement to the battleship doctrine she was simultaneously developing.
 
-Masashi returned from Arlbern on March 6, 1924, learning of Keiko’s death. His own convoy traveled to the southern bank of the Haguregumo River to retrieve Keiko's body while Okamura was present at the site with her forces. The exchange that followed ended when Okamura drew her sidearm and fired at Masashi at close range, striking him in the right eye. Makinami extracted him under fire as Okamura's forces engaged the Shogun's guard. Masashi survived while Okamura retreated into Sangai. He lost the use of his right eye as a result of the wound and has worn a prosthetic covering since his recovery.
+The Battle of the Rensei Islands in late 1915 was the first major engagement under her command; Nichirian forces repelled a Guandongese amphibious assault on Ayanami. The First Battle of the Bay of Serica followed in early 1916, resulting in significant Guandongese losses without achieving a decisive outcome, while the Second Battle of the Bay of Serica in early 1917 inflicted further damage on the Guandongese naval capacity. Finally, the Third Battle of the Bay of Serica in mid-1917 crippled the Guandongese Navy as an operational force, completing the Nichirian naval dominance in the Valtherian theater that the preceding engagements had been building toward.
 
-<div class="imgrid">
-<figure style="flex:1.792"><img src="/assets/old-media/media/masashi-miyamoto-4.jpg" alt="Masashi paying his respects at the funeral of Princess Keiko, c. 1924."><figcaption>Masashi paying his respects at the funeral of Princess Keiko, c. 1924.</figcaption></figure>
-</div>
+<figure class="float float-right" style="width:320px"><img src="/assets/old-media/media/suiren-makinami-5.jpg" alt="NCH Fudō during the Battle of the Rensei Islands, c. 1915."><figcaption>NCH Fudō during the Battle of the Rensei Islands, c. 1915.</figcaption></figure>
 
-### Sangai Operation and Trial of Okamura
-
-Masanori Miyamoto died on November 23, 1924, after fourteen months of incapacitation. The following day, Masashi issued orders through secure channels to General Mayu Kitta, Marshal-Admiral Makinami, and General Semen Voronovkin of the Ishiskian White Army in exile, directing a coordinated encirclement of Sangai's major cities. Voronovkin's participation was secured through a promise of Shogunal material support for continued White Army operations against communist forces in Ishiski. The order specified that no engagement was to occur without direct Shogunal authorization.
-
-Intelligence operatives intercepted correspondence indicating that Okamura was in Shichidaika, where surveillance confirmed she had arrived for a scheduled meeting. Kitta encircled the town hall with two hundred soldiers as Okamura barricaded herself inside with forty elite guards and refused immediate surrender. A firefight followed in which approximately forty of Kitta’s soldiers were killed or wounded before Kitta offered reduced charges for Okamura's guards in exchange for her surrender. She accepted, ordered her guards to stand down, and was taken into custody.
-
-The trial of Yuriko Okamura opened on December 10, 1924, in the Grand Hall of the Palace of the Solar Halo with Kitta as prosecutor. Okamura declined defense counsel and spoke in her own defense, acknowledging the execution of Keiko as a lawful response to treason and characterizing the shooting of Masashi as an act of self-defense. A witness from her own guard, Captain Isamu Anno, testified that Okamura had ordered Keiko's execution personally and had fired on Masashi directly. The tribunal acquitted Okamura on all charges, finding insufficient evidence of premeditated conspiracy.
-
-However, Masashi overrode the judgment from the bench, declaring Okamura guilty of treason, murder, and conspiracy, and ordered her execution at dawn. She was executed by firing squad on December 11, 1924. The decision to override a tribunal acquittal by Shogunal decree was without modern precedent in Nichirian legal history and drew significant commentary from legal scholars in the years that followed. Masashi appointed Makinami as interim Minister of Foreign Affairs the same day, a position she would hold concurrently with her existing offices for the following three years.
+For the remainder of the war, Makinami organized and commanded Entente convoy escort operations across the Arctic Sea, the Hyperborean Ocean, and the Eastern Panthalassan Ocean, defending allied merchant shipping against Alemannian submarine warfare. Naval historians have credited these operations with maintaining supply corridors, helpful to the eventual Entente victory.
 
 ## Political Career
 
-### Normalization of Nichirin-Guandong Relations
+Following the armistice in November 1918, Makinami oversaw the transition from wartime operations to peacetime fleet administration. She assumed command of the newly constructed aircraft carrier NCH Gōzanze during this period, the flagship of the post-war fleet rebuild under her direction.
 
-Masashi's most significant foreign policy initiative was the normalization of Nichirin's relations with Guandong following the conclusion of the Great War. Post-war relations had remained hostile, defined by territorial disputes and the accumulated grievances of a generation of soldiers on both sides.
+In 1921, she took a leave of absence from naval command to enroll at [[shinkeisei]] Polytechnical University, where she completed a Bachelor of Public Administration in 1922. She returned to naval command following her graduation. On October 2, 1923, she was appointed Senior Shogunal Advisor by Shogun Masashi Miyamoto alongside General Mayu Kitta, Chief of Staff Hideki Otonashi, and Chief Historian [[kanade-tachibana]].
 
-In March 1926, Masashi convened the Tōhara Conference, at which Nichirian and Guandongese delegations negotiated a framework for normalized relations. The conference produced agreements on mutual recognition, trade protocols, and joint border administration in the newly annexed autonomous prefectures in Eastern Manshu. The joint patrol program that followed saw Nichirian and Guandongese soldiers operating in shared border sectors for the first time, with incident rates dropping significantly within months of its implementation.
+### Night of Falling Stars and the Sangai Operation
 
-The decision was among the most contested of his tenure. Senior military figures, most prominently General Mayu Kitta, the decorated commander of the Defense of [[mizuhara]] and one of the most publicly respected figures in Nichirian military history, opposed normalization on the grounds that it constituted a betrayal of the war's costs. Kitta's dissent was public and sustained throughout the months following the conference. Conservative factions within the government characterized Masashi's policy as dangerously idealistic, but he did not reverse course.
+While Shogun Masashi Miyamoto was attending the Second Tripartite Conference in Veynach, Arlbern, Princess Keiko Miyamoto launched a military coup against his government on the night of March 4, 1924. Makinami, who had publicly declared naval neutrality in any succession dispute, broadcast Masashi's response from Arlbern on a counter-signal that overrode Keiko's compromised proclamation broadcast, breaking the communications blackout Keiko's forces had established and declaring the navy's support for the rightful Shogun. The coup collapsed within hours.
 
-<div class="imgrid">
-<figure style="flex:1.792"><img src="/assets/old-media/media/masashi-miyamoto-5.jpg" alt="Masashi and Chief Liaison Officer Akane Shikinami-Hoffmann during the Tōhara Conference, c. 1926. Marshal-Admiral Suiren Makinami visible in the background."><figcaption>Masashi and Chief Liaison Officer Akane Shikinami-Hoffmann during the Tōhara Conference, c. 1926. Marshal-Admiral Suiren Makinami visible in the background.</figcaption></figure>
-</div>
+On March 6, Makinami accompanied Masashi's convoy to the southern bank of the Haguregumo River, where Keiko's body had been recovered following her execution by Minister of Foreign Affairs Yuriko Okamura. When Okamura fired on Masashi at close range, striking him in the right eye, Makinami extracted him under fire and coordinated his emergency evacuation.
+
+Makinami commanded the naval blockade of Sangai's coastline as part of the coordinated operation to capture Okamura on December 8. The blockade was established under the cover of routine patrol rotations and held until Okamura's surrender at Shichidaika.
+
+<figure class="float float-right" style="width:320px"><img src="/assets/old-media/media/suiren-makinami-6.jpg" alt="Makinami speaking during the Fourth Tripartite Conference, Mizuhara, 28 December, 1927."><figcaption>Makinami speaking during the Fourth Tripartite Conference, Mizuhara, 28 December, 1927.</figcaption></figure>
+
+### Minister of Foreign Affairs
+
+Masashi appointed Makinami as interim Minister of Foreign Affairs on December 11, 1924, the day of Okamura's execution, a position she held concurrently with her existing offices as Marshal-Admiral and Senior Shogunal Advisor.
+
+Her most significant achievement in the role was her leadership of the Nichirian delegation at the Tōhara Conference in March 1926, at which Nichirian and Guandongese delegations negotiated a framework for normalized relations following the Great War. The conference produced agreements on mutual recognition, trade protocols, and joint border administration in the autonomous prefectures of Eastern Manshu. She was succeeded as Minister of Foreign Affairs by [[nariyoshi-miyagi]] on March 20, 1928.
 
 ### Assassination of Hideki Otonashi
 
-On January 1, 1930, Chief of Staff and Senior Shogunal Advisor Hideki Otonashi was killed by sniper fire on Tenjin-dōri in Shiomachi Ward, Shinkeisei. Marshal-Admiral Makinami, walking alongside Otonashi at the time of the shooting, sustained a gunshot wound to the left shoulder and was hospitalized. A third advisor present was uninjured. Otonashi died at the scene.
-
-Otonashi had served as Chief of Staff to the Shogun since October 1923, managing the administrative and scheduling operations of the Shogunal office throughout Masashi's tenure. In response, Masashi authorized an expanded domestic intelligence operation with the explicit mandate to identify not just the shooter, but the full chain of command behind the order. Investigations into the shooting connected it to disruptions in organized crime networks operating through Nichirian port infrastructure, which had been impacted by an earlier expansion of domestic surveillance in response to the assassination of Emilie Langley and car-bombing of [[george-elwood]], two Elysian nationals, on Nichirian soil. No public arrests had been made as of the time of writing.
+On January 1, 1930, Makinami sustained a gunshot wound to the left shoulder during the assassination of Chief of Staff Hideki Otonashi on Tenjin-dōri in Shiomachi, Shinkeisei. Otonashi, walking alongside her at the time of the shooting, was killed instantly by the same round before it struck her. The wound did not damage bone; she was hospitalized and discharged after several days.
 
 ## Personal Life
 
-Masashi Miyamoto has no surviving immediate family, having governed without close family since the death of his father in November 1924, nor has he publicly designated a midaidokoro or established a formal consort arrangement. He resides at the Palace of the Solar Halo in Shiomachi, Shinkeisei.
+Makinami is an active attendee of jazz performances at venues across Shinkeisei and is known to maintain a broader interest in the genre. She is an active competitive shooter, having participated in naval marksmanship competitions throughout her career, and she swims recreationally in open water year-round, including during Shinkeisei’s winter months. She plays the [shamisen](https://en.wikipedia.org/wiki/Shamisen).
 
-Masashi is an accomplished cellist and pianist, having studied both instruments from childhood. He is also known to fish recreationally, a pursuit he has engaged in since adolescence.
+Occasionally, she delivers guest lectures on naval strategy and maritime history at universities in Shinkeisei. Makinami is in a relationship with Senior Shogunal Advisor and Chief Liaison Officer [[akane-shikinami-hoffmann]], with whom she shares a residence in Shiomachi, Shinkeisei.
