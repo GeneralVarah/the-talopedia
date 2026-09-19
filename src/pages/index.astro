@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { navbox, nations, url } from '../lib/registry.mjs';
 import { resolveHtml } from '../lib/navbox.mjs';
+import { asset } from '../lib/inline.mjs';
 
 // The front page is an ordinary article, so it opens in the editor like any other.
 export const HOME = 'home';
@@ -32,6 +33,24 @@ const stats = [
 ];
 
 /**
+ * The featured article's own sidebar picture, floated beside its summary. Read off
+ * whichever article the section links to first, so changing the feature changes the
+ * picture and there is nothing to keep in step by hand.
+ */
+function featured() {
+  const section = (home?.body ?? '').split(/^##\s+Featured Article\s*$/m)[1];
+  const slug = section?.match(/\[\[([^\]|#]+)/)?.[1];
+  const entry = slug && articles.find((a) => a.id === slug);
+  const row = entry?.data.infobox?.find((r) => r.image || r.images?.[0]?.src);
+  const src = row?.image || row?.images?.[0]?.src;
+  if (!src) return '';
+  const alt = (entry.data.title ?? slug).replace(/"/g, '&quot;');
+  return `<figure class="float float-right" style="width:220px">`
+    + `<img src="${asset(src)}" alt="${alt}"></figure>`;
+}
+const featuredImg = featured();
+
+/**
  * Each `## Section` of the front page becomes its own panel, as on Wikipedia's main page.
  * Introduction is the exception: its text belongs in the banner panel, under the counters.
  */
@@ -45,7 +64,8 @@ function splitHome(html = '') {
     const head = chunk.slice(0, end);
     const rest = chunk.slice(end);
     if (/id="introduction"/.test(head)) { intro = rest; continue; }
-    boxes.push(`<section class="hbox">${head}<div class="hbox-body">${rest}</div></section>`);
+    const lead = /id="featured-article"/.test(head) ? featuredImg : '';
+    boxes.push(`<section class="hbox">${head}<div class="hbox-body">${lead}${rest}</div></section>`);
   }
   return { lede, intro, body: boxes.join('') };
 }
