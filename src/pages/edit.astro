@@ -783,6 +783,11 @@ const DEV = import.meta.env.DEV;
         ? [block('grid', { items: held })]
         : held.map((h) => block(to, to === 'float' ? { ...h, align: 'right', width: 320 } : h));
       blk.replaceWith(...made);
+      const tools = made[0]?.querySelector('.fig-tools');
+      if (tools) {
+        tools.classList.add('stay');
+        addEventListener('mousemove', () => tools.classList.remove('stay'), { once: true });
+      }
       made[0]?.querySelector('.cap')?.focus();
       sync();
       flash(`Now ${LAYOUT_NAME[to]}${made.length > 1 ? `, ${made.length} blocks` : ''}.`);
@@ -2758,9 +2763,15 @@ const DEV = import.meta.env.DEV;
     .fig-empty:hover { color: var(--ink); border-style: solid; }
     .fig-empty[hidden] { display: none; }
     .fig-tools {
-      position: absolute; top: 3px; right: 3px; display: flex; gap: 3px;
+      position: absolute; top: 3px; right: 3px; z-index: 7; display: flex; gap: 3px;
       opacity: 0; transition: opacity .12s;
     }
+    /* A floating picture already carries the move and remove cluster in that corner,
+       so these sit under it rather than beneath it. */
+    .float-edit > .fig-tools { top: 36px; right: 5px; }
+    /* Replacing the block leaves the pointer over an element that was never entered,
+       so :hover does not apply until it moves. Hold the cluster open until it does. */
+    .fig-tools.stay { opacity: 1; }
     .fig-tools button {
       font: 11px/1 var(--body); color: var(--muted); background: var(--lift);
       border: 1px solid var(--rule); border-radius: 3px; padding: 3px 6px; cursor: pointer;
