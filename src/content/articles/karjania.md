@@ -1,6 +1,6 @@
 ---
 title: "Karjania"
-nativeTitle: "Karjanmaan Yhdistyneet Sosialistiset Valtiot"
+nativeTitle: "Karjanmaan Yhdistyneet Sosialistiset Valtiot (Routan)"
 type: overview
 nation: karjania
 infobox:
@@ -15,11 +15,8 @@ infobox:
   - { section: "Administration" }
   - { label: "Government", value: "One-Party Communist State" }
   - { label: "Chairman of the Communist Party", sub: true, value: "Yrjö Sinnar" }
-  - label: "Premier of the State"
-    sub: true
-    value:
-      - "Nooa Laukkanen"
-      - "Aili Lehtinen"
+  - { label: "Premier of the State", sub: true, value: "Nooa Laukkanen" }
+  - { label: "Speaker of Congress", sub: true, value: "Aili Lehtinen" }
   - { label: "Legislature", value: "Karjanian Communist Congress" }
   - { label: "Formation", value: "1920 January 8th" }
   - { section: "Demographics" }
@@ -122,7 +119,7 @@ Karjania has a mixed elevation due to its vast size and varied landscapes. In th
 Karjania has a varied climate, mainly divided between boreal and humid continental. Thule and Cuohpajálla have a polar climate. In Karjania, winters are very harsh and long. All of Karjania experiences snowfall in winter, with some places, especially Thule, covered by snow year-round. The average temperature in mainland Karjania is 6.2 C°. In winter, temperatures may drop to -25 C°. Karjania sees an average of 650mm of rain annually.
 
 <div class="imgrid">
-<figure style="flex:2.0"><img src="/assets/old-media/media/karjania-2.jpg" alt="Northern Karjania (Kuolan) during winter"><figcaption>Northern Karjania (Kuolan) during winter</figcaption></figure>
+<figure style="flex:2.000"><img src="/assets/old-media/media/karjania-2.jpg" alt="Northern Karjania (Kuolan) during winter"><figcaption>Northern Karjania (Kuolan) during winter</figcaption></figure>
 </div>
 
 ### Largest Cities
@@ -169,4 +166,4 @@ In terms of Religion, most of Karjania identify as non-religious, about 71%. 23%
 
 The median age in Karjania is 21.9. The population is 53.3% female and 46.6% male. In Karjania, homosexuality is not punished. The GDP per capita is $45,399. In a 1921 survey, 85.3% of Karjanians said they're proud of their homeland. The most common cause of death in Karjania is heart disease.
 
-See Also: [[sport-in-karjania]], [[portal:karjania|Portal:Karjania]]
+See Also: [[sport-in-karjania]], [[portal:karjania]]
