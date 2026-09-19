@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { defineConfig } from 'astro/config';
 import remarkTalopedia from './src/lib/remark-talopedia.mjs';
+import { sync } from './scripts/sync.mjs';
 
 const ARTICLES = path.resolve('src/content/articles');
 const PORTALS = path.resolve('src/content/portals');
@@ -41,6 +42,44 @@ function readJson(req, res, limit, done) {
     try { done(JSON.parse(body), reply); }
     catch { reply(400, { error: 'Malformed request.' }); }
   });
+}
+
+/**
+ * Pulls merged pull requests down while the dev server runs, so a contribution that
+ * lands on GitHub shows up here without being asked for. It only ever fast-forwards
+ * a clean checkout; anything else it reports and leaves alone.
+ */
+function autoPull() {
+  const every = Number(process.env.SYNC_SECONDS || 60) * 1000;
+  return {
+    name: 'talopedia-auto-pull',
+    apply: 'serve',
+    configureServer(server) {
+      if (every <= 0) return;
+      const log = (m) => server.config.logger.info(`\x1b[36m[sync]\x1b[0m ${m}`);
+      let last = '';
+      const tick = () => {
+        let r;
+        try { r = sync(); } catch (e) { r = { state: 'offline', note: String(e.message) }; }
+        if (r.state === 'pulled') {
+          log(`pulled ${r.note}`);
+          for (const f of r.files || []) log(`  ${f}`);
+          if ((r.files || []).some((f) => f === 'package.json' || f === 'package-lock.json')) {
+            log('package.json changed: run npm ci');
+          }
+          return;
+        }
+        // Said on the first look so it is clear this is running, and after that only
+        // when the answer changes. Otherwise it would repeat itself every minute.
+        const key = `${r.state}:${r.note}`;
+        if (!last || (key !== last && r.state !== 'current')) log(`${r.state} - ${r.note}`);
+        last = key;
+      };
+      tick();
+      const timer = setInterval(tick, every);
+      server.httpServer?.once('close', () => clearInterval(timer));
+    },
+  };
 }
 
 /**
@@ -208,5 +247,5 @@ export default defineConfig({
     remarkPlugins: [remarkTalopedia],
     smartypants: false,
   },
-  vite: { plugins: [devSave(), devSearch()] },
+  vite: { plugins: [autoPull(), devSave(), devSearch()] },
 });

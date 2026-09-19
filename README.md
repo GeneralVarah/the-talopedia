@@ -91,6 +91,21 @@ server fetches its own pages, indexes them with Pagefind's Node API and serves `
 memory; editing an article reindexes it about a second later. `npm run build` still writes a real
 index to `dist/` for the deployed site.
 
+## Staying level with GitHub
+
+Contributions arrive as pull requests, so this copy falls behind the moment one is
+merged. `npm run dev` checks every minute and fast-forwards when it can, printing what
+came down:
+
+    [sync] pulled 2 commits
+      src/content/articles/alemannia.md
+      src/content/articles/auritania.md
+
+It only ever fast-forwards, and only a clean checkout. Uncommitted work, or local commits
+of your own, and it says so and leaves the tree alone rather than deciding a merge for
+you. `npm run sync` does the same check once, by hand. `SYNC_SECONDS=0` turns it off,
+and any other number changes how often it looks.
+
 ## Publishing
 
 Push to `main`. `.github/workflows/deploy.yml` builds and deploys to GitHub Pages. It reads the
