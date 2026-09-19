@@ -32,6 +32,7 @@ Everything below works in an article body, in a sidebar value, and in a navbox e
 | `:icon[masashi-miyamoto]` | that subject's flag or emblem, inline |
 | `:flag[nichirin]` | the same thing, read better for nations |
 | `:img[/assets/flags/kemet.png]` | an inline image by path, for anything with no article |
+| `:img[/assets/media/x.jpg\|96]` | the same, at 96px, for a picture inside a table cell |
 | `:up` / `:down` | the green and red statistic arrows |
 | `**bold**`, `*italic*` | bold, italic, and they nest around a link |
 | `[[#section-id\|Text]]` | a jump to a heading on the same page |
@@ -42,6 +43,11 @@ render, not while the markdown is compiled. Astro caches each file's compiled HT
 resolved at compile time would freeze until that particular file was edited next: a rename would
 reach the renamed article and nothing else. Editing `src/lib` itself still needs `npm run clean`,
 because that cache lives in `node_modules/.astro`.
+
+The Icons tab of the Media panel lists every flag and emblem on disk, not only the
+registered nations. A nation from `nations.yaml` goes in as `:flag[slug]`, so renaming it
+carries everywhere; anything else is a file with no name to follow, so it goes in as
+`:img[path]`. That is why a war article's belligerents are a mixture of the two.
 
 In a navbox, a bare nation id from `nations.yaml` picks up its flag automatically, and a
 nation with `portal: true` renders bold and links to its portal. That is what "bold denotes

@@ -2676,22 +2676,36 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         b.onclick = () => insertToken(a.kind);
         mpIcons.append(b);
       }
+      // Registered nations first: those insert :flag[slug], which follows a rename.
       const icons = Object.entries(ICONS)
         // A nation names itself: the flag registry knows "E.S.U." where the slug reads esu.
-        .map(([slug, src]) => ({ slug, src, kind: FLAGS[slug] ? 'flag' : 'icon', label: NATION_NAMES[slug] || displayOf(slug) }))
-        .filter((i) => !iq || i.label.toLowerCase().includes(iq) || i.slug.includes(iq))
-        .sort((a, b) => a.kind.localeCompare(b.kind) || a.label.localeCompare(b.label));
-      if (!icons.length && !arrows.length) { mpIcons.innerHTML = '<p class="mp-empty">Nothing matches.</p>'; }
+        .map(([slug, src]) => ({ slug, src, kind: FLAGS[slug] ? 'flag' : 'icon',
+          label: NATION_NAMES[slug] || displayOf(slug) }));
+      // Then every other flag and emblem sitting in the folders. Most of what a war
+      // article needs is here: former states, colonies and wartime variants are not
+      // nations in the registry, so nothing in the registry could ever offer them.
+      const held = new Set(icons.map((i) => i.src));
+      for (const a of ASSETS) {
+        if (!/^(flags|emblems)$/.test(a.group) || held.has(a.path)) continue;
+        icons.push({ slug: a.path, src: a.path, kind: a.group === 'flags' ? 'flag' : 'icon',
+          label: displayOf(a.name.replace(/\.[^.]+$/, '')), loose: true });
+      }
+      icons.sort((a, b) => a.kind.localeCompare(b.kind) || a.label.localeCompare(b.label));
+      const shown = icons.filter((i) => !iq || i.label.toLowerCase().includes(iq) || i.slug.includes(iq));
+      if (!shown.length && !arrows.length) { mpIcons.innerHTML = '<p class="mp-empty">Nothing matches.</p>'; }
       let kind = null;
-      for (const i of icons) {
+      for (const i of shown) {
         if (i.kind !== kind) { kind = i.kind; mpIcons.append(el('div', 'mp-group', kind === 'flag' ? 'flags' : 'emblems')); }
         const b = el('button', 'mp-icon');
         b.type = 'button';
-        b.title = `:${i.kind}[${i.slug}]`;
+        // A registered nation goes in by name, so renaming it carries. One that is
+        // only a file goes in by path, because there is no name to follow.
+        const token = i.loose ? 'img' : i.kind;
+        b.title = `:${token}[${i.slug}]`;
         const img = el('img'); img.src = srcFor(i.src); img.alt = '';
         b.append(img, el('span', null, i.label));
         b.onmousedown = (e) => e.preventDefault();
-        b.onclick = () => insertToken(i.kind, i.slug);
+        b.onclick = () => insertToken(token, i.slug);
         mpIcons.append(b);
       }
     }
