@@ -7,7 +7,7 @@ ooc: true
 infobox:
   - { image: "https://lh3.googleusercontent.com/pw/AP1GczNMFxTK6b5zNtglugZQsYL0W0ivvGk9eYwk5kPoqSgB9Dlj-1pCbJV96kWaskuGmnpN_UUUK1Hwgcnca7vM8XP3gYTe2esO0hywZdUjGwYUpJzhqBwrntL87vtEgRM7IFLP0P0ioG6UIGBVB0cDGpF3=w2000", caption: "" }
   - { office: "Head of SEELE Operations In Valtheria", term: "Incumbent | 1 March, 1922 –" }
-  - { label: "Right Pillar", value: "Gendo Takahashi" }
+  - { label: "Right Pillar", value: "[[gendo-takahashi]]" }
   - { label: "Preceded by", value: "*Position Established*" }
   - { section: "Personal Details" }
   - label: "Nationality"
