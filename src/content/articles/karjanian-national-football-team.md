@@ -13,13 +13,17 @@ infobox:
   - { label: "Colours", value: "White, Red" }
   - { label: "Code", value: "KAR" }
   - { section: "First International" }
-  - { value: ":flag[karjania]  Karjania  3-5  Rudania  :flag[rudania]   (1887, March 17th)" }
+  - value:
+      - ":flag[karjania] Karjania 3-5 Rudania :flag[rudania]"
+      - "(March 17, 1897)"
   - { section: "Biggest Win" }
   - value:
-      - "+"
-      - "FieldHeadingImageTwo listsFull-width value↑↓✕:img[/assets/flags/frederikka-islands.png]  Frederikka Islands   0-18    Karjania  :flag[karjania]   (1889, June 2nd)"
+      - ":img[/assets/flags/frederikka-islands.png] Frederikka Islands 0-18 Karjania :flag[karjania]"
+      - "(June 2, 1889)"
   - { section: "Biggest Defeat" }
-  - { value: ":flag[karjania]   Karjania   1-9   Skjarnland   :flag[skjarnland]   (1899, April 30th)" }
+  - value:
+      - ":flag[karjania] Karjania 1-9 Skjarnland :flag[skjarnland]"
+      - "(April 30, 1899)"
   - { section: "World Cup" }
   - { label: "First Appearance", value: "1900" }
   - { label: "Best Result", value: "Champions (1904)" }
