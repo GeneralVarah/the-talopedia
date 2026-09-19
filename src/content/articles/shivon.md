@@ -16,24 +16,25 @@ infobox:
   - { label: "Legislature", value: "The Directorate" }
   - { label: "Formation", value: "1876" }
   - { section: "Demographics" }
-  - { label: "Population", value: "As of 1928" }
+  - { label: "Population", value: "35,860,000" }
   - label: "Ethnic Groups"
     value:
-      - "95.3% Hasmenian"
-      - "3.14% Nabateans"
-      - "1.50% Other"
+      - "89.5% Hasmenian"
+      - "10.2% Nabateans"
+      - "1.7% Other"
   - label: "Religion"
     value:
-      - "97.2% Hasmoneanism"
-      - "2.1% Nazarism"
+      - "86.2% Hasmoneanism"
+      - "14% Nazarism"
       - "0.2% Other"
   - { label: "Demonym(s)", value: "Shivonite" }
   - { section: "Miscellaneous Info" }
-  - { label: "Land Area", value: "70,900 square miles" }
-  - { label: "Water %", sub: true, value: "0.86%" }
+  - { label: "Land Area", value: "756,791 km²" }
+  - { label: "Water %", sub: true, value: "2.71%" }
   - { label: "Date Format", value: "(MM/DD/YYYY)" }
   - { label: "Driving Side", value: "Left" }
 ---
+
 The First Republic of **Shivon** is a country located in the southern part of [[evria]]. It borders Selmira to the north, Kemet to the south, the Arlbernian colony of Divia to the west, and the Sahara Sea to the east. It is one of the only independent nations in Nabataea with the inclusion of [[varahmehr]]. It has a long, unstable political history, and is now currently a constitutional republic, with a bright future ahead.
 
 Human habitation in the region can be traced back 160,000 years, beginning with early hunter–gatherers. Over thousands of years, these groups slowly developed into diverse city-states by around 5000 BCE. These city-states frequently warred with one another until a king from the Hasmoneanite city-state of Hukar invaded and unified them into a single kingdom—the Minahide Kingdom—around 3540 BCE. After his death, his son Kazzamar II launched a series of military campaigns that dramatically expanded the realm, forming the First Hasmenionian Empire around 3480 BCE. Kazzamar II’s reforms transformed it into a wealthy and powerful state, earning him the title Kazzamar the Great. But no empire lasts forever. After centuries of rule, corruption, incompetence, and famine hollowed out the state. Civil war erupted, and numerous breakaway territories splintered off. For nearly a thousand years following the collapse, no successor state emerged that traced its legitimacy back to the old empire. In 1458 CE, a revolutionary general named Accabeus, a devout Hasmoneanite, gathered a massive following. He staged a successful coup in the ancient city of [[eretz]], seized the surrounding territory to the eastern Nabataean region, and proclaimed the Second Hasmenionian Empire—smaller and more regional, but powerful in its own right. It reached its own era of prosperity but eventually deteriorated, succumbing to civil war in the 1500s, which tore it apart once again. One of the resulting rump states was Shivonius, marking the first recorded use of the word *Shivon*. Shivonius expanded slightly into nearby lands and then remained mostly insular for the next 300 years. It was ruled as a kingdom by the House of Eniach, a family claiming descent from the chief advisor to Kazzamar the Great.
@@ -100,7 +101,7 @@ The resulting instability led to the collapse of the Empirate. In its place, a p
 
 Once in power, Binkowicz carried out brutal crackdowns against rival political factions and consolidated authority through violence and coercion. His government also introduced racial policies targeting Nabataeans, who were forced into heavily monitored labor camps. Conditions in these camps were harsh, and detainees were frequently subjected to severe mistreatment, abuse, and extrajudicial killing.
 
-By 1928, Binkowicz had been arrested by the Unity State and found guilty of sheltering [[majesty]], a gestaltist terror group. As a result, Shivon came under the temporary rule of the Directorate until a man named Mendel Shneerson, an egotistical figure, assumed power after convincing the Directorate to vote for him. He escalated most of Binkowicz’s genocidal policies and ruled with an iron grip for two years, until Shivon was ambushed in a surprise attack by the coalition forces of [[nichirin]], Akenaur Bund, and Varahmehr. The war lasted twenty days, ending with Shneerson’s death and the surrender of the Order. Under the oversight of foreign powers, the SDF won Shivon’s first democratic elections and transformed Shivon from a totalitarian dictatorship into a constitutional republic called the First Republic of Shivon.
+By 1928, Binkowicz had been arrested by the Unity State and found guilty of sheltering [[majesty]], a gestaltist terror group. As a result, Shivon came under the temporary rule of the Directorate until a man named Mendel Shneerson, an egotistical figure, assumed power after convincing the Directorate to vote for him. He escalated most of Binkowicz’s genocidal policies. He ruled with an iron grip for two years, until Shivon was ambushed in a surprise attack by the coalition forces of [[nichirin]], Akenaur Bund, and Varahmehr. The war lasted twenty days, ending with Shneerson’s death and the surrender of the Order. Under the oversight of foreign powers, the SDF won Shivon’s first democratic elections and transformed Shivon from a totalitarian dictatorship into a constitutional republic named the First Republic of Shivon.
 
 ## Military
 
@@ -128,16 +129,12 @@ The economy of Shivon is expanding, and strengthening relations with Varahmehr a
 
 Shivon is an arid nation situated along the eastern shores of the Saharan Sea, occupying a narrow but strategically significant stretch of land in southern Evria. Much of its eastern territory extends deep into the Nabatean Desert, a harsh expanse of sand dunes, and rocky plateaus. The climate is dry, with long rainless seasons, scorching summers, and winters that bring only brief, cold winds coming in from the desert interior.
 
-<div class="imgrid">
-<figure style="flex:2.228"><img src="/assets/old-media/media/shivon-2.jpg" alt="Eretz, with the Great Temple."><figcaption>Eretz, with the Great Temple.</figcaption></figure>
-</div>
-
 It borders Selmira to the north, Kemet to the south, the Arlbernian colony of Divia to the west, and the Sahara Sea to the east.
 
 ## Demographics
 
-Shivon has the largest Hasmoneanite population in the world, accounting for 97.3% of its population.
+Shivon has the largest Hasmoneanite population in the world, accounting for 89.5% of its population.
 
-Shivon also has a minority of Nabataeans, accounting for 17.3% of Shivon’s population, but is recovering from previous abuses from the government.
+Shivon also has a minority of Nabataeans, who account for 10.2% of the population, but the community is recovering from past regime abuses.
 
-15.1% of the population follows Nazarism, and has churches in different cities, major ones are even state sponsored.
+14% of the population follows Nazarism.
