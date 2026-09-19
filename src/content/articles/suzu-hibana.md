@@ -10,7 +10,7 @@ infobox:
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - { label: "Preceded by", value: "[[kishibe-toda]]" }
   - { section: "Personal Details" }
-  - { label: "Nationality", value: "[[nichirin|Nichirian]]" }
+  - { label: "Nationality", value: ":img[/assets/flags/kinshu.jpg] [[kinshu|Kinshūan]]" }
   - label: "Born"
     value:
       - "Suzu Hibana"
