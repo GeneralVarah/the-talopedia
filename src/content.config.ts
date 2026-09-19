@@ -16,6 +16,11 @@ const row = z.object({
   value: z.union([z.string(), z.array(z.string())]).optional(),
   image: z.string().optional(),
   caption: z.string().optional(),
+  // Two pictures side by side in one row, as a flag beside a coat of arms.
+  images: z.array(z.object({
+    src: z.string().default(''),
+    caption: z.string().default(''),
+  })).optional(),
   sub: z.boolean().default(false),                      // renders the bullet, so nobody types one
   // Two lists shown side by side, as belligerents or commanders in a war infobox.
   pair: z.array(z.object({

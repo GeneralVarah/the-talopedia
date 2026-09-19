@@ -168,6 +168,10 @@ saying so. The list is `HOSTS` in `src/pages/edit.astro`.
 `npm run dev` keeps **Upload**, so pictures added while developing still land in the
 archive and stay versioned. The published editor has the link field only.
 
+A sidebar picture row holds one picture, or two side by side: open its ⇄ and pick
+*Static* or *Grid*. Two is the limit, because a sidebar column is narrow. Floating is not
+offered there, since the column is already the frame.
+
 **Shape** is optional. Left on *Original* a picture keeps its own proportions; choosing a
 ratio cuts it to exactly that shape, which is what lines a grid row up and what stops the
 page jumping while a picture hosted elsewhere is still arriving.

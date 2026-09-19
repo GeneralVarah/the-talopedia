@@ -16,7 +16,10 @@ infobox:
   - { label: "Formation", value: "August 14th, 1822" }
   - { section: "Demographics" }
   - { label: "Population", value: "1930 Census" }
-  - { label: "Ethnic Groups", value: "Salishian - 86%Native Pop. - 14%" }
+  - label: "Ethnic Groups"
+    value:
+      - "86% Salishian"
+      - "14% Native Elysian"
   - label: "Religion"
     value:
       - "64% Nazarism"
@@ -31,6 +34,7 @@ infobox:
   - { label: "Alpha-2 Code", value: "SA" }
   - { label: "Alpha-3 Code", value: "SAL" }
 ---
+
 The Republic of **Salishia** [Say-Lish-E-uh] is a nation settled in [[elysia]], itself primarily bordering Ponurvia to its south. Featuring the Columbia, Snake, and Duwamish rivers going throughout Its territory. It hosts the Aquilo Mountains and the Northern Rapids. The Salishian government structure is based on classical liberalism, furthering to create a constitutional republic. The purpose of the government is to serve as a limited entity acting by the consent of those it governs. Its sole, main function is to protect the natural rights of individuals, primarily life, liberty, and property; as well as the individuals themselves. The state hosts a free market and economy, allowing for people to pursue their own individual goals with limited intervention.
 
 ## Etymology
@@ -95,7 +99,6 @@ In the case of a national emergency, the National Congress retains its legislati
 
 <figure><img src="/assets/old-media/media/salishia-2.jpg" alt="Legislative Building, Fort Mercer"><figcaption>Legislative Building, Fort Mercer</figcaption></figure>
 
-
 ### Executive Branch
 
 The Executive Branch is responsible for enforcing and administering the laws of the Republic of Salishia. The head of the branch is the President, who also serves as both Head of State and Head of Government. The President is elected by the people through a nationwide popular election and exercises only powers granted by the Constitution. As the President, he administers the national government and ensures the uniform execution of law throughout the Republic.
@@ -111,7 +114,6 @@ The Judicial Branch is responsible for interpreting the laws of the Republic of 
 The judiciary consists of Local Courts, Regional Courts, and the Supreme Court of Salishia. Local Courts handle the majority of civil and criminal cases. Regional Courts hear appeals from Local Courts and oversee the administration of justice within their respective districts. The Supreme Court of Salishia is the highest court in the nation and possesses the authority to review the constitutionality of laws and government actions.
 
 <figure><img src="/assets/old-media/media/salishia-3.png" alt="Supreme Court of Salishia"><figcaption>Supreme Court of Salishia</figcaption></figure>
-
 
 ## Economy
 
