@@ -763,6 +763,31 @@ const DEV = import.meta.env.DEV;
       return b;
     }
 
+    // The three shapes a picture can take, in the order the button walks them.
+    const LAYOUTS = ['image', 'float', 'grid'];
+    const LAYOUT_GLYPH = { image: '\u25AD', float: '\u25E7', grid: '\u25A6' };
+    const LAYOUT_NAME = { image: 'static', float: 'floating', grid: 'grid' };
+
+    /** Rebuild this picture's block as the next shape, keeping what it holds. */
+    function cycleLayout(fig) {
+      const blk = fig.closest('.blk');
+      if (!blk || !LAYOUTS.includes(blk.dataset.kind)) return;
+      const to = LAYOUTS[(LAYOUTS.indexOf(blk.dataset.kind) + 1) % LAYOUTS.length];
+      const held = [...blk.querySelectorAll('figure')].map((x) => ({
+        src: x.querySelector('input.path')?.value.trim() || '',
+        caption: htmlToMd(x.querySelector('.cap')).trim(),
+      }));
+      // A grid holds several pictures; leaving it gives each one a block of its own
+      // rather than quietly dropping all but the first.
+      const made = to === 'grid'
+        ? [block('grid', { items: held })]
+        : held.map((h) => block(to, to === 'float' ? { ...h, align: 'right', width: 320 } : h));
+      blk.replaceWith(...made);
+      made[0]?.querySelector('.cap')?.focus();
+      sync();
+      flash(`Now ${LAYOUT_NAME[to]}${made.length > 1 ? `, ${made.length} blocks` : ''}.`);
+    }
+
     function figure(d = {}, removable = false) {
       const f = el('figure');
       const img = el('img'); img.alt = '';
@@ -792,10 +817,23 @@ const DEV = import.meta.env.DEV;
       cap.classList.add('cap');
       // Change and remove sit together in the corner, out of the picture's way.
       const tools = el('div', 'fig-tools');
+      // Leftmost: what shape the picture takes. Painted once it is in the document,
+      // since a figure does not know which kind of block it belongs to until then.
+      const lay = el('button', 'fig-layout', '');
+      lay.type = 'button';
+      lay.onmousedown = (e) => e.preventDefault();
+      lay.onclick = (e) => { e.stopPropagation(); cycleLayout(f); };
+      requestAnimationFrame(() => {
+        const kind = f.closest('.blk')?.dataset.kind;
+        if (!LAYOUTS.includes(kind)) { lay.hidden = true; return; }
+        const next = LAYOUTS[(LAYOUTS.indexOf(kind) + 1) % LAYOUTS.length];
+        lay.textContent = LAYOUT_GLYPH[kind];
+        lay.title = `Layout: ${LAYOUT_NAME[kind]}. Click for ${LAYOUT_NAME[next]}.`;
+      });
       const swap = el('button', null, '⇄'); swap.type = 'button'; swap.title = 'Change this picture';
       swap.onmousedown = (e) => e.preventDefault();
       swap.onclick = choose;
-      tools.append(swap);
+      tools.append(lay, swap);
       if (removable) {
         const x = el('button', null, '✕'); x.type = 'button'; x.title = 'Remove this picture';
         x.onmousedown = (e) => e.preventDefault();

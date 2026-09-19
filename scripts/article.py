@@ -237,11 +237,25 @@ def render_body(doc, parts, nid, save_image):
                 out.append(text)
     return [o for o in out if o.strip()]
 
+def spans(tc):
+    """A cell's colspan, and whether it starts or continues a vertical merge."""
+    pr = tc.find(W + 'tcPr')
+    if pr is None:
+        return 1, None
+    gs = pr.find(W + 'gridSpan')
+    vm = pr.find(W + 'vMerge')
+    merge = None
+    if vm is not None:
+        merge = 'start' if vm.get(W + 'val') == 'restart' else 'cont'
+    return (int(gs.get(W + 'val')) if gs is not None else 1), merge
+
+
 def render_table(doc, tbl, save_image):
     grid, rows = [], tbl.findall(W + 'tr')
     pending = []
     for tr in rows:
         tcs = tr.findall(W + 'tc')
+        sp = [spans(x) for x in tcs]
         imgs = [doc.blips(x) for x in tcs]
         text = [' '.join(cell_lines(doc, x)) for x in tcs]
         # A row carrying images AND its own text is a data row whose cells happen
@@ -256,7 +270,8 @@ def render_table(doc, tbl, save_image):
                 t = t.replace('|', r'\|')
                 path = save_image(im[0], '') if im else ''
                 cells.append(f':img[{path}] {t}'.strip() if path else t)
-            grid.append('|ROW|' + '|'.join(cells))
+            grid.append(('row', [{'text': c, 'cs': sp[k][0], 'vm': sp[k][1]}
+                                 for k, c in enumerate(cells)]))
             continue
         if pending:
             figs = []
@@ -272,8 +287,11 @@ def render_table(doc, tbl, save_image):
                 grid.append('<div class="imgrid">\n' + '\n'.join(figs) + '\n</div>')
             pending = []
             continue
-        if any(t.strip() for t in text):
-            grid.append('|ROW|' + '|'.join(t.replace('|', r'\|') for t in text))
+        # A cell continuing a vertical merge is empty in the file and carries no text
+        # of its own, so a row is kept when it has either text or a merge to record.
+        if any(t.strip() for t in text) or any(m for _, m in sp):
+            grid.append(('row', [{'text': t.replace('|', r'\|'), 'cs': sp[k][0], 'vm': sp[k][1]}
+                                 for k, t in enumerate(text)]))
     # stray images with no caption row
     if pending:
         figs = [f'<figure><img src="{save_image(r, "")}" alt=""><figcaption></figcaption></figure>'
@@ -283,8 +301,8 @@ def render_table(doc, tbl, save_image):
 
     out, buf = [], []
     for g in grid:
-        if g.startswith('|ROW|'):
-            buf.append(g[5:].split('|'))
+        if isinstance(g, tuple) and g[0] == 'row':
+            buf.append(g[1])
         else:
             if buf:
                 out.append(as_table(buf)); buf = []
@@ -294,9 +312,75 @@ def render_table(doc, tbl, save_image):
     return out
 
 def as_table(rows):
-    width = max(len(r) for r in rows)
-    rows = [r + [''] * (width - len(r)) for r in rows]
-    head, rest = rows[0], rows[1:]
-    lines = ['| ' + ' | '.join(head) + ' |', '| ' + ' | '.join(['---'] * width) + ' |']
-    lines += ['| ' + ' | '.join(r) + ' |' for r in rest]
-    return '\n'.join(lines)
+    """A markdown table while the shape allows it, HTML once a cell is merged.
+
+    Word writes a merged block as a run of cells: the first carries the content and
+    a vMerge of "restart", the rest are empty continuations. Markdown has no way to
+    say that, and flattening it is what turned every statistics table into a grid of
+    blanks, so a table carrying merges is written as HTML instead.
+    """
+    width = max(sum(c['cs'] for c in r) for r in rows)
+    merged = any(c['cs'] > 1 or c['vm'] for r in rows for c in r)
+
+    # A header band is the run of bold rows at the top, which is how a document marks
+    # one. The cell is a <th> and already bold, so the markers come off.
+    heads = 0
+    for r in rows:
+        filled = [c['text'].strip() for c in r if c['text'].strip()]
+        if filled and all(t.startswith('**') and t.endswith('**') for t in filled):
+            heads += 1
+        else:
+            break
+    heads = max(heads, 1)
+    for r in rows[:heads]:
+        for c in r:
+            t = c['text'].strip()
+            if t.startswith('**') and t.endswith('**'):
+                c['text'] = t[2:-2].strip()
+
+    if not merged:
+        flat = [[c['text'] for c in r] for r in rows]
+        flat = [r + [''] * (width - len(r)) for r in flat]
+        head, rest = flat[0], flat[1:]
+        lines = ['| ' + ' | '.join(head) + ' |', '| ' + ' | '.join(['---'] * width) + ' |']
+        lines += ['| ' + ' | '.join(r) + ' |' for r in rest]
+        return '\n'.join(lines)
+
+    # How far down each vertical merge runs, counted by column.
+    depth = [[0] * len(r) for r in rows]
+    for i, row in enumerate(rows):
+        col = 0
+        for k, c in enumerate(row):
+            if c['vm'] == 'start':
+                n, j = 1, i + 1
+                while j < len(rows):
+                    at, seen = None, 0
+                    for c2 in rows[j]:
+                        if seen == col:
+                            at = c2
+                            break
+                        seen += c2['cs']
+                    if at is None or at['vm'] != 'cont':
+                        break
+                    n += 1
+                    j += 1
+                depth[i][k] = n
+            col += c['cs']
+
+    def esc(t):
+        return t.replace(r'\|', '|').replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
+    out = ['<table>']
+    for i, row in enumerate(rows):
+        tag = 'th' if i < heads else 'td'
+        cells = []
+        for k, c in enumerate(row):
+            if c['vm'] == 'cont':
+                continue                      # the cell above covers this square
+            a = f' colspan="{c["cs"]}"' if c['cs'] > 1 else ''
+            b = f' rowspan="{depth[i][k]}"' if depth[i][k] > 1 else ''
+            cells.append(f'<{tag}{a}{b}>{esc(c["text"])}</{tag}>')
+        if cells:
+            out.append('<tr>' + ''.join(cells) + '</tr>')
+    out.append('</table>')
+    return '\n'.join(out)
