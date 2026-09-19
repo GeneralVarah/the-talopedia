@@ -14,7 +14,7 @@ infobox:
       - "Masashi Miyamoto"
   - { label: "Preceded by", value: "Masao Kuramochi" }
   - { section: "Personal Details" }
-  - { label: "Nationality", value: "[[nichirin|Nichirian]]" }
+  - { label: "Nationality", value: ":flag[nichirin] [[nichirin|Nichirian]]" }
   - label: "Born"
     value:
       - "Kanade Ura"
@@ -28,8 +28,8 @@ infobox:
   - { section: "Nichirian Name" }
   - { label: "Kanji", value: "立華 奏" }
   - { label: "Aldrige Rōmaji", value: "Tachibana Kanade" }
-  - { label: "Literal Meaning", value: "\"Standing splendor, a melody.\"" }
 ---
+
 **Kanade Tachibana** (立華 奏; born February 25, 1899) is a [[nichirin|Nichirian]] historian and government official serving as Chief Historian and Senior Shogunal Advisor under Shogun [[masashi-miyamoto]]. A product of Kyowa University’s prestigious Kugayama Institute of Historical Studies, she was appointed Chief Historian on March 12, 1923, under Shogun Masanori Miyamoto. Tachibana is responsible for the administration of the Imperial Archive and the preservation of Nichirian historical records. She was retained and elevated to the position of Senior Shogunal Advisor by Masashi Miyamoto on October 2, 1923. Her published scholarship spans pre-Shogunate imperial history, [Kaiseido](https://en.wikipedia.org/wiki/Shinto) traditions, and comparative studies of Kabbalistic, Gnostic, and Hasmonean-Nazarite theological systems. She is the last known reader of ancient Tohantan script.
 
 ## Early Life and Education
@@ -50,24 +50,20 @@ Her published work during and immediately following her graduate studies concent
 
 She was hired into a research position within the Nichirian government's Office of Historical Documentation in late 1921. Her published work had attracted administrative attention for the granular specificity of its claims regarding pre-Shogunate Tohantan cultural history, a detail that exceeded what was available in public archival holdings. The source of this knowledge was not disclosed at the time of her appointment.
 
+<figure class="float float-right" style="width:320px"><img src="/assets/old-media/media/kanade-tachibana-2.jpg" alt="Tachibana entering the Imperial Archive from Mukaimasa Miyamoto Metropolitan Library, c. 1928"><figcaption>Tachibana entering the Imperial Archive from Mukaimasa Miyamoto Metropolitan Library, c. 1928</figcaption></figure>
+
 On March 12, 1923, Shogun Masanori Miyamoto appointed her Chief Historian, succeeding Masao Kuramochi. Masashi Miyamoto retained Tachibana as Chief Historian after his rise to power and appointed her Senior Shogunal Advisor, one of four initial appointments alongside Marshal-Admiral [[suiren-makinami]], General Mayu Kitta, and Chief of Staff Hideki Otonashi. As Chief Historian, she administers the Imperial Archive beneath the Palace of the Solar Halo, the sole publicly acknowledged entrance to which is accessible by application to her office. She is known to work irregular hours, frequently occupying the archive through the night.
 
 During this period, her scholarship developed a distinct comparative theological focus, producing studies of Kabbalistic, Gnostic, and Hasmonean-Nazarite religious systems and their potential points of contact with pre-Shogunate Nichirian practice. This line of inquiry is considered unusual in Nichirian academic circles.
-
-<div class="imgrid">
-<figure style="flex:1.792"><img src="/assets/old-media/media/kanade-tachibana-2.jpg" alt="Tachibana entering the Imperial Archive from Mukaimasa Miyamoto Metropolitan Library, c. 1928"><figcaption>Tachibana entering the Imperial Archive from Mukaimasa Miyamoto Metropolitan Library, c. 1928</figcaption></figure>
-</div>
 
 Tachibana was part of the Nichirian Hyperborean expedition of July 1927, listed on the expedition manifest as a geological consultant.
 
 On November 28, 1928, Tachibana concluded a meeting with Elysian intelligence liaison Colonel [[george-elwood]] at the Elysian embassy in [[shinkeisei]]. Elwood was the target of a car bombing outside the embassy shortly after her departure.
 
+<figure class="float float-left" style="width:320px"><img src="/assets/old-media/media/kanade-tachibana-3.jpg" alt="Tachibana outside of Shinkeisei Polytechnical University, c. 1929"><figcaption>Tachibana outside of Shinkeisei Polytechnical University, c. 1929</figcaption></figure>
+
 ## Personal Life
 
 Tachibana resides in Asagaya, Shinkeisei, in a private residential complex rather than the government housing available to officials of her rank in Shiomachi. She is rarely seen in public, except for professional obligations. Her maternal grandmother, Michi Tachibana, still resides in Naginomiya, and the two maintain regular contact.
-
-<div class="imgrid">
-<figure style="flex:1.792"><img src="/assets/old-media/media/kanade-tachibana-3.jpg" alt="Tachibana outside of Shinkeisei Polytechnical University, c. 1929"><figcaption>Tachibana outside of Shinkeisei Polytechnical University, c. 1929</figcaption></figure>
-</div>
 
 She plays the [koto](https://en.wikipedia.org/wiki/Koto_(instrument)) and is known to collect antiquarian texts, a pursuit that extends beyond her professional archival work into private acquisition of rare historical and religious volumes.
