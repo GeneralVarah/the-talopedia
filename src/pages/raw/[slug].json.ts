@@ -9,7 +9,7 @@ export async function getStaticPaths() {
 
 export const GET: APIRoute = ({ props }) => {
   const { e } = props as any;
-  return new Response(JSON.stringify({ slug: e.id, data: e.data, body: e.body }), {
+  return new Response(JSON.stringify({ slug: e.id, data: e.data, body: e.body ?? '' }), {
     headers: { 'content-type': 'application/json' },
   });
 };

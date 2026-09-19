@@ -38,6 +38,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           <button id="new-portal" type="button">New portal</button>
           <button id="new-navbox" type="button">New navbox</button>
           <div class="menu-sep"></div>
+          <button id="open-file" type="button">Open a file…</button>
+          <input id="open-file-input" type="file" accept=".md,.markdown,.yaml,.yml" hidden />
+          <div class="menu-sep"></div>
           <input id="file-q" type="search" placeholder="Search articles" autocomplete="off" />
           <div class="menu-list" id="file-list"></div>
         </div>
@@ -128,10 +131,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             <button id="save" type="button" class="primary">Save</button>
           </Fragment>
         ) : (
-          /* Writing to disk needs the dev server. On the published site the same
-             button hands you the file instead. */
-          <button id="publish" type="button" class="primary"
-            title="Open a pull request with this page">Publish</button>
+          /* Writing to disk needs the dev server. On the published site a page is put
+             aside instead, and everything set aside goes over in one pull request. */
+          <Fragment>
+            <button id="cart-open" type="button" title="Pages waiting to be sent">
+              Changes <span class="cart-n" id="cart-n">0</span>
+            </button>
+            <button id="cart-add" type="button" class="primary"
+              title="Put this page with the others">Add change</button>
+          </Fragment>
         )}
       </span>
       <button id="settings-btn" type="button" title="Page settings">
@@ -235,15 +243,18 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 
     <div class="pub-back" id="pub-panel" hidden>
       <div class="pub">
-        <h2>Publish to GitHub</h2>
+        <h2>Changes waiting</h2>
         <p class="pub-note" id="pub-intro">
-          This opens a pull request with your page, new or edited. Nothing reaches the site
+          Everything below goes over together, as one pull request. Nothing reaches the site
           until it is reviewed.
         </p>
-        <p class="pub-what" id="pub-what"></p>
+
+        <div class="cart-list" id="cart-list"></div>
+
         <label>GitHub token
           <input id="pub-token" type="password" autocomplete="off" spellcheck="false"
-            placeholder="github_pat_…" /></label>
+            placeholder="ghp_…" /></label>
+
         <details class="pub-help" id="pub-help">
           <summary>How to get a token</summary>
           <p class="pub-note">Half a minute, once. The link sets the one box that matters,
@@ -264,12 +275,13 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           <p class="pub-note">The token is kept in this browser and sent only to GitHub.
             <b>Forget token</b> removes it.</p>
         </details>
+
         <p class="pub-status" id="pub-status"></p>
         <div class="pub-row">
-          <button id="pub-go" type="button" class="primary">Publish</button>
+          <button id="pub-go" type="button" class="primary">Send them over</button>
           <button id="pub-forget" type="button">Forget token</button>
           <span class="spacer"></span>
-          <button id="pub-close" type="button">Cancel</button>
+          <button id="pub-close" type="button">Close</button>
         </div>
       </div>
     </div>
@@ -1674,9 +1686,10 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       setInfobox(data.infobox || []);
       paintSettings();
       body.innerHTML = '';
-      (pageKind === 'navbox' ? navboxBlocks(loaded.groups || []) : parseBody(md))
+      (pageKind === 'navbox' ? navboxBlocks(loaded.groups || []) : parseBody(md || ''))
         .forEach((b) => body.append(block(b.kind, b)));
-      if (!body.children.length) body.append(block('para'));
+      // A portal has no body of its own, so it is not given an empty paragraph.
+      if (!body.children.length && pageKind !== 'portal') body.append(block('para'));
       sync();
       flash(`Opened ${data.title}.`);
     }
@@ -2153,27 +2166,375 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       }
     }
 
-    if ($('#publish')) {
+    /* ---------- reading a file back in ----------
+       The editor writes a narrow slice of YAML, so it can read that slice back without
+       carrying a parser. Anything it did not write is not promised. */
+
+    const unquote = (v) => {
+      const t = String(v).trim();
+      return /^".*"$/.test(t)
+        ? t.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\')
+        : t;
+    };
+
+    /** `{ label: "x", sub: true, value: "y" }` as an object. */
+    function inlineObj(text) {
+      const out = {};
+      for (const m of text.replace(/^\{|\}$/g, '').matchAll(/(\w+):\s*("(?:[^"\\]|\\.)*"|[^,}]+)/g)) {
+        const v = unquote(m[2]);
+        out[m[1]] = v === 'true' ? true : v === 'false' ? false : v;
+      }
+      return out;
+    }
+
+    const indent = (l) => l.length - l.trimStart().length;
+
+    /** The frontmatter block, and the infobox rows inside it. */
+    function readHead(lines) {
+      const data = {}, rows = [];
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (!line.trim() || indent(line) > 0) continue;
+        const m = line.match(/^(\w+):\s*(.*)$/);
+        if (!m) continue;
+        const [, key, rest] = m;
+        if (key === 'infobox') {
+          // Rows run until the indentation comes back to the left margin.
+          let j = i + 1;
+          const block = [];
+          while (j < lines.length && (!lines[j].trim() || indent(lines[j]) > 0)) block.push(lines[j++]);
+          i = j - 1;
+          for (let k = 0; k < block.length; k++) {
+            const l = block[k];
+            if (!/^\s*- /.test(l)) continue;
+            const body = l.replace(/^\s*- /, '');
+            if (body.startsWith('{')) { rows.push(inlineObj(body)); continue; }
+            if (/^pair:/.test(body)) {
+              const pair = [];
+              let k2 = k + 1;
+              while (k2 < block.length && indent(block[k2]) > indent(l)) {
+                const h = block[k2].match(/^\s*- heading:\s*(.*)$/);
+                if (h) pair.push({ heading: unquote(h[1]), items: [] });
+                const it = block[k2].match(/^\s*- (".*")\s*$/);
+                if (it && pair.length) pair[pair.length - 1].items.push(unquote(it[1]));
+                k2++;
+              }
+              rows.push({ pair });
+              k = k2 - 1;
+              continue;
+            }
+            // `- label: "x"` with its own indented keys under it
+            const row = {};
+            const first = body.match(/^(\w+):\s*(.*)$/);
+            if (!first) continue;
+            let k2 = k + 1;
+            const take = (key2, rest2) => {
+              if (rest2) { row[key2] = rest2 === 'true' ? true : unquote(rest2); return; }
+              const list = [];
+              while (k2 < block.length && /^\s*- /.test(block[k2]) && indent(block[k2]) > indent(l)) {
+                list.push(unquote(block[k2].replace(/^\s*- /, '')));
+                k2++;
+              }
+              row[key2] = list;
+            };
+            take(first[1], first[2]);
+            while (k2 < block.length && indent(block[k2]) > indent(l) && !/^\s*- /.test(block[k2])) {
+              const nx = block[k2].match(/^\s*(\w+):\s*(.*)$/);
+              k2++;
+              if (nx) take(nx[1], nx[2]);
+            }
+            rows.push(row);
+            k = k2 - 1;
+          }
+          continue;
+        }
+        if (rest) {
+          data[key] = /^\[.*\]$/.test(rest)
+            ? rest.slice(1, -1).split(',').map((x) => x.trim()).filter(Boolean)
+            : unquote(rest);
+        } else {
+          const list = [];
+          let j = i + 1;
+          while (j < lines.length && /^\s*- /.test(lines[j])) list.push(unquote(lines[j++].replace(/^\s*- /, '')));
+          data[key] = list;
+          i = j - 1;
+        }
+      }
+      return { data, rows };
+    }
+
+    /** A navbox file's groups, which the block editor draws as headings and lists. */
+    function readGroups(lines) {
+      const groups = [];
+      let group = null, row = null;
+      for (const line of lines) {
+        const t = line.trim();
+        if (!t || t === 'groups:' || t === 'rows:') continue;
+        let m;
+        if ((m = t.match(/^- label:\s*(.*)$/)) && indent(line) <= 2) {
+          group = { label: unquote(m[1]), rows: [] }; groups.push(group); row = null;
+        } else if ((m = t.match(/^- label:\s*(.*)$/))) {
+          row = { label: unquote(m[1]), items: [] }; group?.rows.push(row);
+        } else if ((m = t.match(/^- note:\s*(.*)$/))) {
+          group?.rows.push({ note: unquote(m[1]) }); row = null;
+        } else if (t === '- items:') {
+          row = { items: [] }; group?.rows.push(row);
+        } else if (t === 'items:') {
+          if (row) row.items = [];
+        } else if ((m = t.match(/^- (.*)$/)) && row) {
+          row.items.push(unquote(m[1]));
+        }
+      }
+      return groups;
+    }
+
+    /** Put a whole stored file back on screen. */
+    function fromMarkdown(text) {
+      const src = String(text).replace(/\r\n/g, '\n');
+      if (!src.startsWith('---')) {
+        // No frontmatter means a navbox, which is YAML all the way down.
+        const lines = src.split('\n');
+        const { data } = readHead(lines.filter((l) => indent(l) === 0 && !/^groups:/.test(l)));
+        pageKind = 'navbox';
+        navboxLead = (src.match(/^(?:#[^\n]*\n)+/) || [''])[0];
+        $('#f-title').value = data.title || '';
+        $('#f-crumb').value = data.crumb || '';
+        setInfobox([]);
+        body.innerHTML = '';
+        navboxBlocks(readGroups(lines)).forEach((b) => body.append(block(b.kind, b)));
+        paintSettings(); sync();
+        return;
+      }
+      const end = src.indexOf('\n---', 3);
+      const head = src.slice(4, end === -1 ? src.length : end).split('\n');
+      const rest = end === -1 ? '' : src.slice(end + 4).replace(/^\n+/, '');
+      const { data, rows } = readHead(head);
+
+      pageKind = data.type ? 'article' : 'portal';
+      portalBody = pageKind === 'portal' ? rest : '';
+      $('#f-title').value = data.title || '';
+      $('#f-native').value = [].concat(data.nativeTitle ?? []).join('\n');
+      $('#f-romaji').value = data.romaji || '';
+      $('#f-type').value = data.type || 'overview';
+      $('#f-nation').value = data.nation || '';
+      $('#f-icon').value = data.icon || '';
+      $('#f-banner').value = data.banner || '';
+      $('#f-welcome').value = data.welcome || '';
+      $('#f-crumb').value = '';
+      $('#f-authors').value = [].concat(data.authors ?? []).join(', ');
+      $('#f-navbox-on').checked = data.navbox !== 'none';
+      $('#f-coords').value = data.coords || '';
+      $('#f-ooc').checked = data.ooc === true || data.ooc === 'true';
+      setInfobox(rows);
+      body.innerHTML = '';
+      if (pageKind !== 'portal') parseBody(rest).forEach((b) => body.append(block(b.kind, b)));
+      if (!body.children.length && pageKind === 'article') body.append(block('para'));
+      paintSettings(); sync();
+    }
+
+    if ($('#open-file')) {
+      $('#open-file').onclick = () => $('#open-file-input').click();
+      $('#open-file-input').onchange = async (e) => {
+        const f = e.target.files[0];
+        e.target.value = '';
+        if (!f) return;
+        try {
+          fromMarkdown(await f.text());
+          pageSlug = f.name.replace(/\.(md|markdown|ya?ml)$/i, '');
+          if (DEV) { $('#slug').value = pageSlug; slugTouched = true; }
+          flash(`Opened ${f.name}.`);
+        } catch (err) {
+          flash(`Could not read ${f.name}: ${err.message}`, true);
+        }
+      };
+    }
+
+    /* ---------- the changes waiting to go ----------
+       Kept in IndexedDB rather than localStorage: a change carries the image files
+       that go with it, and those are Blobs, which localStorage cannot hold. */
+
+    const DB = 'talopedia-changes';
+    let dbp = null;
+    const db = () => (dbp ??= new Promise((res, rej) => {
+      const r = indexedDB.open(DB, 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('changes', { keyPath: 'key' });
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    }));
+    async function store(mode, run) {
+      const tx = (await db()).transaction('changes', mode);
+      const out = run(tx.objectStore('changes'));
+      return new Promise((res, rej) => {
+        tx.oncomplete = () => res(out.result ?? out);
+        tx.onerror = () => rej(tx.error);
+      });
+    }
+    const cart = {
+      all: () => store('readonly', (s) => s.getAll()),
+      put: (c) => store('readwrite', (s) => s.put(c)),
+      drop: (k) => store('readwrite', (s) => s.delete(k)),
+      clear: () => store('readwrite', (s) => s.clear()),
+    };
+
+    /** This page as a change: the file it writes, and the pictures it brings with it. */
+    function currentChange() {
+      const slug = slugify(pageSlug || $('#f-title').value);
+      if (!slug) return null;
+      const markdown = toMarkdown();
+      return {
+        key: `${pageKind}:${slug}`,
+        kind: pageKind,
+        slug,
+        title: $('#f-title').value || slug,
+        path: targetPath(slug),
+        markdown,
+        images: [...staged.entries()].filter(([p]) => markdown.includes(p))
+          .map(([p, item]) => ({ path: p, file: item.file })),
+        at: Date.now(),
+      };
+    }
+
+    async function paintCart() {
+      const list = await cart.all();
+      const n = $('#cart-n');
+      if (n) n.textContent = list.length;
+      const box = $('#cart-list');
+      if (!box) return list;
+      box.innerHTML = '';
+      if (!list.length) {
+        box.innerHTML = '<p class="mp-empty">Nothing waiting. Edit a page and press Add change.</p>';
+      }
+      for (const c of list.sort((a, b) => a.at - b.at)) {
+        const row = el('div', 'cart-row');
+        const known = ARTICLES.some((a) => a.slug === c.key.replace(/^article:/, ''));
+        row.append(el('span', 'cart-tag', known ? 'edit' : 'new'));
+        const who = el('span', 'cart-name');
+        who.append(el('b', null, c.title));
+        who.append(el('span', 'cart-path', c.path
+          + (c.images.length ? `  ·  ${c.images.length} image${c.images.length === 1 ? '' : 's'}` : '')));
+        const open = el('button', null, 'Open'); open.type = 'button';
+        open.onclick = () => { $('#pub-panel').hidden = true; loadChange(c); };
+        const x = el('button', 'cart-x', '\u2715'); x.type = 'button'; x.title = 'Drop this change';
+        x.onclick = async () => { await cart.drop(c.key); paintCart(); };
+        row.append(who, open, x);
+        box.append(row);
+      }
+      return list;
+    }
+
+    /** Put a waiting change back on screen, exactly as it was set aside. */
+    function loadChange(c) {
+      pageKind = c.kind;
+      pageSlug = c.slug;
+      fromMarkdown(c.markdown);
+      for (const im of c.images) {
+        if (!staged.has(im.path)) staged.set(im.path, { file: im.file, url: URL.createObjectURL(im.file) });
+      }
+      paintAssets();
+      sync();
+      flash(`Opened ${c.title} from your changes.`);
+    }
+
+    /* ---------- sending them ---------- */
+
+    async function publishAll() {
+      const list = await cart.all();
+      if (!list.length) { pubSay('Nothing to send yet.', true); return; }
+
+      $('#pub-go').disabled = true;
+      try {
+        pubSay('Checking the token\u2026');
+        const me = await gh('/user');
+        const base = await gh(`/repos/${REPO}`);
+        const canPush = !!base.permissions?.push;
+        const mine = (base.owner?.login || '').toLowerCase() === (me.login || '').toLowerCase();
+
+        let work = REPO;
+        if (!canPush) {
+          if (mine) {
+            throw new Error(`This token cannot write to ${REPO}, which you own. `
+              + 'It needs the public_repo scope.');
+          }
+          pubSay(`Forking ${REPO}\u2026`);
+          await gh(`/repos/${REPO}/forks`, { method: 'POST' });
+          work = `${me.login}/${base.name}`;
+          for (let i = 0; i < 20; i++) {
+            try { await gh(`/repos/${work}`); break; }
+            catch { await new Promise((r) => setTimeout(r, 1500)); }
+          }
+          // An old fork still sits where it was left, and branching from there would
+          // put every change since then into the pull request.
+          try {
+            await gh(`/repos/${work}/merge-upstream`, {
+              method: 'POST', body: JSON.stringify({ branch: base.default_branch }),
+            });
+          } catch { /* a fresh fork is already level */ }
+        }
+
+        const main = base.default_branch;
+        const tip = await gh(`/repos/${work}/git/ref/heads/${main}`);
+        const branch = `talopedia/${list.length > 1 ? 'batch' : list[0].slug}-${Date.now().toString(36)}`;
+        pubSay('Making a branch\u2026');
+        await gh(`/repos/${work}/git/refs`, {
+          method: 'POST',
+          body: JSON.stringify({ ref: `refs/heads/${branch}`, sha: tip.object.sha }),
+        });
+
+        let done = 0;
+        for (const c of list) {
+          pubSay(`Committing ${++done} of ${list.length}: ${c.title}\u2026`);
+          await putFile(work, branch, c.path, b64text(c.markdown), `${c.slug}: edit from the wiki editor`);
+          for (const im of c.images) {
+            const bytes = new Uint8Array(await im.file.arrayBuffer());
+            await putFile(work, branch, 'public' + im.path, b64(bytes),
+              `${c.slug}: add ${im.path.split('/').pop()}`);
+          }
+        }
+
+        pubSay('Opening the pull request\u2026');
+        const lines = list.map((c) => `- \`${c.path}\``).join('\n');
+        const pr = await gh(`/repos/${REPO}/pulls`, {
+          method: 'POST',
+          body: JSON.stringify({
+            title: list.length === 1 ? list[0].title : `${list.length} pages from the wiki editor`,
+            head: canPush ? branch : `${me.login}:${branch}`,
+            base: main,
+            body: `Written in the wiki editor by @${me.login}.\n\n${lines}\n`,
+          }),
+        });
+
+        await cart.clear();
+        await paintCart();
+        pubSay('');
+        $('#pub-panel').hidden = true;
+        flash(`Opened pull request #${pr.number} with ${list.length} page${list.length === 1 ? '' : 's'}.`);
+        window.open(pr.html_url, '_blank', 'noopener');
+      } catch (e) {
+        pubSay(String(e.message || e), true);
+      } finally {
+        $('#pub-go').disabled = false;
+      }
+    }
+
+    if ($('#cart-add')) {
       const panel = $('#pub-panel');
-      $('#publish').onclick = () => {
+      $('#cart-add').onclick = async () => {
+        const c = currentChange();
+        if (!c) { flash('Give the page a title first.', true); return; }
+        await cart.put(c);
+        await paintCart();
+        flash(`${c.title} is waiting with ${(await cart.all()).length - 1} other change(s).`
+          .replace(' with 0 other change(s)', ', on its own so far'));
+      };
+      $('#cart-open').onclick = async () => {
+        await paintCart();
         panel.hidden = false;
         $('#pub-token').value = token.get();
-        // The classic form takes its settings from the link, so the scope arrives ticked.
-        // public_repo rather than repo: this wiki is public, and repo would hand over
-        // every private repository the contributor can reach.
         $('#pub-make').href = 'https://github.com/settings/tokens/new?scopes=public_repo'
           + `&description=${encodeURIComponent('The Talopedia editor')}`;
         $('#pub-repo').textContent = REPO;
         $('#pub-help').open = !token.get();
-        // Say which file this will touch, and whether it is a new one.
-        const slug = slugify(pageSlug || $('#f-title').value);
-        const key = pageKind === 'article' ? slug : `${pageKind}:${slug}`;
-        const known = ARTICLES.some((a) => a.slug === key);
-        $('#pub-what').textContent = slug
-          ? `${known ? 'Updates' : 'Adds'} ${targetPath(slug)}`
-          : 'Give the page a title first.';
-        pubSay(token.get() ? '' : 'Paste a token to publish.');
-        (token.get() ? $('#pub-go') : $('#pub-token')).focus();
+        pubSay(token.get() ? '' : 'Paste a token to send these over.');
       };
       $('#pub-close').onclick = () => { panel.hidden = true; };
       panel.onclick = (e) => { if (e.target === panel) panel.hidden = true; };
@@ -2181,8 +2542,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#pub-forget').onclick = () => { token.set(''); $('#pub-token').value = ''; pubSay('Token forgotten.'); };
       $('#pub-go').onclick = () => {
         if (!token.get()) { pubSay('Paste a token first.', true); $('#pub-token').focus(); return; }
-        publish();
+        publishAll();
       };
+      paintCart();
     }
 
     $('#download').onclick = downloadPage;
@@ -3100,6 +3462,29 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     .pub-what {
       font: 12.5px var(--body); color: var(--ink); margin: 10px 0 0;
       padding: 7px 10px; background: var(--band); border-radius: 5px;
+    }
+    .cart-list { margin: 12px 0 4px; max-height: 260px; overflow-y: auto; }
+    .cart-row {
+      display: flex; align-items: center; gap: 9px; padding: 8px 10px; margin-bottom: 6px;
+      background: var(--band); border: 1px solid var(--rule); border-radius: 6px;
+    }
+    .cart-tag {
+      flex: none; font: 10px var(--body); text-transform: uppercase; letter-spacing: .05em;
+      color: var(--muted); border: 1px solid var(--rule); border-radius: 3px; padding: 2px 6px;
+    }
+    .cart-name { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .cart-name b { font: 600 13px var(--body); color: var(--ink); }
+    .cart-path { font: 11.5px ui-monospace, monospace; color: var(--muted);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .cart-row button {
+      flex: none; font: 11.5px var(--body); color: var(--muted); background: var(--paper);
+      border: 1px solid var(--rule); border-radius: 4px; padding: 4px 9px; cursor: pointer;
+    }
+    .cart-row button:hover { color: var(--ink); background: var(--lift); }
+    .cart-n {
+      display: inline-block; min-width: 16px; padding: 0 4px; margin-left: 5px;
+      font: 10.5px var(--body); line-height: 16px; text-align: center; color: var(--ink);
+      background: var(--band); border: 1px solid var(--rule); border-radius: 8px;
     }
     .pub-help { margin-top: 14px; border-top: 1px solid var(--rule); padding-top: 12px; }
     .pub-help summary { font: 12.5px var(--body); color: var(--link); cursor: pointer; }
