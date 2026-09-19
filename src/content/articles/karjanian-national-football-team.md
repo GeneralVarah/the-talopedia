@@ -15,9 +15,7 @@ infobox:
   - { section: "First International" }
   - { value: ":flag[karjania]  Karjania  3-5  Rudania  :flag[rudania]   (1887, March 17th)" }
   - { section: "Biggest Win" }
-  - value:
-      - "+"
-      - "FieldHeadingImageTwo listsFull-width value↑↓✕:img[/assets/flags/frederikka-islands.png]  Frederikka Islands   0-18    Karjania  :flag[karjania]   (1889, June 2nd)"
+  - { value: ":img[/assets/flags/frederikka-islands.png]  Frederikka Islands   0-18    Karjania  :flag[karjania]   (1889, June 2nd)" }
   - { section: "Biggest Defeat" }
   - { value: ":flag[karjania]   Karjania   1-9   Skjarnland   :flag[skjarnland]   (1899, April 30th)" }
   - { section: "World Cup" }
