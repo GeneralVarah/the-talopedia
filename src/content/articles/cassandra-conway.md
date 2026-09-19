@@ -7,7 +7,7 @@ infobox:
   - { office: "Director of MAJESTY", term: "Incumbent | February 3rd, 1928 –" }
   - { label: "Vice Director", value: "Goro Kurotowa" }
   - { label: "Preceded by", value: "Office Established" }
-  - { office: "ONI Chief of Ground Operations", term: "" }
+  - { section: "ONI Chief of Ground Operations" }
   - { label: "Supreme Protector", value: "[[archer-maine]]" }
   - { label: "Preceded by", value: "Connor Linedell" }
   - { label: "Succeeded by", value: "Eric D’Angelo" }
@@ -28,7 +28,7 @@ infobox:
 
 *This article contains out-of-character (OOC) information. Some details presented here are not publicly available in-character (IC).*
 
-**Cassandra Conway** (April 20th, 1897 - May 11th, 1933) was an [[elysian]]-born soldier and former espionage operative serving as the current director of the clandestine Private Military Contractor [[majesty|MAJESTY]]. Before her split from the Unity State, Conway had worked as a spy and training instructor in the service of the Office of Naval Intelligence of the Unity State, as well as the Military Intelligence Service of the United States of Elysia. A militaristic Gestaltist, she has organized and funded the assassination of multiple foreign government officials, most notably the assassination of General Gyula of the Republic of Genosa, as well as the attempted assassination of Colonel George Elwood of the Unity State.
+**Cassandra Conway** (April 20th, 1897 - May 11th, 1933) was an [[elysian]]-born soldier and former espionage operative who served as the only director of the clandestine Private Military Contractor [[majesty]]. Before her split from the Unity State, Conway had worked as a spy and training instructor in the service of the Office of Naval Intelligence of the Unity State, as well as the Military Intelligence Service of the United States of Elysia. A militaristic Gestaltist, she has organized and funded the assassination of multiple foreign government officials, most notably the assassination of General Gyula of the Republic of Genosa, as well as the attempted assassination of Colonel George Elwood of the Unity State.
 
 Ultimately she and her organization came down following a joint assault by Elysian and Nichirian Special Forces. She was captured during the raid, leading to the remaining personnel of MAJESTY scattering in a panic or surrendering to the allied forces. She was convicted of terrorism and treason on multiple counts and was sentenced to death in a military court. She was executed via firing squad on the 11th of May, 1933.
 
@@ -47,14 +47,14 @@ The most major of the experiments performed on her was one involving an experime
 Following her transfer from the Institute into the service of the Military Intelligence Service in Nexus, Conway was immediately tasked with a small counterterrorism force to monitor groups with sympathies towards Hollosend. Her performance in tracking and putting down these groups earned her great favor among the MIS leadership, who quickly assigned her to Operation Alexandria following the end of the Great War in Elysia.
 
 <div class="imgrid">
-<figure><img src="/assets/old-media/media/cassandra-conway-2.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.000"><img src="/assets/old-media/media/cassandra-conway-2.jpg" alt=""><figcaption></figcaption></figure>
 </div>
 
 *Earliest known photograph featuring Conway, pictured center-right, wearing a trenchcoat. Veynach, Arlbern, circa 1917.*
 
 She, along with multiple other operatives, was responsible for the theft of a large number of Albernian intelligence documents detailing the assignments of their operatives around the globe. During this operation, she would come into contact with agents Goro Kurotowa and Emilie Langley, two other intelligence operatives who would become her close confidants and political allies.
 
-During the Years of Oppression, as well as the ensuing Elysian Civil War, Conway would find her place in the conflict playing the role of a double agent for the Revolutionary Guard, an act which gave her enough leverage to squeeze out a Protectorate Pardon for both Kurotowa and Langley after the founding of the Unity State and the Starfell trials that lasted for 3 months afterwards. She would spend a brief time organizing the informant network used by the Unity State for the better part of the Reconstruction Period, until in early 1923, when she was transferred into the service of the Office of Naval Intelligence’s Special Reconnaissance Service No. 12, commonly known as [[majesty|MAJESTY]].
+During the Years of Oppression, as well as the ensuing Elysian Civil War, Conway would find her place in the conflict playing the role of a double agent for the Revolutionary Guard, an act which gave her enough leverage to squeeze out a Protectorate Pardon for both Kurotowa and Langley after the founding of the Unity State and the Starfell trials that lasted for 3 months afterwards. She would spend a brief time organizing the informant network used by the Unity State for the better part of the Reconstruction Period, until in early 1923, when she was transferred into the service of the Office of Naval Intelligence’s Special Reconnaissance Service No. 12, commonly known as [[majesty]].
 
 ## Career with MAJESTY
 
