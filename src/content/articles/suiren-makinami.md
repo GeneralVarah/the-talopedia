@@ -5,12 +5,9 @@ type: character
 nation: nichirin
 infobox:
   - { image: "/assets/old-media/media/suiren-makinami-1.jpg", caption: "" }
-  - { section: "Senior Shogunal Advisor" }
-  - { value: "Incumbent | October 2, 1923 –" }
-  - { section: "Marshal-Admiral of the Navy" }
-  - { value: "Incumbent | July 25, 1915 –" }
-  - { section: "Minister of Foreign Affairs" }
-  - { value: "December 11, 1924 – March 20, 1928" }
+  - { office: "Senior Shogunal Advisor", term: "Incumbent | October 2, 1923 –" }
+  - { office: "Marshal-Admiral of the Navy", term: "Incumbent | July 25, 1915 –" }
+  - { office: "Minister of Foreign Affairs", term: "December 11, 1924 – March 20, 1928" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - label: "Shogun"
     value:

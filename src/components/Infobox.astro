@@ -24,6 +24,11 @@ const lines = (v) => (Array.isArray(v) ? v : [v]).filter((x) => x != null && x !
               </td>
             ))}
           </tr>
+        ) : r.office ? (
+          <tr class="ib-office"><td colspan="2">
+            <b set:html={renderInline(r.office)} />
+            {lines(r.term).map((t) => <span set:html={renderInline(t)} />)}
+          </td></tr>
         ) : r.section ? (
           <tr class="ib-section"><td colspan="2" set:html={renderInline(r.section)} /></tr>
         ) : r.images?.length ? (

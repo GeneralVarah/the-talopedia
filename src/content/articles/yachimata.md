@@ -7,8 +7,7 @@ ooc: true
 infobox:
   - { image: "/assets/old-media/media/yachimata-1.jpg", caption: "" }
   - { image: "/assets/old-media/media/yachimata-2.jpg", caption: "" }
-  - { section: "Head of SEELE Operations In Evria" }
-  - { value: "11 November, 1922 –" }
+  - { office: "Head of SEELE Operations In Evria", term: "11 November, 1922 –" }
   - { label: "SEELE Director of Intelligence", value: "Hideaki Katsuragi" }
   - { label: "Preceded by", value: "Position Established" }
   - { section: "Personal Details" }

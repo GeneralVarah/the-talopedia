@@ -4,8 +4,7 @@ type: character
 nation: esu
 infobox:
   - { image: "/assets/old-media/media/cassandra-conway-1.jpg", caption: "" }
-  - { section: "Director of MAJESTY" }
-  - { value: "Incumbent | February 3rd, 1928 –" }
+  - { office: "Director of MAJESTY", term: "Incumbent | February 3rd, 1928 –" }
   - { label: "Vice Director", value: "Goro Kurotowa" }
   - { label: "Preceded by", value: "Office Established" }
   - { section: "ONI Chief of Ground Operations" }

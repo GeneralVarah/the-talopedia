@@ -166,8 +166,8 @@ def build(path):
                 rows.append(f'  - {{ image: {yq(p)}, caption: {yq(r.get("caption", ""))} }}')
         elif 'section' in r:
             rows.append(f'  - {{ section: {yq(r["section"])} }}')
-        elif 'band' in r:
-            rows.append(f'  - {{ value: {yq(plain(r["band"]))} }}')
+        elif 'office' in r:
+            rows.append(f'  - {{ office: {yq(plain(r["office"]))}, term: {yq(plain(r["term"]))} }}')
         else:
             vals = [plain(v) for v in r['value']]
             sub = ', sub: true' if r['sub'] else ''

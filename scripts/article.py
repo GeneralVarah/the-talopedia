@@ -170,11 +170,13 @@ def parse_article(path):
                         lab, re.I):
                 continue
             # An office block is the office on one line and the term served on the
-            # next. The office names the band and the term is a line under it.
+            # next, and the two belong together. A band with no second line is a plain
+            # heading: "Personal Details" is not an office and carries no term.
             head, *term = [x.strip() for x in lab.split('\n') if x.strip()]
-            infobox.append({'section': head})
-            for line in term:
-                infobox.append({'band': line})
+            if term:
+                infobox.append({'office': head, 'term': ' '.join(term)})
+            else:
+                infobox.append({'section': head})
 
     return doc, header, infobox, body_parts
 

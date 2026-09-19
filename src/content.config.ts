@@ -12,6 +12,10 @@ export const ARTICLE_TYPES = [
 
 const row = z.object({
   section: z.string().optional(),                       // a heading band inside the infobox
+  // An office held: the post, and the term served in it, as one band. Two rows read
+  // as two separate things; the old documents had them as one and so does this.
+  office: z.string().optional(),
+  term: z.union([z.string(), z.array(z.string())]).optional(),
   label: z.string().optional(),
   value: z.union([z.string(), z.array(z.string())]).optional(),
   image: z.string().optional(),

@@ -609,6 +609,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 
     function ibRow(r = {}) {
       const kind = r.pair ? 'pair'
+        : r.office != null ? 'office'
         : r.section != null ? 'section'
         // Both shapes of a picture row: one picture, or the list of two.
         : (r.image != null || r.images) ? 'image'
@@ -673,6 +674,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           if (i === 1) td.append(c);
           tr.append(td);
         });
+      } else if (kind === 'office') {
+        // An office and the term served in it. Two rows read as two separate things,
+        // so this is one row holding both, the way the old documents had it.
+        const td = el('td', 'ib-office'); td.colSpan = 2;
+        const c = controls(tr);
+        c.prepend(ibAddMenu(tr));
+        td.append(editable(mdToHtml(r.office || ''), 'Office', lineBreak),
+                  editable(mdToHtml(r.term || ''), 'Term', lineBreak), c);
+        tr.append(td);
       } else if (kind === 'full') {
         // A value with no field name, spanning both columns, as a casualty total.
         const td = el('td', 'ib-full'); td.colSpan = 2;
@@ -703,6 +713,10 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       return [...ib.querySelectorAll('tr[data-kind]')].map((tr) => {
         const ce = (sel) => tr.querySelector(sel);
         if (tr.dataset.kind === 'section') return { section: htmlToMd(ce('.ce')).trim() };
+        if (tr.dataset.kind === 'office') {
+          const [post, term] = tr.querySelectorAll('.ce');
+          return { office: htmlToMd(post).trim(), term: htmlToMd(term).trim() };
+        }
         if (tr.dataset.kind === 'image') {
           const slots = [...tr.querySelectorAll('.ib-slot')].map((b) => ({
             src: b.querySelector('input.path').value.trim(),
@@ -732,13 +746,16 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       });
     }
 
-    const SEEDS = {
-      Field: () => ({ label: '', value: '' }),
-      Heading: () => ({ section: '' }),
-      Image: () => ({ image: '', caption: '' }),
-      'Two lists': () => ({ pair: [{ heading: '', items: [] }, { heading: '', items: [] }] }),
-      'Full-width value': () => ({ value: '' }),
-    };
+    // The three rows every infobox is made of, then the two that answer a shape a
+    // plain field cannot. A null is the line between the two groups.
+    const SEEDS = [
+      ['Heading', () => ({ section: '' })],
+      ['Field', () => ({ label: '', value: '' })],
+      ['Image', () => ({ image: '', caption: '' })],
+      null,
+      ['Parallel Lists', () => ({ pair: [{ heading: '', items: [] }, { heading: '', items: [] }] })],
+      ['Occupation', () => ({ office: '', term: '' })],
+    ];
 
     /** The + on a row's controls, which adds the next row right below it. */
     function ibAddMenu(tr) {
@@ -748,7 +765,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       b.title = 'Add a row below';
       const menu = el('div', 'drop-menu ctl-menu');
       menu.hidden = true;
-      for (const [label, seed] of Object.entries(SEEDS)) {
+      for (const entry of SEEDS) {
+        if (!entry) { menu.append(el('div', 'menu-sep')); continue; }
+        const [label, seed] = entry;
         const item = el('button', null, label);
         item.type = 'button';
         item.onmousedown = (e) => e.preventDefault();
@@ -1322,6 +1341,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const some = (v) => (Array.isArray(v) ? v.length : v !== '');
       const filled = readInfobox().filter((r) =>
         r.pair ? r.pair.some((c) => c.heading !== '' || c.items.length)
+        : r.office != null ? r.office !== '' || r.term !== ''
         : r.section != null ? r.section !== ''
         : r.images ? r.images.some((i) => i.src)
         : r.image != null ? r.image !== ''
@@ -1333,6 +1353,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       if (rows.length) {
         fm.push('infobox:');
         for (const r of rows) {
+          if (r.office != null) { fm.push(`  - { office: ${q(r.office)}, term: ${q(r.term)} }`); continue; }
           if (r.section != null) { fm.push(`  - { section: ${q(r.section)} }`); continue; }
           if (r.images) {
             // Only filled slots are written, and one of them is the plain single form,

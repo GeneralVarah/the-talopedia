@@ -5,10 +5,8 @@ type: character
 nation: nichirin
 infobox:
   - { image: "/assets/old-media/media/kanade-tachibana-1.jpg", caption: "" }
-  - { section: "Senior Shogunal Advisor" }
-  - { value: "Incumbent | October 2, 1923 –" }
-  - { section: "Chief Historian" }
-  - { value: "Incumbent | March 12, 1923 –" }
+  - { office: "Senior Shogunal Advisor", term: "Incumbent | October 2, 1923 –" }
+  - { office: "Chief Historian", term: "Incumbent | March 12, 1923 –" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - label: "Shogun"
     value:

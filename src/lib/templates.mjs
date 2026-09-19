@@ -11,6 +11,8 @@ const L = (label, sub = false) => ({ label, value: '', sub });
 const I = (caption = '') => ({ image: '', caption });
 // Two columns side by side, as a battle's belligerents or its commanders.
 const P = () => ({ pair: [{ heading: '', items: [] }, { heading: '', items: [] }] });
+// An office held and the term served in it.
+const O = () => ({ office: '', term: '' });
 
 export const TEMPLATES = {
   // ---- places ----
@@ -81,7 +83,7 @@ export const TEMPLATES = {
   // ---- people and bodies ----
   character: [
     I(),
-    L('Office'), L('Preceded by'), L('Succeeded by'),
+    O(), L('Preceded by'), L('Succeeded by'),
     S('Personal Details'),
     L('Born'), L('Died'), L('Nationality'), L('Ethnicity'), L('Religion'),
     L('Parents'), L('Spouse'), L('Children'), L('Alma Mater'),
