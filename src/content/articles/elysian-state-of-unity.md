@@ -3,7 +3,7 @@ title: "E.S.U."
 type: overview
 nation: esu
 infobox:
-  - { image: "/assets/flags/elysian-state-of-unity.png", caption: "Flag" }
+  - { image: "/assets/flags/esu.png", caption: "Flag" }
   - { label: "Motto", value: "\"Glory to the Many.\"" }
   - { label: "Anthem", value: "[The Internationale](https://youtu.be/3sh4kz_zhyo?si=DKizr Gwujau5iwDa)" }
   - { label: "Capital", value: "Nexus" }

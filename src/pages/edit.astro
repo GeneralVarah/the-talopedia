@@ -304,8 +304,16 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 
     /* ---------- names ---------- */
     const SMALL = /^(of|the|and|in|on|at|to|a|an|for|from|by|de|von)$/;
-    const pretty = (s) => s.split('-').map((w, i) =>
-      i > 0 && SMALL.test(w) ? w : w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    // A filename cannot hold brackets, so a wartime flag is stored as shivon-tgw and
+    // read back as Shivon (TGW) rather than the "Shivon Tgw" that word-casing gives.
+    const TAGS = { tgw: 'TGW', esu: 'E.S.U.', sar: 'SAR' };
+    const pretty = (s) => {
+      const parts = s.split('-');
+      const tail = TAGS[parts[parts.length - 1]] && parts.length > 1 ? parts.pop() : null;
+      const name = parts.map((w, i) =>
+        i > 0 && SMALL.test(w) ? w : TAGS[w] || w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      return tail ? `${name} (${TAGS[tail]})` : name;
+    };
     let TITLES = {};
     const ICONS = { ...FLAGS };
     const titlesReady = fetch(`${BASE.replace(/\/$/, '')}/articles.json`)
