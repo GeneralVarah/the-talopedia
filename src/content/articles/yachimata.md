@@ -6,11 +6,11 @@ nation: nichirin
 ooc: true
 infobox:
   - { image: "https://lh3.googleusercontent.com/pw/AP1GczP_ooasDHaRNHaSxrNXVXJwPbHPMNBv7P_umgV0PXir31WdoBILnfxzQIn20cnfL7cNJMUZpXcyIMp3Ba_SOVRRKi-_RLdgYPAnGHgitZdDQsO23AeII35akMR9QbCQrzRz0E0yXfpPCddK0-yR9PvG=w2000", caption: "" }
-  - { office: "Head of SEELE Operations In Evria", term: "11 November, 1922 –" }
-  - { label: "SEELE Director of Intelligence", value: "Hideaki Katsuragi" }
-  - { label: "Preceded by", value: "Position Established" }
+  - { office: "Head of SEELE Operations In Evria", term: "Incumbent | 11 November, 1922 –" }
+  - { label: "Right Pillar", value: "[[gendo-takahashi]]" }
+  - { label: "Preceded by", value: "*Position Established*" }
   - { section: "Personal Details" }
-  - { label: "Nationality", value: "[[nichirin|Nichirian]]" }
+  - { label: "Nationality", value: ":flag[nichirin] [[nichirin|Nichirian]]" }
   - label: "Born"
     value:
       - "Kosumi Inari"
