@@ -106,7 +106,7 @@ Foreign trade is limited. Rudania exports only to trusted allies.
 Rudania is the largest country in the world by land area, and its topography is wide and varied. It can be roughly divided into 5 zones.
 
 <div class="imgrid">
-<figure style="flex:1.778"><img src="/assets/media/rudania-2.jpg" alt="Lake Dushava, the World's Deepest Lake"><figcaption>Lake Dushava, the World's Deepest Lake</figcaption></figure>
+<figure style="flex:1.778"><img src="/assets/old-media/media/rudania-2.jpg" alt="Lake Dushava, the World's Deepest Lake"><figcaption>Lake Dushava, the World's Deepest Lake</figcaption></figure>
 </div>
 
 The **Rudanian Heartland** is the southernmost portion of Rudania. It is composed almost entirely of flat, fertile plains. It is densely populated and criss-crossed with many rivers. The major river-system that runs through the heartland is the River Volzha, around which most of the largest cities in Rudan are located. It is bound by the Boryav mountain range to the North. The Boryav mountains are rich in mineral resources, and have an average elevation of 1000-1200m, stretching for 2100 kilometres East to West.

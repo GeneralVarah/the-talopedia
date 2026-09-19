@@ -6,7 +6,7 @@ type: subdivision
 nation: varahmehr
 infobox:
   - { image: "/assets/flags/dashtestan.png", caption: "Flag of Dashtestan" }
-  - { image: "/assets/media/dashtestan-2.png", caption: "Location of Dashtestan province within Varahmehr" }
+  - { image: "/assets/old-media/media/dashtestan-2.png", caption: "Location of Dashtestan province within Varahmehr" }
   - { section: "Geography" }
   - { label: "Country", value: "[[varahmehr]]" }
   - { label: "Capital", value: "Sabzavar" }
@@ -71,7 +71,7 @@ Dashtestan signed the Compact with the understanding that federalization was a d
 The federal period brought infrastructure, legal frameworks for inter-ostān commerce, and the military security guaranteed by the Compact’s collective defense provisions. It also created federal transfer dependency: the plains economy, however productive in absolute terms, generates insufficient tax revenue relative to the ostān’s population and land area to fund its own provincial government without significant federal supplementation. The 48% federal transfer rate that characterizes Dashtestan’s budget is the single most politically sensitive figure in the federation’s fiscal architecture, resented by Dashtestan’s Risheh-dārān delegates as evidence of federal condescension and cited by Mardom-e Kār and Peymān-dārān as justification for federal oversight of provincial policy.
 
 <div class="imgrid">
-<figure style="flex:1.691"><img src="/assets/media/dashtestan-3.jpg" alt="Aerial view of Gandomabad’s civic district, showing the Naqsh-e Mehr square and surrounding architecture, circa 1926"><figcaption>Aerial view of Gandomabad’s civic district, showing the Naqsh-e Mehr square and surrounding architecture, circa 1926</figcaption></figure>
+<figure style="flex:1.691"><img src="/assets/old-media/media/dashtestan-3.jpg" alt="Aerial view of Gandomabad’s civic district, showing the Naqsh-e Mehr square and surrounding architecture, circa 1926"><figcaption>Aerial view of Gandomabad’s civic district, showing the Naqsh-e Mehr square and surrounding architecture, circa 1926</figcaption></figure>
 </div>
 
 The 51 years of isolationism suited Dashtestan more than any other ostān. The plains economy required no foreign partners, no export markets, no diplomatic relationships. The federation fed itself from Dashtestani surplus, and Dashtestan governed itself through the informal authority of the Shurā-ye Dasht alongside the formal mechanisms of federal provincial administration. The end of isolationism in November 1929 introduced commercial and diplomatic pressures whose implications for Dashtestan’s agricultural economy are not yet fully understood but are already a source of anxiety for the Risheh-dārān bloc.
@@ -93,7 +93,7 @@ The Dehyāri-ye Dashtī militia - an irregular auxiliary force drawn from clan c
 The northern frontier with Divia is Dashtestan’s primary military concern. The river boundary that separates Varahmehri and Divian territory along the Ghlat and Nan is well-defined geographically but politically sensitive - the Ymirian colonial presence on the opposite bank has been a source of low-level tension since Divia’s establishment, and the end of isolationism has introduced new diplomatic complexity into a frontier that was previously managed through studied mutual avoidance.
 
 <div class="imgrid">
-<figure style="flex:1.743"><img src="/assets/media/dashtestan-4.jpg" alt="A Varahmehri frontier post on the Ghlat river, facing the Ymirian colony of Divia across the water, circa 1925"><figcaption>A Varahmehri frontier post on the Ghlat river, facing the Ymirian colony of Divia across the water, circa 1925</figcaption></figure>
+<figure style="flex:1.743"><img src="/assets/old-media/media/dashtestan-4.jpg" alt="A Varahmehri frontier post on the Ghlat river, facing the Ymirian colony of Divia across the water, circa 1925"><figcaption>A Varahmehri frontier post on the Ghlat river, facing the Ymirian colony of Divia across the water, circa 1925</figcaption></figure>
 </div>
 
 ## Economy
@@ -103,7 +103,7 @@ The northern frontier with Divia is Dashtestan’s primary military concern. The
 Dashtestan produces the overwhelming majority of Varahmehr’s grain, livestock, and timber. The plains economy is organized around a network of large agricultural market cities - Gandomabad, Sabzavar, Dashtvār, and Nakhljān function less as metropolitan centers in the Kuhestan or Nourabad sense and more as concentrated agricultural exchange points where the surplus of the surrounding plains is gathered, processed, priced, and distributed. Sabzavar’s grain exchange sets pricing benchmarks that affect every ostān’s food costs, and the Jashn-e Mehr harvest festival - whose nān-e mehr bread-sharing tradition has spread across the federation - reflects the cultural centrality of agricultural production to Varahmehri identity as a whole.
 
 <div class="imgrid">
-<figure style="flex:1.751"><img src="/assets/media/dashtestan-5.jpg" alt="Merchants at the Sabzavar grain exchange, the federation’s primary agricultural pricing center, circa 1928"><figcaption>Merchants at the Sabzavar grain exchange, the federation’s primary agricultural pricing center, circa 1928</figcaption></figure>
+<figure style="flex:1.751"><img src="/assets/old-media/media/dashtestan-5.jpg" alt="Merchants at the Sabzavar grain exchange, the federation’s primary agricultural pricing center, circa 1928"><figcaption>Merchants at the Sabzavar grain exchange, the federation’s primary agricultural pricing center, circa 1928</figcaption></figure>
 </div>
 
 The Shurā-ye Dasht’s historical role in governing inter-clan trade arrangements has left a commercial culture that prioritizes relationship and precedent over contractual formality - a tradition that Shushestani trading houses have found simultaneously reliable and frustrating to work with. A verbal agreement between Dashti clan elders carries more practical weight in the plains economy than a written contract, which creates friction at the inter-ostān commercial level where Nourestan’s written law tradition is the expected framework.
@@ -127,7 +127,7 @@ The Kuhband shahrestān in the northeast represents a topographic departure from
 The Ghlat river estuary, where the river system meets Lake Dakhli at Dashtvār, is the most hydrologically complex zone in the ostān - a delta environment whose flat, water-defined terrain has shaped the city’s character as distinctly as any deliberate planning decision could have. Dashtvār’s position on the estuary makes it simultaneously a river port, a lake port, and a gateway between the plains interior and the lake system to the south.
 
 <div class="imgrid">
-<figure style="flex:1.297"><img src="/assets/media/dashtestan-6.jpg" alt="Agricultural plains of the Ghlat shahrestān, showing cultivated fields along the river corridor, Dashtestan"><figcaption>Agricultural plains of the Ghlat shahrestān, showing cultivated fields along the river corridor, Dashtestan</figcaption></figure>
+<figure style="flex:1.297"><img src="/assets/old-media/media/dashtestan-6.jpg" alt="Agricultural plains of the Ghlat shahrestān, showing cultivated fields along the river corridor, Dashtestan"><figcaption>Agricultural plains of the Ghlat shahrestān, showing cultivated fields along the river corridor, Dashtestan</figcaption></figure>
 </div>
 
 ## Demographics
@@ -151,7 +151,7 @@ Dashtestan is divided into four shahrestān-hā, each governed by an elected Sha
 *Kuhband* (کوهبند, lit. *Mountain Pass*) covers the highland northeastern territory of the ostān, encompassing the inland city of Bahārabad and the coastal limestone mining center of Sang-e Sefid. Bahārabad, with a population of 265,000, is the federation’s most recognized arts city - its mild highland climate and relative prosperity have sustained a concentration of painters, sculptors, and craftspeople whose works draw on both Dashti plains traditions and the highland aesthetic vocabulary of the Kuhband interior. Sang-e Sefid, with a population of 521,000, takes its name, White Stone, from the limestone deposits that define its economy. The city’s quarries and processing operations supply construction materials to Ahanestan’s foundry complex and to infrastructure projects across the federation, making it simultaneously the most industrially significant settlement in an otherwise agricultural ostān and the most geographically remote from the plains culture that defines Dashtestani identity.
 
 <div class="imgrid">
-<figure style="flex:2.717"><img src="/assets/media/dashtestan-7.png" alt="The Sang-e Sefid highlands in winter, Kuhband shahrestān, showing the limestone terrain that gives the city its name"><figcaption>The Sang-e Sefid highlands in winter, Kuhband shahrestān, showing the limestone terrain that gives the city its name</figcaption></figure>
+<figure style="flex:2.717"><img src="/assets/old-media/media/dashtestan-7.png" alt="The Sang-e Sefid highlands in winter, Kuhband shahrestān, showing the limestone terrain that gives the city its name"><figcaption>The Sang-e Sefid highlands in winter, Kuhband shahrestān, showing the limestone terrain that gives the city its name</figcaption></figure>
 </div>
 
 ## Largest Cities

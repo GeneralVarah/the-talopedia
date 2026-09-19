@@ -5,7 +5,7 @@ authors: [alemannia]
 navbox: site
 ooc: true
 infobox:
-  - { image: "/assets/media/baunerth-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/baunerth-1.jpg", caption: "" }
   - { section: "Orbital Characteristics" }
   - { label: "Central Body", value: "Ignian Barycenter" }
   - { label: "Semi-Major Axis", value: "2.55 AU" }

@@ -6,8 +6,8 @@ type: overview
 nation: varahmehr
 infobox:
   - { image: "/assets/flags/varahmehr.png", caption: "Flag of Varahmehr" }
-  - { image: "/assets/emblems/varahmehr.png", caption: "Coat of Arms" }
-  - { image: "/assets/media/varahmehr-3.png", caption: "Location of Varahmehr" }
+  - { image: "/assets/old-media/emblems/varahmehr.png", caption: "Coat of Arms" }
+  - { image: "/assets/old-media/media/varahmehr-3.png", caption: "Location of Varahmehr" }
   - label: "Motto"
     value:
       - "جایی که جاه‌طلبی با آزادی تلاقی می‌کند."
@@ -83,7 +83,7 @@ The history of the name Varahmehr is quite long. The name itself is a compound w
 The earliest known traces of human civilization date back to around 100,000 BCE, with the first tools in the region found in the mountains of Nourestan. The first settlement in Varahmehr, Mehrāvar, dates back to around 3000 BCE, and it still operates today.
 
 <div class="imgrid">
-<figure style="flex:1.337"><img src="/assets/media/varahmehr-4.png" alt="Ruins of a palace near Mehrāvar"><figcaption>Ruins of a palace near Mehrāvar</figcaption></figure>
+<figure style="flex:1.337"><img src="/assets/old-media/media/varahmehr-4.png" alt="Ruins of a palace near Mehrāvar"><figcaption>Ruins of a palace near Mehrāvar</figcaption></figure>
 </div>
 
 ### Antiquity
@@ -91,7 +91,7 @@ The earliest known traces of human civilization date back to around 100,000 BCE,
 The land consisted of many tribes during the era, ranging from the currently widespread Mehrāni, the Shushtari, who trace their ancestry from settlers of the Hasmenionian Empire, the desert people of the Arabi tribe, the mountainous Kuhi clans, and the agrarian Dashti people, all the way to cultures that no longer exist, such as the Samyār tribes and the innovative Gutians. Many similar cultures existed during the period, but most were assimilated by the expansionist Mehrāni or by one of the surrounding cultures. The most notable example of this was the Daria tribe, whose tribal communities and fishing villages were assimilated by the Shushtari, who quickly adopted their maritime traditions and began their trading history, for which they are known today.
 
 <div class="imgrid">
-<figure style="flex:0.901"><img src="/assets/media/varahmehr-5.png" alt="The territories of the tribes and their subjects in late Antiquity, c. 104 BCE"><figcaption>The territories of the tribes and their subjects in late Antiquity, c. 104 BCE</figcaption></figure>
+<figure style="flex:0.901"><img src="/assets/old-media/media/varahmehr-5.png" alt="The territories of the tribes and their subjects in late Antiquity, c. 104 BCE"><figcaption>The territories of the tribes and their subjects in late Antiquity, c. 104 BCE</figcaption></figure>
 </div>
 
 The region was briefly occupied by the Hasmenionian Empire around 524 BCE, which retreated from the area shortly after due to external factors.
@@ -107,7 +107,7 @@ Nourestan was the first of the ostān-hā to be properly established - a plateau
 Shushestan’s coastal communities had existed as trading ports long before any sort of state emerged in the land. The Shushtari families who formed the merchant core carried with them the memory of Shushan’s ancient glory - the palace city, the royal court, the deliverance of Esther - and built their commercial identity around the idea that trade was not merely economic activity, but a form of covenant between peoples. It is unknown whether this ancient palace city was a part of Shushtari history before the Six Lands period, as no historical records remain of it other than songs and legends. Shushestan had no army to speak of, but it had something more durable - the trust of every merchant network within a thousand miles.
 
 <div class="imgrid">
-<figure style="flex:0.572"><img src="/assets/media/varahmehr-6.png" alt="The Six Lands prior to the Ruz-e Peymān, 1878"><figcaption>The Six Lands prior to the Ruz-e Peymān, 1878</figcaption></figure>
+<figure style="flex:0.572"><img src="/assets/old-media/media/varahmehr-6.png" alt="The Six Lands prior to the Ruz-e Peymān, 1878"><figcaption>The Six Lands prior to the Ruz-e Peymān, 1878</figcaption></figure>
 </div>
 
 Ahanestan occupied the lakeside territories in the center of the region, where the Kuhi clans had mined iron and copper since antiquity, and the later Mehrāni settlers built forges and foundries that turned raw ore into tools, weapons, and, eventually, the structural ironwork that every other community depended on for building. Ahanestan was the most internally fractured of the six lands - the relationship between Kuhi tribesmen and Mehrāni settlers was governed by a complex web of clan agreements that outsiders never fully understood, and that collapsed and reformed on a generational basis.
@@ -145,7 +145,7 @@ Shushestan’s final condition was the one that came closest to breaking the ent
 The Federal Compact was signed on a morning on March 3rd, 1878, at a neutral site between Nourestan and Dashtestan - a location chosen precisely because it belonged to no single land and all of them simultaneously. Six representatives signed. Six seals were pressed into wax. The document was written in both Mehrāni and Dashti - the only two languages given equal status - with a Shushtari dedication in the margin that was not formally part of the text but that nobody proposed removing. The union of the Six Lands was not without issue, however. Shortly after the signing of the Federal Compact (also known as Peymān-e Mellī), many problems arose, such as the location of the capital, treasury distributions, the formation of the state’s institutions, and many other administrative burdens. This forced the newly founded nation into isolationism, preventing it from entering the Great War on any side.
 
 <div class="imgrid">
-<figure style="flex:0.62"><img src="/assets/media/varahmehr-7.png" alt="Map of the shahrestān-hā of Varahmehr"><figcaption>Map of the shahrestān-hā of Varahmehr</figcaption></figure>
+<figure style="flex:0.62"><img src="/assets/old-media/media/varahmehr-7.png" alt="Map of the shahrestān-hā of Varahmehr"><figcaption>Map of the shahrestān-hā of Varahmehr</figcaption></figure>
 </div>
 
 ## Government
@@ -155,7 +155,7 @@ The Federal Republic of Varahmehr is a federal constitutional republic governed 
 The federation comprises six ostān-hā, each governed by an elected Ostāndār with significant autonomous powers. Political life is organized around four major factions: the Peymān-dārān (pro-market, constitutionalist, largest federal faction); the Risheh-dārān (traditionalist, agrarian, anti-federal overreach); The Mardom-e Kār (worker protections, social investment); and the Āzādi-khāhān (radical libertarian, based almost entirely in Azadestan-e Kuchak, functions as a decisive swing vote disproportionate to its size).
 
 <div class="imgrid">
-<figure style="flex:1.138"><img src="/assets/media/varahmehr-8.jpg" alt="Tālār-e Peymān (The Hall of the Compact), it houses the original Peymān-e Mellī"><figcaption>Tālār-e Peymān (The Hall of the Compact), it houses the original Peymān-e Mellī</figcaption></figure>
+<figure style="flex:1.138"><img src="/assets/old-media/media/varahmehr-8.jpg" alt="Tālār-e Peymān (The Hall of the Compact), it houses the original Peymān-e Mellī"><figcaption>Tālār-e Peymān (The Hall of the Compact), it houses the original Peymān-e Mellī</figcaption></figure>
 </div>
 
 A consistent feature of Varahmehri political culture is the focus on personal freedom: since the people hold the Compact sacred, any attack on personal freedom is met with disdain and anger.
@@ -209,7 +209,7 @@ Ahanestan is the federation’s industrial heartland. Its capital, Kuhestan - th
 Shushestan is the commercial heart of Varahmehr. The port of Shushabad, operating under a legal framework developed over two and a half millennia of Mehrāni-Shushtari mercantile tradition, hosts the federation’s most respected commercial courts - contracts governed by Shushestani law carry a premium of trust that parties from other ostān-hā actively seek out. The ostān’s banking houses developed sophisticated instruments of credit and commodity trading that underpin federal finance. Āzādport in Azadestan-e Kuchak operates as a free port under minimal federal oversight, attracting capital that finds Shushabad’s structured legal environment too restrictive.
 
 <div class="imgrid">
-<figure style="flex:1.674"><img src="/assets/media/varahmehr-9.jpg" alt="Port of Shushabad, circa 1920"><figcaption>Port of Shushabad, circa 1920</figcaption></figure>
+<figure style="flex:1.674"><img src="/assets/old-media/media/varahmehr-9.jpg" alt="Port of Shushabad, circa 1920"><figcaption>Port of Shushabad, circa 1920</figcaption></figure>
 </div>
 
 ### Agriculture
@@ -217,7 +217,7 @@ Shushestan is the commercial heart of Varahmehr. The port of Shushabad, operatin
 Dashtestan produces the bulk of Varahmehr’s grain, livestock, and timber. The Jashn-e Mehr harvest festival - whose nān-e mehr bread-sharing tradition has spread across the federation - reflects the cultural significance of agricultural production to Varahmehri identity. Dashtestan’s commodity, centered on Sabzavar’s grain exchange, set pricing benchmarks across the region.
 
 <div class="imgrid">
-<figure style="flex:1.88"><img src="/assets/media/varahmehr-10.png" alt="Farmlands surrounding Gandomabad, Dashtestan"><figcaption>Farmlands surrounding Gandomabad, Dashtestan</figcaption></figure>
+<figure style="flex:1.88"><img src="/assets/old-media/media/varahmehr-10.png" alt="Farmlands surrounding Gandomabad, Dashtestan"><figcaption>Farmlands surrounding Gandomabad, Dashtestan</figcaption></figure>
 </div>
 
 ## Geography

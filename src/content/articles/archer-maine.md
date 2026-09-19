@@ -4,7 +4,7 @@ type: character
 ooc: true
 nation: esu
 infobox:
-  - { image: "/assets/media/archer-maine-1.jpg", caption: "Official Portrait, 1934" }
+  - { image: "/assets/old-media/media/archer-maine-1.jpg", caption: "Official Portrait, 1934" }
   - { label: "Preceded by", value: "Office Established" }
   - label: "Preceded by"
     value:

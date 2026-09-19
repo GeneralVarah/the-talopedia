@@ -4,7 +4,7 @@ type: continent
 authors: [nichirin]
 navbox: site
 infobox:
-  - { image: "/assets/media/pelagonia-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/pelagonia-1.jpg", caption: "" }
   - { label: "Land Area", value: "~46,850,000 km²" }
   - label: "Entities"
     value:
@@ -34,7 +34,7 @@ The name ‘Pelagonia’ derives from the Rumaic *pelagus*, itself borrowed from
 Pelagonia is divisible into four connected landmasses, separated from each other by active plate boundaries responsible for the continent's extensive rift lake systems. Its western face opens onto the Sea of Auritania, with the landmass tapering from the [East Auritanian Plateau](https://en.wikipedia.org/wiki/Brazilian_Highlands) into a windswept, narrow strip of subtropical plains above the [Argenteum river system](https://en.wikipedia.org/wiki/R%C3%ADo_de_la_Plata), its southern coast dominated by the [Riesengrat Cordillera](https://en.wikipedia.org/wiki/Andes). Aphirica, a predominantly low-lying tropical region, faces the Sahara Sea, rising inland onto a broad sedimentary plateau known as Central Pelagonia, extending southward through savanna into the [Ocre](https://en.wikipedia.org/wiki/Kalahari_Desert) and [Brumes](https://en.wikipedia.org/wiki/Namib) desert systems and terminating at the Strayan Sea. To the northeast, the densely populated [Five Indies](https://en.wikipedia.org/wiki/Indian_subcontinent) face eastward toward the Panthlassan Ocean, its interior dominated by the [Daksina](https://en.wikipedia.org/wiki/Deccan_Plateau) and [Tobotean](https://en.wikipedia.org/wiki/Tibetan_Plateau) Plateaus, the latter of which is the highest and most extensive elevated terrain on Avium, bounded to the west by the [Parvateshwaras](https://en.wikipedia.org/wiki/Himalayas) and [Mount Sagarmatha](https://en.wikipedia.org/wiki/Mount_Everest), Avium’s highest mountain above sea level. Further southward, the Strayan Peninsula is the oldest and most geologically stable body on the continent as well as the largest peninsula in Avium, with a largely arid flat interior ringed by a fertile coastal margin.
 
 <div class="imgrid">
-<figure style="flex:2.0"><img src="/assets/media/pelagonia-2.jpg" alt="East Auritanian Plateau"><figcaption>East Auritanian Plateau</figcaption></figure>
+<figure style="flex:2.0"><img src="/assets/old-media/media/pelagonia-2.jpg" alt="East Auritanian Plateau"><figcaption>East Auritanian Plateau</figcaption></figure>
 </div>
 
 ### Climate

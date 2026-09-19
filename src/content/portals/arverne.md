@@ -1,7 +1,7 @@
 ---
 title: "Portal:Arverne"
 nation: arverne
-banner: /assets/media/arverne-portal-banner.jpg
+banner: /assets/old-media/media/arverne-portal-banner.jpg
 welcome: "Bienvenue à Arverne!"
 ---
 

@@ -4,7 +4,7 @@ nativeTitle: "白石 典子"
 type: character
 nation: nichirin
 infobox:
-  - { image: "/assets/media/noriko-shiraishi-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/noriko-shiraishi-1.jpg", caption: "" }
   - label: "Shogun"
     value:
       - "Masanori Miyamoto"

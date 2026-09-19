@@ -129,7 +129,7 @@ The economy of Shivon is expanding, and strengthening relations with Varahmehr a
 Shivon is an arid nation situated along the eastern shores of the Saharan Sea, occupying a narrow but strategically significant stretch of land in southern Evria. Much of its eastern territory extends deep into the Nabatean Desert, a harsh expanse of sand dunes, and rocky plateaus. The climate is dry, with long rainless seasons, scorching summers, and winters that bring only brief, cold winds coming in from the desert interior.
 
 <div class="imgrid">
-<figure style="flex:2.228"><img src="/assets/media/shivon-2.jpg" alt="Eretz, with the Great Temple."><figcaption>Eretz, with the Great Temple.</figcaption></figure>
+<figure style="flex:2.228"><img src="/assets/old-media/media/shivon-2.jpg" alt="Eretz, with the Great Temple."><figcaption>Eretz, with the Great Temple.</figcaption></figure>
 </div>
 
 It borders Selmira to the north, Kemet to the south, the Arlbernian colony of Divia to the west, and the Sahara Sea to the east.

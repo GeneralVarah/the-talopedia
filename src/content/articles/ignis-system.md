@@ -5,7 +5,7 @@ authors: [nichirin, alemannia]
 navbox: site
 ooc: true
 infobox:
-  - { image: "/assets/media/ignis-system-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/ignis-system-1.jpg", caption: "" }
   - { label: "Age", value: "~798 million years" }
   - label: "Location"
     value:

@@ -122,44 +122,44 @@ Karjania has a mixed elevation due to its vast size and varied landscapes. In th
 Karjania has a varied climate, mainly divided between boreal and humid continental. Thule and Cuohpajálla have a polar climate. In Karjania, winters are very harsh and long. All of Karjania experiences snowfall in winter, with some places, especially Thule, covered by snow year-round. The average temperature in mainland Karjania is 6.2 C°. In winter, temperatures may drop to -25 C°. Karjania sees an average of 650mm of rain annually.
 
 <div class="imgrid">
-<figure style="flex:2.0"><img src="/assets/media/karjania-2.jpg" alt="Northern Karjania (Kuolan) during winter"><figcaption>Northern Karjania (Kuolan) during winter</figcaption></figure>
+<figure style="flex:2.0"><img src="/assets/old-media/media/karjania-2.jpg" alt="Northern Karjania (Kuolan) during winter"><figcaption>Northern Karjania (Kuolan) during winter</figcaption></figure>
 </div>
 
 ### Largest Cities
 
 | Rank | City Name | Urban Population | Subdivision |
 | --- | --- | --- | --- |
-| 1 | Pietari | 5,643,000 | :img[/assets/subdivisions/karjania-sub-11.png] Capital Territory |
-| 2 | Roudanjärvi | 1,854,000 | :img[/assets/subdivisions/karjania-sub-12.png] Greater Roudanjärvi |
-| 3 | Tsirvakka | 349,000 | :img[/assets/subdivisions/karjania-sub-13.png] Usumi |
-| 4 | Arkankeli | 348,000 | :img[/assets/subdivisions/karjania-sub-14.png] Arkankeli State |
-| 5 | Kuittijärvi | 321,000 | :img[/assets/subdivisions/karjania-sub-15.png] Kivijärvi |
-| 6 | Väärnitsa | 320,000 | :img[/assets/subdivisions/karjania-sub-16.png] Kalevala |
-| 7 | Murmánska | 286,000 | :img[/assets/subdivisions/karjania-sub-17.png] Saamit State |
-| 8 | Kalaraava | 283,000 | :img[/assets/subdivisions/karjania-sub-18.png] South Helkanmaa |
-| 9 | Kämyrvi | 278,000 | :img[/assets/subdivisions/karjania-sub-19.png] Välivesi |
-| 10 | Nowgorod | 213,000 | :img[/assets/subdivisions/karjania-sub-20.png] Inkeria |
-| 11 | Åulot | 208,000 | :img[/assets/subdivisions/karjania-sub-21.png] North Routanmaa |
-| 12 | Römpöla | 204,000 | :img[/assets/subdivisions/karjania-sub-22.png] Eteläkärki |
-| 13 | Syväsjärvi | 119,000 | :img[/assets/subdivisions/karjania-sub-13.png] Usumi |
-| 14 | Toksavaara | 96,000 | :img[/assets/subdivisions/karjania-sub-23.png] Eastern Esti |
-| 15 | Surtuja | 78,000 | :img[/assets/subdivisions/karjania-sub-24.png] Central Routanmaa |
-| 16 | Okrug | 74,000 | :img[/assets/subdivisions/karjania-sub-25.png] Itahärva |
-| 17 | Vostamo | 68,000 | :img[/assets/subdivisions/karjania-sub-26.png] Pohjanmaa |
-| 18 | Rautaniemi | 63,000 | :img[/assets/subdivisions/karjania-sub-17.png] Saaamit State |
-| 19 | Tolvajärvi | 59,000 | :img[/assets/subdivisions/karjania-sub-18.png] South Helkanmaa |
-| 20 | Narovsky | 58,000 | :img[/assets/subdivisions/karjania-sub-20.png] Inkeria |
-| 21 | Perona | 41,000 | :img[/assets/subdivisions/karjania-sub-27.png] Western Esti |
+| 1 | Pietari | 5,643,000 | :img[/assets/old-media/subdivisions/karjania-sub-11.png] Capital Territory |
+| 2 | Roudanjärvi | 1,854,000 | :img[/assets/old-media/subdivisions/karjania-sub-12.png] Greater Roudanjärvi |
+| 3 | Tsirvakka | 349,000 | :img[/assets/old-media/subdivisions/karjania-sub-13.png] Usumi |
+| 4 | Arkankeli | 348,000 | :img[/assets/old-media/subdivisions/karjania-sub-14.png] Arkankeli State |
+| 5 | Kuittijärvi | 321,000 | :img[/assets/old-media/subdivisions/karjania-sub-15.png] Kivijärvi |
+| 6 | Väärnitsa | 320,000 | :img[/assets/old-media/subdivisions/karjania-sub-16.png] Kalevala |
+| 7 | Murmánska | 286,000 | :img[/assets/old-media/subdivisions/karjania-sub-17.png] Saamit State |
+| 8 | Kalaraava | 283,000 | :img[/assets/old-media/subdivisions/karjania-sub-18.png] South Helkanmaa |
+| 9 | Kämyrvi | 278,000 | :img[/assets/old-media/subdivisions/karjania-sub-19.png] Välivesi |
+| 10 | Nowgorod | 213,000 | :img[/assets/old-media/subdivisions/karjania-sub-20.png] Inkeria |
+| 11 | Åulot | 208,000 | :img[/assets/old-media/subdivisions/karjania-sub-21.png] North Routanmaa |
+| 12 | Römpöla | 204,000 | :img[/assets/old-media/subdivisions/karjania-sub-22.png] Eteläkärki |
+| 13 | Syväsjärvi | 119,000 | :img[/assets/old-media/subdivisions/karjania-sub-13.png] Usumi |
+| 14 | Toksavaara | 96,000 | :img[/assets/old-media/subdivisions/karjania-sub-23.png] Eastern Esti |
+| 15 | Surtuja | 78,000 | :img[/assets/old-media/subdivisions/karjania-sub-24.png] Central Routanmaa |
+| 16 | Okrug | 74,000 | :img[/assets/old-media/subdivisions/karjania-sub-25.png] Itahärva |
+| 17 | Vostamo | 68,000 | :img[/assets/old-media/subdivisions/karjania-sub-26.png] Pohjanmaa |
+| 18 | Rautaniemi | 63,000 | :img[/assets/old-media/subdivisions/karjania-sub-17.png] Saaamit State |
+| 19 | Tolvajärvi | 59,000 | :img[/assets/old-media/subdivisions/karjania-sub-18.png] South Helkanmaa |
+| 20 | Narovsky | 58,000 | :img[/assets/old-media/subdivisions/karjania-sub-20.png] Inkeria |
+| 21 | Perona | 41,000 | :img[/assets/old-media/subdivisions/karjania-sub-27.png] Western Esti |
 
 ### Colonial Cities
 
 | Rank | Name | Urban Population | Subdivision |
 | --- | --- | --- | --- |
-| 1 | Simpanssilahti | 184,000 | :img[/assets/subdivisions/karjania-sub-28.png] Kulanmaan |
-| 2 | Amassajärvi | 116,000 | :img[/assets/subdivisions/karjania-sub-28.png] Kulanmaan |
-| 3 | Niemilinna | 94,000 | :img[/assets/subdivisions/karjania-sub-28.png] Kulanmaan |
-| 4 | Shompolahti | 11,000 | :img[/assets/subdivisions/karjania-sub-29.png] Frederikka Islands |
-| 5 | Jieknaluokta | 412 | :img[/assets/subdivisions/karjania-sub-30.png] Cuohpajálla |
+| 1 | Simpanssilahti | 184,000 | :img[/assets/old-media/subdivisions/karjania-sub-28.png] Kulanmaan |
+| 2 | Amassajärvi | 116,000 | :img[/assets/old-media/subdivisions/karjania-sub-28.png] Kulanmaan |
+| 3 | Niemilinna | 94,000 | :img[/assets/old-media/subdivisions/karjania-sub-28.png] Kulanmaan |
+| 4 | Shompolahti | 11,000 | :img[/assets/old-media/subdivisions/karjania-sub-29.png] Frederikka Islands |
+| 5 | Jieknaluokta | 412 | :img[/assets/old-media/subdivisions/karjania-sub-30.png] Cuohpajálla |
 
 ## Demographics
 

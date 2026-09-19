@@ -4,7 +4,7 @@ nativeTitle: "神谷 謙三"
 type: character
 nation: nichirin
 infobox:
-  - { image: "/assets/media/kenzo-kamiya-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/kenzo-kamiya-1.jpg", caption: "" }
   - { section: "Senior Prosecutor19 October, 1923 – 6 July, 1928" }
   - { label: "Minister of Justice", value: "Teijo Okuda" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }

@@ -5,9 +5,9 @@ type: city
 nation: auritania
 infobox:
   - { section: "[Capital](https://en.wikipedia.org/wiki/Capital_city) and [megacity](https://en.wikipedia.org/wiki/Megacity)" }
-  - { image: "/assets/media/auritania-city-3.jpg", caption: "" }
+  - { image: "/assets/old-media/media/auritania-city-3.jpg", caption: "" }
   - { image: "/assets/flags/auritania-city.jpg", caption: "Flag" }
-  - { image: "/assets/media/auritania-city-2.jpg", caption: "Location of Auritania City SCZ" }
+  - { image: "/assets/old-media/media/auritania-city-2.jpg", caption: "Location of Auritania City SCZ" }
   - { section: "Geography" }
   - { label: "Country", value: "[[auritania]]" }
   - { label: "Region", value: "Anahuacan Plateau" }
@@ -68,7 +68,7 @@ Auritania City was traditionally known as *La Ciudad de los Palacios* (The City 
 Auritania City is governed as a **Special Capital Zone (SCZ)** under the direct authority of the state government, bypassing the standard provincial administrative system used elsewhere in Auritania. The SCZ designation places the metropolitan area under centralized control, with the Governor appointed directly by the Glorious Leader rather than through the Ministry of the Interior. As of now, this administrative structure is unique to only Auritania City, although there are government plans to create more Special Administrative Regions in the future.
 
 <div class="imgrid">
-<figure style="flex:1.044"><img src="/assets/media/auritania-city-8.png" alt="Map of the Auritania City SCZ"><figcaption>Map of the Auritania City SCZ</figcaption></figure>
+<figure style="flex:1.044"><img src="/assets/old-media/media/auritania-city-8.png" alt="Map of the Auritania City SCZ"><figcaption>Map of the Auritania City SCZ</figcaption></figure>
 </div>
 
 Auritania City is comprised of 16 boroughs, which are:
@@ -142,10 +142,10 @@ During the 19th century, the newly-independent Anahuac saw a gradual rise of [Ec
 After the Auritanian Revolution, there was a surge of [Tetsu Colonial Revival](https://en.wikipedia.org/wiki/Spanish_Colonial_Revival_architecture) architecture, but was quickly replaced by [Modern architecture](https://en.wikipedia.org/wiki/Modern_architecture) and [Art Deco](https://en.wikipedia.org/wiki/Art_Deco) when the New Economic Plan was implemented. One prime example of Modern architecture in Auritania City is the still constructed Torre Auritania, which was the first building in the city to fully incorporate the style for its structure. While the Monument to the Revolution is the perfect example of Art Deco in Auritania, it was highly praised for its cultural significance and [Socialist Realism](https://en.wikipedia.org/wiki/Socialist_realism) style, taking inspiration from that of [[rudania]].
 
 <div class="imgrid">
-<figure style="flex:1.548"><img src="/assets/media/auritania-city-9.jpg" alt="An Izteca pyramid with its Izteca Architecture."><figcaption>An Izteca pyramid with its Izteca Architecture.</figcaption></figure>
-<figure style="flex:1.333"><img src="/assets/media/auritania-city-10.jpg" alt="Metropolitan Cathedral of Auritania City, reflecting the successive architectural styles, including Renaissance, Baroque and Neoclassical."><figcaption>Metropolitan Cathedral of Auritania City, reflecting the successive architectural styles, including Renaissance, Baroque and Neoclassical.</figcaption></figure>
-<figure style="flex:1.748"><img src="/assets/media/auritania-city-11.jpg" alt="Postal Palace of Auritania City, primarily a Plateresque Revival building but incorporated other stylish elements due to Eclecticism."><figcaption>Postal Palace of Auritania City, primarily a Plateresque Revival building but incorporated other stylish elements due to Eclecticism.</figcaption></figure>
-<figure style="flex:0.936"><img src="/assets/media/auritania-city-12.jpg" alt="Monument to the Revolution, an Art Deco/Socialist Realism monument."><figcaption>Monument to the Revolution, an Art Deco/Socialist Realism monument.</figcaption></figure>
+<figure style="flex:1.548"><img src="/assets/old-media/media/auritania-city-9.jpg" alt="An Izteca pyramid with its Izteca Architecture."><figcaption>An Izteca pyramid with its Izteca Architecture.</figcaption></figure>
+<figure style="flex:1.333"><img src="/assets/old-media/media/auritania-city-10.jpg" alt="Metropolitan Cathedral of Auritania City, reflecting the successive architectural styles, including Renaissance, Baroque and Neoclassical."><figcaption>Metropolitan Cathedral of Auritania City, reflecting the successive architectural styles, including Renaissance, Baroque and Neoclassical.</figcaption></figure>
+<figure style="flex:1.748"><img src="/assets/old-media/media/auritania-city-11.jpg" alt="Postal Palace of Auritania City, primarily a Plateresque Revival building but incorporated other stylish elements due to Eclecticism."><figcaption>Postal Palace of Auritania City, primarily a Plateresque Revival building but incorporated other stylish elements due to Eclecticism.</figcaption></figure>
+<figure style="flex:0.936"><img src="/assets/old-media/media/auritania-city-12.jpg" alt="Monument to the Revolution, an Art Deco/Socialist Realism monument."><figcaption>Monument to the Revolution, an Art Deco/Socialist Realism monument.</figcaption></figure>
 </div>
 
 ## Demographics

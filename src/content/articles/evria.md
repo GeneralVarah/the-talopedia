@@ -4,7 +4,7 @@ type: continent
 authors: [nichirin]
 navbox: site
 infobox:
-  - { image: "/assets/media/evria-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/evria-1.jpg", caption: "" }
   - { label: "Land Area", value: "~17,260,000 km²" }
   - label: "Entities"
     value:
@@ -42,7 +42,7 @@ Evria is significantly colder than typical equatorial regions due to its positio
 Northern Evria and Thule experience the most pronounced cooling effect due to direct exposure to these Arctic winds. Winter temperatures in these regions regularly drop to -15°C to -25°C, while summer temperatures range from 10°C to 20°C, creating conditions characteristic of subarctic to cool-temperate climates. Snow cover persists for 4-6 months annually in northern zones, with frost possible throughout the year at higher elevations.
 
 <div class="imgrid">
-<figure style="flex:1.656"><img src="/assets/media/evria-2.jpg" alt="Radagorsk, Rudania"><figcaption>Radagorsk, Rudania</figcaption></figure>
+<figure style="flex:1.656"><img src="/assets/old-media/media/evria-2.jpg" alt="Radagorsk, Rudania"><figcaption>Radagorsk, Rudania</figcaption></figure>
 </div>
 
 Central Evria and Nabataea occupy a transitional zone where Hyperborean influence gradually diminishes with distance. Temperatures moderate progressively southward, with winter lows ranging from 0°C to 10°C and summer highs reaching 25°C to 30°C. Seasonal temperature swings remain pronounced due to the extreme variation in Hyperborean wind intensity between winter (maximum katabatic activity) and summer (wind reversal period), creating distinct seasons despite Central Evria’s position directly on the equator, with a cold dry season corresponding to Hyperborea's winter and a warm humid season during Hyperborea's summer when the polar low-pressure system reverses atmospheric circulation.

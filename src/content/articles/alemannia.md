@@ -7,8 +7,8 @@ type: overview
 nation: alemannia
 infobox:
   - { image: "/assets/flags/alemannia.png", caption: "Flag" }
-  - { image: "/assets/emblems/alemannia.png", caption: "Coat of Arms" }
-  - { image: "/assets/media/alemannia-3.png", caption: "Location of Mainland Alemannia" }
+  - { image: "/assets/old-media/emblems/alemannia.png", caption: "Coat of Arms" }
+  - { image: "/assets/old-media/media/alemannia-3.png", caption: "Location of Mainland Alemannia" }
   - label: "Motto"
     value:
       - "Einigkeit, Recht, Freiheit"
@@ -168,27 +168,27 @@ The Alemannian Confederation covers approximately 650,533 square kilometers and 
 The southern regions, comprising the Alps and the Sueviani and Bairathian Highlands, form an imposing natural barrier that rises steeply from the coast to the Tethys Ocean. The coastal areas transition from narrow sea plains to steep Alpine slopes, characterized in places by cliffs and fjord-like formations. The peaks of the Alps and the foothills of the Silver Forest often reach altitudes of over 2,500 meters and are marked by rugged glacial valleys, mountain passes, and Alpine lakes. The coast provides access to the world's largest ocean, the Tethys Sea, making Alemannia a significant maritime power with naval ports concentrated around cities such as Triestburg, Klagenhafen, and Lugenpier. These areas are sparsely populated; settlements are concentrated in the valleys, along the coast, and along the rivers. The southern highlands serve as a source of rivers and hydroelectric power while also providing fertile slopes for vineyards and pastures at lower elevations.
 
 <div class="imgrid">
-<figure style="flex:1.778"><img src="/assets/media/alemannia-4.jpg" alt="The Dufarspitze, the highest peak in Alemannia with a height of 4,634 meters, State Helvetien"><figcaption>The Dufarspitze, the highest peak in Alemannia with a height of 4,634 meters, State Helvetien</figcaption></figure>
-<figure style="flex:1.500"><img src="/assets/media/alemannia-5.jpg" alt="Silver Forest, Alemannians highest and largest contiguous low mountain ranges and a popular tourist attraction, State Badenhain and Suevien"><figcaption>Silver Forest, Alemannians highest and largest contiguous low mountain ranges and a popular tourist attraction, State Badenhain and Suevien</figcaption></figure>
+<figure style="flex:1.778"><img src="/assets/old-media/media/alemannia-4.jpg" alt="The Dufarspitze, the highest peak in Alemannia with a height of 4,634 meters, State Helvetien"><figcaption>The Dufarspitze, the highest peak in Alemannia with a height of 4,634 meters, State Helvetien</figcaption></figure>
+<figure style="flex:1.500"><img src="/assets/old-media/media/alemannia-5.jpg" alt="Silver Forest, Alemannians highest and largest contiguous low mountain ranges and a popular tourist attraction, State Badenhain and Suevien"><figcaption>Silver Forest, Alemannians highest and largest contiguous low mountain ranges and a popular tourist attraction, State Badenhain and Suevien</figcaption></figure>
 </div>
 
 <div class="imgrid">
-<figure style="flex:1.498"><img src="/assets/media/alemannia-6.jpg" alt="Coastal Fjords south of Lugenpier, State Helvetien"><figcaption>Coastal Fjords south of Lugenpier, State Helvetien</figcaption></figure>
-<figure style="flex:1.333"><img src="/assets/media/alemannia-7.jpg" alt="Lake Schracksee, a lake located in the Bairatian Highlands, State Bairath"><figcaption>Lake Schracksee, a lake located in the Bairatian Highlands, State Bairath</figcaption></figure>
+<figure style="flex:1.498"><img src="/assets/old-media/media/alemannia-6.jpg" alt="Coastal Fjords south of Lugenpier, State Helvetien"><figcaption>Coastal Fjords south of Lugenpier, State Helvetien</figcaption></figure>
+<figure style="flex:1.333"><img src="/assets/old-media/media/alemannia-7.jpg" alt="Lake Schracksee, a lake located in the Bairatian Highlands, State Bairath"><figcaption>Lake Schracksee, a lake located in the Bairatian Highlands, State Bairath</figcaption></figure>
 </div>
 
 Further northwest, the central plains and river basins extend across states such as Ymirauen, Hessarien, Franken, Valdoria, Dravia, and northern Arlberg. This region is characterized by rolling hills, wooded mountain ranges, fertile plains, and the valleys of the Ymir, Maine, Danau, Alvis, Vlotau, and Drava rivers. The Ymir forms the country's most important trade waterway, connecting the industrial centers of the Ymir-Rul with the North Sea ports, while the Danau represents a significant east-west transport corridor through the Alpine foothills. Tributaries such as the Seig, Arl, Isenlauf, and Saale interweave the industrial, agricultural, and urban landscapes of Alemannia.
 
 <div class="imgrid">
-<figure style="flex:2.000"><img src="/assets/media/alemannia-8.jpg" alt="The Mittelymirtal, a popular travel destination located at the Seig, State Saale-Pfölz"><figcaption>The Mittelymirtal, a popular travel destination located at the Seig, State Saale-Pfölz</figcaption></figure>
-<figure style="flex:1.333"><img src="/assets/media/alemannia-9.jpg" alt="Otta-Höhle, one of the largest stalactite caves in Alemannia, State Lippgau"><figcaption>Otta-Höhle, one of the largest stalactite caves in Alemannia, State Lippgau</figcaption></figure>
+<figure style="flex:2.000"><img src="/assets/old-media/media/alemannia-8.jpg" alt="The Mittelymirtal, a popular travel destination located at the Seig, State Saale-Pfölz"><figcaption>The Mittelymirtal, a popular travel destination located at the Seig, State Saale-Pfölz</figcaption></figure>
+<figure style="flex:1.333"><img src="/assets/old-media/media/alemannia-9.jpg" alt="Otta-Höhle, one of the largest stalactite caves in Alemannia, State Lippgau"><figcaption>Otta-Höhle, one of the largest stalactite caves in Alemannia, State Lippgau</figcaption></figure>
 </div>
 
 The eastern lowlands, which span from western Veenglade on the North Sea to Vistgarde on the Livonian Sea, consist of vast plains, polders, coastal marshes, and extensive river deltas. These regions are traversed by the river systems of the Lower Ymir, Lah, Ersel, Visera, and Alvis, creating some of Evria's most fertile agricultural land and densely populated urban areas. Centuries of land reclamation, canal construction, and hydraulic engineering have transformed large swathes of Hollmar's coastline into productive farmland while simultaneously facilitating inland navigation, trade, and industrial development in the lower river basins.
 
 <div class="imgrid">
-<figure style="flex:1.778"><img src="/assets/media/alemannia-10.jpg" alt="Sand Dunes on the North Sea Coast, State Halvorn"><figcaption>Sand Dunes on the North Sea Coast, State Halvorn</figcaption></figure>
-<figure style="flex:1.600"><img src="/assets/media/alemannia-11.jpg" alt="The Larneburger Heide, one of the biggest tourism spots in Eastern Alemannia, State Haneburg"><figcaption>The Larneburger Heide, one of the biggest tourism spots in Eastern Alemannia, State Haneburg</figcaption></figure>
+<figure style="flex:1.778"><img src="/assets/old-media/media/alemannia-10.jpg" alt="Sand Dunes on the North Sea Coast, State Halvorn"><figcaption>Sand Dunes on the North Sea Coast, State Halvorn</figcaption></figure>
+<figure style="flex:1.600"><img src="/assets/old-media/media/alemannia-11.jpg" alt="The Larneburger Heide, one of the biggest tourism spots in Eastern Alemannia, State Haneburg"><figcaption>The Larneburger Heide, one of the biggest tourism spots in Eastern Alemannia, State Haneburg</figcaption></figure>
 </div>
 
 The northern region, stretching from Havelland through Silmarien to the former northern territories in Cortesia, are characterized by wide plains, gently rolling hills, mixed forests, and fertile farmland. Abundant coal deposits and other mineral resources form the basis for intensive industrial activity, while the Arder and upper Viste river systems ensure regional transport and irrigation. The combination of fertile soils, abundant natural resources, and well-developed railway networks has made the northern regions, especially Silmarien, one of the country's most important centers for agriculture, mining, and heavy industry.
@@ -237,17 +237,17 @@ Alemannian citizenship is granted according to jus sanguinis, which means that a
 
 | Rank | City Name | Urban Population | Subdivision |
 | --- | --- | --- | --- |
-| 1 | Eisenfeld | 5,116,000 | :img[/assets/subdivisions/alemannia-sub-1.png] Eisenfeld |
-| 2 | Berelstein | 3,585,000 | :img[/assets/subdivisions/alemannia-sub-2.png] Berelstein |
-| 3 | Randstadt | 2,711,000 | :img[/assets/subdivisions/alemannia-sub-3.png] Hollmar |
-| 4 | Veynach | 2,021,000 | :img[/assets/subdivisions/alemannia-sub-4.png] Veynach |
-| 5 | Hammersburg | 1,789,000 | :img[/assets/subdivisions/alemannia-sub-5.png] Hammersburg |
-| 6 | Mürrental | 1,597,000 | :img[/assets/subdivisions/alemannia-sub-6.png] Bairath |
-| 7 | Prauvenberg | 1,348,000 | :img[/assets/subdivisions/alemannia-sub-7.png] Valdoria |
-| 8 | Amberdam | 1,197,000 | :img[/assets/subdivisions/alemannia-sub-8.png] Amberdam |
-| 9 | Kolmar | 1,018,000 | :img[/assets/subdivisions/alemannia-sub-9.png] Kolmar |
-| 10 | Franmark | 801,000 | :img[/assets/subdivisions/alemannia-sub-10.png] Franmark |
+| 1 | Eisenfeld | 5,116,000 | :img[/assets/old-media/subdivisions/alemannia-sub-1.png] Eisenfeld |
+| 2 | Berelstein | 3,585,000 | :img[/assets/old-media/subdivisions/alemannia-sub-2.png] Berelstein |
+| 3 | Randstadt | 2,711,000 | :img[/assets/old-media/subdivisions/alemannia-sub-3.png] Hollmar |
+| 4 | Veynach | 2,021,000 | :img[/assets/old-media/subdivisions/alemannia-sub-4.png] Veynach |
+| 5 | Hammersburg | 1,789,000 | :img[/assets/old-media/subdivisions/alemannia-sub-5.png] Hammersburg |
+| 6 | Mürrental | 1,597,000 | :img[/assets/old-media/subdivisions/alemannia-sub-6.png] Bairath |
+| 7 | Prauvenberg | 1,348,000 | :img[/assets/old-media/subdivisions/alemannia-sub-7.png] Valdoria |
+| 8 | Amberdam | 1,197,000 | :img[/assets/old-media/subdivisions/alemannia-sub-8.png] Amberdam |
+| 9 | Kolmar | 1,018,000 | :img[/assets/old-media/subdivisions/alemannia-sub-9.png] Kolmar |
+| 10 | Franmark | 801,000 | :img[/assets/old-media/subdivisions/alemannia-sub-10.png] Franmark |
 
 <div class="imgrid">
-<figure style="flex:1.501"><img src="/assets/media/alemannia-12.png" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.501"><img src="/assets/old-media/media/alemannia-12.png" alt=""><figcaption></figcaption></figure>
 </div>

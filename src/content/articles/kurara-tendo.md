@@ -4,7 +4,7 @@ nativeTitle: "天童 空良"
 type: character
 nation: nichirin
 infobox:
-  - { image: "/assets/media/kurara-tendo-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/kurara-tendo-1.jpg", caption: "" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - { label: "Preceded by", value: "Tokimasa Ishida" }
   - { section: "Personal Details" }

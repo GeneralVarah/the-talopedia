@@ -4,7 +4,7 @@ type: continent
 authors: [nichirin]
 navbox: site
 infobox:
-  - { image: "/assets/media/valtheria-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/valtheria-1.jpg", caption: "" }
   - { label: "Land Area", value: "~31,900,000 km²" }
   - label: "Entities"
     value:

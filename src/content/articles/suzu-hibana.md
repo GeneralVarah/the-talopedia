@@ -4,7 +4,7 @@ nativeTitle: "火花 鈴"
 type: character
 nation: nichirin
 infobox:
-  - { image: "/assets/media/suzu-hibana-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/suzu-hibana-1.jpg", caption: "" }
   - { label: "Director-General", value: "Danno Takata" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - { label: "Preceded by", value: "[[kishibe-toda]]" }

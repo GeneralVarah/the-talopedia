@@ -7,8 +7,8 @@ nation: nichirin
 icon: "/assets/flags/nichirin.png"
 infobox:
   - { image: "/assets/flags/nichirin.png", caption: "Flag" }
-  - { image: "/assets/emblems/nichirin.png", caption: "Coat of Arms" }
-  - { image: "/assets/media/nichirin-location.jpg", caption: "Location of Mainland Nichirin" }
+  - { image: "/assets/old-media/emblems/nichirin.png", caption: "Coat of Arms" }
+  - { image: "/assets/old-media/media/nichirin-location.jpg", caption: "Location of Mainland Nichirin" }
   - label: "Motto"
     value:
       - "「規律を通じて超越、超越を通じて支配する。」"
@@ -143,24 +143,24 @@ Mainland Nichirin is a large nation covering approximately 3,004,368 square kilo
 Metropolitan Nichirin or Nichirin Proper (日輪本国) is a narrow strip of coastal land running along Nichirin's northern seaboard, separated from the interior regions by the [Chohaku Mountains](https://en.wikipedia.org/wiki/Changbai_Mountains) (長白山脈) to the east and bounded by the [[haguregumo-river]] (逸雲川) and its source, [[lake-ryusei]] (流星湖) to the south. The terrain is 73% mountainous and is characterized by the [Greater Nichirian Alps](https://en.wikipedia.org/wiki/Japanese_Alps) (日輪大山脈), a sprawling mountain range that forms the territory's central spine. The range features high elevations, including [[mount-soten]] (蒼天山), the country's tallest peak, and dense temperate forests, which cover approximately 69% of the region. Coastal plains are fragmented and constrained by mountainous terrain, but support high urban concentrations due to their proximity to natural harbors and river mouths. Numerous rivers descend from the interior, forming gorges and feeding into short coastal estuaries. The region lies directly above the Hyperborean-Serican plate boundary, making it one of the most tectonically active parts of the country, with frequent seismic disturbances and periodic volcanic eruptions.
 
 <div class="imgrid">
-<figure style="flex:1.501"><img src="/assets/media/mount-soten.jpg" alt="Mount Soten, the highest peak in Nichirin at 3,776 m, Shizuhata Prefecture"><figcaption>Mount Soten, the highest peak in Nichirin at 3,776 m, Shizuhata Prefecture</figcaption></figure>
-<figure style="flex:1.501"><img src="/assets/media/suichoku-bamboo-forest.jpg" alt="Suichoku Bamboo Forest, a popular tourist attraction, Takarazuka SAR"><figcaption>Suichoku Bamboo Forest, a popular tourist attraction, Takarazuka SAR</figcaption></figure>
-<figure style="flex:1.501"><img src="/assets/media/gekka-falls.jpg" alt="Gekka Falls, a pilgrimage site for Kaiseido practitioners, Shinanose Prefecture"><figcaption>Gekka Falls, a pilgrimage site for Kaiseido practitioners, Shinanose Prefecture</figcaption></figure>
-<figure style="flex:1.507"><img src="/assets/media/gyakuru-whirlpools.jpg" alt="Gyakuru Whirlpools, a natural phenomenon off the coast of Genkai, Genkai Prefecture"><figcaption>Gyakuru Whirlpools, a natural phenomenon off the coast of Genkai, Genkai Prefecture</figcaption></figure>
+<figure style="flex:1.501"><img src="/assets/old-media/media/mount-soten.jpg" alt="Mount Soten, the highest peak in Nichirin at 3,776 m, Shizuhata Prefecture"><figcaption>Mount Soten, the highest peak in Nichirin at 3,776 m, Shizuhata Prefecture</figcaption></figure>
+<figure style="flex:1.501"><img src="/assets/old-media/media/suichoku-bamboo-forest.jpg" alt="Suichoku Bamboo Forest, a popular tourist attraction, Takarazuka SAR"><figcaption>Suichoku Bamboo Forest, a popular tourist attraction, Takarazuka SAR</figcaption></figure>
+<figure style="flex:1.501"><img src="/assets/old-media/media/gekka-falls.jpg" alt="Gekka Falls, a pilgrimage site for Kaiseido practitioners, Shinanose Prefecture"><figcaption>Gekka Falls, a pilgrimage site for Kaiseido practitioners, Shinanose Prefecture</figcaption></figure>
+<figure style="flex:1.507"><img src="/assets/old-media/media/gyakuru-whirlpools.jpg" alt="Gyakuru Whirlpools, a natural phenomenon off the coast of Genkai, Genkai Prefecture"><figcaption>Gyakuru Whirlpools, a natural phenomenon off the coast of Genkai, Genkai Prefecture</figcaption></figure>
 </div>
 
 Tohanto (東半島) is a peninsular region east of Metropolitan Nichirin on the northern starboard, separated from Metropolitan Nichirin by the Chohaku Mountains to the west and bounded by the [[karyoku-river]] (苅緑川) to the south. Like Metropolitan Nichirin, the terrain is 70% mountainous, characterized by the [[toketsu-range]] (東傑山脈), a mountain range running vertically through the western portion of the peninsula, interspersed with river valleys and arable plains on both coasts. Flanking the range are two distinct coastal regions: the eastern lowlands, shaped by the confluence of the [[nanka-river|Nanka]] (南華川) and [[kyowa-river|Kyowa]] (共和川) river basins, form a relatively flat, densely populated alluvial plain that stretches into coastal deltas and marshes. The western coast, by contrast, is steep and irregular, marked by escarpments and promontories plunging into the Hyperborean Ocean. The peninsula also lies on active fault zones and is subject to moderate seismic activity, particularly in the northern portion, which is located along a minor branch of the Hyperborean-Serican fault system near the Tohanto Isthmus.
 
 <div class="imgrid">
-<figure style="flex:1.448"><img src="/assets/media/okamadaira.jpg" alt="Okamadaira, the world's highest volcanic crater lake, Tanikai Prefecture"><figcaption>Okamadaira, the world's highest volcanic crater lake, Tanikai Prefecture</figcaption></figure>
-<figure style="flex:1.778"><img src="/assets/media/amaterasus-rest.jpg" alt="Amaterasu's Rest, one of the world's largest and best-preserved lava tubes, Koshu Prefecture"><figcaption>Amaterasu's Rest, one of the world's largest and best-preserved lava tubes, Koshu Prefecture</figcaption></figure>
+<figure style="flex:1.448"><img src="/assets/old-media/media/okamadaira.jpg" alt="Okamadaira, the world's highest volcanic crater lake, Tanikai Prefecture"><figcaption>Okamadaira, the world's highest volcanic crater lake, Tanikai Prefecture</figcaption></figure>
+<figure style="flex:1.778"><img src="/assets/old-media/media/amaterasus-rest.jpg" alt="Amaterasu's Rest, one of the world's largest and best-preserved lava tubes, Koshu Prefecture"><figcaption>Amaterasu's Rest, one of the world's largest and best-preserved lava tubes, Koshu Prefecture</figcaption></figure>
 </div>
 
 Manshu (満州) is primarily composed of the Great Manshuan Plain (満州平原), a vast and undulating lowland that dominates the region's interior. The region is bounded by the Chohaku Mountains and Karyoku River to the north, the Lesser Kyoyasu Range and [[matsuhana-river]] to the west, and the Greater [Kyoyasu Range](https://en.wikipedia.org/wiki/Khingan) to the east. This plain encompasses the Shizuku (雫川), Matsuhana (松花川), and [[yawara-river|Yawara]] (柔川) river basins, forming one of the largest and most fertile alluvial expanses in Valtheria, which is the agricultural core of Nichirin. Elevations across the plain typically range from 50 to 200 meters above sea level, characterized by broad floodplains, loess terraces, and shallow depressions that are prone to seasonal waterlogging and marsh formation. The plain itself is covered by thick loess deposits, particularly along the eastern edge, creating highly fertile but erosion-prone soils. Isolated basaltic plateaus and volcanic intrusions sporadically emerge across the region, along with periglacial landforms such as thermokarst basins and patterned ground, which are caused by relic permafrost. Seasonal flooding is common, particularly along the lower Shizuku and Matsuhana river basins.
 
 <div class="imgrid">
-<figure style="flex:1.501"><img src="/assets/media/greater-kyoyasu-range.jpg" alt="Greater Kyoyasu Range, ancestral homeland of many Altaic peoples, Akaichi Prefecture"><figcaption>Greater Kyoyasu Range, ancestral homeland of many Altaic peoples, Akaichi Prefecture</figcaption></figure>
-<figure style="flex:1.498"><img src="/assets/media/matsuhana-rime-ice.jpg" alt="Rime ice (muhyō) on the Matsuhana Riverbank, Shikisen Prefecture"><figcaption>Rime ice (muhyō) on the Matsuhana Riverbank, Shikisen Prefecture</figcaption></figure>
+<figure style="flex:1.501"><img src="/assets/old-media/media/greater-kyoyasu-range.jpg" alt="Greater Kyoyasu Range, ancestral homeland of many Altaic peoples, Akaichi Prefecture"><figcaption>Greater Kyoyasu Range, ancestral homeland of many Altaic peoples, Akaichi Prefecture</figcaption></figure>
+<figure style="flex:1.498"><img src="/assets/old-media/media/matsuhana-rime-ice.jpg" alt="Rime ice (muhyō) on the Matsuhana Riverbank, Shikisen Prefecture"><figcaption>Rime ice (muhyō) on the Matsuhana Riverbank, Shikisen Prefecture</figcaption></figure>
 </div>
 
 Sangai (山外) is Nichirin's far southwestern frontier, a sparsely populated expanse of highlands, river basins, and boreal forest. The region is bounded to the west by the Great Spatryan Bight, to the north by the Haguregumo River, and to the east by the Lesser Kyoyasu Range. Western Sangai lies within the subarctic zone and is marked by continuous taiga forest, tundra pockets, and widespread permafrost, especially west of Shinkeisei. Eastern Sangai, by contrast, supports mixed forests and more varied topography due to tectonic folding and past glacial activity. The [Ryōzetsu Mountains](https://en.wikipedia.org/wiki/Sikhote-Alin) (嶺絶山脈) run in a broad arc parallel to the Haguregumo River, forming another natural barrier between Sangai and Metropolitan Nichirin. Perpendicular river systems, most notably the [[kokuryu-river|Kokuryu]] (黒龍川) and [[sumikuro-river|Sumikuro]] (墨黒川) Rivers, cut through the highlands, forming expansive intermontane basins filled with wetlands, peat bogs, and seasonal floodplains.
@@ -208,13 +208,13 @@ Nichirian citizenship is conferred *jure soli*, meaning that any person born wit
 
 | Rank | City Name | Urban Population | Subdivision |
 | --- | --- | --- | --- |
-| 1 | [[shinkeisei]]<br>新恵星 | 36,955,000 | :img[/assets/subdivisions/shinkeisei.jpg] Shinkeisei SAR |
-| 2 | [[naginomiya]]<br>凪宮 | 25,811,000 | :img[/assets/subdivisions/naginomiya.jpg] Naginomiya SAR |
-| 3 | [[takarazuka]]<br>鷹羅塚 | 18,922,000 | :img[/assets/subdivisions/takarazuka.jpg] Takarazuka SAR |
-| 4 | [[chukyo|Chūkyō]]<br>中京 | 9,512,000 | :img[/assets/subdivisions/chūkyō.jpg] Chūkyō |
-| 5 | [[mizuhara]]<br>水原 | 8,111,000 | :img[/assets/subdivisions/mizuhara.jpg] Mizuhara SAR |
-| 6 | Kamabuchi<br>釜淵 | 7,700,000 | :img[/assets/subdivisions/kamabuchi.jpg] Kamabuchi |
-| 7 | Kōrihama<br>氷浜 | 7,189,000 | :img[/assets/subdivisions/kōrihama.jpg] Kōrihama |
-| 8 | Shimonosaki<br>霜崎 | 6,467,000 | :img[/assets/subdivisions/shimonosaki.jpg] Shimonosaki |
-| 9 | Harushige<br>春茂 | 5,491,000 | :img[/assets/subdivisions/harushige.jpg] Harushige |
-| 10 | Tōhara<br>唐原 | 4,111,000 | :img[/assets/subdivisions/tōhara.jpg] Tōhara |
+| 1 | [[shinkeisei]]<br>新恵星 | 36,955,000 | :img[/assets/old-media/subdivisions/shinkeisei.jpg] Shinkeisei SAR |
+| 2 | [[naginomiya]]<br>凪宮 | 25,811,000 | :img[/assets/old-media/subdivisions/naginomiya.jpg] Naginomiya SAR |
+| 3 | [[takarazuka]]<br>鷹羅塚 | 18,922,000 | :img[/assets/old-media/subdivisions/takarazuka.jpg] Takarazuka SAR |
+| 4 | [[chukyo|Chūkyō]]<br>中京 | 9,512,000 | :img[/assets/old-media/subdivisions/chūkyō.jpg] Chūkyō |
+| 5 | [[mizuhara]]<br>水原 | 8,111,000 | :img[/assets/old-media/subdivisions/mizuhara.jpg] Mizuhara SAR |
+| 6 | Kamabuchi<br>釜淵 | 7,700,000 | :img[/assets/old-media/subdivisions/kamabuchi.jpg] Kamabuchi |
+| 7 | Kōrihama<br>氷浜 | 7,189,000 | :img[/assets/old-media/subdivisions/kōrihama.jpg] Kōrihama |
+| 8 | Shimonosaki<br>霜崎 | 6,467,000 | :img[/assets/old-media/subdivisions/shimonosaki.jpg] Shimonosaki |
+| 9 | Harushige<br>春茂 | 5,491,000 | :img[/assets/old-media/subdivisions/harushige.jpg] Harushige |
+| 10 | Tōhara<br>唐原 | 4,111,000 | :img[/assets/old-media/subdivisions/tōhara.jpg] Tōhara |

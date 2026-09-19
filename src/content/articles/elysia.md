@@ -4,7 +4,7 @@ type: continent
 authors: [nichirin]
 navbox: site
 infobox:
-  - { image: "/assets/media/elysia-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/elysia-1.jpg", caption: "" }
   - { label: "Land Area", value: "~27,118,000 km²" }
   - label: "Entities"
     value:
@@ -58,7 +58,7 @@ Over the following centuries, the successor states fragmented as central authori
 In 1346 CE, the Black Death reached Evria through the Baishin Invasion, triggering a catastrophic demographic collapse across the continent. Seeking refuge from the pandemic, Evrians began migrating to Elysia en masse, establishing settlements across the Eastern section of the continent. Rumaic states, already weakened by centuries of fragmentation, were overwhelmed by the scale and speed of the migration. The remaining Rumaic-speaking populations were either assimilated into the incoming Evrian cultures or displaced, effectively ending the last remnants of Rumaic culture in Elysia. Most indigenous polities were eventually absorbed into the expanding settler states, but the Calverians maintained their independence.
 
 <div class="imgrid">
-<figure style="flex:0.552"><img src="/assets/media/elysia-2.jpg" alt="A 1585 Elvesterian illustration, depicting a native Elysian"><figcaption>A 1585 Elvesterian illustration, depicting a native Elysian</figcaption></figure>
+<figure style="flex:0.552"><img src="/assets/old-media/media/elysia-2.jpg" alt="A 1585 Elvesterian illustration, depicting a native Elysian"><figcaption>A 1585 Elvesterian illustration, depicting a native Elysian</figcaption></figure>
 </div>
 
 One notable expedition by Elvesterians and Testuderans pushed farther southwest across the continent in the early 1500s. The Elvesterians halted at the southern edge of the Laurentian Plains, establishing the territory of Hollow's End (modern-day Hollosend) and its first city, Delvin, while the Testuderan contingent continued southward into Auritania, founding the colony of Navarelo in the tropical interior.

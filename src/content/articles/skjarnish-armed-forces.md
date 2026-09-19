@@ -4,7 +4,7 @@ nativeTitle: "Krigsmakten"
 type: military
 nation: skjarnland
 infobox:
-  - { image: "/assets/emblems/skjarnish-armed-forces.jpg", caption: "Emblem" }
+  - { image: "/assets/old-media/emblems/skjarnish-armed-forces.jpg", caption: "Emblem" }
   - label: "Motto"
     value:
       - "Gud, Kong Och Fädernesland"
@@ -47,7 +47,7 @@ The Armed Forces have undergone significant structural and doctrinal changes sin
 ### Army
 
 <div class="imgrid">
-<figure style="flex:1.648"><img src="/assets/media/skjarnish-armed-forces-2.png" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.648"><img src="/assets/old-media/media/skjarnish-armed-forces-2.png" alt=""><figcaption></figcaption></figure>
 </div>
 
 The Skjarnish Army (Skjarnish: Armén) is the largest and oldest branch of Skjarnland's Armed Forces, founded in 1204 after the formation of the Kingdom of Skjarnland. Headed by General Erik Wilhelm Sjöberg, who serves as Marshall of the Army (Skjarnish: Marskalk av Armén), it is responsible for ground operations, including territorial defense and overseas operations.
@@ -58,14 +58,14 @@ The Skjarnish Army's doctrine is primarily defensive. Against a more powerful en
 
 ### Navy
 
-<figure><img src="/assets/media/skjarnish-armed-forces-3.jpg" alt="Coastal defense ship Mannerheim undergoing degaussing procedure near Malmhug, 1925"><figcaption>Coastal defense ship Mannerheim undergoing degaussing procedure near Malmhug, 1925</figcaption></figure>
+<figure><img src="/assets/old-media/media/skjarnish-armed-forces-3.jpg" alt="Coastal defense ship Mannerheim undergoing degaussing procedure near Malmhug, 1925"><figcaption>Coastal defense ship Mannerheim undergoing degaussing procedure near Malmhug, 1925</figcaption></figure>
 
 
 The Skjarnish Navy (Skjarnish: Krigsmarinen) is the second-largest and second-oldest branch of the Armed Forces. Established in 1532 by King Olaf IV, who created the institution as a distinct body of the government that controlled all naval forces possessed by the Kingdom, the Navy has a long history of engagement with rival powers throughout the 16th - 20th centuries, frequently skirmishing and engaging in major battles with Vostokiya, Nordmark and [[elvester]] in the North and Baltic Seas.
 
 ### Air Force
 
-<figure><img src="/assets/media/skjarnish-armed-forces-4.png" alt="Nyberg N24 biplanebeing watched by ground crew as it performs takeoff from Engsund Air Base, 1926."><figcaption>Nyberg N24 biplanebeing watched by ground crew as it performs takeoff from Engsund Air Base, 1926.</figcaption></figure>
+<figure><img src="/assets/old-media/media/skjarnish-armed-forces-4.png" alt="Nyberg N24 biplanebeing watched by ground crew as it performs takeoff from Engsund Air Base, 1926."><figcaption>Nyberg N24 biplanebeing watched by ground crew as it performs takeoff from Engsund Air Base, 1926.</figcaption></figure>
 
 
 Initially formed as the Skjarnish Army Air Service (Skjarnish: Arméns Flygtjänst) in 1912 under the Army and serving in the Great War as such, the Air Force (Skjarnish: Flygflotta) was formed as a separate branch following the passing of the Armed Forces Act of 1921, coming into effect on 16 October 1921. The Air Force is responsible for aerial operations including reconnaissance (its initial role), artillery spotting, tactical superiority and air-to-air combat. The Air Force operates about ~150 fighter aircraft and ~40 tactical bombers. Having proven its worth during the Great War, in which Skjarnish aircraft played an invaluable role in reconnaissance and artillery spotting with occasional air combat, the branch has been dramatically expanded from ~30 aircraft in 1914 to ~200 in 1919, although some aircraft have been retired or sold following the end of the war. Today, the Air Force is split into 6 fighter divisions and 2 bomber divisions; the 1st, 2nd and 3rd fighter divisions operate independently and are tasked with defending Skjarnland Proper, Norrvynia and Danyria respectively, while the 4th, 5th, and 6th fighter divisions are attached to the Skjarnish Army's 2nd, 3rd and 4th armies respectively. The 1st and 2nd bomber divisions operate from Engsund Air Base near Strålholm and Antonsson Air Base near Kjellberg.
@@ -78,35 +78,35 @@ The following are a list of the ranks of each branch of the Skjarnish Armed Forc
 | --- | --- | --- | --- |
 
 <div class="imgrid">
-<figure style="flex:0.962"><img src="/assets/media/skjarnish-armed-forces-5.jpg" alt="General/flag officers"><figcaption>General/flag officers</figcaption></figure>
+<figure style="flex:0.962"><img src="/assets/old-media/media/skjarnish-armed-forces-5.jpg" alt="General/flag officers"><figcaption>General/flag officers</figcaption></figure>
 </div>
 
 <div class="imgrid">
-<figure style="flex:0.707"><img src="/assets/media/skjarnish-armed-forces-6.png" alt="Senior officers"><figcaption>Senior officers</figcaption></figure>
-<figure style="flex:0.707"><img src="/assets/media/skjarnish-armed-forces-7.png" alt=""><figcaption></figcaption></figure>
-<figure style="flex:0.707"><img src="/assets/media/skjarnish-armed-forces-8.png" alt=""><figcaption></figcaption></figure>
+<figure style="flex:0.707"><img src="/assets/old-media/media/skjarnish-armed-forces-6.png" alt="Senior officers"><figcaption>Senior officers</figcaption></figure>
+<figure style="flex:0.707"><img src="/assets/old-media/media/skjarnish-armed-forces-7.png" alt=""><figcaption></figcaption></figure>
+<figure style="flex:0.707"><img src="/assets/old-media/media/skjarnish-armed-forces-8.png" alt=""><figcaption></figcaption></figure>
 </div>
 
 <div class="imgrid">
-<figure style="flex:0.707"><img src="/assets/media/skjarnish-armed-forces-9.png" alt="Junior officers"><figcaption>Junior officers</figcaption></figure>
-<figure style="flex:0.707"><img src="/assets/media/skjarnish-armed-forces-10.png" alt=""><figcaption></figcaption></figure>
-<figure style="flex:0.707"><img src="/assets/media/skjarnish-armed-forces-11.png" alt=""><figcaption></figcaption></figure>
+<figure style="flex:0.707"><img src="/assets/old-media/media/skjarnish-armed-forces-9.png" alt="Junior officers"><figcaption>Junior officers</figcaption></figure>
+<figure style="flex:0.707"><img src="/assets/old-media/media/skjarnish-armed-forces-10.png" alt=""><figcaption></figcaption></figure>
+<figure style="flex:0.707"><img src="/assets/old-media/media/skjarnish-armed-forces-11.png" alt=""><figcaption></figcaption></figure>
 </div>
 
 <div class="imgrid">
-<figure style="flex:0.707"><img src="/assets/media/skjarnish-armed-forces-12.png" alt="Cadet officers"><figcaption>Cadet officers</figcaption></figure>
-<figure style="flex:0.707"><img src="/assets/media/skjarnish-armed-forces-13.png" alt=""><figcaption></figcaption></figure>
-<figure style="flex:0.707"><img src="/assets/media/skjarnish-armed-forces-14.png" alt=""><figcaption></figcaption></figure>
+<figure style="flex:0.707"><img src="/assets/old-media/media/skjarnish-armed-forces-12.png" alt="Cadet officers"><figcaption>Cadet officers</figcaption></figure>
+<figure style="flex:0.707"><img src="/assets/old-media/media/skjarnish-armed-forces-13.png" alt=""><figcaption></figcaption></figure>
+<figure style="flex:0.707"><img src="/assets/old-media/media/skjarnish-armed-forces-14.png" alt=""><figcaption></figcaption></figure>
 </div>
 
 <div class="imgrid">
-<figure style="flex:0.707"><img src="/assets/media/skjarnish-armed-forces-15.png" alt="Enlisted"><figcaption>Enlisted</figcaption></figure>
-<figure style="flex:0.707"><img src="/assets/media/skjarnish-armed-forces-16.png" alt=""><figcaption></figcaption></figure>
-<figure style="flex:0.707"><img src="/assets/media/skjarnish-armed-forces-17.png" alt=""><figcaption></figcaption></figure>
+<figure style="flex:0.707"><img src="/assets/old-media/media/skjarnish-armed-forces-15.png" alt="Enlisted"><figcaption>Enlisted</figcaption></figure>
+<figure style="flex:0.707"><img src="/assets/old-media/media/skjarnish-armed-forces-16.png" alt=""><figcaption></figcaption></figure>
+<figure style="flex:0.707"><img src="/assets/old-media/media/skjarnish-armed-forces-17.png" alt=""><figcaption></figcaption></figure>
 </div>
 
 <div class="imgrid">
-<figure style="flex:0.707"><img src="/assets/media/skjarnish-armed-forces-18.png" alt=""><figcaption></figcaption></figure>
-<figure style="flex:0.707"><img src="/assets/media/skjarnish-armed-forces-19.png" alt=""><figcaption></figcaption></figure>
-<figure style="flex:0.707"><img src="/assets/media/skjarnish-armed-forces-20.png" alt=""><figcaption></figcaption></figure>
+<figure style="flex:0.707"><img src="/assets/old-media/media/skjarnish-armed-forces-18.png" alt=""><figcaption></figcaption></figure>
+<figure style="flex:0.707"><img src="/assets/old-media/media/skjarnish-armed-forces-19.png" alt=""><figcaption></figcaption></figure>
+<figure style="flex:0.707"><img src="/assets/old-media/media/skjarnish-armed-forces-20.png" alt=""><figcaption></figcaption></figure>
 </div>

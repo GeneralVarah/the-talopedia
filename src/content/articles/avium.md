@@ -5,7 +5,7 @@ authors: [nichirin]
 navbox: site
 ooc: true
 infobox:
-  - { image: "/assets/media/avium-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/avium-1.jpg", caption: "" }
   - { section: "Orbital Characteristics" }
   - { label: "Central Body", value: "Ignian Barycenter" }
   - { label: "Semi-Major Axis", value: "1 AU" }

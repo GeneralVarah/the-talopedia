@@ -3,7 +3,7 @@ title: "The Great War"
 type: event
 navbox: site
 infobox:
-  - { image: "/assets/media/the-great-war-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/the-great-war-1.jpg", caption: "" }
   - { label: "Date", value: "28 July, 1914 – 11 November, 1918" }
   - { label: "Location", value: "Global" }
   - { label: "Result", value: "Inconclusive" }

@@ -4,7 +4,7 @@ nativeTitle: "תומאס איילון בינקוביץ'"
 type: character
 nation: shivon
 infobox:
-  - { image: "/assets/media/thomas-illyon-binkowicz-1.jpg", caption: "Official Portrait, 1927 (colorized)" }
+  - { image: "/assets/old-media/media/thomas-illyon-binkowicz-1.jpg", caption: "Official Portrait, 1927 (colorized)" }
   - { label: "Deputy", value: "John Krul" }
   - { section: "Personal Details" }
   - { label: "Nationality", value: "Shivonian" }
@@ -65,7 +65,7 @@ He then began planning, along with several close supporters, to overthrow the cu
 In 1926, when the *Prosperous Coast* forced the Empirate to scale back its harsh policies, Binkowicz saw his opening. Keeping himself and most of the Stukes hidden, he launched a series of coordinated terror attacks against senior government officials. These attacks increased the civil unrest already spreading across the country. The plan worked, and the Empirate collapsed shortly afterward.
 
 <div class="imgrid">
-<figure style="flex:1.501"><img src="/assets/media/thomas-illyon-binkowicz-2.jpg" alt="A 1926 image of Binkowicz supervising a military base in the Nabataean Desert. Here an assistant was pointing in the direction of a military exercise, but Binkowicz was more interested in the camera."><figcaption>A 1926 image of Binkowicz supervising a military base in the Nabataean Desert. Here an assistant was pointing in the direction of a military exercise, but Binkowicz was more interested in the camera.</figcaption></figure>
+<figure style="flex:1.501"><img src="/assets/old-media/media/thomas-illyon-binkowicz-2.jpg" alt="A 1926 image of Binkowicz supervising a military base in the Nabataean Desert. Here an assistant was pointing in the direction of a military exercise, but Binkowicz was more interested in the camera."><figcaption>A 1926 image of Binkowicz supervising a military base in the Nabataean Desert. Here an assistant was pointing in the direction of a military exercise, but Binkowicz was more interested in the camera.</figcaption></figure>
 </div>
 
 A Provisional Government replaced the old regime, but Binkowicz viewed it as just another obstacle. He repeated the same tactics he had used before, targeting judges, spreading unauthorized propaganda, and using fear to undermine public trust. Within 90 days, the Provisional Government fell as well. The population, desperate for stability, turned to him.

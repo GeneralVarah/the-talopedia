@@ -5,7 +5,7 @@ romaji: "Pietarišat(Saamit)"
 type: city
 nation: karjania
 infobox:
-  - { image: "/assets/media/pietari-1.jpg", caption: "XIV. And XV. Districts" }
+  - { image: "/assets/old-media/media/pietari-1.jpg", caption: "XIV. And XV. Districts" }
   - label: "Motto"
     value:
       - "Pohjolan Helmi"
@@ -66,7 +66,7 @@ Pietari is governed independently of any subdivisions as it makes up the Capital
 Pietari is divided into 25 districts (*Kaupunginosat*), which have no official names other than numbers. The districts were first created in the 1700s and later modified by the communist government. The districts differ in size, population and wealth.
 
 <div class="imgrid">
-<figure style="flex:1.0"><img src="/assets/media/pietari-2.jpg" alt="Districts of Pietari"><figcaption>Districts of Pietari</figcaption></figure>
+<figure style="flex:1.0"><img src="/assets/old-media/media/pietari-2.jpg" alt="Districts of Pietari"><figcaption>Districts of Pietari</figcaption></figure>
 </div>
 
 ## Economy

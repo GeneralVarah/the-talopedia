@@ -4,7 +4,7 @@ nativeTitle: "式波・ホフマン 茜"
 type: character
 nation: nichirin
 infobox:
-  - { image: "/assets/media/akane-shikinami-hoffmann-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/akane-shikinami-hoffmann-1.jpg", caption: "" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - { label: "Shogun", value: "Masashi Miyamoto" }
   - { label: "Preceded by", value: "Position Established" }
@@ -54,7 +54,7 @@ In 1918, following the armistice and the estate's financial collapse, Akane bega
 
 ### Rudanian Civil War
 
-<figure class="float float-right" style="width:300px"><img src="/assets/media/akane-shikinami-hoffmann-3.jpg" alt="Shikinami-Hoffmann with the White Army, retreating from Yaqanis to Kolsk, c. 1922"><figcaption>Shikinami-Hoffmann with the White Army, retreating from Yaqanis to Kolsk, c. 1922</figcaption></figure>
+<figure class="float float-right" style="width:300px"><img src="/assets/old-media/media/akane-shikinami-hoffmann-3.jpg" alt="Shikinami-Hoffmann with the White Army, retreating from Yaqanis to Kolsk, c. 1922"><figcaption>Shikinami-Hoffmann with the White Army, retreating from Yaqanis to Kolsk, c. 1922</figcaption></figure>
 
 Following her graduation from Kriegsschule Mürrental in 1922, Shikinami-Hoffmann was assigned by her supervising officer, Hauptmann Timo Werner, to serve as SED Liaison Officer to General Semen Voronovkin's Rudanian White Army, operating under the courtesy rank of Lieutenant. She arrived in Yaqanis on March 14, 1922, during the final stages of the Rudanian Civil War, in which Arlbern and Nichirin had both extended material support to the White Army against the advancing Red forces.
 
@@ -72,7 +72,7 @@ She was transferred to the prefectural capital of Satsuno on November 4, 1924, a
 
 ## Political Career
 
-<figure class="float float-left" style="width:300px"><img src="/assets/media/akane-shikinami-hoffmann-4.jpg" alt="Shikinami-Hoffmann with Marshal-Admiral Makinami during the Third Tripartite Conference in Shinkeisei, 17 May 1926."><figcaption>Shikinami-Hoffmann with Marshal-Admiral Makinami during the Third Tripartite Conference in Shinkeisei, 17 May 1926.</figcaption></figure>
+<figure class="float float-left" style="width:300px"><img src="/assets/old-media/media/akane-shikinami-hoffmann-4.jpg" alt="Shikinami-Hoffmann with Marshal-Admiral Makinami during the Third Tripartite Conference in Shinkeisei, 17 May 1926."><figcaption>Shikinami-Hoffmann with Marshal-Admiral Makinami during the Third Tripartite Conference in Shinkeisei, 17 May 1926.</figcaption></figure>
 
 Shikinami-Hoffmann continued in Nichirian government service on a contracted basis. In early 1926, she was brought to [[shinkeisei]] to work directly under the Interim Minister of Foreign Affairs, [[suiren-makinami]], in preparation for a series of diplomatic conferences. She served as translator and liaison at several major diplomatic engagements between 1926 and 1927, including the Third Tripartite Conference and the Tōhara Conference.
 

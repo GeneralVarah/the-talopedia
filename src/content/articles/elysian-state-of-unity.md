@@ -125,7 +125,7 @@ At the forefront of this power struggle emerged Archer Maine, former Captain in 
 
 On the 25th of July 1922, along with approval from the newly created Gestaltist parliament, Archer Maine was voted in nearly unanimously as the Supreme Protector of the Elysian State of Unity, a dictatorial position with powers to surpass the legislative decisions of parliament’s upper and lower executive organs. Maine immediately began instituting policies to rebuild the ravaged nation back to its former glory, instituting a period of near total political isolation from the rest of the world, with Elysian political relations being reopened for the first time in 1925. He began improving the state’s welfare, healthcare, educational and infrastructural conditions, reforming the dollar into the chit, and migrating people from the hard to supply areas of the countryside into the cities, with newly available jobs in industrial, educational, and construction sectors, as well as cheap housing and easily available services. This began a fundamental demographic shift in Elysia, where all aspects of life began steadily centering around the cities, with even agriculture being shifted to large greenhouses and large farms just outside city limits.
 
-<figure><img src="/assets/media/elysian-state-of-unity-2.jpg" alt="A student of electrical engineering studying at the Axiom Institute of Technology."><figcaption>A student of electrical engineering studying at the Axiom Institute of Technology.</figcaption></figure>
+<figure><img src="/assets/old-media/media/elysian-state-of-unity-2.jpg" alt="A student of electrical engineering studying at the Axiom Institute of Technology."><figcaption>A student of electrical engineering studying at the Axiom Institute of Technology.</figcaption></figure>
 
 
 In 1927, the Unity State would pursue the establishment of a permanent base on the continent of [[hyperborea]]. The events related to this venture would result in a brief period of tension with the Miyamoto Shogunate over an Elysian reconnaissance squad’s intrusion into Nichirian base territory in Hyperborea. The negotiations regarding which would prove to be the beginning of a conflict known only as the [[majesty]] Crisis, wherein a branch of the Elysian Office of Naval Intelligence would split off into its own separate entity. The conflict would prove to be a nightmare for the Unity State, now forced to chase a mostly formless enemy across the globe, leading them to send military expeditions into [[shivon]] and finally [[rudania]], after which the organization would scatter and disband.
@@ -140,7 +140,7 @@ The total strength of the Grand Army is ~4 million personnel in active duty, wit
 
 According to the latest government reports, the Unity State spent around $612 billion on Defense in 1934.
 
-<figure><img src="/assets/media/elysian-state-of-unity-3.jpg" alt="Riflemen of the 2nd Infantry Division during a training exercise near Fort Freedom (circa 1926)."><figcaption>Riflemen of the 2nd Infantry Division during a training exercise near Fort Freedom (circa 1926).</figcaption></figure>
+<figure><img src="/assets/old-media/media/elysian-state-of-unity-3.jpg" alt="Riflemen of the 2nd Infantry Division during a training exercise near Fort Freedom (circa 1926)."><figcaption>Riflemen of the 2nd Infantry Division during a training exercise near Fort Freedom (circa 1926).</figcaption></figure>
 
 
 ## Government
@@ -157,14 +157,14 @@ The E.S.U possesses a newfound but developed planned economy, with the vast majo
 
 Despite the transition to a planned economy, the E.S.U continues to dominate most consumer product markets by a wide margin, with electronics, automobiles and other machinery being their most common export products. Its main trade partners include its neighboring countries in Elysia, Nordmark, Rudania, [[nichirin]], Guandong, [Arverne](https://www.nationstates.net/nation=the_horkish_people/detail=factbook/id=2688052) and Elvester.
 
-<figure><img src="/assets/media/elysian-state-of-unity-4.jpg" alt="Evening rush-hour on Beat Street, Axiom. Formerly Elysia’s center for global stock trading."><figcaption>Evening rush-hour on Beat Street, Axiom. Formerly Elysia’s center for global stock trading.</figcaption></figure>
+<figure><img src="/assets/old-media/media/elysian-state-of-unity-4.jpg" alt="Evening rush-hour on Beat Street, Axiom. Formerly Elysia’s center for global stock trading."><figcaption>Evening rush-hour on Beat Street, Axiom. Formerly Elysia’s center for global stock trading.</figcaption></figure>
 
 
 Elysian wealth is highly decentralized, with income equality being largely nullified through the State’s legislation on minimum wages, and its extensive welfare policies, with homelessness being practically eliminated thanks to the government’s “Housing First” approach.
 
 Technologically, Elysia has always been on the forefront of technological developments since the mid 19th century, and scientific developments since the late 19th century. Many Elysian educational institutions are regarded among the highest quality in the world, with technical universities such as the Axiom Institute of Technology.
 
-<figure><img src="/assets/media/elysian-state-of-unity-5.jpg" alt="A view from a Dynamo assembly line, one of the most commonly seen Elysian export products."><figcaption>A view from a Dynamo assembly line, one of the most commonly seen Elysian export products.</figcaption></figure>
+<figure><img src="/assets/old-media/media/elysian-state-of-unity-5.jpg" alt="A view from a Dynamo assembly line, one of the most commonly seen Elysian export products."><figcaption>A view from a Dynamo assembly line, one of the most commonly seen Elysian export products.</figcaption></figure>
 
 
 ## Geography
@@ -173,7 +173,7 @@ Technologically, Elysia has always been on the forefront of technological develo
 
 Geographically, Elysia lies in the geographic area known as **Old Elysia**, with the country split into East and West by the Apalchen mountain range. Western Elysia is home to the nation's largest cities and densest population centers, as well as economical heartland, dominated primarily by wide plains its coastline to the Saharan Sea. Eastern Elysia is primarily dominated by the forested and rural lands of the Apalchen mountains, with most population centers located near the river valleys snaking deeper inland, or around the coast of the Great Lakes region. Additionally to this is Northern Elysia, characterized primarily by its less mountainous, although still hilly terrain, dominated by coniferous taiga forests and fens, with pine, spruce and birch dominating the landscape.
 
-<figure><img src="/assets/media/elysian-state-of-unity-6.jpg" alt="The Apalchens, the mountain range that splits Elysia in two."><figcaption>The Apalchens, the mountain range that splits Elysia in two.</figcaption></figure>
+<figure><img src="/assets/old-media/media/elysian-state-of-unity-6.jpg" alt="The Apalchens, the mountain range that splits Elysia in two."><figcaption>The Apalchens, the mountain range that splits Elysia in two.</figcaption></figure>
 
 
 ### Biodiversity
@@ -188,7 +188,7 @@ Most prominently, Elysian territory on the coast of the Great Lakes is home to t
 
 Despite its position near the equator, Elysia experiences a significant cooling effect caused by the frigid winds blowing from the Hyperborean ocean, with summer temperatures hovering between 15-25 degrees centigrade, whereas during winter, the temperatures often swing between -15 and -20, being 10 or so degrees warmer than Central Elysia thanks to maritime temperature regulations. Precipitation is frequent, with both rain- and snowfall being very typical sights in every area of the E.S.U.
 
-<figure><img src="/assets/media/elysian-state-of-unity-7.jpg" alt="The Augustine coast, an example of the many rocky beaches in North-Eastern Elysia."><figcaption>The Augustine coast, an example of the many rocky beaches in North-Eastern Elysia.</figcaption></figure>
+<figure><img src="/assets/old-media/media/elysian-state-of-unity-7.jpg" alt="The Augustine coast, an example of the many rocky beaches in North-Eastern Elysia."><figcaption>The Augustine coast, an example of the many rocky beaches in North-Eastern Elysia.</figcaption></figure>
 
 
 ## Demographics
@@ -209,7 +209,7 @@ Officially, the Unity State is secular, however the constitution guarantees free
 
 Before the end of the civil war, 75% of the Elysian population lived in urban areas, particularly the densely populated city centers, with only around a third living in suburbs. Following the Unity State’s rise to power, it sought to centralize the population even further, relocating swathes of the suburban and rural population to the denser metropolitan areas with easier access to services, faster transit to work, and beginning a process of “de-peasantification” of agriculture, moving food production closer to the cities in newly constructed factory-farms and greenhouses, with many greenhouses decorating the rooftops of buildings in major cities. This has led to a deliberate and swift decline in the rural population, with many small villages and towns left abandoned for nature to reclaim.
 
-<figure><img src="/assets/media/elysian-state-of-unity-8.jpg" alt="Aerial view of Foundry’s industrial district, among the largest in all of Elysia."><figcaption>Aerial view of Foundry’s industrial district, among the largest in all of Elysia.</figcaption></figure>
+<figure><img src="/assets/old-media/media/elysian-state-of-unity-8.jpg" alt="Aerial view of Foundry’s industrial district, among the largest in all of Elysia."><figcaption>Aerial view of Foundry’s industrial district, among the largest in all of Elysia.</figcaption></figure>
 
 
 ## Largest Cities

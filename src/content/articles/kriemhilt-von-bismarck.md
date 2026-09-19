@@ -4,7 +4,7 @@ nativeTitle: "クリームヒルト・フォン・ビスマルク"
 type: character
 nation: nichirin
 infobox:
-  - { image: "/assets/media/kriemhilt-von-bismarck-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/kriemhilt-von-bismarck-1.jpg", caption: "" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - { label: "Preceded by", value: "Shosuke Kaga" }
   - { section: "Personal Details" }

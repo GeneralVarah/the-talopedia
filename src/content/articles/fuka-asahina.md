@@ -4,7 +4,7 @@ nativeTitle: "朝比奈 富花"
 type: character
 nation: nichirin
 infobox:
-  - { image: "/assets/media/fuka-asahina-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/fuka-asahina-1.jpg", caption: "" }
   - { label: "Preceded by", value: "Mitsuyo Tokuma" }
   - { label: "Succeeded by", value: "Ken Hayakawa" }
   - { label: "Minister of Agriculture", value: "Mitsuyo Tokuma" }

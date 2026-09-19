@@ -5,7 +5,7 @@ romaji: "Tsukumo Zaibatsu"
 type: company
 nation: nichirin
 infobox:
-  - { image: "/assets/media/tsukumo-group-1.png", caption: "Logo" }
+  - { image: "/assets/old-media/media/tsukumo-group-1.png", caption: "Logo" }
   - { label: "Founded", value: "19 September, 1870" }
   - { label: "Founder", value: "Jūzaburō Yasuda" }
   - { label: "Headquarters", value: "Shinkeisei, [[nichirin]]" }

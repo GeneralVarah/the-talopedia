@@ -4,7 +4,7 @@ nativeTitle: "宮城 成義"
 type: character
 nation: nichirin
 infobox:
-  - { image: "/assets/media/nariyoshi-miyagi-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/nariyoshi-miyagi-1.jpg", caption: "" }
   - { label: "Chief Liaison Officer", value: "[[akane-shikinami-hoffmann|Akane Shikinami-Hoffmann]]" }
   - label: "Shogun"
     value:

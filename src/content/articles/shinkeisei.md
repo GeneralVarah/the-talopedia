@@ -5,9 +5,9 @@ type: city
 nation: nichirin
 infobox:
   - { section: "[Capital City](https://en.wikipedia.org/wiki/Capital_city) and [[specially-administered-region]]" }
-  - { image: "/assets/media/shinkeisei-1.jpg", caption: "Skyline" }
+  - { image: "/assets/old-media/media/shinkeisei-1.jpg", caption: "Skyline" }
   - { image: "/assets/flags/shinkeisei.png", caption: "Flag" }
-  - { image: "/assets/media/shinkeisei-3.png", caption: "Location of Shinkeisei SAR" }
+  - { image: "/assets/old-media/media/shinkeisei-3.png", caption: "Location of Shinkeisei SAR" }
   - { section: "Geography" }
   - { label: "Country", value: "[[nichirin]]" }
   - { label: "Region", value: "Metropolitan Nichirin" }
@@ -68,8 +68,8 @@ Because the region was naturally marshy and flood-prone, the city's development 
 Shinkeisei’s population expanded through sustained economic migration and the mandatory relocation of [samurai retainers](https://en.wikipedia.org/wiki/Samurai). Despite its role as the administrative center, the city remained economically and culturally secondary to Chūkyō and Takarazuka. While Shinkeisei offered a strategic deepwater harbor, its quasi-peripheral western location hindered its ability to compete with Takarazuka, which remained (and remains) the largest commercial port in Nichirin due to its central maritime position. Chūkyō retained commercial dominance as the former capital of the Nichirian monarchy, housing entrenched merchant guilds and centuries-old distribution systems that the newer administration in Shinkeisei could not easily replicate.
 
 <div class="imgrid">
-<figure style="flex:0.818"><img src="/assets/media/shinkeisei-4.jpg" alt="Painting of Mukaimasa Miyamoto, the founder of Shinkeisei"><figcaption>Painting of Mukaimasa Miyamoto, the founder of Shinkeisei</figcaption></figure>
-<figure style="flex:1.792"><img src="/assets/media/shinkeisei-5.jpg" alt="Woodblock print (ukiyo-e) depicting an aerial view of late 17th-century Shinkeisei"><figcaption>Woodblock print (ukiyo-e) depicting an aerial view of late 17th-century Shinkeisei</figcaption></figure>
+<figure style="flex:0.818"><img src="/assets/old-media/media/shinkeisei-4.jpg" alt="Painting of Mukaimasa Miyamoto, the founder of Shinkeisei"><figcaption>Painting of Mukaimasa Miyamoto, the founder of Shinkeisei</figcaption></figure>
+<figure style="flex:1.792"><img src="/assets/old-media/media/shinkeisei-5.jpg" alt="Woodblock print (ukiyo-e) depicting an aerial view of late 17th-century Shinkeisei"><figcaption>Woodblock print (ukiyo-e) depicting an aerial view of late 17th-century Shinkeisei</figcaption></figure>
 </div>
 
 ### Senpan Bay Earthquake
@@ -83,7 +83,7 @@ Ultimately, the Shogunate committed to rebuilding Shinkeisei as a permanent capi
 Reconstruction efforts introduced improved foundation systems to mitigate soil liquefaction and mandated fire-resistant materials in central wards. At the same time, the structural reinforcements of the rebuilt Chiyoda Castle became a national standard for masonry. The urban layout was rationalized through widened thoroughfares that doubled as firebreaks and military corridors, supplemented by dedicated firebreak zones near the riverbanks. To address the site's marshy geography, engineers constructed an integrated drainage network that resolved chronic flooding and stagnant water issues that had hindered the city since its inception. Political rivals in Chūkyō and Takarazuka cited the reconstruction as evidence of a sunk-cost fallacy, arguing that the Shogunate was squandering the national capital on a geographically untenable site merely to avoid the political humiliation of returning to the traditional monarchic and commercial centers.
 
 <div class="imgrid">
-<figure style="flex:2.360"><img src="/assets/media/shinkeisei-6.jpg" alt="The Day Shinkeisei Stood Still by Saburo Konoe, depicting the Senpan Bay Earthquake and the ensuing firestorm"><figcaption>The Day Shinkeisei Stood Still by Saburo Konoe, depicting the Senpan Bay Earthquake and the ensuing firestorm</figcaption></figure>
+<figure style="flex:2.360"><img src="/assets/old-media/media/shinkeisei-6.jpg" alt="The Day Shinkeisei Stood Still by Saburo Konoe, depicting the Senpan Bay Earthquake and the ensuing firestorm"><figcaption>The Day Shinkeisei Stood Still by Saburo Konoe, depicting the Senpan Bay Earthquake and the ensuing firestorm</figcaption></figure>
 </div>
 
 ### Bakuraku War
@@ -101,9 +101,9 @@ Between 1905 and 1915, the expansion of telegraph and telephone infrastructure s
 Foreign business presence increased accordingly, with facilities such as Hotel [[valtheria]], originally a luxury domestic hotel constructed in 1899, reorienting toward foreign trade delegations. By 1920, the city's population reached approximately 26 million, concluding a period of rapid growth from 12 million in 1880.
 
 <div class="imgrid">
-<figure style="flex:1.778"><img src="/assets/media/shinkeisei-7.jpg" alt="Tsukumo Tower during construction in Tetsuhama Ward, c. 1910"><figcaption>Tsukumo Tower during construction in Tetsuhama Ward, c. 1910</figcaption></figure>
-<figure style="flex:1.778"><img src="/assets/media/shinkeisei-8.jpg" alt="Shinkeisei Polytechnical University’s main campus in Mukōjima Ward"><figcaption>Shinkeisei Polytechnical University’s main campus in Mukōjima Ward</figcaption></figure>
-<figure style="flex:0.746"><img src="/assets/media/shinkeisei-9.jpg" alt="Shinkeisei Central Relay"><figcaption>Shinkeisei Central Relay</figcaption></figure>
+<figure style="flex:1.778"><img src="/assets/old-media/media/shinkeisei-7.jpg" alt="Tsukumo Tower during construction in Tetsuhama Ward, c. 1910"><figcaption>Tsukumo Tower during construction in Tetsuhama Ward, c. 1910</figcaption></figure>
+<figure style="flex:1.778"><img src="/assets/old-media/media/shinkeisei-8.jpg" alt="Shinkeisei Polytechnical University’s main campus in Mukōjima Ward"><figcaption>Shinkeisei Polytechnical University’s main campus in Mukōjima Ward</figcaption></figure>
+<figure style="flex:0.746"><img src="/assets/old-media/media/shinkeisei-9.jpg" alt="Shinkeisei Central Relay"><figcaption>Shinkeisei Central Relay</figcaption></figure>
 </div>
 
 ### Consolidation
@@ -113,8 +113,8 @@ Shinkeisei's economic character shifted during the early 20th century toward the
 By the 1920s, over 60% of Shinkeisei's economic output came from banking, insurance, corporate services, and government administration, a pattern distinct from that of other major Nichirian cities at the time. The Shinkeisei Securities Exchange handled over 70% of national equity transactions in 1921, operating sixteen hours daily to accommodate international markets. Shinkeisei Tech, along with six other institutions, produced the managerial and technical workforce that staffed zaibatsu headquarters, creating an employment pipeline that reinforced the city's dominance in professional services.
 
 <div class="imgrid">
-<figure style="flex:1.778"><img src="/assets/media/shinkeisei-10.jpg" alt="Main trading floor of the Shinkeisei Securities Exchange"><figcaption>Main trading floor of the Shinkeisei Securities Exchange</figcaption></figure>
-<figure style="flex:1.778"><img src="/assets/media/shinkeisei-11.jpg" alt="The Harbor Wall, on the outer edge of Shinkeisei Harbor"><figcaption>The Harbor Wall, on the outer edge of Shinkeisei Harbor</figcaption></figure>
+<figure style="flex:1.778"><img src="/assets/old-media/media/shinkeisei-10.jpg" alt="Main trading floor of the Shinkeisei Securities Exchange"><figcaption>Main trading floor of the Shinkeisei Securities Exchange</figcaption></figure>
+<figure style="flex:1.778"><img src="/assets/old-media/media/shinkeisei-11.jpg" alt="The Harbor Wall, on the outer edge of Shinkeisei Harbor"><figcaption>The Harbor Wall, on the outer edge of Shinkeisei Harbor</figcaption></figure>
 </div>
 
 Between 1917 and 1923, a subway system was constructed connecting outer wards to the commercial core, enabling rapid mass transit that made vertical housing developments in satellite areas viable. To address densification, the Bakufu implemented vertical housing policies that shifted the residential landscape toward ferroconcrete apartment blocks ranging from 6 to 12 stories. Population pressure drove residential construction into previously uninhabitable areas; by 1925, the Harbor Wall, a seawall protecting the central basin's naval facilities, had civilian housing built directly against its exterior face, creating dense vertical neighborhoods where apartments overlooked military installations.
@@ -126,7 +126,7 @@ Recognizing that several major metropolitan areas had expanded into single urban
 Shinkeisei is governed as a **Specially Administered Region (SAR)** under the direct authority of the Bakufu, bypassing the standard prefectural administrative system used elsewhere in Nichirin. The SAR designation places the metropolitan area under centralized control, with the Governor appointed directly by the Shogun rather than through local elections or prefectural nominations. This administrative structure is shared with three other major metropolitan areas: [[naginomiya]], Takarazuka, and Mizuhara.
 
 <div class="imgrid">
-<figure style="flex:1.690"><img src="/assets/media/shinkeisei-12.jpg" alt="Map of the Shinkeisei SAR"><figcaption>Map of the Shinkeisei SAR</figcaption></figure>
+<figure style="flex:1.690"><img src="/assets/old-media/media/shinkeisei-12.jpg" alt="Map of the Shinkeisei SAR"><figcaption>Map of the Shinkeisei SAR</figcaption></figure>
 </div>
 
 The Shinkeisei Metropolitan Council serves as the primary administrative body, responsible for managing the city's 94 wards. While the Council oversees municipal functions including infrastructure development, public services, and local ordinances, its authority is exercised under direct oversight from the Bakufu. Major policy decisions require approval from Bakufu ministries, and the Council's budgetary authority is subject to Bakufu review. This degree of central oversight is more pronounced in Shinkeisei than in other SARs due to the city's status as the national capital and seat of Shogunal power.
@@ -144,10 +144,10 @@ Shinkeisei's business districts are concentrated in four central wards. Shiomach
 In 1929, 17 of Nichirin's 20 largest zaibatsu were headquartered in the Shinkeisei SAR, including all of Nichirin's "big four" conglomerates: the Tsukumo Group, Echigoya Group, Izumiya Group, and Nikaidō Group. The 94 wards contained approximately 68 million square meters of combined commercial and office space as of 1929.
 
 <div class="imgrid">
-<figure style="flex:1.000"><img src="/assets/media/shinkeisei-13.png" alt="Tsukumo Group"><figcaption>Tsukumo Group</figcaption></figure>
-<figure style="flex:1.000"><img src="/assets/media/shinkeisei-14.jpg" alt="Echigoya Group"><figcaption>Echigoya Group</figcaption></figure>
-<figure style="flex:1.000"><img src="/assets/media/shinkeisei-15.jpg" alt="Izumiya Group"><figcaption>Izumiya Group</figcaption></figure>
-<figure style="flex:1.000"><img src="/assets/media/shinkeisei-16.jpg" alt="Nikaidō Group"><figcaption>Nikaidō Group</figcaption></figure>
+<figure style="flex:1.000"><img src="/assets/old-media/media/shinkeisei-13.png" alt="Tsukumo Group"><figcaption>Tsukumo Group</figcaption></figure>
+<figure style="flex:1.000"><img src="/assets/old-media/media/shinkeisei-14.jpg" alt="Echigoya Group"><figcaption>Echigoya Group</figcaption></figure>
+<figure style="flex:1.000"><img src="/assets/old-media/media/shinkeisei-15.jpg" alt="Izumiya Group"><figcaption>Izumiya Group</figcaption></figure>
+<figure style="flex:1.000"><img src="/assets/old-media/media/shinkeisei-16.jpg" alt="Nikaidō Group"><figcaption>Nikaidō Group</figcaption></figure>
 </div>
 
 The majority of national media companies are also headquartered in Shinkeisei. The Shinkeisei Central Relay serves as the terminus for all international telegraph and telephone cables. Major national newspapers, including the Senpan Tribune, the Nikkei Daily, and the Capital Post, operate from Shiomachi and Tsunohazu. Major publishers are concentrated in Mukōjima, particularly around Shinkeisei Polytechnic University, Senpan University, and the Metropolitan Academy of Fine Arts.
@@ -179,7 +179,7 @@ The Senpan Bay Earthquake destroyed the majority of the city's pre-modern timber
 Following the 1767 earthquake, the Bakufu mandated the use of fire-resistant materials for reconstruction in the central wards. This period saw the widespread adoption of masonry, including locally sourced brick and volcanic stone. The Palace of the Solar Halo, rebuilt after the Bakuraku War, serves as the primary example of traditional Nichirian palatial architecture from this era, utilizing heavy stone foundations and reinforced timber. The introduction of steel-frame construction in the 1870s facilitated vertical expansion in the commercial districts. This era gave rise to the "Imperial Deco" style, which blends Art Deco geometric motifs with traditional Nichirian elements such as *irimoya* (hip-and-gable) tile roofs atop high-rise structures.
 
 <div class="imgrid">
-<figure style="flex:2.488"><img src="/assets/media/shinkeisei-17.jpg" alt="The majority of buildings in Shiomachi Ward utilize &quot;Imperial Deco&quot; architecture"><figcaption>The majority of buildings in Shiomachi Ward utilize "Imperial Deco" architecture</figcaption></figure>
+<figure style="flex:2.488"><img src="/assets/old-media/media/shinkeisei-17.jpg" alt="The majority of buildings in Shiomachi Ward utilize &quot;Imperial Deco&quot; architecture"><figcaption>The majority of buildings in Shiomachi Ward utilize "Imperial Deco" architecture</figcaption></figure>
 </div>
 
 ## Demographics
@@ -205,8 +205,8 @@ The Mukaimasa Miyamoto Metropolitan Library, located in a purpose-built complex 
 Operated by the Nichirin Marine Ecosystem Preservation Organization, the Kurihama Marine Museum on the northeastern shore of Senpan Bay covers the ecosystem of the Hyperborean Ocean, and its live specimen collection is among the largest maintained by any public institution worldwide. Numerous smaller museums dedicated to the arts and sciences are distributed across the wards bordering the bay, several of which are affiliated with universities and funded through zaibatsu endowments.
 
 <div class="imgrid">
-<figure style="flex:1.778"><img src="/assets/media/shinkeisei-18.jpg" alt="Mukaimasa Miyamoto Metropolitan Library"><figcaption>Mukaimasa Miyamoto Metropolitan Library</figcaption></figure>
-<figure style="flex:1.778"><img src="/assets/media/shinkeisei-19.jpg" alt="Kurihama Marine Museum"><figcaption>Kurihama Marine Museum</figcaption></figure>
+<figure style="flex:1.778"><img src="/assets/old-media/media/shinkeisei-18.jpg" alt="Mukaimasa Miyamoto Metropolitan Library"><figcaption>Mukaimasa Miyamoto Metropolitan Library</figcaption></figure>
+<figure style="flex:1.778"><img src="/assets/old-media/media/shinkeisei-19.jpg" alt="Kurihama Marine Museum"><figcaption>Kurihama Marine Museum</figcaption></figure>
 </div>
 
 ### Recreation
@@ -216,8 +216,8 @@ Hokkyokusei Theater in Kōgai is the city's most prominent performance venue. It
 Tsunohazu and Shibusawa form the commercial core of the city's nightlife. Shibusawa Crossing, the major pedestrian intersection at the center of Shibusawa, is among the most heavily trafficked in the world, flanked by illuminated commercial facades and department stores. The surrounding blocks are home to a dense concentration of cinemas, jazz clubs, dance halls, and variety theaters. Kōgai offers a more expensive range of options, with luxury hotels, high-end restaurants, and private clubs serving the city's high-income population. Secondary commercial entertainment districts have developed in the incorporated wards of Kanagawa and Sakitama since 1924.
 
 <div class="imgrid">
-<figure style="flex:1.778"><img src="/assets/media/shinkeisei-20.jpg" alt="Hokkyokusei Theater"><figcaption>Hokkyokusei Theater</figcaption></figure>
-<figure style="flex:1.778"><img src="/assets/media/shinkeisei-21.jpg" alt="Shibusawa Crossing at night"><figcaption>Shibusawa Crossing at night</figcaption></figure>
+<figure style="flex:1.778"><img src="/assets/old-media/media/shinkeisei-20.jpg" alt="Hokkyokusei Theater"><figcaption>Hokkyokusei Theater</figcaption></figure>
+<figure style="flex:1.778"><img src="/assets/old-media/media/shinkeisei-21.jpg" alt="Shibusawa Crossing at night"><figcaption>Shibusawa Crossing at night</figcaption></figure>
 </div>
 
 Sōtenroku draws pilgrims and tourists to its network of Kaiseido shrines at the foot of Mount Sōten. The district's main thoroughfare, lined with shrine gates and traditional teahouses, connects a series of historically significant worship sites, the oldest of which predates the city's founding. The annual Sōten Matsuri, held over five days in late spring, is among the largest religious observances in Nichirin, drawing participants from across Nichirin for processions, ritual performances, and ceremonial markets.
@@ -225,7 +225,7 @@ Sōtenroku draws pilgrims and tourists to its network of Kaiseido shrines at the
 East Koseimori National Park is the largest protected natural area within the metropolitan boundary and among the most visited national parks in Nichirin. Its trail network extends from the eastern edge of Koseimori into the adjacent Ukishima Prefecture, where the terrain rises toward the foothills of Mount Sōten, the highest peak in Nichirin at 3,776 meters. A series of advanced funicular railways, among the most technically sophisticated in operation, connects the outer wards to the higher elevations, making the park accessible to day visitors from across the city.
 
 <div class="imgrid">
-<figure style="flex:2.698"><img src="/assets/media/shinkeisei-22.jpg" alt="East Koseimori National Park and Mount Sōten"><figcaption>East Koseimori National Park and Mount Sōten</figcaption></figure>
+<figure style="flex:2.698"><img src="/assets/old-media/media/shinkeisei-22.jpg" alt="East Koseimori National Park and Mount Sōten"><figcaption>East Koseimori National Park and Mount Sōten</figcaption></figure>
 </div>
 
 ### Sports

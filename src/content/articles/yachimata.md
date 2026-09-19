@@ -5,8 +5,8 @@ type: character
 nation: nichirin
 ooc: true
 infobox:
-  - { image: "/assets/media/yachimata-1.jpg", caption: "" }
-  - { image: "/assets/media/yachimata-2.jpg", caption: "" }
+  - { image: "/assets/old-media/media/yachimata-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/yachimata-2.jpg", caption: "" }
   - { label: "SEELE Director of Intelligence", value: "Hideaki Katsuragi" }
   - { label: "Preceded by", value: "Position Established" }
   - { section: "Personal Details" }

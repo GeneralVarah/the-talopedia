@@ -3,7 +3,7 @@ title: "Elysian Civil War"
 type: event
 nation: esu
 infobox:
-  - { image: "/assets/media/elysian-civil-war-1.jpg", caption: "Destroyed civilian buildings in the aftermath of the Battle of Nexus" }
+  - { image: "/assets/old-media/media/elysian-civil-war-1.jpg", caption: "Destroyed civilian buildings in the aftermath of the Battle of Nexus" }
   - label: "Date"
     value:
       - "17 August 1920- 4 June 1922"
@@ -45,7 +45,7 @@ This period of stalemate ultimately ended following the defection of Colonel [[g
 Following the fall of Nexus to the Revolutionary Guard and the death of the President, the White Army’s central command structure had practically collapsed. Sporadic fighting still occurred in cities in the North and Southwest; however, by the end of May, any organized major resistance had mostly fizzled out, with many remaining Army units simply defecting to the Guard or integrating back into civilian life. White Partisans continued to operate in the country until 1926, when a raid on partisan leaders by the Ministry of the Interior effectively ended all Partisan activity in the country. The war ended with an estimated 4,500,000 total casualties, mostly consisting of civilians on the side of the Revolutionary Guard.
 
 <div class="imgrid">
-<figure style="flex:2.41"><img src="/assets/media/elysian-civil-war-2.jpg" alt="Members of the Spartacus Division just before the assault on Griffon Hall."><figcaption>Members of the Spartacus Division just before the assault on Griffon Hall.</figcaption></figure>
+<figure style="flex:2.41"><img src="/assets/old-media/media/elysian-civil-war-2.jpg" alt="Members of the Spartacus Division just before the assault on Griffon Hall."><figcaption>Members of the Spartacus Division just before the assault on Griffon Hall.</figcaption></figure>
 </div>
 
 ## Background
@@ -61,7 +61,7 @@ The atmosphere following the war was that of bitterness and mourning. With the w
 On the 30th of November, 1919, President Stone held an emergency session of the Elysian Senate. In an hour-long speech, he claimed that the Elysian government was to become the “Capitol of Truth”, a place where no traitors would be welcomed. During the speech, alongside reaffirming his commitment to protecting the nation’s interests, he elaborated on an active plot by the Communist Party of Elysia funded by the Entente to throw Elysia into chaos by undermining the power of its government. He began reading off a list of “enemies of the state”, politicians and journalists he deemed to be actively a part of the conspiracy. A swathe of arrests followed this, with the arrested being hauled off into prison complexes and hastily set up labour camps in the countryside. This event is commonly seen as the beginning of the Years of Oppression.
 
 <div class="imgrid">
-<figure style="flex:1.549"><img src="/assets/media/elysian-civil-war-3.jpg" alt="The Stone Cabinet, with the president himself pictured third from the right."><figcaption>The Stone Cabinet, with the president himself pictured third from the right.</figcaption></figure>
+<figure style="flex:1.549"><img src="/assets/old-media/media/elysian-civil-war-3.jpg" alt="The Stone Cabinet, with the president himself pictured third from the right."><figcaption>The Stone Cabinet, with the president himself pictured third from the right.</figcaption></figure>
 </div>
 
 ## Warfare
@@ -83,7 +83,7 @@ Despite continued sabotage by Ranger detachments in White Army territory, the Re
 This major advantage culminated in a major offensive by Guard forces in December of 1921, piercing through and encircling many White Army formations simultaneously all across the Tango-Line. With the White Army thrown into nigh total disarray, they began enacting a scorched-earth campaign as they retreated south.
 
 <div class="imgrid">
-<figure style="flex:1.0"><img src="/assets/media/elysian-civil-war-4.png" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.0"><img src="/assets/old-media/media/elysian-civil-war-4.png" alt=""><figcaption></figcaption></figure>
 </div>
 
 ## Aftermath and Impact
@@ -99,5 +99,5 @@ With the establishment of a planned economy, widespread nationalization and a de
 The Civil War continues to be a sore topic in Elysia to this day, with many public works made in remembrance of those lost during the conflict. Most interestingly, the Unity State grieves people lost on both sides of the conflict, regarding it as a large waste of life to restore freedom back to Elysia. Public opinion on this policy has been mixed, however most agree to it acting as a perfectly fine compromise.
 
 <div class="imgrid">
-<figure style="flex:1.715"><img src="/assets/media/elysian-civil-war-5.jpg" alt="White Army POWs in New Winscor."><figcaption>White Army POWs in New Winscor.</figcaption></figure>
+<figure style="flex:1.715"><img src="/assets/old-media/media/elysian-civil-war-5.jpg" alt="White Army POWs in New Winscor."><figcaption>White Army POWs in New Winscor.</figcaption></figure>
 </div>

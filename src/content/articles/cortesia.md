@@ -5,8 +5,8 @@ type: overview
 nation: cortesia
 infobox:
   - { image: "/assets/flags/cortesia.jpg", caption: "Flag" }
-  - { image: "/assets/emblems/cortesia.png", caption: "Coat of Arms" }
-  - { image: "/assets/media/cortesia-3.png", caption: "Location of Cortesia" }
+  - { image: "/assets/old-media/emblems/cortesia.png", caption: "Coat of Arms" }
+  - { image: "/assets/old-media/media/cortesia-3.png", caption: "Location of Cortesia" }
   - label: "Motto"
     value:
       - "Przetrwamy"
@@ -117,23 +117,23 @@ The judiciary system is independent of the Rada Federalna, with the Sąd Najwyż
 ### Topography
 
 <div class="imgrid">
-<figure style="flex:1.501"><img src="/assets/media/cortesia-4.jpg" alt=""><figcaption></figcaption></figure>
-<figure style="flex:1.501"><img src="/assets/media/cortesia-5.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.501"><img src="/assets/old-media/media/cortesia-4.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.501"><img src="/assets/old-media/media/cortesia-5.jpg" alt=""><figcaption></figcaption></figure>
 </div>
 
 <div class="imgrid">
-<figure style="flex:1.501"><img src="/assets/media/cortesia-6.jpg" alt=""><figcaption></figcaption></figure>
-<figure style="flex:1.507"><img src="/assets/media/cortesia-7.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.501"><img src="/assets/old-media/media/cortesia-6.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.507"><img src="/assets/old-media/media/cortesia-7.jpg" alt=""><figcaption></figcaption></figure>
 </div>
 
 <div class="imgrid">
-<figure style="flex:1.448"><img src="/assets/media/cortesia-8.jpg" alt=""><figcaption></figcaption></figure>
-<figure style="flex:1.778"><img src="/assets/media/cortesia-9.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.448"><img src="/assets/old-media/media/cortesia-8.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.778"><img src="/assets/old-media/media/cortesia-9.jpg" alt=""><figcaption></figcaption></figure>
 </div>
 
 <div class="imgrid">
-<figure style="flex:1.501"><img src="/assets/media/cortesia-10.jpg" alt=""><figcaption></figcaption></figure>
-<figure style="flex:1.498"><img src="/assets/media/cortesia-11.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.501"><img src="/assets/old-media/media/cortesia-10.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.498"><img src="/assets/old-media/media/cortesia-11.jpg" alt=""><figcaption></figcaption></figure>
 </div>
 
 ## Demographics
@@ -144,5 +144,5 @@ The judiciary system is independent of the Rada Federalna, with the Sąd Najwyż
 | --- | --- | --- | --- |
 
 <div class="imgrid">
-<figure style="flex:1.538"><img src="/assets/media/cortesia-12.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.538"><img src="/assets/old-media/media/cortesia-12.jpg" alt=""><figcaption></figcaption></figure>
 </div>

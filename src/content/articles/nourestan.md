@@ -6,7 +6,7 @@ type: subdivision
 nation: varahmehr
 infobox:
   - { image: "/assets/flags/nourestan.png", caption: "Flag of Nourestan" }
-  - { image: "/assets/media/nourestan-2.png", caption: "Location of Nourestan province within Varahmehr" }
+  - { image: "/assets/old-media/media/nourestan-2.png", caption: "Location of Nourestan province within Varahmehr" }
   - { section: "Geography" }
   - { label: "Country", value: "[[varahmehr]]" }
   - { label: "Capital", value: "Nourabad" }
@@ -50,7 +50,7 @@ The name Nūrestān derives from the Mehrāni nour (light) and the suffix -estā
 The earliest evidence of human settlement in what is now Nourestan dates to approximately 100,000 BCE, with tool-making sites identified in the plateau’s highland margins. The city of Mehrāvar (مهرآور, lit. *Bringer of Light*), founded approximately 3000 BCE, is the oldest continuously inhabited settlement in Varahmehr and one of the oldest in the broader region. Though modest in its present population of approximately 111,000, Mehrāvar carries a historical significance entirely disproportionate to its current size - its temples, administrative records, and commercial archives constitute the oldest continuous documentary record in the federation, and its citizens maintain a civic pride that expresses itself in careful preservation rather than expansion. The city’s gross regional domestic product of $3.1 billion reflects a community that has chosen depth over growth, sustaining itself through heritage tourism, scholarly pilgrimage, and the quiet prestige of being the place where Varahmehri civilization began.
 
 <div class="imgrid">
-<figure style="flex:1.37"><img src="/assets/media/nourestan-3.png" alt="Mural in the ruins of Mehrāvar, believed to date to the early Hasmenionian period"><figcaption>Mural in the ruins of Mehrāvar, believed to date to the early Hasmenionian period</figcaption></figure>
+<figure style="flex:1.37"><img src="/assets/old-media/media/nourestan-3.png" alt="Mural in the ruins of Mehrāvar, believed to date to the early Hasmenionian period"><figcaption>Mural in the ruins of Mehrāvar, believed to date to the early Hasmenionian period</figcaption></figure>
 </div>
 
 ### The Six Lands Period
@@ -78,7 +78,7 @@ The 51 years of isolationism were, in some respects, the most comfortable period
 Nourestan sends 12 delegates to the Majles-e Nāmāyandagān, the second-largest delegation after Ahanestan. The ostān is governed by an elected Ostāndār serving a four-year term. Politically, Nourestan is the heartland of the Peymān-dārān faction - specifically its Compact Wing, whose constitutionalist instincts align naturally with the Nouri tradition of governance through institutional process and legal precision. Chancellor Shariati is the most prominent representative of this tradition, though his position as head of the federal executive means his ostān loyalties are subordinated to his federal responsibilities in ways that sometimes create tension with Nourestan’s provincial interests.
 
 <div class="imgrid">
-<figure style="flex:1.364"><img src="/assets/media/nourestan-4.jpg" alt="Aerial photograph of Nourabad’s financial district, circa 1928"><figcaption>Aerial photograph of Nourabad’s financial district, circa 1928</figcaption></figure>
+<figure style="flex:1.364"><img src="/assets/old-media/media/nourestan-4.jpg" alt="Aerial photograph of Nourabad’s financial district, circa 1928"><figcaption>Aerial photograph of Nourabad’s financial district, circa 1928</figcaption></figure>
 </div>
 
 The Nouri social class, while no longer formally distinct in constitutional terms, retains its practical dominance of Nourestan’s legal, financial, and administrative professions. Entry into the Nouri tradition remains effectively governed by educational access and professional network - Nourabad’s law academies, commercial courts, and administrative training institutions select for and perpetuate the class in ways that no formal barrier could replicate.
@@ -96,7 +96,7 @@ Nourestan’s economy is built entirely on institutional and professional servic
 The carpet-weaving tradition, rooted in the highland communities of the Nourestani plateau, is the ostān’s most significant craft industry. The geometric vocabulary developed in the highland workshops - incorporating angular motifs, eight-pointed medallion forms derived from Mithraic solar symbolism, and the distinctive color combinations produced by highland botanical dyes - constitutes a visually distinctive tradition that predates the Compact by centuries. With the end of isolationism in November 1929, the nascent export market for Varahmehri carpets has made Nourestan’s highland weavers a point of commercial interest for Shushtari trading houses, though the institutional infrastructure for export trade is still being established.
 
 <div class="imgrid">
-<figure style="flex:1.715"><img src="/assets/media/nourestan-5.jpg" alt="A carpet weaver from the Nourestani plateau, circa 1925"><figcaption>A carpet weaver from the Nourestani plateau, circa 1925</figcaption></figure>
+<figure style="flex:1.715"><img src="/assets/old-media/media/nourestan-5.jpg" alt="A carpet weaver from the Nourestani plateau, circa 1925"><figcaption>A carpet weaver from the Nourestani plateau, circa 1925</figcaption></figure>
 </div>
 
 The coastal settlement of Golarrud sustains a modest fishing and coastal trade economy whose potential as a northern trade gateway has not yet been deliberately developed. The end of isolationism has raised questions about whether this coastal access might be expanded, though any such development would require navigating Nourestan’s relationship with Divian territorial waters - a complication that has not yet been formally addressed.
@@ -112,7 +112,7 @@ Lake Dakhli sits on Nourestan’s southwestern boundary, fed by the Ghlat and Na
 The northern frontier zone encompasses the Marzān shahrestān’s full extent - from the inland garrison city of Darband, to the lake port of Marzbān on the eastern shore of Lake Dakhli, to the coastal settlement of Golarrud on the northeastern shore. This strip of territory has historically been Nourestan’s most strategically sensitive zone, bordering Dashtestan to the north, Ymirian colonial presence to the west and the open sea to the northeast.
 
 <div class="imgrid">
-<figure style="flex:1.525"><img src="/assets/media/nourestan-6.jpg" alt="The northern frontier zone of Marzān, where Nourestan’s plateau meets Dashtestan’s plains"><figcaption>The northern frontier zone of Marzān, where Nourestan’s plateau meets Dashtestan’s plains</figcaption></figure>
+<figure style="flex:1.525"><img src="/assets/old-media/media/nourestan-6.jpg" alt="The northern frontier zone of Marzān, where Nourestan’s plateau meets Dashtestan’s plains"><figcaption>The northern frontier zone of Marzān, where Nourestan’s plateau meets Dashtestan’s plains</figcaption></figure>
 </div>
 
 The ostān covers approximately 258,564 km², making it one of the larger provinces by land area despite its relatively concentrated population. The plateau’s vast interior is sparsely settled outside the major urban centers, with highland communities sustained primarily by the carpet-weaving tradition and the pastoral economy of the upper plateau.
@@ -130,7 +130,7 @@ Nourestan is divided into two shahrestān-hā, each governed by an elected Shahr
 *Nahieh Nor* (ناحیه نور, lit. District of Light) encompasses the federal capital district, containing Nourabad and the ancient city of Mehrāvar. Nourabad, with a population of 1.785 million, is simultaneously the provincial capital and the federal capital of the republic - the seat of the Majles-e Mellī, the Dīvān-e Adl, the Tālār-e Peymān, and the Chancellor's office. The city’s administrative character permeates its urban fabric - its architecture, its street layout, and its commercial culture all reflect the priorities of a city that exists primarily to house and serve the institutions of federal governance. Mehrāvar, with a population of approximately 111,000, is located within the Nahieh Nor shahrestān and is the oldest continuously inhabited settlement in the federation. Its residents maintain their ancient city with the particular pride of a community that understands its significance without needing external validation - Mehrāvar’s preservation is an act of civic identity rather than heritage tourism, though the latter has become an increasingly significant economic contribution as the federation opens to the world.
 
 <div class="imgrid">
-<figure style="flex:1.138"><img src="/assets/media/nourestan-7.jpg" alt="Tālār-e Peymān (Hall of the Compact), Nourabad, which houses the original Peymān-e Mellī"><figcaption>Tālār-e Peymān (Hall of the Compact), Nourabad, which houses the original Peymān-e Mellī</figcaption></figure>
+<figure style="flex:1.138"><img src="/assets/old-media/media/nourestan-7.jpg" alt="Tālār-e Peymān (Hall of the Compact), Nourabad, which houses the original Peymān-e Mellī"><figcaption>Tālār-e Peymān (Hall of the Compact), Nourabad, which houses the original Peymān-e Mellī</figcaption></figure>
 </div>
 
 *Marzān* (مرزان, lit. Frontier District) covers the northern territory of the ostān in its entirety, encompassing three distinct settlements across varied terrain. Darband is the shahrestān’s primary city and the federation’s main northern garrison - an inland frontier settlement whose military identity has persisted across the shift from inter-territorial to external threat. Marzbān sits on the eastern shore of Lake Dakhli and serves as a modest lake port. Golarrud occupies the northeastern coastline, the province’s only direct access to the Eastern Panthalassan Ocean - a small settlement whose strategic and commercial significance is likely to grow as the federation develops its external relationships.

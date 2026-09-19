@@ -73,7 +73,7 @@ The **Southern Theater Command (MANSUR)**, headquartered in Santiago and command
 
 <table>
 <tr><th>Pay Grade</th><th>Glorious Army</th><th>Glorious Navy</th><th>Glorious Air Force</th></tr>
-<tr><td>O-10</td><td>:img[/assets/media/glorious-republic-armed-forces-2.png|96]<br>*General de Divisíon*<br>Divisional General</td><td>:img[/assets/media/glorious-republic-armed-forces-3.png|96]<br>*Almirante*<br>Admiral</td><td>:img[/assets/media/glorious-republic-armed-forces-4.png|96]<br>*Mariscal del Aire*<br>Air Marshal</td></tr>
+<tr><td>O-10</td><td>:img[/assets/old-media/media/glorious-republic-armed-forces-2.png|96]<br>*General de Divisíon*<br>Divisional General</td><td>:img[/assets/old-media/media/glorious-republic-armed-forces-3.png|96]<br>*Almirante*<br>Admiral</td><td>:img[/assets/old-media/media/glorious-republic-armed-forces-4.png|96]<br>*Mariscal del Aire*<br>Air Marshal</td></tr>
 <tr><td>O-9</td><td>*General de Brigada*<br>Brigadier General</td><td>*Vicealmirante*<br>Vice Admiral</td><td>*Vicemariscal del Aire*<br>Air Vice-Marshal</td></tr>
 <tr><td>O-8</td><td>*Teniente de Brigada*<br>Brigadier Lieutenant</td><td>*Contraalmirante*<br>Counter Admiral</td><td>*Comodoro del Aire*<br>Air Commodore</td></tr>
 <tr><td>O-7</td><td>*Coronel*<br>Colonel</td><td>*Capitán de Navío*<br>Captain of the Navy</td><td>*Capitán de Grupo*<br>Group Captain</td></tr>

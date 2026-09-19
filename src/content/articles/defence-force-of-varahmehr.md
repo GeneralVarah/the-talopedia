@@ -5,7 +5,7 @@ romaji: "Niru-ye Defāʿī-ye Varahmehr"
 type: military
 nation: varahmehr
 infobox:
-  - { image: "/assets/emblems/defence-force-of-varahmehr.jpg", caption: "Emblem of the Defence Force of Varahmehr" }
+  - { image: "/assets/old-media/emblems/defence-force-of-varahmehr.jpg", caption: "Emblem of the Defence Force of Varahmehr" }
   - label: "Motto"
     value:
       - "حفاظت پیمان"
@@ -53,8 +53,8 @@ The DFV’s founding years were occupied with administrative challenges of build
 As of December 1929, the DFV is engaged in the most consequential modernization review in its history. The end of isolationism and the discovery of large oil fields requiring infrastructure protection have simultaneously transformed the organization’s strategic environment and exposed the gap between its current capabilities and its emerging responsibilities.
 
 <div class="imgrid">
-<figure style="flex:0.836"><img src="/assets/emblems/defence-force-of-varahmehr-national-force.jpg" alt="Emblem of the National Force"><figcaption>Emblem of the National Force</figcaption></figure>
-<figure style="flex:1.008"><img src="/assets/emblems/defence-force-of-varahmehr-national-air-service.jpg" alt="Emblem of the National Air Service"><figcaption>Emblem of the National Air Service</figcaption></figure>
+<figure style="flex:0.836"><img src="/assets/old-media/emblems/defence-force-of-varahmehr-national-force.jpg" alt="Emblem of the National Force"><figcaption>Emblem of the National Force</figcaption></figure>
+<figure style="flex:1.008"><img src="/assets/old-media/emblems/defence-force-of-varahmehr-national-air-service.jpg" alt="Emblem of the National Air Service"><figcaption>Emblem of the National Air Service</figcaption></figure>
 </div>
 
 ## Structure
@@ -68,9 +68,9 @@ The **National Force** (*Sepāh-e Mellī*) is the DFV’s federal standing army,
 ### Provincial Forces - Niru-ye Ostānī
 
 <div class="imgrid">
-<figure style="flex:1.833"><img src="/assets/media/defence-force-of-varahmehr-4.jpg" alt=""><figcaption></figcaption></figure>
-<figure style="flex:1.833"><img src="/assets/media/defence-force-of-varahmehr-5.jpg" alt=""><figcaption></figcaption></figure>
-<figure style="flex:1.833"><img src="/assets/media/defence-force-of-varahmehr-6.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.833"><img src="/assets/old-media/media/defence-force-of-varahmehr-4.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.833"><img src="/assets/old-media/media/defence-force-of-varahmehr-5.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.833"><img src="/assets/old-media/media/defence-force-of-varahmehr-6.jpg" alt=""><figcaption></figcaption></figure>
 </div>
 
 The six **Provincial Forces** collectively number approximately 105,000 personnel, making them considerably larger than the National Force. Each is funded jointly by federal and ostān budgets, trained to federal standards established by the Dāneshgāh-e Nezāmi, and commanded by the Ostāndār’s military council under the operational oversight of the Great Staff. The constitutional prohibition on deployment outside home territories without Assembly approval is the defining constraint on the Provincial Forces and the provision that most clearly reflects the founding compact between the federal government and the six ostān-hā.

@@ -4,7 +4,7 @@ nativeTitle: "泉 静畑"
 type: character
 nation: nichirin
 infobox:
-  - { image: "/assets/media/izumi-shizuhata-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/izumi-shizuhata-1.jpg", caption: "" }
   - { label: "Preceded by", value: "Masamichi Anzai" }
   - { label: "Succeeded by", value: "Danno Takata" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }

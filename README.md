@@ -44,9 +44,9 @@ resolved at compile time would freeze until that particular file was edited next
 reach the renamed article and nothing else. Editing `src/lib` itself still needs `npm run clean`,
 because that cache lives in `node_modules/.astro`.
 
-The Icons tab of the Media panel lists every flag, emblem, subdivision badge and club
-crest on disk, not only the registered nations. Club crests come from the football
-engine, named after the club rather than its three-letter code. A nation from `nations.yaml` goes in as `:flag[slug]`, so renaming it
+The Icons tab lists the flags and the two arrows, and nothing else. A flag belonging to a
+nation in `nations.yaml` inserts as `:flag[slug]`, so renaming the nation carries
+everywhere; the rest are files with no name to follow and insert as `:img[path]`. A nation from `nations.yaml` goes in as `:flag[slug]`, so renaming it
 carries everywhere; anything else is a file with no name to follow, so it goes in as
 `:img[path]`. That is why a war article's belligerents are a mixture of the two.
 
@@ -152,9 +152,13 @@ Writing into `src/` restarts the dev server and reloads the page, so the editor 
 
 ### Pictures
 
-The image folders in this repository are an archive: everything converted from the old
-Google Doc, kept so none of it has to be re-hosted. They are closed. A new picture goes
-on an image host and the article keeps the link.
+`public/assets/old-media/` is an archive: everything converted from the old Google Doc,
+kept so none of it has to be re-hosted, and closed to new pictures. The editor does not
+offer it, so a new picture goes on an image host and the article keeps the link. Articles
+that already point into the archive keep working.
+
+`public/assets/flags/` stays out of the archive, because a flag is worn inline beside a
+nation's name and is picked from the Icons tab rather than pasted.
 
 Only hosts that serve a stable direct link are accepted, because the alternative is an
 article whose pictures quietly vanish: `ibb.co`, `imgur.com`, `files.catbox.moe`. Discord

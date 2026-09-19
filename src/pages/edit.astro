@@ -89,7 +89,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           </div>
 
           <div class="mp-pane" id="pane-images">
-            <input id="mp-q" type="search" placeholder="Search every image, media included" autocomplete="off" />
             <div class="mp-row">
               <span class="mp-lbl">Insert as</span>
               <span class="mp-seg">
@@ -116,17 +115,18 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             </div>
             <p class="mp-hint" id="mp-link-note"></p>
             {DEV && (
-              <div class="mp-row">
-                <span class="mp-lbl">Upload</span>
-                <button id="mp-add" type="button" class="mp-file-btn">Choose files…</button>
-                <input id="mp-file" type="file" accept="image/*" multiple hidden />
-              </div>
+              <Fragment>
+                <div class="mp-row">
+                  <span class="mp-lbl">Upload</span>
+                  <button id="mp-add" type="button" class="mp-file-btn">Choose files…</button>
+                  <input id="mp-file" type="file" accept="image/*" multiple hidden />
+                </div>
+                <div class="mp-queue" id="mp-queue" hidden>
+                  <div id="mp-queue-list"></div>
+                  <button id="mp-upload" type="button" class="primary" disabled>Upload</button>
+                </div>
+              </Fragment>
             )}
-            <div class="mp-queue" id="mp-queue" hidden>
-              <div id="mp-queue-list"></div>
-              <button id="mp-upload" type="button" class="primary" disabled>Upload</button>
-            </div>
-            <div class="mp-body" id="mp-images"></div>
           </div>
 
           <div class="mp-pane" id="pane-icons" hidden>
@@ -2660,14 +2660,14 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     /* ---------- media panel ---------- */
     let ASSETS = [];
     let assetsLoaded = null;
-    const mpImages = $('#mp-images');
+
     const mpIcons = $('#mp-icons');
 
     function loadAssets(force = false) {
       if (!force && assetsLoaded) return assetsLoaded;
       assetsLoaded = fetch(`${BASE.replace(/\/$/, '')}/assets.json`)
         .then((r) => r.json()).then((a) => { ASSETS = a; paintAssets(); })
-        .catch(() => { mpImages.innerHTML = '<p class="mp-empty">Could not read the asset list.</p>'; });
+        .catch(() => { $('#mp-icons').innerHTML = '<p class="mp-empty">Could not read the asset list.</p>'; });
       return assetsLoaded;
     }
 
@@ -2677,37 +2677,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     const fold = (s) => String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
     function paintAssets() {
-      const q = fold($('#mp-q').value.trim());
       const iq = fold($('#mp-iq').value.trim());
-      // The loose files at the top of /assets are the site's own banner and logo and
-      // never belong in an article. media/ is 300-odd photos, a wall nobody browses, so
-      // it is reachable by searching rather than by scrolling.
-      const RANK = { staged: 0, media: 1, flags: 2, emblems: 3, subdivisions: 4 };
-      const rank = (g) => RANK[g] ?? 9;
-      const items = [
-        ...[...staged.entries()].map(([path, s]) => ({ path, name: path.split('/').pop(), group: 'staged', url: s.url })),
-        ...ASSETS.filter((a) => a.group !== 'assets'),
-      ]
-        .filter((a) => (q
-          ? fold(a.name).includes(q) || fold(a.group).includes(q)
-          : a.group !== 'media'))
-        .sort((a, b) => rank(a.group) - rank(b.group) || a.name.localeCompare(b.name));
-
-      mpImages.innerHTML = '';
-      if (!items.length) { mpImages.innerHTML = '<p class="mp-empty">Nothing matches.</p>'; }
-      let group = null;
-      for (const a of items) {
-        if (a.group !== group) { group = a.group; mpImages.append(el('div', 'mp-group', group)); }
-        const b = el('button', 'mp-thumb');
-        b.type = 'button';
-        b.title = a.path;
-        const img = el('img'); img.src = srcFor(a.path); img.alt = '';
-        b.append(img, el('span', null, a.name));
-        b.onmousedown = (e) => e.preventDefault();
-        b.onclick = () => useImage(a.path);
-        mpImages.append(b);
-      }
-
       // Inline icons: the trend arrows, then nation flags, then articles with an icon.
       mpIcons.innerHTML = '';
       const arrows = [
@@ -2733,7 +2703,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       // article needs is here: former states, colonies and wartime variants are not
       // nations in the registry, so nothing in the registry could ever offer them.
       const held = new Set(icons.map((i) => i.src));
-      const GROUP = { flags: 'flag', emblems: 'icon', subdivisions: 'subdivision', badges: 'badge' };
+      // Only the flags. Everything else that used to be offered here now lives in the
+      // archive, which is closed: a new picture comes from an image host instead.
+      const GROUP = { flags: 'flag' };
       for (const a of ASSETS) {
         if (!GROUP[a.group] || held.has(a.path)) continue;
         const stem = a.name.replace(/\.[^.]+$/, '');
@@ -2750,8 +2722,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       for (const i of shown) {
         if (i.kind !== kind) {
           kind = i.kind;
-          const GROUP_NAME = { flag: 'flags', icon: 'emblems', subdivision: 'subdivisions', badge: 'club badges' };
-          mpIcons.append(el('div', 'mp-group', GROUP_NAME[kind] || kind));
+          mpIcons.append(el('div', 'mp-group', kind === 'flag' ? 'flags' : 'emblems'));
         }
         const b = el('button', 'mp-icon');
         b.type = 'button';
@@ -2848,7 +2819,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         .forEach((x) => x.classList.toggle('on', x.dataset.pane === 'images'));
       for (const p of PANES) $('#pane-' + p).hidden = p !== 'images';
       loadAssets();
-      $('#mp-q').focus();
+      $('#mp-link')?.focus();
     }
     document.querySelectorAll('#insert-menu > .mp-tabs button').forEach((b) => b.onclick = () => {
       document.querySelectorAll('#insert-menu > .mp-tabs button')
@@ -2887,7 +2858,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#mp-link-go').onclick = go;
       linkNote();
     }
-    $('#mp-q').oninput = paintAssets;
     $('#mp-iq').oninput = paintAssets;
     // The menu stays open while you browse it, unlike a one-shot command.
     $('#insert-menu').addEventListener('click', (e) => e.stopPropagation());
@@ -2937,7 +2907,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       qList.querySelector('input')?.focus();
     }
 
-    qBtn.onclick = async () => {
+    // The queue only exists where uploading does, which is the dev server.
+    if (qBtn) qBtn.onclick = async () => {
       const items = queue.slice();
       queue = []; paintQueue();
       for (const it of items) {
@@ -3150,12 +3121,12 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     }
     .mp-tabs button:hover { color: var(--ink); background: var(--band); }
     .mp-tabs button.on { color: var(--ink); border-bottom-color: var(--link); }
-    #mp-q, #mp-iq {
+    #mp-iq {
       display: block; box-sizing: border-box; width: 100%; height: 30px;
       margin: 10px 0 8px; padding: 0 9px; font: 12.5px var(--body);
       color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 6px;
     }
-    #mp-q:focus, #mp-iq:focus { outline: none; border-color: var(--link); }
+    #mp-iq:focus { outline: none; border-color: var(--link); }
     /* One gutter for the whole pane, so nothing sits proud of the panel edge. */
     .mp-pane { padding: 0 12px 10px; }
     .mp-pane.over { box-shadow: inset 0 0 0 2px var(--link); }
@@ -3206,8 +3177,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       font: 10px var(--body); text-transform: uppercase; letter-spacing: .07em;
       color: var(--muted); padding: 10px 2px 5px;
     }
-    #mp-images { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; align-content: start; }
-    #mp-images .mp-group, #mp-images .mp-empty { grid-column: 1 / -1; }
     .mp-thumb {
       display: flex; flex-direction: column; gap: 4px; padding: 4px; height: auto;
       /* A grid item defaults to min-width:auto, so a 1600px image widens its
@@ -3728,7 +3697,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       .save-group { flex: 1; min-width: 0; }
       .save-group input { width: 100%; min-width: 0; }
       .status { order: 99; width: 100%; padding: 2px 4px; white-space: normal; }
-      #mp-images { grid-template-columns: repeat(2, 1fr); }
     }
 
     /* ---- short viewports (landscape phones) keep nothing pinned ---- */

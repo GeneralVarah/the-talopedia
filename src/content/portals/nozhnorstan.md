@@ -1,7 +1,7 @@
 ---
 title: "Portal:Nozhnorstan"
 nation: nozhnorstan
-banner: /assets/media/nozhnorstan-portal-banner.jpg
+banner: /assets/old-media/media/nozhnorstan-portal-banner.jpg
 welcome: "Прыхотние в Ножнорстане"
 ---
 

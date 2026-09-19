@@ -4,7 +4,7 @@ nativeTitle: "ארץ"
 type: city
 nation: shivon
 infobox:
-  - { image: "/assets/media/eretz-1.jpg", caption: "Ha’aretz District, Eretz" }
+  - { image: "/assets/old-media/media/eretz-1.jpg", caption: "Ha’aretz District, Eretz" }
   - label: "Motto"
     value:
       - "ha'ir hakdusha"
@@ -105,5 +105,5 @@ The City also has a minority of Nabataeans, accounting for the other 2% of Eretz
 Eretz is known for its traditional [Matzah Ball Soup](https://en.wikipedia.org/wiki/Matzah_ball), and the song *Havah Nagila*created in 1915, became so popular in Shivon that it is considered a second national anthem and is still frequently played at celebrations.
 
 <div class="imgrid">
-<figure style="flex:1.094"><img src="/assets/media/eretz-2.jpg" alt="An 1906 image of a congregation facing the outer gate of the Hasmonean Temple."><figcaption>An 1906 image of a congregation facing the outer gate of the Hasmonean Temple.</figcaption></figure>
+<figure style="flex:1.094"><img src="/assets/old-media/media/eretz-2.jpg" alt="An 1906 image of a congregation facing the outer gate of the Hasmonean Temple."><figcaption>An 1906 image of a congregation facing the outer gate of the Hasmonean Temple.</figcaption></figure>
 </div>

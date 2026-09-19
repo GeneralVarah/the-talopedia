@@ -4,7 +4,7 @@ nativeTitle: "Bundesstreitkräfte"
 type: military
 nation: alemannia
 infobox:
-  - { image: "/assets/media/federal-armed-forces-1.png", caption: "Logo" }
+  - { image: "/assets/old-media/media/federal-armed-forces-1.png", caption: "Logo" }
   - label: "Motto"
     value:
       - "Schutz des Bundes, Dienst dem Volke"

@@ -4,7 +4,7 @@ nativeTitle: "حسام پاکدل"
 type: character
 nation: varahmehr
 infobox:
-  - { image: "/assets/media/hesam-pakdel-1.jpg", caption: "Official portrait, c. 1929" }
+  - { image: "/assets/old-media/media/hesam-pakdel-1.jpg", caption: "Official portrait, c. 1929" }
   - { label: "Preceded by", value: "Position Established" }
   - { section: "Personal Details" }
   - label: "Ethnicity"

@@ -91,7 +91,7 @@ Primarily, the organization relies on foreign suppliers acting as a third party 
 
 <table>
 <tr><th>Pay Grade</th><th>Ground Ops.</th><th>Naval Ops.</th><th>Aerial Ops.</th></tr>
-<tr><td>O-10</td><td>:img[/assets/media/majesty-2.png|96]<br>Head of Ground Operations</td><td>:img[/assets/media/majesty-3.png|96]<br>Head of Naval Operations</td><td>:img[/assets/media/majesty-4.png|96]<br>Head of Air Operations</td></tr>
+<tr><td>O-10</td><td>:img[/assets/old-media/media/majesty-2.png|96]<br>Head of Ground Operations</td><td>:img[/assets/old-media/media/majesty-3.png|96]<br>Head of Naval Operations</td><td>:img[/assets/old-media/media/majesty-4.png|96]<br>Head of Air Operations</td></tr>
 <tr><td>O-9</td><td>Force Commander</td><td>Flotilla Commander</td><td>Base Commander</td></tr>
 <tr><td>O-8</td><td>Lieutenant Commander</td><td>Commodore</td><td>Lieutenant Commander</td></tr>
 <tr><td>O-7</td><td>Major Commander</td><td>Lieutenant Commodore</td><td>Major Commander</td></tr>

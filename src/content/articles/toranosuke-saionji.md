@@ -4,7 +4,7 @@ nativeTitle: "西園寺 寅之助"
 type: character
 nation: nichirin
 infobox:
-  - { image: "/assets/media/toranosuke-saionji-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/toranosuke-saionji-1.jpg", caption: "" }
   - { label: "Shogun", value: "Masanori Miyamoto" }
   - { label: "Preceded by", value: "Aratame Jōzui" }
   - { label: "Succeeded by", value: "Kiyoshi Kiryū" }

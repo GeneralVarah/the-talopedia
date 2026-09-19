@@ -4,7 +4,7 @@ nativeTitle: "戸田 岸辺"
 type: character
 nation: nichirin
 infobox:
-  - { image: "/assets/media/kishibe-toda-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/kishibe-toda-1.jpg", caption: "" }
   - label: "Shogun"
     value:
       - "Masanori Miyamoto"

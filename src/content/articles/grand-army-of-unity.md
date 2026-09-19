@@ -59,7 +59,7 @@ All three branches were demobilized after the end of the war and quickly reforme
 
 Following the Revolutionary Guard’s victory in the Civil War and the establishment of the Reconstruction authority of Elysia, the military had been in a state of limbo for years afterward. On paper, the Revolutionary Guard acted as the Authority’s, and later the Unity State’s, military; no official consensus had been reached on a definitive answer. Often in the Unity State’s early years, both the Revolutionary Guard and the paramilitary Civil Guard served similar tasks, with their purposes overlapping, causing undue confusion during anti-partisan operations.
 
-<figure><img src="/assets/media/grand-army-of-unity-2.jpg" alt="Elysian troopers during the Battle of Annesburg, circa 1914"><figcaption>Elysian troopers during the Battle of Annesburg, circa 1914</figcaption></figure>
+<figure><img src="/assets/old-media/media/grand-army-of-unity-2.jpg" alt="Elysian troopers during the Battle of Annesburg, circa 1914"><figcaption>Elysian troopers during the Battle of Annesburg, circa 1914</figcaption></figure>
 
 
 The newly appointed Minister of Defense, Arianne Malloran, campaigned long for military reform during the Unity State’s early years; however was often sidelined by more important projects in the opinion of the rest of the Politburo. It was only after the end of the Reconstruction period and Elysia’s reopening of official diplomatic relations with the rest of the world that rearmament and reorganization efforts began to be seriously discussed. With the perceived possible threats from Hollosend’s initial posturing towards the newly founded Unity State acting as the state’s largest focus for its initial few years on the world stage, Supreme Protector [[archer-maine]], alongside approval from the Politburo, announced the official creation of the Grand Army of Unity on the 5th anniversary of the founding of the Unity State.
@@ -72,7 +72,7 @@ The Grand Army comprises 3 principal service branches: the Unity State’s Army,
 
 Archer Maine, the Supreme Protector, serves as Commander-In-Chief of the Grand Army, holding supreme constitutional authority over all military matters. The Civilian Military Authority runs from the Supreme Protector to the government-level Minister of Defense, [[arianne-malloran]]. The Supreme Protector and Minister of Defense are advised by the three Branch Commanders who collectively form the Joint Chiefs of Staff: General of the Army Arianne Malloran, Admiral of the Navy Anton Torres, and General of the Air Force Jack Bartlett. The Branch Commanders serve as chiefs of staff for their respective branches and hold the highest military rank in the Grand Army. Only one officer per branch may hold the designation of Branch Commander at any given time. Each service branch operates under its respective Commander's administrative control.
 
-<figure><img src="/assets/media/grand-army-of-unity-3.png" alt="Members of the 1st Elysian Armored Cavalry Division in Grovingard, Sidanya. Circa 1930."><figcaption>Members of the 1st Elysian Armored Cavalry Division in Grovingard, Sidanya. Circa 1930.</figcaption></figure>
+<figure><img src="/assets/old-media/media/grand-army-of-unity-3.png" alt="Members of the 1st Elysian Armored Cavalry Division in Grovingard, Sidanya. Circa 1930."><figcaption>Members of the 1st Elysian Armored Cavalry Division in Grovingard, Sidanya. Circa 1930.</figcaption></figure>
 
 
 The Grand Army operates through 5 unified combatant commands, each comprising forces from multiple military departments. Each service organizes, trains, and equips forces that are then presented to the unified combatant commands through service component commands. Each unified combatant command is responsible for the strategy, planning, operations, and policy within its designated area of operations. The Grand Army maintains 5 unified combatant commands:
@@ -91,7 +91,7 @@ The **U.S. Special Operations Command** (SOCOM), headquartered in Nexus and comm
 
 <table>
 <tr><th>Pay Grade</th><th>Army</th><th>Navy</th><th>Air Force</th></tr>
-<tr><td>O-10</td><td>:img[/assets/flags/grand-army-of-unity.png|96]<br>General of the Army</td><td>:img[/assets/media/grand-army-of-unity-4.png|96]<br>Admiral of the Navy</td><td>:img[/assets/media/grand-army-of-unity-5.png|96]<br>General of the Air Force</td></tr>
+<tr><td>O-10</td><td>:img[/assets/flags/grand-army-of-unity.png|96]<br>General of the Army</td><td>:img[/assets/old-media/media/grand-army-of-unity-4.png|96]<br>Admiral of the Navy</td><td>:img[/assets/old-media/media/grand-army-of-unity-5.png|96]<br>General of the Air Force</td></tr>
 <tr><td>O-9</td><td>General</td><td>Admiral</td><td>Commander</td></tr>
 <tr><td>O-8</td><td>Lieutenant General</td><td>Vice-Admiral</td><td>Lieutenant Commander</td></tr>
 <tr><td>O-7</td><td>Major General</td><td>Commodore</td><td>Major Commander</td></tr>

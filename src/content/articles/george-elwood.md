@@ -4,7 +4,7 @@ type: character
 ooc: true
 nation: esu
 infobox:
-  - { image: "/assets/media/george-elwood-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/george-elwood-1.jpg", caption: "" }
   - { label: "Supreme Protector", value: "[[archer-maine]]" }
   - { label: "Supreme Protector", value: "Archer Maine" }
   - { label: "Preceded by", value: "Office Established" }
@@ -77,7 +77,7 @@ In late November of 1921, Elwood would come into possession of the precise troop
 
 In mid December of 1921, following weeks of background checks and debriefings by the Revolutionary Guard, Elwood would officially join the Guard, acting as a vital backbone of legitimate military training for the Guard, who’d lacked a coherent General Staff up until that point. He would serve with distinction throughout the rest of the civil war, acting as the head of the Guard’s fledgling intelligence division, until the final White Army stronghold would fall in February of 1922.
 
-<figure><img src="/assets/media/george-elwood-2.jpg" alt="Elwood instructing junior division commanders of the current situation on the front, circa 1921."><figcaption>Elwood instructing junior division commanders of the current situation on the front, circa 1921.</figcaption></figure>
+<figure><img src="/assets/old-media/media/george-elwood-2.jpg" alt="Elwood instructing junior division commanders of the current situation on the front, circa 1921."><figcaption>Elwood instructing junior division commanders of the current situation on the front, circa 1921.</figcaption></figure>
 
 
 Like many other remaining or defected White Army personnel, Elwood was subject to scrutiny during the Reconstruction Authority’s, and later Unity State’s Aquilla war crime trials. However, his case was largely dismissed by the judges due to his actions having essentially won the war for the Guard, as well as the Unity State being in a sore need for experienced officers.
@@ -88,7 +88,7 @@ Like many other remaining or defected White Army personnel, Elwood was subject t
 
 Between 1922 and 1925, Elwood’s skillset was put to good use by the newly appointed Supreme Protector, Archer Maine. As soon as the charges of treason were dismissed by the war crime tribunal, Elwood was named as the head of the Unity State’s Military Intelligence Service, his main focus being to fight any remaining White Army loyal partisan and insurgent activity, as well as overseeing counter-espionage operations during the Reconstruction Period’s political isolation from the world.
 
-<figure><img src="/assets/media/george-elwood-3.jpg" alt="Elwood during a meeting with the Politburo in Griffon Hall, circa 1925."><figcaption>Elwood during a meeting with the Politburo in Griffon Hall, circa 1925.</figcaption></figure>
+<figure><img src="/assets/old-media/media/george-elwood-3.jpg" alt="Elwood during a meeting with the Politburo in Griffon Hall, circa 1925."><figcaption>Elwood during a meeting with the Politburo in Griffon Hall, circa 1925.</figcaption></figure>
 
 
 His actions proved fruitful, with the MIS eventually tracking down and eliminating most of the major partisan cells within the E.S.U, even managing to uncover a clear link to Hollosendian material support for the Partisans. The situation nearly escalated into something larger, however would remain as nothing but a brief anomaly, the matter eventually concluding with Elysia’s re-admittance into the Elysian Doctrine.
@@ -109,5 +109,5 @@ Elwood lives in Nexus’ Capital district in an apartment building housing many 
 
 When the occasion presents itself, Elwood has assisted in training new Rangers at Fort Union, however this practice has mostly wound down after transferring to a much more administrative role in recent years. He maintains cordial relations with most of the Politburo, however maintains a much closer friendship with writer and former Ranger Lieutenant, Daniel McCaffrey.
 
-<figure><img src="/assets/media/george-elwood-4.jpg" alt="Elwood with his pet dog Olli, circa 1926"><figcaption>Elwood with his pet dog Olli, circa 1926</figcaption></figure>
+<figure><img src="/assets/old-media/media/george-elwood-4.jpg" alt="Elwood with his pet dog Olli, circa 1926"><figcaption>Elwood with his pet dog Olli, circa 1926</figcaption></figure>
 

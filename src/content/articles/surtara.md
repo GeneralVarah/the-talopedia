@@ -5,7 +5,7 @@ authors: [alemannia]
 navbox: site
 ooc: true
 infobox:
-  - { image: "/assets/media/surtara-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/surtara-1.jpg", caption: "" }
   - { section: "Orbital Characteristics" }
   - { label: "Central Body", value: "Ignian Barycenter" }
   - { label: "Semi-Major Axis", value: "0.8254 AU" }

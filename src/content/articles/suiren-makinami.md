@@ -4,7 +4,7 @@ nativeTitle: "真希波 水蓮"
 type: character
 nation: nichirin
 infobox:
-  - { image: "/assets/media/suiren-makinami-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/suiren-makinami-1.jpg", caption: "" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - label: "Shogun"
     value:
@@ -44,7 +44,7 @@ infobox:
 Suiren Makinami was born on March 31, 1894, in Tynemouth, [[elvester]], the daughter of Nichirian naval officer Shinsuke Makinami and Elvesterian writer Cecelia Sunderland. Her father's posting in Elvester was the circumstance of her birth; Tynemouth was a port city, and the household was effectively Nichirian in its internal organization despite its location. Shinsuke enforced Nichirian as the language of the home, making Makinami bilingual in practice but uneven in both directions.
 
 <div class="imgrid">
-<figure style="flex:1.339"><img src="/assets/media/suiren-makinami-2.jpg" alt="Makinami family portrait, c. 1899"><figcaption>Makinami family portrait, c. 1899</figcaption></figure>
+<figure style="flex:1.339"><img src="/assets/old-media/media/suiren-makinami-2.jpg" alt="Makinami family portrait, c. 1899"><figcaption>Makinami family portrait, c. 1899</figcaption></figure>
 </div>
 
 In 1900, Shinsuke was reassigned to Nichirin. Makinami, then six years old, returned with him, while Sunderland remained in Tynemouth, though mother and daughter maintained correspondence through Makinami's childhood and into her early naval career. Makinami arrived in Nichirin speaking Nichirian imperfectly, with an accent her classmates noticed, and her father spent the following years working to correct it. She holds dual Nichirian and Elvesterian nationality.
@@ -60,7 +60,7 @@ Following her graduation from Chūkyō Naval Academy in 1912, Makinami was assig
 The Fubuki expedition set out in September 1913 with a crew of forty-two. Its objectives were a geological and cartographic survey of coastal [[hyperborea]]. The expedition encountered conditions that led to the progressive loss of crew members over the following months, and Makinami was among the 22 of 42 survivors who returned in February 1914 at only 19 years old. The full circumstances of the expedition remain classified; she has not publicly discussed the experience. Following her return, Makinami was promoted to the rank of High Sea-Adjutor for “exemplary conduct during the crisis” and reassigned to active fleet duties.
 
 <div class="imgrid">
-<figure style="flex:1.792"><img src="/assets/media/suiren-makinami-3.jpg" alt="NCH Fubuki photographed by a relief vessel upon its discovery in April 1914."><figcaption>NCH Fubuki photographed by a relief vessel upon its discovery in April 1914.</figcaption></figure>
+<figure style="flex:1.792"><img src="/assets/old-media/media/suiren-makinami-3.jpg" alt="NCH Fubuki photographed by a relief vessel upon its discovery in April 1914."><figcaption>NCH Fubuki photographed by a relief vessel upon its discovery in April 1914.</figcaption></figure>
 </div>
 
 ### Attack On Naginomiya Harbor
@@ -70,7 +70,7 @@ The outbreak of war in [[evria]] in 1914 drew Nichirin into conflict with the Xi
 On July 25, 1915, a Guandongese naval offensive struck Naginomiya Harbor in a major coordinated attack during a naval conference, killing Marshal-Admiral Nobumasa Kurosawa and several other senior Nichirian naval commanders. The attack left the Nichirian Navy without effective high command at a critical stage of the war. Shogun Masanori Miyamoto personally selected Makinami as Kurosawa's replacement. She was twenty-one years old, held a junior rank relative to several surviving senior officers, and had only been in active naval service for three years. Naval historians have noted that the surviving senior officers were either implicated in the command failures that allowed the Naginomiya attack or carried factional ties that Masanori was unwilling to import into the naval command at a moment of crisis. Makinami had neither, and she was promoted to Marshal-Admiral on July 25, 1915.
 
 <div class="imgrid">
-<figure style="flex:1.792"><img src="/assets/media/suiren-makinami-4.jpg" alt="Shogun Masanori Miyamoto promoting Makinami to Marshal-Admiral of the Maelstrom, Naginomiya, July 25, 1915."><figcaption>Shogun Masanori Miyamoto promoting Makinami to Marshal-Admiral of the Maelstrom, Naginomiya, July 25, 1915.</figcaption></figure>
+<figure style="flex:1.792"><img src="/assets/old-media/media/suiren-makinami-4.jpg" alt="Shogun Masanori Miyamoto promoting Makinami to Marshal-Admiral of the Maelstrom, Naginomiya, July 25, 1915."><figcaption>Shogun Masanori Miyamoto promoting Makinami to Marshal-Admiral of the Maelstrom, Naginomiya, July 25, 1915.</figcaption></figure>
 </div>
 
 ### The Great War
@@ -80,7 +80,7 @@ Makinami's first action as Marshal-Admiral was to reorganize the surviving Nichi
 The Battle of the Rensei Islands in late 1915 was the first major engagement under her command; Nichirian forces repelled a Guandongese amphibious assault on Ayanami. The First Battle of the Bay of Serica followed in early 1916, resulting in significant Guandongese losses without achieving a decisive outcome, while the Second Battle of the Bay of Serica in early 1917 inflicted further damage on the Guandongese naval capacity. Finally, the Third Battle of the Bay of Serica in mid-1917 crippled the Guandongese Navy as an operational force, completing the Nichirian naval dominance in the Valtherian theater that the preceding engagements had been building toward.
 
 <div class="imgrid">
-<figure style="flex:1.792"><img src="/assets/media/suiren-makinami-5.jpg" alt="NCH Fudō during the Battle of the Rensei Islands, c. 1915."><figcaption>NCH Fudō during the Battle of the Rensei Islands, c. 1915.</figcaption></figure>
+<figure style="flex:1.792"><img src="/assets/old-media/media/suiren-makinami-5.jpg" alt="NCH Fudō during the Battle of the Rensei Islands, c. 1915."><figcaption>NCH Fudō during the Battle of the Rensei Islands, c. 1915.</figcaption></figure>
 </div>
 
 For the remainder of the war, Makinami organized and commanded Entente convoy escort operations across the Arctic Sea, the Hyperborean Ocean, and the Eastern Panthalassan Ocean, defending allied merchant shipping against Alemannian submarine warfare. Naval historians have credited these operations with maintaining supply corridors, helpful to the eventual Entente victory.
@@ -104,7 +104,7 @@ Makinami commanded the naval blockade of Sangai's coastline as part of the coord
 Masashi appointed Makinami as interim Minister of Foreign Affairs on December 11, 1924, the day of Okamura's execution, a position she held concurrently with her existing offices as Marshal-Admiral and Senior Shogunal Advisor.
 
 <div class="imgrid">
-<figure style="flex:1.792"><img src="/assets/media/suiren-makinami-6.jpg" alt="Makinami speaking during the Fourth Tripartite Conference, Mizuhara, 28 December, 1927."><figcaption>Makinami speaking during the Fourth Tripartite Conference, Mizuhara, 28 December, 1927.</figcaption></figure>
+<figure style="flex:1.792"><img src="/assets/old-media/media/suiren-makinami-6.jpg" alt="Makinami speaking during the Fourth Tripartite Conference, Mizuhara, 28 December, 1927."><figcaption>Makinami speaking during the Fourth Tripartite Conference, Mizuhara, 28 December, 1927.</figcaption></figure>
 </div>
 
 Her most significant achievement in the role was her leadership of the Nichirian delegation at the Tōhara Conference in March 1926, at which Nichirian and Guandongese delegations negotiated a framework for normalized relations following the Great War. The conference produced agreements on mutual recognition, trade protocols, and joint border administration in the autonomous prefectures of Eastern Manshu. She was succeeded as Minister of Foreign Affairs by [[nariyoshi-miyagi]] on March 20, 1928.

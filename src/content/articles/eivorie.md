@@ -4,8 +4,8 @@ nativeTitle: "Mǣnefæsting Elpendbāna"
 type: overview
 nation: eivorie
 infobox:
-  - { image: "/assets/media/eivorie-1.png", caption: "National Flag" }
-  - { image: "/assets/media/eivorie-2.png", caption: "State Flag" }
+  - { image: "/assets/old-media/media/eivorie-1.png", caption: "National Flag" }
+  - { image: "/assets/old-media/media/eivorie-2.png", caption: "State Flag" }
   - label: "Motto"
     value:
       - "\"Se Mǣnefæsting Þegnað.\""
@@ -56,7 +56,7 @@ While there have been attempts by the Protectorate to receive international reco
 
 This map depicts the path migratory Eivor would have taken from the Norðleniscland to reach modern day Eivorie. The modern city of Gelendan is in fact the location of the first Eivor settlement in the region.
 
-<figure><img src="/assets/media/eivorie-3.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="/assets/old-media/media/eivorie-3.png" alt=""><figcaption></figcaption></figure>
 
 [[the-voyage-of-cyneric]] is a poetic tale that tells of this migration in mythological terms. Historians continue to dispute the truthfulness of this tale, with no record of a "Cyneric" ever ruling as king in Eivorie at the most likely time of settlement of the land. It is probable that "Cyneric" was meant not as a true name of a ruler, but instead refers to the fundamental meaning of the name in question—that is, "the noble king", or "the king's right (to rule)". There is, however, a historical case of a king named Cyneric ruling a small realm in Norðleniscland in the 600s, who may be the inspiration for the myth.
 

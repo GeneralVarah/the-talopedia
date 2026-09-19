@@ -4,7 +4,7 @@ nativeTitle: "立華 奏"
 type: character
 nation: nichirin
 infobox:
-  - { image: "/assets/media/kanade-tachibana-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/kanade-tachibana-1.jpg", caption: "" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - label: "Shogun"
     value:
@@ -53,7 +53,7 @@ On March 12, 1923, Shogun Masanori Miyamoto appointed her Chief Historian, succe
 During this period, her scholarship developed a distinct comparative theological focus, producing studies of Kabbalistic, Gnostic, and Hasmonean-Nazarite religious systems and their potential points of contact with pre-Shogunate Nichirian practice. This line of inquiry is considered unusual in Nichirian academic circles.
 
 <div class="imgrid">
-<figure style="flex:1.792"><img src="/assets/media/kanade-tachibana-2.jpg" alt="Tachibana entering the Imperial Archive from Mukaimasa Miyamoto Metropolitan Library, c. 1928"><figcaption>Tachibana entering the Imperial Archive from Mukaimasa Miyamoto Metropolitan Library, c. 1928</figcaption></figure>
+<figure style="flex:1.792"><img src="/assets/old-media/media/kanade-tachibana-2.jpg" alt="Tachibana entering the Imperial Archive from Mukaimasa Miyamoto Metropolitan Library, c. 1928"><figcaption>Tachibana entering the Imperial Archive from Mukaimasa Miyamoto Metropolitan Library, c. 1928</figcaption></figure>
 </div>
 
 Tachibana was part of the Nichirian Hyperborean expedition of July 1927, listed on the expedition manifest as a geological consultant.
@@ -65,7 +65,7 @@ On November 28, 1928, Tachibana concluded a meeting with Elysian intelligence li
 Tachibana resides in Asagaya, Shinkeisei, in a private residential complex rather than the government housing available to officials of her rank in Shiomachi. She is rarely seen in public, except for professional obligations. Her maternal grandmother, Michi Tachibana, still resides in Naginomiya, and the two maintain regular contact.
 
 <div class="imgrid">
-<figure style="flex:1.792"><img src="/assets/media/kanade-tachibana-3.jpg" alt="Tachibana outside of Shinkeisei Polytechnical University, c. 1929"><figcaption>Tachibana outside of Shinkeisei Polytechnical University, c. 1929</figcaption></figure>
+<figure style="flex:1.792"><img src="/assets/old-media/media/kanade-tachibana-3.jpg" alt="Tachibana outside of Shinkeisei Polytechnical University, c. 1929"><figcaption>Tachibana outside of Shinkeisei Polytechnical University, c. 1929</figcaption></figure>
 </div>
 
 She plays the [koto](https://en.wikipedia.org/wiki/Koto_(instrument)) and is known to collect antiquarian texts, a pursuit that extends beyond her professional archival work into private acquisition of rare historical and religious volumes.

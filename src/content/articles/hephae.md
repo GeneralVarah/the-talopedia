@@ -5,7 +5,7 @@ authors: [alemannia]
 navbox: site
 ooc: true
 infobox:
-  - { image: "/assets/media/hephae-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/hephae-1.jpg", caption: "" }
   - { section: "Orbital Characteristics" }
   - { label: "Central Body", value: "Ignian Barycenter" }
   - { label: "Semi-Major Axis", value: "0.3978 AU" }

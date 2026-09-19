@@ -6,7 +6,7 @@ type: subdivision
 nation: varahmehr
 infobox:
   - { image: "/assets/flags/ahanestan.png", caption: "Flag of Ahanestan" }
-  - { image: "/assets/media/ahanestan-2.png", caption: "Location of Ahanestan province within Varahmehr" }
+  - { image: "/assets/old-media/media/ahanestan-2.png", caption: "Location of Ahanestan province within Varahmehr" }
   - { section: "Geography" }
   - { label: "Country", value: "[[varahmehr]]" }
   - { label: "Capital", value: "Kuhestan" }
@@ -80,8 +80,8 @@ The relationship between Ostāndār Babak and Commander General Dariush Nāmdār
 Ahanestan is the federation's industrial core. The Dabi-shā Avret shahrestān hosts the majority of the federation's foundry capacity, steel mills, and engineering works. The Kuhi mining tradition, operating from the northern escarpment since antiquity, feeds raw iron and copper ore to Mehrāni-founded processing complexes whose output supplies structural materials to construction projects federation-wide. The ostān's reputation for high-grade structural ironwork has attracted specialist supply firms, most notably Kār-e Mehr Industrial Supply (کار مهر, *Kār-e Mehr*; lit. *Work of the Sun*), founded in Shushabad but operating significant facilities in both Kuhestan and Āhanshahr, whose structural ironwork carries a premium of reliability well established in the construction sector.
 
 <div class="imgrid">
-<figure style="flex:2.332"><img src="/assets/media/ahanestan-3.jpg" alt="Kuhestan industrial district viewed from the Dabi-shā Avret highlands, circa 1929"><figcaption>Kuhestan industrial district viewed from the Dabi-shā Avret highlands, circa 1929</figcaption></figure>
-<figure style="flex:2.065"><img src="/assets/media/ahanestan-4.jpg" alt="Workers at a Kuhestan iron foundry, circa 1925"><figcaption>Workers at a Kuhestan iron foundry, circa 1925</figcaption></figure>
+<figure style="flex:2.332"><img src="/assets/old-media/media/ahanestan-3.jpg" alt="Kuhestan industrial district viewed from the Dabi-shā Avret highlands, circa 1929"><figcaption>Kuhestan industrial district viewed from the Dabi-shā Avret highlands, circa 1929</figcaption></figure>
+<figure style="flex:2.065"><img src="/assets/old-media/media/ahanestan-4.jpg" alt="Workers at a Kuhestan iron foundry, circa 1925"><figcaption>Workers at a Kuhestan iron foundry, circa 1925</figcaption></figure>
 </div>
 
 ### Oil
@@ -95,14 +95,14 @@ Ahanestan is bordered by Nourestan to the north, Farzānestan to the northeast, 
 The ostān’s terrain is characterized by flat coastal plains and arid interior lowlands, with surface temperatures among the highest recorded in the federation during summer months. The landscape is largely featureless at the provincial level, broken by salt flats in the interior and the lake and basin systems of the Barkeh district to the west. The single significant topographic exception is the northern escarpment zone, where the flat Ahanestan plain rises sharply toward the Nourestani plateau - the historical territory of the Kuhi clans, whose passes remain named Kuhi in all official federal documents by provision of the Peymān-e Mellī.
 
 <div class="imgrid">
-<figure style="flex:1.501"><img src="/assets/media/ahanestan-5.jpg" alt="A Kuhi mountain pass in the northern escarpment, on the border of Ahanestan and Nourestan"><figcaption>A Kuhi mountain pass in the northern escarpment, on the border of Ahanestan and Nourestan</figcaption></figure>
-<figure style="flex:1.914"><img src="/assets/media/ahanestan-6.jpg" alt="The uninhabited desert hinterland west of Ahanestan's administrative boundary"><figcaption>The uninhabited desert hinterland west of Ahanestan's administrative boundary</figcaption></figure>
+<figure style="flex:1.501"><img src="/assets/old-media/media/ahanestan-5.jpg" alt="A Kuhi mountain pass in the northern escarpment, on the border of Ahanestan and Nourestan"><figcaption>A Kuhi mountain pass in the northern escarpment, on the border of Ahanestan and Nourestan</figcaption></figure>
+<figure style="flex:1.914"><img src="/assets/old-media/media/ahanestan-6.jpg" alt="The uninhabited desert hinterland west of Ahanestan's administrative boundary"><figcaption>The uninhabited desert hinterland west of Ahanestan's administrative boundary</figcaption></figure>
 </div>
 
 Lake Āvanak (دریاچه آوانک, Daryāche-ye Āvanak) sits between the two shahrestān-hā and functions as the ostān’s primary waterway, connecting the Barkeh basin district to the trade networks of the industrial core. The Barkeh basin drains into Lake Āvanak and supports commercial and transport activities in the western district. The lake’s sheltered inlet character makes it navigable for flat-bottomed cargo vessels and has historically served as a distribution corridor for ore and finished ironwork moving between escarpment mining sites and the lowland foundries.
 
 <div class="imgrid">
-<figure style="flex:2.102"><img src="/assets/media/ahanestan-7.jpg" alt="Lake Āvanak dock, Āvanak, circa 1928"><figcaption>Lake Āvanak dock, Āvanak, circa 1928</figcaption></figure>
+<figure style="flex:2.102"><img src="/assets/old-media/media/ahanestan-7.jpg" alt="Lake Āvanak dock, Āvanak, circa 1928"><figcaption>Lake Āvanak dock, Āvanak, circa 1928</figcaption></figure>
 </div>
 
 ## Demographics

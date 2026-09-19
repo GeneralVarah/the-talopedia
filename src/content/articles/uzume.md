@@ -5,8 +5,8 @@ type: character
 ooc: true
 nation: nichirin
 infobox:
-  - { image: "/assets/media/uzume-1.jpg", caption: "" }
-  - { image: "/assets/media/uzume-2.jpg", caption: "" }
+  - { image: "/assets/old-media/media/uzume-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/uzume-2.jpg", caption: "" }
   - { label: "SEELE Director of Intelligence", value: "Hideaki Katsuragi" }
   - { label: "Preceded by", value: "Position Established" }
   - { section: "Personal Details" }

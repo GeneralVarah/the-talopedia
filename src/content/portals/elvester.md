@@ -1,6 +1,6 @@
 ---
 title: "Portal:Elvester"
 nation: elvester
-banner: /assets/media/elvester-portal-banner.jpg
+banner: /assets/old-media/media/elvester-portal-banner.jpg
 welcome: "Welcome to Elvester!"
 ---

@@ -4,7 +4,7 @@ nativeTitle: "小笠原 宗廣"
 type: character
 nation: nichirin
 infobox:
-  - { image: "/assets/media/munehiro-ogasawara-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/munehiro-ogasawara-1.jpg", caption: "" }
   - { label: "Preceded by", value: "Shihi Abo" }
   - { label: "Succeeded by", value: "Kichisaburo Washinomiya" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }

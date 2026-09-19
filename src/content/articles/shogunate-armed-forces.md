@@ -85,7 +85,7 @@ The **Western Theater Command**, headquartered in Satsuno and commanded by Marsh
 
 <table>
 <tr><th>Pay Grade</th><th>Ground Corps</th><th>Naval Corps</th><th>Aerial Corps</th></tr>
-<tr><td>O-10</td><td>:img[/assets/media/shogunate-armed-forces-2.jpg|96]<br>元帥堅塁大将<br>Marshal-General of the Bulwark</td><td>:img[/assets/media/shogunate-armed-forces-3.jpg|96]<br>元帥渦潮提督<br>Marshal-Admiral of the Maelstrom</td><td>:img[/assets/media/shogunate-armed-forces-4.jpg|96]<br>元帥蒼穹代将<br>Marshal-Commodore of the Firmament</td></tr>
+<tr><td>O-10</td><td>:img[/assets/old-media/media/shogunate-armed-forces-2.jpg|96]<br>元帥堅塁大将<br>Marshal-General of the Bulwark</td><td>:img[/assets/old-media/media/shogunate-armed-forces-3.jpg|96]<br>元帥渦潮提督<br>Marshal-Admiral of the Maelstrom</td><td>:img[/assets/old-media/media/shogunate-armed-forces-4.jpg|96]<br>元帥蒼穹代将<br>Marshal-Commodore of the Firmament</td></tr>
 <tr><td>O-9</td><td>大将<br>General</td><td>提督<br>Admiral</td><td>代将<br>Commodore</td></tr>
 <tr><td>O-8</td><td>中将<br>Middle General</td><td>中提督<br>Middle Admiral</td><td>中代将<br>Middle Commodore</td></tr>
 <tr><td>O-7</td><td>少将<br>Junior General</td><td>少提督<br>Junior Admiral</td><td>少代将<br>Junior Commodore</td></tr>

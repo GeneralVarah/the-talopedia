@@ -4,7 +4,7 @@ nativeTitle: "若林 昇"
 type: character
 nation: nichirin
 infobox:
-  - { image: "/assets/media/noboru-wakabayashi-1.jpg", caption: "" }
+  - { image: "/assets/old-media/media/noboru-wakabayashi-1.jpg", caption: "" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - { label: "Preceded by", value: "Tsuna Umemura" }
   - { label: "Succeeded by", value: "Akio Ieiri" }

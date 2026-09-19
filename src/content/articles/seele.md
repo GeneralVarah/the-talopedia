@@ -4,7 +4,7 @@ type: organization
 nation: nichirin
 ooc: true
 infobox:
-  - { image: "/assets/emblems/seele.png", caption: "Emblem" }
+  - { image: "/assets/old-media/emblems/seele.png", caption: "Emblem" }
   - label: "Motto"
     value:
       - "Was übrig bleibt, bleibt ewig bis zum Morgen. Der Herr zählt die Seinen; uns zählt er nicht."

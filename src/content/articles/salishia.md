@@ -93,7 +93,7 @@ The National Congress is the main bulk of the Legislative branch of the governme
 
 In the case of a national emergency, the National Congress retains its legislative authority and serves as a constitutional check upon emergency powers exercised by the President. Congress may authorize emergency funding, pass temporary legislation, approve declarations of war, mobilization measures, disaster relief efforts, and other actions to preserve public safety and national security. Any emergency measures enacted by Congress or the Executive Branch remain subject to constitutional limitations and review via the Supreme Court.
 
-<figure><img src="/assets/media/salishia-2.jpg" alt="Legislative Building, Fort Mercer"><figcaption>Legislative Building, Fort Mercer</figcaption></figure>
+<figure><img src="/assets/old-media/media/salishia-2.jpg" alt="Legislative Building, Fort Mercer"><figcaption>Legislative Building, Fort Mercer</figcaption></figure>
 
 
 ### Executive Branch
@@ -110,7 +110,7 @@ The Judicial Branch is responsible for interpreting the laws of the Republic of 
 
 The judiciary consists of Local Courts, Regional Courts, and the Supreme Court of Salishia. Local Courts handle the majority of civil and criminal cases. Regional Courts hear appeals from Local Courts and oversee the administration of justice within their respective districts. The Supreme Court of Salishia is the highest court in the nation and possesses the authority to review the constitutionality of laws and government actions.
 
-<figure><img src="/assets/media/salishia-3.png" alt="Supreme Court of Salishia"><figcaption>Supreme Court of Salishia</figcaption></figure>
+<figure><img src="/assets/old-media/media/salishia-3.png" alt="Supreme Court of Salishia"><figcaption>Supreme Court of Salishia</figcaption></figure>
 
 
 ## Economy
@@ -147,5 +147,5 @@ The Birthright Act was passed in hopes of raising the population, therefore, the
 | --- | --- | --- | --- |
 
 <div class="imgrid">
-<figure style="flex:1.538"><img src="/assets/media/salishia-4.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.538"><img src="/assets/old-media/media/salishia-4.jpg" alt=""><figcaption></figcaption></figure>
 </div>

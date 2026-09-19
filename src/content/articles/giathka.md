@@ -7,8 +7,8 @@ type: overview
 nation: giathka
 infobox:
   - { image: "/assets/flags/giathka.png", caption: "Flag" }
-  - { image: "/assets/emblems/giathka.jpg", caption: "Coat of Arms" }
-  - { image: "/assets/media/giathka-3.png", caption: "Location of Giathka" }
+  - { image: "/assets/old-media/emblems/giathka.jpg", caption: "Coat of Arms" }
+  - { image: "/assets/old-media/media/giathka-3.png", caption: "Location of Giathka" }
   - label: "Motto"
     value:
       - "\"Čelovek grešil od časa kada sotvorih Boga da oprosti im grehe.\""
