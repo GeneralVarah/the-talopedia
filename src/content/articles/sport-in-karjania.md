@@ -3,6 +3,7 @@ title: "Sport in Karjania"
 type: list
 nation: karjania
 ---
+
 ## Sport in Karjania
 
 In the [[united-socialist-states-of-karjania]], sport is one of the most popular activities, with the government placing a focus on the development of sporting talents. There is no officially designated national sport of [[karjania]], but the most popular ones include football, ice hockey, motorsport, Pesäpallo and various forms of horse racing. The Ministry of Sport is responsible for most sporting events and competitions, and is headquartered in [[pietari]].
@@ -15,7 +16,7 @@ In the [[united-socialist-states-of-karjania]], sport is one of the most popular
 
 ### Karjania at the Football World Cup
 
-Karjania has competed in the Football World Cup over 10 times, including the inaugural competition in 1900. The team’s biggest success came in 1904, when they were crowned champions of the world after defeating the Holy Evrian Empire 3-1 in the final. They played in 2 other finals, in 1912 and 1930, losing to Reino and [[nichirin]]. Karjania finished 3rd place in 1908, 1918 and 1933. The Frederikka Islands and Kullanmaan have never qualified for the World Cup. In 1930, Karjania placed a bid to host the competition, but lost out in favour of the [[elysian-state-of-unity]].
+The [[karjanian-national-football-team]] has competed in the Football World Cup over 10 times, including the inaugural competition in 1900. The team’s biggest success came in 1904, when they were crowned champions of the world after defeating the Holy Evrian Empire 3-1 in the final. They played in 2 other finals, in 1912 and 1930, losing to Reino and [[nichirin]]. Karjania finished 3rd place in 1908, 1918 and 1933. The Frederikka Islands and Kullanmaan have never qualified for the World Cup. In 1930, Karjania placed a bid to host the competition, but lost out in favour of the [[elysian-state-of-unity]].
 
 <figure><img src="/assets/old-media/media/sport-in-karjania-2.jpg" alt="The 1904 Karjanian World Cup winning football squad"><figcaption>The 1904 Karjanian World Cup winning football squad</figcaption></figure>
 
@@ -39,7 +40,7 @@ Karjania has competed in the Football World Cup over 10 times, including the ina
 
 ### Harness Racing
 
-[Harness racing](https://en.wikipedia.org/wiki/Harness_racing) is a form of horse racing most popular in the Savio and Usumi regions of Karjania. Horse racing is one of the oldest forms of sport in Karjania, dating back to before the 1800s. The first official harness race was held in Syväsjärvi in 1826. The most common horse breed used for harness racing is the unique [Karjanhorse](https://en.wikipedia.org/wiki/Finnhorse). The most prestigious race is the *Karjanmaa-Ajo*held in Åulot, over 1600 meters. This race is contested by horses from several nations inside and outside of [[evria]]. Harness racing is mostly held in the western half of the country while flat racing is more popular in the Northeast region, mainly in Arkankeli and Kivijärvi. Harness racing was the most popular sport for betting before restrictions placed by the Socialist government.
+[Harness racing](https://en.wikipedia.org/wiki/Harness_racing) is a form of horse racing most popular in the Savio and Usumi regions of Karjania. Horse racing is one of the oldest forms of sport in Karjania, dating back to before the 1800s. The first official harness race was held in Syväsjärvi in 1826. The most common horse breed used for harness racing is the unique [Karjanhorse](https://en.wikipedia.org/wiki/Finnhorse). The most prestigious race is the *Karjanmaa-Ajo h*eld in Åulot, over 1600 meters. This race is contested by horses from several nations inside and outside of [[evria]]. Harness racing is mostly held in the western half of the country while flat racing is more popular in the Northeast region, mainly in Arkankeli and Kivijärvi. Harness racing was the most popular sport for betting before restrictions placed by the Socialist government.
 
 <figure><img src="/assets/old-media/media/sport-in-karjania-6.jpg" alt="The Stallion Kuurankukka and his driver Antti Hietala, 1929"><figcaption>The Stallion Kuurankukka and his driver Antti Hietala, 1929</figcaption></figure>
 
@@ -90,4 +91,3 @@ Handball was first played in the 1910s in Pietari, but a league was not created 
 Tennis was first played in Karjania in the 1870s, and the first Karjania Open was held in 1906, in Roudanjärvi. The tournament was moved to Pietari in 1919. Throughout it's lifespan, the competition has had players from 3 different continents. The 1932 tournament had athletes from 4 nations competing, including [[varahmehr]]. The edition was won by Karjanian Eino Erkkilä.
 
 <figure><img src="/assets/old-media/media/sport-in-karjania-14.jpg" alt="Karjanian Tennis Players, 1927"><figcaption>Karjanian Tennis Players, 1927</figcaption></figure>
-
