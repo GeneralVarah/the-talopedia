@@ -4,12 +4,12 @@ nativeTitle: "小笠原 宗廣"
 type: character
 nation: nichirin
 infobox:
-  - { office: "Commissioner of the Shinkeisei Metropolitan Police", term: "June 23, 1917 – December 1, 1925" }
-  - { label: "Preceded by", value: "Shihi Abo" }
-  - { label: "Succeeded by", value: "Kichisaburo Washinomiya" }
   - { office: "Minister of Interior Affairs", term: "Incumbent | December 25, 1926 –" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - { label: "Preceded by", value: "Wakiko Fujima" }
+  - { office: "Commissioner of the Shinkeisei Metropolitan Police", term: "June 23, 1917 – December 1, 1925" }
+  - { label: "Preceded by", value: "Shihi Abo" }
+  - { label: "Succeeded by", value: "Kichisaburo Washinomiya" }
   - { section: "Personal Details" }
   - { label: "Nationality", value: ":flag[nichirin] [[nichirin|Nichirian]]" }
   - label: "Born"

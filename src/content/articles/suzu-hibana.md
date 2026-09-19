@@ -4,11 +4,11 @@ nativeTitle: "火花 鈴"
 type: character
 nation: nichirin
 infobox:
-  - { office: "Deputy Director-General of the Tax Bureau", term: "November 1, 1928 – August 4, 1930" }
-  - { label: "Director-General", value: "Danno Takata" }
   - { office: "Minister of Economy, Trade, and Industry", term: "Incumbent | August 4, 1930 –" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - { label: "Preceded by", value: "[[kishibe-toda]]" }
+  - { office: "Deputy Director-General of the Tax Bureau", term: "November 1, 1928 – August 4, 1930" }
+  - { label: "Director-General", value: "Danno Takata" }
   - { section: "Personal Details" }
   - { label: "Nationality", value: ":img[/assets/flags/kinshu.jpg] [[kinshu|Kinshūan]]" }
   - label: "Born"

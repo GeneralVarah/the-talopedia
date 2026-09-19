@@ -4,14 +4,14 @@ nativeTitle: "宮城 成義"
 type: character
 nation: nichirin
 infobox:
-  - { office: "Deputy Chief Liaison Officer", term: "June 21, 1926 – March 20, 1928" }
-  - { label: "Chief Liaison Officer", value: "[[akane-shikinami-hoffmann|Akane Shikinami-Hoffmann]]" }
   - { office: "Minister of Foreign Affairs", term: "Incumbent | March 20, 1928 –" }
   - label: "Shogun"
     value:
       - "Masanori Miyamoto"
       - "[[masashi-miyamoto]]"
   - { label: "Preceded by", value: "[[suiren-makinami]]" }
+  - { office: "Deputy Chief Liaison Officer", term: "June 21, 1926 – March 20, 1928" }
+  - { label: "Chief Liaison Officer", value: "[[akane-shikinami-hoffmann|Akane Shikinami-Hoffmann]]" }
   - { section: "Personal Details" }
   - { label: "Nationality", value: "[[nichirin|Nichirian]]" }
   - label: "Born"

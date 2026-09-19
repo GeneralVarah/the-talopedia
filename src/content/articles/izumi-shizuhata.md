@@ -4,12 +4,12 @@ nativeTitle: "泉 静畑"
 type: character
 nation: nichirin
 infobox:
-  - { office: "Director-General of the Tax Bureau", term: "October 19, 1925 – July 6, 1928" }
-  - { label: "Preceded by", value: "Masamichi Anzai" }
-  - { label: "Succeeded by", value: "Danno Takata" }
   - { office: "Minister of Finance", term: "Incumbent | July 7, 1928 –" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - { label: "Preceded by", value: "Shizue Kagiyama" }
+  - { office: "Director-General of the Tax Bureau", term: "October 19, 1925 – July 6, 1928" }
+  - { label: "Preceded by", value: "Masamichi Anzai" }
+  - { label: "Succeeded by", value: "Danno Takata" }
   - { section: "Personal Details" }
   - { label: "Nationality", value: ":flag[nichirin] [[nichirin|Nichirian]]" }
   - label: "Born"
