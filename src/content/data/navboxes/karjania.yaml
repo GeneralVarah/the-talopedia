@@ -79,7 +79,7 @@ groups:
       - label: "Culture"
         items:
           - "culture-of-karjania"
-          - "football-in-karjania"
+          - "karjanian-national-football-team"
           - "taistojen-tiella|Taistojen Tiellä"
           - "sport-in-karjania"
           - "red-arena"
@@ -87,8 +87,6 @@ groups:
   - label: "Miscellaneous"
     rows:
       - label: "Historical Figures"
-        items:
-          - "list-of-karjanian-kings"
       - label: "Socialist Leaders"
         items:
           - "yrio-sinnar|Yriö Sinnar"
