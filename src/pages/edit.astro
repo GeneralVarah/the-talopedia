@@ -243,11 +243,16 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           <input id="pub-token" type="password" autocomplete="off" spellcheck="false"
             placeholder="github_pat_…" /></label>
         <p class="pub-note">
-          Create a <b>fine-grained</b> token with access to this one repository, and give it
-          <b>Contents</b> and <b>Pull requests</b> read and write.
-          <a id="pub-make" href="#" target="_blank" rel="noopener">Make one</a>.
-          It is kept in this browser and sent only to GitHub.
+          <a id="pub-make" href="#" target="_blank" rel="noopener">Make a fine-grained token</a>,
+          then set three things on it:
         </p>
+        <ol class="pub-steps">
+          <li><b>Repository access</b>: Only select repositories, and pick this one.
+            The default is read-only and will not work.</li>
+          <li><b>Permissions &rarr; Contents</b>: Read and write.</li>
+          <li><b>Permissions &rarr; Pull requests</b>: Read and write.</li>
+        </ol>
+        <p class="pub-note">The token is kept in this browser and sent only to GitHub.</p>
         <p class="pub-status" id="pub-status"></p>
         <div class="pub-row">
           <button id="pub-go" type="button" class="primary">Publish</button>
@@ -2006,7 +2011,19 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       });
       const text = await r.text();
       const data = text ? JSON.parse(text) : {};
-      if (!r.ok) throw new Error(data.message || `${r.status} ${r.statusText}`);
+      if (!r.ok) {
+        const where = path.replace(GH, '').split('?')[0];
+        // GitHub's own wording says nothing about which permission is missing, and the
+        // cause is nearly always one of two things, so name whichever it is.
+        const msg = data.message || '';
+        const why = /Bad credentials/i.test(msg)
+          ? '. The token is wrong or has expired'
+          : /not accessible by personal access token|Not Found|Resource not accessible/i.test(msg)
+          ? '. The token is missing a permission: it needs this repository under Repository '
+            + 'access, with Contents and Pull requests both set to Read and write'
+          : '';
+        throw new Error(`${msg || r.statusText} (${opts.method || 'GET'} ${where})${why}.`);
+      }
       return data;
     }
 
@@ -2057,6 +2074,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         const me = await gh('/user');
         const base = await gh(`/repos/${REPO}`);
         const canPush = !!base.permissions?.push;
+        const mine = (base.owner?.login || '').toLowerCase() === (me.login || '').toLowerCase();
+
+        // Owning the repository and still having no write access means the token is
+        // read-only. Forking it to yourself is not possible and not what is wanted.
+        if (mine && !canPush) {
+          throw new Error(`This token cannot write to ${REPO}. When you create it, set `
+            + `Repository access to "Only select repositories" and choose ${REPO}, then set `
+            + `Contents and Pull requests to "Read and write".`);
+        }
 
         let work = REPO;
         if (!canPush) {
@@ -3036,6 +3062,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     .pub input:focus { outline: none; border-color: var(--link); }
     .pub-note { font-size: 12.5px; line-height: 1.6; color: var(--muted); margin: 10px 0 0; }
     .pub-note b { color: var(--ink); font-weight: 600; }
+    .pub-steps { font-size: 12.5px; line-height: 1.6; color: var(--muted); margin: 8px 0 0; padding-left: 20px; }
+    .pub-steps li { margin: 4px 0; }
+    .pub-steps b { color: var(--ink); font-weight: 600; }
     .pub-status { font-size: 12.5px; color: var(--muted); margin: 12px 0 0; min-height: 1.2em; }
     .pub-status.bad { color: #e08c8c; }
     .pub-row { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
