@@ -306,12 +306,18 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     const SMALL = /^(of|the|and|in|on|at|to|a|an|for|from|by|de|von)$/;
     // A filename cannot hold brackets, so a wartime flag is stored as shivon-tgw and
     // read back as Shivon (TGW) rather than the "Shivon Tgw" that word-casing gives.
+    // Football clubs spell themselves in initials, and word-casing turns AFC into Afc.
+    // The list is only what the badges actually use.
+    const CAPS = new Set(['fc', 'jk', 'fk', 'sc', 'if', 'ff', 'ik', 'sk', 'ps', 'sv', 'is',
+      'bk', 'ac', 'js', 'cf', 'tk', 'tv', 'afc', 'ifk', 'cska', 'arf', 'htk', 'ud', 'bc', 'rc']);
     const TAGS = { tgw: 'TGW', esu: 'E.S.U.', sar: 'SAR' };
     const pretty = (s) => {
       const parts = s.split('-');
       const tail = TAGS[parts[parts.length - 1]] && parts.length > 1 ? parts.pop() : null;
       const name = parts.map((w, i) =>
-        i > 0 && SMALL.test(w) ? w : TAGS[w] || w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        CAPS.has(w) ? w.toUpperCase()
+        : i > 0 && SMALL.test(w) ? w
+        : TAGS[w] || w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
       return tail ? `${name} (${TAGS[tail]})` : name;
     };
     let TITLES = {};
@@ -2698,11 +2704,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       // article needs is here: former states, colonies and wartime variants are not
       // nations in the registry, so nothing in the registry could ever offer them.
       const held = new Set(icons.map((i) => i.src));
-      const GROUP = { flags: 'flag', emblems: 'icon', subdivisions: 'subdivision' };
+      const GROUP = { flags: 'flag', emblems: 'icon', subdivisions: 'subdivision', badges: 'badge' };
       for (const a of ASSETS) {
         if (!GROUP[a.group] || held.has(a.path)) continue;
-        icons.push({ slug: a.path, src: a.path, kind: GROUP[a.group],
-          label: displayOf(a.name.replace(/\.[^.]+$/, '')), loose: true });
+        const stem = a.name.replace(/\.[^.]+$/, '');
+        // A badge whose club is not in the football presets keeps its three-letter
+        // code as its name, and a code reads as a code rather than as a word.
+        const label = a.group === 'badges' && /^[a-z]{3}$/.test(stem)
+          ? stem.toUpperCase() : displayOf(stem);
+        icons.push({ slug: a.path, src: a.path, kind: GROUP[a.group], label, loose: true });
       }
       icons.sort((a, b) => a.kind.localeCompare(b.kind) || a.label.localeCompare(b.label));
       const shown = icons.filter((i) => !iq || fold(i.label).includes(iq) || fold(i.slug).includes(iq));
@@ -2711,8 +2721,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       for (const i of shown) {
         if (i.kind !== kind) {
           kind = i.kind;
-          mpIcons.append(el('div', 'mp-group',
-            kind === 'flag' ? 'flags' : kind === 'subdivision' ? 'subdivisions' : 'emblems'));
+          const GROUP_NAME = { flag: 'flags', icon: 'emblems', subdivision: 'subdivisions', badge: 'club badges' };
+          mpIcons.append(el('div', 'mp-group', GROUP_NAME[kind] || kind));
         }
         const b = el('button', 'mp-icon');
         b.type = 'button';
