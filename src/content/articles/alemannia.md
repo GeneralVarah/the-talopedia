@@ -169,7 +169,7 @@ The southern regions, comprising the Alps and the Sueviani and Bairathian Highla
 
 <div class="imgrid">
 <figure style="flex:1.778"><img src="/assets/media/alemannia-4.jpg" alt="The Dufarspitze, the highest peak in Alemannia with a height of 4,634 meters, State Helvetien"><figcaption>The Dufarspitze, the highest peak in Alemannia with a height of 4,634 meters, State Helvetien</figcaption></figure>
-<figure style="flex:1.5"><img src="/assets/media/alemannia-5.jpg" alt="Silver Forest, Alemannians highest and largest contiguous low mountain ranges and a popular tourist attraction, State Badenhain and Suevien"><figcaption>Silver Forest, Alemannians highest and largest contiguous low mountain ranges and a popular tourist attraction, State Badenhain and Suevien</figcaption></figure>
+<figure style="flex:1.500"><img src="/assets/media/alemannia-5.jpg" alt="Silver Forest, Alemannians highest and largest contiguous low mountain ranges and a popular tourist attraction, State Badenhain and Suevien"><figcaption>Silver Forest, Alemannians highest and largest contiguous low mountain ranges and a popular tourist attraction, State Badenhain and Suevien</figcaption></figure>
 </div>
 
 <div class="imgrid">
@@ -180,7 +180,7 @@ The southern regions, comprising the Alps and the Sueviani and Bairathian Highla
 Further northwest, the central plains and river basins extend across states such as Ymirauen, Hessarien, Franken, Valdoria, Dravia, and northern Arlberg. This region is characterized by rolling hills, wooded mountain ranges, fertile plains, and the valleys of the Ymir, Maine, Danau, Alvis, Vlotau, and Drava rivers. The Ymir forms the country's most important trade waterway, connecting the industrial centers of the Ymir-Rul with the North Sea ports, while the Danau represents a significant east-west transport corridor through the Alpine foothills. Tributaries such as the Seig, Arl, Isenlauf, and Saale interweave the industrial, agricultural, and urban landscapes of Alemannia.
 
 <div class="imgrid">
-<figure style="flex:2.0"><img src="/assets/media/alemannia-8.jpg" alt="The Mittelymirtal, a popular travel destination located at the Seig, State Saale-Pfölz"><figcaption>The Mittelymirtal, a popular travel destination located at the Seig, State Saale-Pfölz</figcaption></figure>
+<figure style="flex:2.000"><img src="/assets/media/alemannia-8.jpg" alt="The Mittelymirtal, a popular travel destination located at the Seig, State Saale-Pfölz"><figcaption>The Mittelymirtal, a popular travel destination located at the Seig, State Saale-Pfölz</figcaption></figure>
 <figure style="flex:1.333"><img src="/assets/media/alemannia-9.jpg" alt="Otta-Höhle, one of the largest stalactite caves in Alemannia, State Lippgau"><figcaption>Otta-Höhle, one of the largest stalactite caves in Alemannia, State Lippgau</figcaption></figure>
 </div>
 
@@ -188,7 +188,7 @@ The eastern lowlands, which span from western Veenglade on the North Sea to Vist
 
 <div class="imgrid">
 <figure style="flex:1.778"><img src="/assets/media/alemannia-10.jpg" alt="Sand Dunes on the North Sea Coast, State Halvorn"><figcaption>Sand Dunes on the North Sea Coast, State Halvorn</figcaption></figure>
-<figure style="flex:1.6"><img src="/assets/media/alemannia-11.jpg" alt="The Larneburger Heide, one of the biggest tourism spots in Eastern Alemannia, State Haneburg"><figcaption>The Larneburger Heide, one of the biggest tourism spots in Eastern Alemannia, State Haneburg</figcaption></figure>
+<figure style="flex:1.600"><img src="/assets/media/alemannia-11.jpg" alt="The Larneburger Heide, one of the biggest tourism spots in Eastern Alemannia, State Haneburg"><figcaption>The Larneburger Heide, one of the biggest tourism spots in Eastern Alemannia, State Haneburg</figcaption></figure>
 </div>
 
 The northern region, stretching from Havelland through Silmarien to the former northern territories in Cortesia, are characterized by wide plains, gently rolling hills, mixed forests, and fertile farmland. Abundant coal deposits and other mineral resources form the basis for intensive industrial activity, while the Arder and upper Viste river systems ensure regional transport and irrigation. The combination of fertile soils, abundant natural resources, and well-developed railway networks has made the northern regions, especially Silmarien, one of the country's most important centers for agriculture, mining, and heavy industry.
