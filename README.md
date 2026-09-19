@@ -8,7 +8,7 @@ git records who changed what, forever, with their name on it. Bear that in mind.
 
 ## How to write an article
 
-I am told the editor is daunting. I have been told this by adults. In the interest of never
+I have been told by grown ass adults that the editor looked daunting. In the interest of never
 being told it again:
 
 1. Click **Edit**. It sits at the top right of every page and has done so the entire time.
