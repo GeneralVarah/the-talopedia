@@ -4,22 +4,39 @@ The in-universe encyclopedia for Avium.
 **[auroruse.github.io/the-talopedia](https://auroruse.github.io/the-talopedia/)**
 
 Articles are markdown files. Astro builds them into a static site, GitHub Pages serves it, and
-git keeps the history.
+git records who changed what, forever, with their name on it. Bear that in mind.
 
-To write something, click **Edit** on any page. You do not need to install anything or have
-write access here; the editor explains the rest and opens a pull request when you are done.
+## How to write an article
 
-## Running it locally
+I am told the editor is daunting. I have been told this by adults. In the interest of never
+being told it again:
 
-```
-npm install
-npm run dev       localhost:4321, with live reload, search, and a Save button
-npm run build     static site into dist/
-npm run preview   serve dist/ to see what deploys
-npm run clean     drop the caches, needed after editing src/lib
-```
+1. Click **Edit**. It sits at the top right of every page and has done so the entire time.
+2. Type.
+3. Click **Commit**. Repeat on as many pages as you feel able.
+4. Click **Changes**, then **Push**.
 
-Push to `main` and `.github/workflows/deploy.yml` deploys it.
+That is the procedure in full. There is no export. There is no zip file. Nobody posts anything
+in a Discord channel and waits for me to notice it. Your work becomes a pull request and walks
+here on its own legs.
+
+You do not need to install anything. You do not need an account on this repository. You are
+asked once for a GitHub token, and the editor spells out how to obtain one in language I
+deliberately pitched below the level of this audience.
+
+It will also stop you saving one article over another, a feature added after a week I would
+prefer not to discuss.
+
+## Improvements over a word processor
+
+* Search across every page
+* Links that follow a rename everywhere at once, unprompted
+* Sidebar fields in a fixed order, so nobody may invent their own
+* Images that float, tables that behave
+* A navbox at the foot of every article
+* Hyperlink colours you cannot change. This one is not negotiable.
+
+Do not ask me for help with the editor. Use your noggin man. I beg you.
 
 ## Layout
 
