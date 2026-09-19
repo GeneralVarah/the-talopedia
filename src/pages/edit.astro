@@ -43,6 +43,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           <button id="new-navbox" type="button">New navbox</button>
           <div class="menu-sep"></div>
           <button id="open-file" type="button">Open a file…</button>
+          <button id="duplicate" type="button">Duplicate as a new page…</button>
           <input id="open-file-input" type="file" accept=".md,.markdown,.yaml,.yml" hidden />
           <div class="menu-sep"></div>
           <input id="file-q" type="search" placeholder="Search articles" autocomplete="off" />
@@ -321,6 +322,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     // the published site this is the only thing that knows a portal is filed under its
     // nation rather than under "Portal:Nichirin".
     let pageSlug = '';
+    // The title the open page had when it was loaded. Saving under the same file name
+    // with a different title is how an article gets used as a template and overwritten.
+    let loadedTitle = '';
     let navboxLead = '';
     // A portal's body is not editable here. Two nations have no overview article yet
     // and their portal still carries its own paragraph, so whatever was loaded is
@@ -1815,6 +1819,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#f-coords').value = data.coords || '';
       $('#f-ooc').checked = !!data.ooc;
       pageSlug = bare;
+      loadedTitle = (data.title || '').trim();
       setSlug(bare); slugTouched = true;
       setInfobox(data.infobox || []);
       paintSettings();
@@ -2071,7 +2076,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     };
     /** Clear the desk and start a page of the given kind. */
     function blank(kind, slug = '') {
-      pageKind = kind; navboxLead = ''; portalBody = ''; pageSlug = slug;
+      pageKind = kind; navboxLead = ''; portalBody = ''; pageSlug = slug; loadedTitle = '';
       $('#settings').querySelectorAll('input[type=text], textarea').forEach((i) => i.value = '');
       $('#f-ooc').checked = false;
       $('#f-navbox-on').checked = true;
@@ -2487,6 +2492,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 
     if ($('#open-file')) {
       $('#open-file').onclick = () => $('#open-file-input').click();
+      $('#duplicate').onclick = duplicate;
       $('#open-file-input').onchange = async (e) => {
         const f = e.target.files[0];
         e.target.value = '';
@@ -2494,6 +2500,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         try {
           fromMarkdown(await f.text());
           pageSlug = f.name.replace(/\.(md|markdown|ya?ml)$/i, '');
+          loadedTitle = $('#f-title').value.trim();
           setSlug(pageSlug); slugTouched = true;
           flash(`Opened ${f.name}.`);
         } catch (err) {
@@ -2674,6 +2681,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#cart-add').onclick = async () => {
         const c = currentChange();
         if (!c) { flash('Give the page a title first.', true); return; }
+        if (overwrites(c.slug) && !confirm(
+            `${c.slug} is "${loadedTitle}". Saving replaces it with "${c.title}".\n\n`
+            + 'To keep both, cancel and use File \u25b8 Duplicate as a new page.')) return;
         await cart.put(c);
         await paintCart();
         flash(`${c.title} is waiting with ${(await cart.all()).length - 1} other change(s).`
@@ -2719,6 +2729,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#save').onclick = async () => {
         const slug = slugify(slugValue() || $('#f-title').value);
         if (!slug) { flash('Give the article a title first.', true); return; }
+        if (overwrites(slug) && !confirm(
+            `${slug} is "${loadedTitle}". Saving replaces it with "${$('#f-title').value.trim()}".\n\n`
+            + 'To keep both, cancel and use File \u25b8 Duplicate as a new page.')) return;
         setSlug(slug);
         try {
           const r = await fetch(`${BASE.replace(/\/$/, '')}/__save`, {
@@ -2941,6 +2954,32 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         : host.includes('google') ? 'Google Drive \u2713  the file must be shared with anyone who has the link'
         : `${host} \u2713`);
       note.className = 'mp-hint ' + (bad ? 'bad' : 'ok');
+    }
+
+    /**
+     * Cut this page loose from the file it was opened from, so what follows is saved
+     * as a new one. Using an article as a template and saving it back over the
+     * original is the accident this exists to prevent.
+     */
+    function duplicate() {
+      if (!pageSlug && !slugValue()) { flash('Nothing is open to copy.', true); return; }
+      const from = pageSlug || slugValue();
+      pageSlug = '';
+      loadedTitle = '';
+      setSlug('');
+      slugTouched = false;          // the URL follows the title again until it is typed in
+      $('#settings').hidden = false;
+      $('#f-title').focus();
+      flash(`Copy of ${from}. Give it a new title, and check the URL before saving.`);
+    }
+
+    /**
+     * True when saving now would write over the page this one was opened from, under a
+     * title that is no longer that page's.
+     */
+    function overwrites(slug) {
+      if (!pageSlug || slug !== pageSlug || !loadedTitle) return false;
+      return $('#f-title').value.trim() !== loadedTitle;
     }
 
     /** The file name this page is saved under, wherever it was typed. Declared
