@@ -5,7 +5,10 @@ from convert import parse as parse_portal
 
 ROOT = '/Users/zli/Documents/NICHIRIN/Programs/The Talopedia'
 SRC = os.path.join(ROOT, 'old portals')
-MEDIA = os.path.join(ROOT, 'public/assets/media')
+# Anything arriving out of a Google Doc is pre-conversion material by definition,
+# which is what the archive holds. New pictures go to an image host instead.
+MEDIA_URL = '/assets/old-media/media'
+MEDIA = os.path.join(ROOT, 'public' + MEDIA_URL)
 
 NATIONS = {}
 for line in open(f'{ROOT}/src/content/data/nations.yaml', encoding='utf-8'):
@@ -111,7 +114,7 @@ def build(path):
                 name = os.path.basename(alt)
             elif os.path.exists(alt):
                 os.remove(alt)
-        seen[h] = f'/assets/media/{name}'
+        seen[h] = f'{MEDIA_URL}/{name}'
         return seen[h]
 
     labels = [r['label'] for r in infobox if 'label' in r]
