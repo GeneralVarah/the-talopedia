@@ -6,14 +6,14 @@ nation: nichirin
 infobox:
   - { image: "/assets/old-media/media/suiren-makinami-1.jpg", caption: "" }
   - { office: "Senior Shogunal Advisor", term: "Incumbent | October 2, 1923 –" }
-  - { office: "Marshal-Admiral of the Navy", term: "Incumbent | July 25, 1915 –" }
-  - { office: "Minister of Foreign Affairs", term: "December 11, 1924 – March 20, 1928" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
+  - { office: "Marshal-Admiral of the Navy", term: "Incumbent | July 25, 1915 –" }
   - label: "Shogun"
     value:
       - "Masanori Miyamoto"
       - "Masashi Miyamoto"
   - { label: "Preceded by", value: "Nobumasa Kurosawa" }
+  - { office: "Minister of Foreign Affairs", term: "December 11, 1924 – March 20, 1928" }
   - label: "Shogun"
     value:
       - "Masanori Miyamoto"

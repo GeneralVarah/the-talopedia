@@ -6,8 +6,8 @@ nation: nichirin
 infobox:
   - { image: "/assets/old-media/media/akane-shikinami-hoffmann-1.jpg", caption: "" }
   - { office: "Senior Shogunal Advisor", term: "Incumbent | June 21, 1926 –" }
-  - { office: "Chief Liaison Officer", term: "Incumbent | June 21, 1926 –" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
+  - { office: "Chief Liaison Officer", term: "Incumbent | June 21, 1926 –" }
   - { label: "Shogun", value: "Masashi Miyamoto" }
   - { label: "Preceded by", value: "Position Established" }
   - label: "Deputies"
