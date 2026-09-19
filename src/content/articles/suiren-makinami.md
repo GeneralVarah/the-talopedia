@@ -49,7 +49,7 @@ Suiren Makinami was born on March 31, 1894, in Tynemouth, [[elvester]], the daug
 
 In 1900, Shinsuke was reassigned to Nichirin. Makinami, then six years old, returned with him, while Sunderland remained in Tynemouth, though mother and daughter maintained correspondence through Makinami's childhood and into her early naval career. Makinami arrived in Nichirin speaking Nichirian imperfectly, with an accent her classmates noticed, and her father spent the following years working to correct it. She holds dual Nichirian and Elvesterian nationality.
 
-Shinsuke Makinami retired from the Nichirian Navy at the rank of Junior Admiral in 1908. Makinami enrolled at [[chukyo]] Naval Academy in 1909, at the age of fifteen, a decision consistent with a childhood spent in proximity to naval operations and an apparent indifference to the civilian alternatives available to her. She graduated first in her class in 1912, completing the program ahead of the standard timeline at 18 years old.
+Shinsuke Makinami retired from the Nichirian Navy at the rank of Junior Admiral in 1908. Makinami enrolled at [[chukyo|Chūkyō]] Naval Academy in 1909, at the age of fifteen, a decision consistent with a childhood spent in proximity to naval operations and an apparent indifference to the civilian alternatives available to her. She graduated first in her class in 1912, completing the program ahead of the standard timeline at 18 years old.
 
 ## Naval Career
 
