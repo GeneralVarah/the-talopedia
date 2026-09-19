@@ -11,7 +11,7 @@ infobox:
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - { label: "Preceded by", value: "Wakiko Fujima" }
   - { section: "Personal Details" }
-  - { label: "Nationality", value: "[[nichirin|Nichirian]]" }
+  - { label: "Nationality", value: ":flag[nichirin] [[nichirin|Nichirian]]" }
   - label: "Born"
     value:
       - "Munehiro Ogasawara"
