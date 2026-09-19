@@ -4,13 +4,13 @@ nativeTitle: "宮本 正志"
 type: character
 nation: nichirin
 infobox:
-  - { image: "/assets/old-media/media/masashi-miyamoto-1.jpg", caption: "" }
+  - { image: "https://lh3.googleusercontent.com/pw/AP1GczNEHSyso2K9OAjlY2kaGJJusu5STapO9Os5Gb65XGp8sh_5saXjpbZIQ7Fnw2BeqJa3DheiC9laZc_bACI1hwdf8lYD56eO_fOycP-9KJZqfVAynQJi4Yn4NP6Dz-4rKcvbXgZhvqc6qUSObR4DZjXS=w2000", caption: "" }
   - { label: "Preceded by", value: "Masanori Miyamoto" }
   - label: "Senior Shogunal Advisors"
     value:
       - "[[suiren-makinami]]"
       - "[[kanade-tachibana]]"
-      - "[[akane-shikinami-hoffmann|Akane Shikinami-Hoffmann]]"
+      - "[[akane-shikinami-hoffmann]]"
   - { section: "Personal Details" }
   - { label: "Nationality", value: "[[nichirin|Nichirian]]" }
   - label: "Born"
@@ -31,6 +31,7 @@ infobox:
   - { label: "Aldrige Rōmaji", value: "Miyamoto Masashi" }
   - { label: "Literal Meaning", value: "\"At the foot of the shrine, righteous will.\"" }
 ---
+
 **Masashi Miyamoto** (宮本 正志; born June 6, 1896) is the 14th Shogun of [[nichirin]], having assumed power on October 1, 1923, following his father Masanori Miyamoto's debilitating illness. At twenty-seven, he became one of the youngest leaders in Nichirian history, inheriting a government marked by significant factional tension and assuming office in the aftermath of Keiko Miyamoto’s murder, a crime for which Foreign Minister Yuriko Okamura was convicted and executed by Shogunal order in December 1924. He is notable for his departure from his father's hardline policies, most significantly his initiation of the Tōhara Conference of March 1926, which normalized relations with Guandong following the Great War despite substantial internal opposition. He has governed without an immediate family since taking office, appointing advisors on the basis of demonstrated competence rather than factional affiliation, and is characterized by those within his administration as a leader who asks careful questions and delegates accordingly.
 
 ## Early Life and Education

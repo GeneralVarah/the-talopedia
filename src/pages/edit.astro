@@ -31,6 +31,10 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 <Base title="Editor" chrome={false} wide>
   <div class="ed">
     <div class="ed-tools">
+      <button id="back" type="button" title="Back to the article" disabled>
+        <svg viewBox="0 0 16 16"><path d="M13.2 8H3.4M7.6 3.8 3.2 8l4.4 4.2"/></svg>
+      </button>
+      <span class="div"></span>
       <div class="drop">
         <button id="file" type="button">File <span class="caret">▾</span></button>
         <div class="drop-menu list" id="file-menu" hidden>
@@ -141,6 +145,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         </div>
       </div>
 
+      <button id="settings-btn" type="button" title="Page settings"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="4.6"/><circle cx="8" cy="8" r="2.1"/><path d="M8 1.7v2.3M8 12v2.3M14.3 8H12M4 8H1.7M12.46 3.54 10.83 5.17M5.17 10.83 3.54 12.46M12.46 12.46 10.83 10.83M5.17 5.17 3.54 3.54"/></svg></button>
+
       <span class="spacer"></span>
       <span id="status" class="status"></span>
       <span class="save-group">
@@ -159,9 +165,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           Changes <span class="cart-n" id="cart-n">0</span>
         </button>
       </span>
-      <button id="settings-btn" type="button" title="Page settings">
-        <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.4v2M8 12.6v2M14.6 8h-2M3.4 8h-2M12.7 3.3l-1.4 1.4M4.7 11.3l-1.4 1.4M12.7 12.7l-1.4-1.4M4.7 4.7 3.3 3.3"/></svg>
-      </button>
       <div class="drop">
         <button id="more" type="button" title="More">⋯</button>
         <div class="drop-menu right list" id="more-menu" hidden>
@@ -1680,6 +1683,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           : 'choose the nation in page settings first.';
         $('#go-navbox').disabled = !n;
       }
+      // Where this page lives when it is not being edited. A navbox has no page of
+      // its own, so the portal carrying it is the nearest thing to go back to.
+      const to = !pageSlug ? ''
+        : pageKind === 'article' ? (pageSlug === 'home' ? '/' : `/${pageSlug}`)
+        : pageKind === 'navbox' && pageSlug === 'site' ? '/'
+        : `/portal/${pageSlug}`;
+      $('#back').dataset.to = to;
+      $('#back').disabled = !to;
+
       $('#navbox-note').textContent = !$('#f-navbox-on').checked ? 'none'
         : $('#f-nation').value ? `${$('#f-nation').selectedOptions[0].textContent}'s navbox`
         : 'site navbox';
@@ -1836,6 +1848,11 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       pickTarget = null;      // the panel is shut; it is not aimed at anything now
     });
     $('#settings-btn').onclick = () => { $('#settings').hidden = !$('#settings').hidden; };
+
+    $('#back').onclick = () => {
+      const to = $('#back').dataset.to;
+      if (to) location.href = BASE.replace(/\/$/, '') + to;
+    };
     $('#source').onclick = () => { $('#source-panel').hidden = false; };
     $('#source-close').onclick = () => { $('#source-panel').hidden = true; };
 
