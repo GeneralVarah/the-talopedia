@@ -1,7 +1,7 @@
 ---
 title: "Baunerth"
 type: celestial
-authors: [alemannia]
+authors: [alemannia, nichirin]
 navbox: site
 ooc: true
 infobox:
@@ -51,6 +51,7 @@ infobox:
       - "0.1% hydrogen sulfide"
       - "0.1% trace gases"
 ---
+
 **Baunerth**, formerly **Jovia** or **Cangyuan**, is the fourth and largest planet in the [[ignis-system|Ignis system]], orbiting Ignis Prime and Umbra Magna at a distance of 2.55 astronomical units every 1,487.31 sidereal days. With a radius of 74,250 kilometers, Baunerth has a cloud-top gravity more than twice that of [[avium]]'s surface gravity (25.29 m/s²) and is characterized by its immense size, extreme atmospheric pressure, and complex weather systems. Its hydrogen-helium atmosphere is dominated by methane and ammonia, forming dense reflective clouds and producing a low average surface temperature of 165 K (-108 °C). Baunerth is orbited by 17 satellites ranging from small captured asteroids to large geologically active moons, and exhibits spiral storm systems caused by tidal interactions with the binary systems.
 
 ## Nomenclature

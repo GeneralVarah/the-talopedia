@@ -1,7 +1,7 @@
 ---
 title: "Celithea"
 type: celestial
-authors: [alemannia]
+authors: [alemannia, nichirin]
 navbox: site
 ooc: true
 infobox:
@@ -52,6 +52,7 @@ infobox:
       - "0.1% carbon monoxide"
       - "0.1% trace gases"
 ---
+
 **Celithea** is the sixth, second-largest, and outermost confirmed planet in the [[ignis-system|Ignis system]], orbiting Ignis Prime and Umbra Magna at an average distance of 9 astronomical units. It is classified as an ice giant and bears similarities to [[baunerth]] in both atmospheric structure and overall composition. Celithea's hydrogen-helium atmosphere is dominated by methane and ammonia, giving it a blue-green appearance when combined with photochemical tholins and traces of hydrocarbons produced by the ultraviolet radiation from Ignis Prime. Celithea has a large system of at least 12 natural satellites and a faint ring complex of dust and ice particles, which can occasionally be observed during stellar occultations.
 
 ## Nomenclature
