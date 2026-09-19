@@ -1,6 +1,6 @@
 ---
 title: "Cortesia"
-nativeTitle: "Sfederowane Stany Cortesii"
+nativeTitle: "Cortesie"
 type: overview
 nation: cortesia
 infobox:
@@ -10,11 +10,11 @@ infobox:
   - label: "Motto"
     value:
       - "Przetrwamy"
-      - "\"We Will Endure\""
+      - "*\"We Will Endure\"*"
   - label: "Anthem"
     value:
       - "[Hymn do Milosci Ojczyzny](https://www.youtube.com/watch?v=KXqxFp7PccE)"
-      - "\"Hymn to Love of Country\""
+      - "*\"Hymn to Love of Country\"*"
   - { label: "Capital", value: "Corslawa" }
   - { label: "Largest City", value: "Jelgawa" }
   - { section: "Administration" }
@@ -55,12 +55,12 @@ infobox:
       - "Standard Alemannian"
   - { label: "Demonym", value: "Cortesian" }
   - { label: "GDP (PPP)", value: "1932 Census" }
-  - { label: "Total", sub: true, value: "$2,206,240,641,000" }
-  - { label: "Per Capita", sub: true, value: "$39,703" }
+  - { label: "Total", sub: true, value: ":up $2,206,240,641,000" }
+  - { label: "Per Capita", sub: true, value: ":down $39,703" }
   - { label: "Currency", value: "Cortesian Krona / CTK (kr)" }
-  - { label: "Life Expectancy", value: "42.9 years" }
-  - { label: "Literacy Rate", value: "50.7%" }
-  - { label: "HDI", value: "0.545 (high)" }
+  - { label: "Life Expectancy", value: ":up 42.9 years" }
+  - { label: "Literacy Rate", value: ":up 50.7%" }
+  - { label: "HDI", value: ":up 0.545 (high)" }
   - { section: "Miscellaneous Info" }
   - { label: "Land Area", value: "279,031 km²" }
   - { label: "Water Area", value: "9,293 km²" }
@@ -68,6 +68,7 @@ infobox:
   - { label: "Alpha-2 Code", value: "CS" }
   - { label: "Alpha-3 Code", value: "COR" }
 ---
+
 **Cortesia**, formally the Federated States of Cortesia, is a country in central [[evria]]. With its coastline restricted to a small section of the Lower Suebian Sea to the west, Cortesia shares land borders with several other Evrian nations. To the north across the Czernáwa River lies Livonia, to the northeast is [[rudania]], to the east just past the source of the Bystrawice River, one of the Modrawa River’s tributaries, lies Sidanya. To the southeast Cortesia shares a border with Turulia, and then finally the nation’s southwestern border, easily its longest border, is shared with [[alemannia]]. With a population just shy of 56 million, Cortesia is nowhere near the most populous country, ranking 27th overall according to 1932 Census data. The nation of Cortesia consists of a collection of 26 individual states, each operating mostly independently save for any matters that affect the nation as a whole. The capital of Cortesia is Corslawa, with a population of 1.8 million people, while its largest city is Jelgawa with a population of 2.34 million people.
 
 ## Etymology
@@ -112,37 +113,59 @@ Overseeing the Rada Federalna are the offices of President and Federal Chancello
 
 The judiciary system is independent of the Rada Federalna, with the Sąd Najwyższy (lit. ‘Supreme Court’) as the highest judicial institution. Courts operate at the federal, state, and local levels and deal with charterial, civil, criminal, and administrative matters. Judges are appointed for life based upon their merits in the legal field rather than any political standing or allegiance, and are obligated to uphold federal law and citizens’ guaranteed rights.
 
+## Economy
+
 ## Geography
 
 ### Topography
 
 <div class="imgrid">
-<figure style="flex:1.501"><img src="/assets/old-media/media/cortesia-4.jpg" alt=""><figcaption></figcaption></figure>
-<figure style="flex:1.501"><img src="/assets/old-media/media/cortesia-5.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.333"><img src="https://lh3.googleusercontent.com/d/1t01yvobKdxBB9SZv9prbcOajMGAT8sta=w2000" alt="*Straznik, the tallest mountain in Cortesia standing at 2,501 meters above sea level.*"><figcaption>*Straznik, the tallest mountain in Cortesia standing at 2,501 meters above sea level.*</figcaption></figure>
+<figure style="flex:1.500"><img src="https://lh3.googleusercontent.com/d/1fCGp3S9pj575VfFlhwF0Lo49X99wd49I=w2000" alt="*Spring in southern Cortesia, near the mountain valley town of Dolina Krokusów.*"><figcaption>*Spring in southern Cortesia, near the mountain valley town of Dolina Krokusów.*</figcaption></figure>
 </div>
 
 <div class="imgrid">
-<figure style="flex:1.501"><img src="/assets/old-media/media/cortesia-6.jpg" alt=""><figcaption></figcaption></figure>
-<figure style="flex:1.507"><img src="/assets/old-media/media/cortesia-7.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:1.781"><img src="https://lh3.googleusercontent.com/d/1ygaTH3S84iOO9pq9fd6lpBtNk5o_YsD8=w2000" alt="*Sosnowieża Forest in eastern Cortesia, along the borders with Rudania and Sidanya; Cortesia’s largest old-growth forest.*"><figcaption>*Sosnowieża Forest in eastern Cortesia, along the borders with Rudania and Sidanya; Cortesia’s largest old-growth forest.*</figcaption></figure>
+<figure style="flex:1.502"><img src="https://lh3.googleusercontent.com/d/1gT8JQjrDCIv0RvLh6wT-XauXelQYkbMK=w2000" alt="*One of the wide, sweeping curves of the Modrawa River just south of Corslawa.*"><figcaption>*One of the wide, sweeping curves of the Modrawa River just south of Corslawa.*</figcaption></figure>
 </div>
 
 <div class="imgrid">
-<figure style="flex:1.448"><img src="/assets/old-media/media/cortesia-8.jpg" alt=""><figcaption></figcaption></figure>
-<figure style="flex:1.778"><img src="/assets/old-media/media/cortesia-9.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:0.750"><img src="https://lh3.googleusercontent.com/d/1lxK5c1VI-dqDK4N5jYaohYMvYYHJYDLl=w2000" alt="*Striebristý Falls, the origin of the Modrawa river and the tallest waterfall in Cortesia with an 80 meter drop.*"><figcaption>*Striebristý Falls, the origin of the Modrawa river and the tallest waterfall in Cortesia with an 80 meter drop.*</figcaption></figure>
+<figure style="flex:1.500"><img src="https://lh3.googleusercontent.com/d/1iV-_1lK3sluzHrQjoPKwxm8WYjGaj25g=w2000" alt="*Zrkadlowá Jaskyňa, a karst cave in the Nitravian region of Cortesia known for its limestone formations and the mirror-like water surfaces beneath them.*"><figcaption>*Zrkadlowá Jaskyňa, a karst cave in the Nitravian region of Cortesia known for its limestone formations and the mirror-like water surfaces beneath them.*</figcaption></figure>
 </div>
 
 <div class="imgrid">
-<figure style="flex:1.501"><img src="/assets/old-media/media/cortesia-10.jpg" alt=""><figcaption></figcaption></figure>
-<figure style="flex:1.498"><img src="/assets/old-media/media/cortesia-11.jpg" alt=""><figcaption></figcaption></figure>
+<figure style="flex:2.038"><img src="https://lh3.googleusercontent.com/d/1MYswfQ57tiMEakJ9FDELWS6sSJDVIm4K=w2000" alt="*Szmaragdowe Oko, a glacial lake in the Żelazny Mountains.*"><figcaption>*Szmaragdowe Oko, a glacial lake in the Żelazny Mountains.*</figcaption></figure>
+<figure style="flex:2.212"><img src="https://lh3.googleusercontent.com/d/1aZRKy4wlrZ-7XophtXnUKDJhWAhtFK6R=w2000" alt="*A footpath alongside the Szumna, a small but rather quick tributary of the Modrawa River.*"><figcaption>*A footpath alongside the Szumna, a small but rather quick tributary of the Modrawa River.*</figcaption></figure>
 </div>
+
+<figure class="float float-right" style="width:300px"><img src="https://lh3.googleusercontent.com/d/14SPiF4cM7I5IlLiH5unQTek1HVwgKFkn=w2000" alt="*Corslawa Theater Square, 1925*"><figcaption>*Corslawa Theater Square, 1925*</figcaption></figure>
+
+### Climate
+
+### Human Geography
 
 ## Demographics
 
+### Ethnic Groups
+
+### Languages
+
+### Religion
+
+### Citizenship
+
 ### Largest Cities
 
-| Rank | City Name | Urban Population | Subdivision |
+| Rank | City | Urban Population | Subdivision |
 | --- | --- | --- | --- |
-
-<div class="imgrid">
-<figure style="flex:1.538"><img src="/assets/old-media/media/cortesia-12.jpg" alt=""><figcaption></figcaption></figure>
-</div>
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
