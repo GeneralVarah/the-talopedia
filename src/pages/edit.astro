@@ -181,10 +181,13 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         <label id="crumb-field" hidden>Breadcrumb <span class="opt">navbox</span>
           <input id="f-crumb" type="text" placeholder="[[portal:nichirin|Portal:Nichirin]] • [[nichirin|Overview]]" /></label>
         <label id="native-field">Native title <span class="opt">optional</span>
-          <textarea id="f-native" rows="2" placeholder="宮本幕府"
+          <textarea id="f-native" rows="1" placeholder="宮本幕府"
             title="One line per official language"></textarea></label>
         <label id="romaji-field">Romanization <span class="opt">optional</span>
           <input id="f-romaji" type="text" placeholder="Miyamoto Bakufu" /></label>
+        <label id="url-field">Article URL <span class="opt">the file name</span>
+          <input id="f-slug" type="text" placeholder="emeka-okafor" spellcheck="false"
+            title="The address this page is served at, and the name of its file" /></label>
         <label id="type-field">Article type<select id="f-type">{ARTICLE_TYPES.map((t) => <option value={t}>{t}</option>)}</select></label>
         <label id="nation-field">Associated nation<select id="f-nation"><option value="">(none)</option>
           {nationList.map((n) => <option value={n.id}>{n.name}</option>)}</select></label>
@@ -1611,7 +1614,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       meta: Object.fromEntries(fields.map((f) => [f, $(f).value])),
       ooc: $('#f-ooc').checked,
       navbox: $('#f-navbox-on').checked,
-      slug: DEV ? $('#slug').value : '',
+      slug: slugValue(),
       // What is being edited, and the two things it holds that are never on screen.
       // Without these an undo, or the reload after a save, turns a portal into an article.
       kind: pageKind,
@@ -1625,7 +1628,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       for (const [f, v] of Object.entries(d.meta || {})) if ($(f)) $(f).value = v;
       $('#f-ooc').checked = !!d.ooc;
       $('#f-navbox-on').checked = d.navbox !== false;
-      if (DEV && d.slug) { $('#slug').value = d.slug; slugTouched = true; }
+      if (d.slug) { setSlug(d.slug); slugTouched = true; }
       pageKind = d.kind || 'article';
       portalBody = d.portalBody || '';
       navboxLead = d.navboxLead || '';
@@ -1812,7 +1815,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#f-coords').value = data.coords || '';
       $('#f-ooc').checked = !!data.ooc;
       pageSlug = bare;
-      if (DEV) { $('#slug').value = bare; slugTouched = true; }
+      setSlug(bare); slugTouched = true;
       setInfobox(data.infobox || []);
       paintSettings();
       body.innerHTML = '';
@@ -2050,7 +2053,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     // The canvas title is the real title field; the settings box is the same value.
     $('#canvas-title').addEventListener('input', () => {
       $('#f-title').value = $('#canvas-title').textContent.trim();
-      if (!slugTouched && DEV) $('#slug').value = slugify($('#f-title').value);
+      if (!slugTouched) setSlug(slugify($('#f-title').value));
       sync();
     });
     $('#canvas-title').addEventListener('keydown', (e) => {
@@ -2073,7 +2076,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#f-ooc').checked = false;
       $('#f-navbox-on').checked = true;
       $('#canvas-title').textContent = '';
-      if (DEV) { $('#slug').value = slug; slugTouched = !!slug; }
+      setSlug(slug); slugTouched = !!slug;
       try { sessionStorage.removeItem(DRAFT); } catch {}
       setInfobox(kind === 'article' ? (TEMPLATES[$('#f-type').value] || []) : []);
       body.innerHTML = '';
@@ -2110,7 +2113,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const name = $('#f-nation').selectedOptions[0]?.textContent || id;
       if (!id) return;
       pageSlug = id;
-      $('#slug').value = id;
+      setSlug(id);
       if (!$('#f-title').value.trim()) {
         $('#f-title').value = pageKind === 'portal' ? `Portal:${name}` : `${name} Articles`;
       }
@@ -2139,7 +2142,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       URL.revokeObjectURL(a.href);
     };
     async function downloadPage() {
-      const stem = slugify($('#slug')?.value || pageSlug || $('#f-title').value) || 'article';
+      const stem = slugify(slugValue() || pageSlug || $('#f-title').value) || 'article';
       const md = toMarkdown();
       const used = [...staged.entries()].filter(([p]) => md.includes(p));
       if (!used.length) { saveAs(new Blob([md], { type: 'text/markdown' }), `${stem}.md`); return; }
@@ -2224,7 +2227,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     }
 
     async function publish() {
-      const slug = slugify($('#slug')?.value || pageSlug || $('#f-title').value);
+      const slug = slugify(slugValue() || pageSlug || $('#f-title').value);
       if (!slug) { pubSay('Give the page a title first.', true); return; }
       const markdown = toMarkdown();
       const used = [...staged.entries()].filter(([p]) => markdown.includes(p));
@@ -2491,7 +2494,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         try {
           fromMarkdown(await f.text());
           pageSlug = f.name.replace(/\.(md|markdown|ya?ml)$/i, '');
-          if (DEV) { $('#slug').value = pageSlug; slugTouched = true; }
+          setSlug(pageSlug); slugTouched = true;
           flash(`Opened ${f.name}.`);
         } catch (err) {
           flash(`Could not read ${f.name}: ${err.message}`, true);
@@ -2528,7 +2531,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 
     /** This page as a change: the file it writes, and the pictures it brings with it. */
     function currentChange() {
-      const slug = slugify($('#slug')?.value || pageSlug || $('#f-title').value);
+      const slug = slugify(slugValue() || pageSlug || $('#f-title').value);
       if (!slug) return null;
       const markdown = toMarkdown();
       return {
@@ -2707,13 +2710,16 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     const slugify = (s) => s.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     let slugTouched = false;
 
+    $('#f-slug').oninput = () => { slugTouched = true; };
     if (DEV) {
       const slugBox = $('#slug');
-      slugBox.oninput = () => { slugTouched = true; };
+      // Typing in either box is the same act, and both show the same name.
+      slugBox.oninput = () => { slugTouched = true; $('#f-slug').value = slugBox.value; };
+      $('#f-slug').addEventListener('input', () => { slugBox.value = $('#f-slug').value; });
       $('#save').onclick = async () => {
-        const slug = slugify(slugBox.value || $('#f-title').value);
+        const slug = slugify(slugValue() || $('#f-title').value);
         if (!slug) { flash('Give the article a title first.', true); return; }
-        slugBox.value = slug;
+        setSlug(slug);
         try {
           const r = await fetch(`${BASE.replace(/\/$/, '')}/__save`, {
             method: 'POST',
@@ -2936,6 +2942,11 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         : `${host} \u2713`);
       note.className = 'mp-hint ' + (bad ? 'bad' : 'ok');
     }
+
+    /** The file name this page is saved under, wherever it was typed. Declared
+        rather than assigned: it is called from further up the file than it sits. */
+    function slugValue() { return $('#f-slug').value || $('#slug')?.value || ''; }
+    function setSlug(v) { $('#f-slug').value = v; if ($('#slug')) $('#slug').value = v; }
 
     // The picture the Media panel was opened for. Working this out from whatever has
     // focus does not survive the panel taking focus itself, so the caller says outright.
@@ -3451,7 +3462,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       outline: none; border-color: var(--link);
     }
     .ed-settings input::placeholder, .ed-settings textarea::placeholder { color: #5c656e; }
-    .ed-settings textarea { resize: vertical; line-height: 1.45; min-height: 34px; }
+    /* One row that matches an input exactly, and still pulls open for a second
+       official language. The taller line box was what made it stand proud. */
+    .ed-settings textarea { resize: vertical; line-height: normal; min-height: 0; }
     .ed-settings .check {
       display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 400;
       color: var(--ink); cursor: pointer;
