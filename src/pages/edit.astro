@@ -552,10 +552,18 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const cellNow = (sel.anchorNode?.nodeType === 1 ? sel.anchorNode : sel.anchorNode?.parentElement)
         ?.closest?.('td, th');
       if (cellNow) {
-        const box = cellNow.querySelector('.ce');
+        // The writer's own box, and only one sitting directly in the cell: a picture
+        // row holds a box per picture, and sweeping into the first would swallow the
+        // rest of the row.
+        const box = [...cellNow.children].find((n) => n.classList.contains('ce'));
+        // What execCommand can strand beside it is text or an inline mark. Everything
+        // else in the cell is the editor's own furniture and stays where it is.
+        // Rescuing by exclusion instead put the row controls' own labels into two
+        // published articles, since a control is a div and only buttons were skipped.
+        const loose = (n) => n.nodeType === 3
+          || (n.nodeType === 1 && /^(IMG|A|I|B|EM|STRONG|SPAN|BR|CODE|SUP|SUB)$/.test(n.tagName));
         if (box) {
-          const stray = [...cellNow.childNodes].filter(
-            (n) => n !== box && !(n.nodeType === 1 && n.tagName === 'BUTTON'));
+          const stray = [...cellNow.childNodes].filter((n) => n !== box && loose(n));
           stray.reverse().forEach((n) => box.insertBefore(n, box.firstChild));
         }
       }
