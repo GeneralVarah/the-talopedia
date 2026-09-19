@@ -24,7 +24,6 @@ infobox:
   - { section: "Nichirian Name" }
   - { label: "Kanji", value: "稲荷 狐澄" }
   - { label: "Aldrige Rōmaji", value: "Inari Kosumi" }
-  - { label: "Literal Meaning", value: "\"Transparent fox, bearer of rice.\"" }
 ---
 
 **Kosumi Inari** (稲荷 狐澄; born August 9, 1892), codenamed **Yachimata** (八幡), is a [[nichirin|Nichirian]] intelligence operative serving as Head of [[seele]] Operations in [[evria]]. Born in [[skjarnland]] to Nichirian scientists employed at the Skjarnish Royal Institute of Science, she was raised in Eyrborg before enlisting in the Skjarnish army following her parents' deaths in 1915, subsequently deserting at the Encirclement at Lissavre and crossing to [[elvester]]. She spent five years in Dunmaris's organized crime networks, rising to lead her own criminal organization in the Toteham district and becoming known as the “Nickie of Toteham”, before her recruitment into SEELE in 1922. She is responsible for overseeing and coordinating SEELE's intelligence network across Evria and is among the organization's most experienced field operatives, with particular expertise in marksmanship and the operational structures of foreign intelligence agencies.
