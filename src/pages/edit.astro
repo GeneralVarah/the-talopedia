@@ -134,11 +134,11 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             <button id="save" type="button" class="primary">Save</button>
           </Fragment>
         )}
-        <button id="cart-open" type="button" title="Pages waiting to be sent">
+        <button id="cart-add" type="button" class="commit"
+          title="Put this page with the others, to be pushed as one pull request">Commit</button>
+        <button id="cart-open" type="button" title="Pages waiting to be pushed">
           Changes <span class="cart-n" id="cart-n">0</span>
         </button>
-        <button id="cart-add" type="button" class={DEV ? undefined : 'primary'}
-          title="Put this page with the others, to be sent as one pull request">Add change</button>
       </span>
       <button id="settings-btn" type="button" title="Page settings">
         <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.4v2M8 12.6v2M14.6 8h-2M3.4 8h-2M12.7 3.3l-1.4 1.4M4.7 11.3l-1.4 1.4M12.7 12.7l-1.4-1.4M4.7 4.7 3.3 3.3"/></svg>
@@ -243,8 +243,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       <div class="pub">
         <h2>Changes waiting</h2>
         <p class="pub-note" id="pub-intro">
-          Everything below goes over together, as one pull request. Nothing reaches the site
-          until it is reviewed.
+          All of it goes as one pull request. Nothing reaches the site until reviewed.
         </p>
 
         <div class="cart-list" id="cart-list"></div>
@@ -254,29 +253,25 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             placeholder="ghp_…" /></label>
 
         <details class="pub-help" id="pub-help">
-          <summary>How to get a token</summary>
-          <p class="pub-note">Half a minute, once. The link sets the one box that matters,
-            so there is nothing to hunt for.</p>
+          <summary>Need a token?</summary>
           <ol class="pub-steps">
-            <li>Open <a id="pub-make" href="#" target="_blank" rel="noopener">the new token
-              page</a>. Sign in to GitHub if asked.</li>
-            <li>The name is filled in and <b>public_repo</b> is already ticked. Set
-              <b>Expiration</b> to whatever suits you.
-              <span class="pub-warn">Do not tick anything else. <b>public_repo</b> lets this
-              write to public repositories only, so nothing private is reachable.</span></li>
-            <li>Scroll down, press <b>Generate token</b>, and copy it. It starts with
-              <code>ghp_</code> and is shown only once. Paste it above.</li>
+            <li><a id="pub-make" href="#" target="_blank" rel="noopener">Open token page</a>.
+              Log in if asked.</li>
+            <li>Name filled. <b>public_repo</b> ticked. <b>Touch nothing else.</b></li>
+            <li>Pick expiry. Any.</li>
+            <li>Scroll down. Press <b>Generate token</b>.</li>
+            <li>Copy it. Starts with <code>ghp_</code>. Shown once.</li>
+            <li>Paste in box above.</li>
           </ol>
-          <p class="pub-note">You do not need to be a member of <b id="pub-repo"></b>. Without
-            write access your work goes to a fork of your own and arrives as a pull request
-            from there.</p>
-          <p class="pub-note">The token is kept in this browser and sent only to GitHub.
-            <b>Forget token</b> removes it.</p>
+          <p class="pub-note">Not a member of <b id="pub-repo"></b>? Fine. Work goes to your own
+            fork, arrives as a pull request.</p>
+          <p class="pub-note">Token stays in this browser. Goes only to GitHub.
+            <b>Forget token</b> wipes it.</p>
         </details>
 
         <p class="pub-status" id="pub-status"></p>
         <div class="pub-row">
-          <button id="pub-go" type="button" class="primary">Send them over</button>
+          <button id="pub-go" type="button" class="primary">Push</button>
           <button id="pub-forget" type="button">Forget token</button>
           <span class="spacer"></span>
           <button id="pub-close" type="button">Close</button>
@@ -2400,7 +2395,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       if (!box) return list;
       box.innerHTML = '';
       if (!list.length) {
-        box.innerHTML = '<p class="mp-empty">Nothing waiting. Edit a page and press Add change.</p>';
+        box.innerHTML = '<p class="mp-empty">Nothing waiting. Edit a page and press Commit.</p>';
       }
       for (const c of list.sort((a, b) => a.at - b.at)) {
         const row = el('div', 'cart-row');
@@ -2437,7 +2432,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 
     async function publishAll() {
       const list = await cart.all();
-      if (!list.length) { pubSay('Nothing to send yet.', true); return; }
+      if (!list.length) { pubSay('Nothing to push yet.', true); return; }
 
       $('#pub-go').disabled = true;
       try {
@@ -2532,7 +2527,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           + `&description=${encodeURIComponent('The Talopedia editor')}`;
         $('#pub-repo').textContent = REPO;
         $('#pub-help').open = !token.get();
-        pubSay(token.get() ? '' : 'Paste a token to send these over.');
+        pubSay(token.get() ? '' : 'Paste a token to push.');
       };
       $('#pub-close').onclick = () => { panel.hidden = true; };
       panel.onclick = (e) => { if (e.target === panel) panel.hidden = true; };
@@ -2972,6 +2967,13 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       color: #f2f7f3; font: 600 13px var(--body); padding: 0 16px; cursor: pointer;
     }
     .ed-tools button.primary:hover { background: #48795f; }
+    /* Setting a page aside is not the same act as writing one to disk, so it does not
+       wear the same colour. */
+    .ed-tools button.commit {
+      height: 30px; background: #37538c; border: 1px solid #47659f; border-radius: 6px;
+      color: #eef2fa; font: 600 13px var(--body); padding: 0 16px; cursor: pointer;
+    }
+    .ed-tools button.commit:hover { background: #40609e; }
     .save-group { display: inline-flex; gap: 6px; align-items: center; }
     .save-group input { width: 160px; font-family: ui-monospace, monospace; font-size: 12px; }
     .caret { font-size: 9px; opacity: .6; }
