@@ -272,6 +272,17 @@ pre.source {
 .article figure.float-right { float: right; clear: right; margin-left: 24px; }
 .article figure.float-left { float: left; clear: left; margin-right: 24px; }
 
+/* Optional shape for a picture. Without one it keeps whatever proportions it has;
+   with one the frame is exactly that shape and the picture fills it. Declaring the
+   shape also reserves the space, so a page does not jump while a picture hosted
+   somewhere else is still arriving. */
+.article figure[class*="r-"] img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.article .r-16x9 img { aspect-ratio: 16 / 9; }
+.article .r-3x2  img { aspect-ratio: 3 / 2; }
+.article .r-4x3  img { aspect-ratio: 4 / 3; }
+.article .r-1x1  img { aspect-ratio: 1 / 1; }
+.article .r-3x4  img { aspect-ratio: 3 / 4; }
+
 /* A standalone figure, not floated and not in a grid. It is its own formatting
    context for the same reason the editor's image block is: the <img> inside is a
    replaced element and may not overlap the infobox, so without this the picture

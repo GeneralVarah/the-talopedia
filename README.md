@@ -152,6 +152,23 @@ Writing into `src/` restarts the dev server and reloads the page, so the editor 
 
 ### Pictures
 
+The image folders in this repository are an archive: everything converted from the old
+Google Doc, kept so none of it has to be re-hosted. They are closed. A new picture goes
+on an image host and the article keeps the link.
+
+Only hosts that serve a stable direct link are accepted, because the alternative is an
+article whose pictures quietly vanish: `ibb.co`, `imgur.com`, `files.catbox.moe`. Discord
+attachment links carry signed URLs that expire within days and are refused with a note
+saying so. The list is `HOSTS` in `src/pages/edit.astro`.
+
+`npm run dev` keeps **Upload**, so pictures added while developing still land in the
+archive and stay versioned. The published editor has the link field only.
+
+**Shape** is optional. Left on *Original* a picture keeps its own proportions; choosing a
+ratio cuts it to exactly that shape, which is what lines a grid row up and what stops the
+page jumping while a picture hosted elsewhere is still arriving.
+
+
 **Media** opens three tabs: Images, Icons, Table.
 
 Images starts with a search box, then **Insert as**, which is where a picture gets its shape:

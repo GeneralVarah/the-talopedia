@@ -8,6 +8,12 @@ const ARROW = {
   down: '<svg class="tri down" viewBox="0 0 10 9" aria-hidden="true"><path d="M5 9 0 0h10z"/></svg>',
 };
 
+/**
+ * Where a picture lives. A path inside the site is answered under its base; a link to
+ * an image host is already whole and is left exactly as it was written.
+ */
+export const asset = (p) => (/^(https?:)?\/\//i.test(p) ? p : url(p));
+
 export function icon(slug) {
   const src = iconFor(slug);
   return src ? `<img class="ico" src="${url(src)}" alt="" loading="lazy">` : '';
@@ -51,10 +57,17 @@ function custom(m, defer = false) {
     if (m[3] === 'img') {
       // :img[path] is an inline mark the size of the text beside it. :img[path|96]
       // is the same picture at 96px, which is what a rank insignia in a table needs.
-      const [path, w] = arg.split('|');
+      // Markdown turns a bare link into an anchor before this runs, so a pasted URL
+      // arrives wrapped in one and has to be unwrapped again.
+      // Markdown swallows the width into the link as %7C on the way, so it is put
+      // back before the two halves are separated.
+      const [path, w] = arg
+        .replace(/<a\b[^>]*href="([^"]*)"[^>]*>[\s\S]*?<\/a>/g, '$1')
+        .replace(/%7C/gi, '|')
+        .split('|');
       const size = parseInt(w, 10);
       const style = size > 0 ? ` style="width:${size}px;height:auto"` : '';
-      return `<img class="ico${size > 0 ? ' sized' : ''}" src="${esc(url(path.trim()))}"${style} alt="" loading="lazy">`;
+      return `<img class="ico${size > 0 ? ' sized' : ''}" src="${esc(asset(path.trim()))}"${style} alt="" loading="lazy">`;
     }
     return defer ? `<i data-ico="${esc(arg)}"></i>` : icon(arg);
   }
