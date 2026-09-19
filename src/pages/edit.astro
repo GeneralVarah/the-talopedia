@@ -243,8 +243,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           <input id="pub-token" type="password" autocomplete="off" spellcheck="false"
             placeholder="github_pat_…" /></label>
         <p class="pub-note">
-          <a id="pub-make" href="#" target="_blank" rel="noopener">Make a fine-grained token</a>,
-          then set three things on it:
+          <b>Quickest:</b> <a id="pub-classic" href="#" target="_blank" rel="noopener">make a
+          classic token</a>. The one permission it needs is already ticked, so just scroll down
+          and press Generate. It can reach every repository you have, which is the price of it
+          being one click.
+        </p>
+        <p class="pub-note">
+          <b>Tighter:</b> <a id="pub-make" href="#" target="_blank" rel="noopener">make a
+          fine-grained token</a>, which reaches this repository alone. GitHub has no way to
+          preset that form, so three things need setting by hand:
         </p>
         <ol class="pub-steps">
           <li><b>Repository access</b>: Only select repositories, and pick this one.
@@ -2140,9 +2147,11 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#publish').onclick = () => {
         panel.hidden = false;
         $('#pub-token').value = token.get();
-        $('#pub-make').href =
-          `https://github.com/settings/personal-access-tokens/new?name=${encodeURIComponent('The Talopedia')}`
-          + `&description=${encodeURIComponent('Opens pull requests from the wiki editor')}`;
+        const why = encodeURIComponent(`The Talopedia: open pull requests against ${REPO}`);
+        // Only the classic form takes its settings from the link; the fine-grained one
+        // has no parameters, so that link can do no more than open the page.
+        $('#pub-classic').href = `https://github.com/settings/tokens/new?scopes=repo&description=${why}`;
+        $('#pub-make').href = 'https://github.com/settings/personal-access-tokens/new';
         pubSay(token.get() ? '' : 'Paste a token to publish.');
         (token.get() ? $('#pub-go') : $('#pub-token')).focus();
       };
