@@ -19,14 +19,8 @@ infobox:
       - "[「旭日昇天」](https://www.youtube.com/watch?v=fOsAyzzPLGE)"
       - "*Kyokujitsu Shōten*"
       - "\"Ascension of the Rising Sun\""
-  - label: "Capital"
-    value:
-      - "+"
-      - "FieldHeadingImageTwo listsFull-width value⇥↑↓✕:img[/assets/flags/shinkeisei.png] [[shinkeisei]]"
-  - label: "Largest City"
-    value:
-      - "+"
-      - "FieldHeadingImageTwo listsFull-width value⇥↑↓✕:img[/assets/flags/shinkeisei.png] Shinkeisei"
+  - { label: "Capital", value: ":img[/assets/flags/shinkeisei.png] [[shinkeisei]]" }
+  - { label: "Largest City", value: ":img[/assets/flags/shinkeisei.png] Shinkeisei" }
   - { section: "Administration" }
   - { label: "Government", value: "Unitary hereditary military dictatorship" }
   - { label: "Sei'i Tai Shogun", sub: true, value: "[[masashi-miyamoto]]" }
