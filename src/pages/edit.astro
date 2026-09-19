@@ -125,22 +125,20 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       <span class="spacer"></span>
       <span id="status" class="status"></span>
       <span class="save-group">
-        {DEV ? (
+        {/* Writing straight to disk needs the dev server, so Save is only there. Setting
+            a page aside for a pull request works in both, or it could never be tried
+            out while developing. */}
+        {DEV && (
           <Fragment>
             <input id="slug" type="text" placeholder="file-name" spellcheck="false" />
             <button id="save" type="button" class="primary">Save</button>
           </Fragment>
-        ) : (
-          /* Writing to disk needs the dev server. On the published site a page is put
-             aside instead, and everything set aside goes over in one pull request. */
-          <Fragment>
-            <button id="cart-open" type="button" title="Pages waiting to be sent">
-              Changes <span class="cart-n" id="cart-n">0</span>
-            </button>
-            <button id="cart-add" type="button" class="primary"
-              title="Put this page with the others">Add change</button>
-          </Fragment>
         )}
+        <button id="cart-open" type="button" title="Pages waiting to be sent">
+          Changes <span class="cart-n" id="cart-n">0</span>
+        </button>
+        <button id="cart-add" type="button" class={DEV ? undefined : 'primary'}
+          title="Put this page with the others, to be sent as one pull request">Add change</button>
       </span>
       <button id="settings-btn" type="button" title="Page settings">
         <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.4v2M8 12.6v2M14.6 8h-2M3.4 8h-2M12.7 3.3l-1.4 1.4M4.7 11.3l-1.4 1.4M12.7 12.7l-1.4-1.4M4.7 4.7 3.3 3.3"/></svg>
@@ -2378,7 +2376,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 
     /** This page as a change: the file it writes, and the pictures it brings with it. */
     function currentChange() {
-      const slug = slugify(pageSlug || $('#f-title').value);
+      const slug = slugify($('#slug')?.value || pageSlug || $('#f-title').value);
       if (!slug) return null;
       const markdown = toMarkdown();
       return {
