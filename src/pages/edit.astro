@@ -237,29 +237,39 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       <div class="pub">
         <h2>Publish to GitHub</h2>
         <p class="pub-note" id="pub-intro">
-          This opens a pull request with your page. Nothing reaches the site until it is reviewed.
+          This opens a pull request with your page, new or edited. Nothing reaches the site
+          until it is reviewed.
         </p>
+        <p class="pub-what" id="pub-what"></p>
         <label>GitHub token
           <input id="pub-token" type="password" autocomplete="off" spellcheck="false"
             placeholder="github_pat_…" /></label>
-        <p class="pub-note">
-          <b>Quickest:</b> <a id="pub-classic" href="#" target="_blank" rel="noopener">make a
-          classic token</a>. The one permission it needs is already ticked, so just scroll down
-          and press Generate. It can reach every repository you have, which is the price of it
-          being one click.
-        </p>
-        <p class="pub-note">
-          <b>Tighter:</b> <a id="pub-make" href="#" target="_blank" rel="noopener">make a
-          fine-grained token</a>, which reaches this repository alone. GitHub has no way to
-          preset that form, so three things need setting by hand:
-        </p>
-        <ol class="pub-steps">
-          <li><b>Repository access</b>: Only select repositories, and pick this one.
-            The default is read-only and will not work.</li>
-          <li><b>Permissions &rarr; Contents</b>: Read and write.</li>
-          <li><b>Permissions &rarr; Pull requests</b>: Read and write.</li>
-        </ol>
-        <p class="pub-note">The token is kept in this browser and sent only to GitHub.</p>
+        <details class="pub-help" id="pub-help">
+          <summary>How to get a token</summary>
+          <p class="pub-note">One minute, once. GitHub cannot preset this form, so each step
+            has to be made by hand.</p>
+          <ol class="pub-steps">
+            <li>Open <a id="pub-make" href="#" target="_blank" rel="noopener">the new token
+              page</a>. Sign in if asked.</li>
+            <li><b>Token name</b>: anything. <i>The Talopedia</i> does.</li>
+            <li><b>Expiration</b>: as long as you like. You will be asked again when it runs out.</li>
+            <li><b>Repository access</b>: choose <b>Only select repositories</b>, then pick
+              <b id="pub-repo"></b> from the list.
+              <span class="pub-warn">The option above it is selected by default and is read-only,
+              so leaving it as it comes will not work.</span></li>
+            <li><b>Permissions</b> &rarr; <b>Repository permissions</b>. The list is long and
+              alphabetical. Set two of them:
+              <ul>
+                <li><b>Contents</b> &rarr; Access: <b>Read and write</b></li>
+                <li><b>Pull requests</b> &rarr; Access: <b>Read and write</b></li>
+              </ul></li>
+            <li>Press <b>Generate token</b>, then copy it. It starts with
+              <code>github_pat_</code> and is shown only once.</li>
+            <li>Paste it above.</li>
+          </ol>
+          <p class="pub-note">The token is kept in this browser and sent only to GitHub.
+            <b>Forget token</b> removes it.</p>
+        </details>
         <p class="pub-status" id="pub-status"></p>
         <div class="pub-row">
           <button id="pub-go" type="button" class="primary">Publish</button>
@@ -2091,16 +2101,13 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             + `Contents and Pull requests to "Read and write".`);
         }
 
-        let work = REPO;
+        // No fork route: a fine-grained token only reaches repositories its owner owns,
+        // and opening the pull request needs Pull requests write on this one either way.
         if (!canPush) {
-          pubSay(`Forking ${REPO} to ${me.login}…`);
-          await gh(`/repos/${REPO}/forks`, { method: 'POST' });
-          work = `${me.login}/${base.name}`;
-          // A fork is made in the background, so wait for it to answer.
-          for (let i = 0; i < 20; i++) {
-            try { await gh(`/repos/${work}`); break; } catch { await new Promise((r) => setTimeout(r, 1500)); }
-          }
+          throw new Error(`${me.login} does not have write access to ${REPO}. `
+            + 'Ask the wiki admin to add you to the repository, then try again.');
         }
+        const work = REPO;
 
         const main = base.default_branch;
         const tip = await gh(`/repos/${REPO}/git/ref/heads/${main}`);
@@ -2125,7 +2132,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           method: 'POST',
           body: JSON.stringify({
             title: `${$('#f-title').value || slug}`,
-            head: canPush ? branch : `${me.login}:${branch}`,
+            head: branch,
             base: main,
             body: `Written in the wiki editor by @${me.login}.\n\n`
               + `Page: \`${targetPath(slug)}\`${used.length ? `\nImages: ${used.length}` : ''}`,
@@ -2147,11 +2154,17 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#publish').onclick = () => {
         panel.hidden = false;
         $('#pub-token').value = token.get();
-        const why = encodeURIComponent(`The Talopedia: open pull requests against ${REPO}`);
-        // Only the classic form takes its settings from the link; the fine-grained one
-        // has no parameters, so that link can do no more than open the page.
-        $('#pub-classic').href = `https://github.com/settings/tokens/new?scopes=repo&description=${why}`;
+        // The fine-grained form takes no parameters, so the link can only open the page.
         $('#pub-make').href = 'https://github.com/settings/personal-access-tokens/new';
+        $('#pub-repo').textContent = REPO;
+        $('#pub-help').open = !token.get();
+        // Say which file this will touch, and whether it is a new one.
+        const slug = slugify(pageSlug || $('#f-title').value);
+        const key = pageKind === 'article' ? slug : `${pageKind}:${slug}`;
+        const known = ARTICLES.some((a) => a.slug === key);
+        $('#pub-what').textContent = slug
+          ? `${known ? 'Updates' : 'Adds'} ${targetPath(slug)}`
+          : 'Give the page a title first.';
         pubSay(token.get() ? '' : 'Paste a token to publish.');
         (token.get() ? $('#pub-go') : $('#pub-token')).focus();
       };
@@ -3072,8 +3085,19 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     .pub-note { font-size: 12.5px; line-height: 1.6; color: var(--muted); margin: 10px 0 0; }
     .pub-note b { color: var(--ink); font-weight: 600; }
     .pub-steps { font-size: 12.5px; line-height: 1.6; color: var(--muted); margin: 8px 0 0; padding-left: 20px; }
-    .pub-steps li { margin: 4px 0; }
+    .pub-steps li { margin: 6px 0; }
+    .pub-steps ul { margin: 4px 0; padding-left: 18px; }
     .pub-steps b { color: var(--ink); font-weight: 600; }
+    .pub-steps code { font: 12px ui-monospace, monospace; color: var(--ink); }
+    .pub-warn { display: block; margin-top: 3px; color: #d0a05a; }
+    .pub-what {
+      font: 12.5px var(--body); color: var(--ink); margin: 10px 0 0;
+      padding: 7px 10px; background: var(--band); border-radius: 5px;
+    }
+    .pub-help { margin-top: 14px; border-top: 1px solid var(--rule); padding-top: 12px; }
+    .pub-help summary { font: 12.5px var(--body); color: var(--link); cursor: pointer; }
+    .pub-help[open] summary { margin-bottom: 4px; }
+    .pub { max-height: calc(100vh - 80px); overflow-y: auto; }
     .pub-status { font-size: 12.5px; color: var(--muted); margin: 12px 0 0; min-height: 1.2em; }
     .pub-status.bad { color: #e08c8c; }
     .pub-row { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
