@@ -24,6 +24,9 @@ const FLAGS = Object.fromEntries(nations().filter((n) => n.flag).map((n) => [n.i
 // A nation's own name, for labelling its flag in the icon picker: "E.S.U.", not "Esu".
 const NATION_NAMES = Object.fromEntries(nations().map((n) => [n.id, n.name]));
 const DEV = import.meta.env.DEV;
+// Which repository a contributor's work goes to. The deploy workflow passes the one
+// it is building, so a rename carries; the fallback is only for local use.
+const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 ---
 <Base title="Editor" chrome={false} wide>
   <div class="ed">
@@ -127,8 +130,8 @@ const DEV = import.meta.env.DEV;
         ) : (
           /* Writing to disk needs the dev server. On the published site the same
              button hands you the file instead. */
-          <button id="save-dl" type="button" class="primary"
-            title="Download this page as Markdown, or as a zip when it carries new images">Download</button>
+          <button id="publish" type="button" class="primary"
+            title="Open a pull request with this page">Publish</button>
         )}
       </span>
       <button id="settings-btn" type="button" title="Page settings">
@@ -230,13 +233,38 @@ const DEV = import.meta.env.DEV;
       <button id="lp-remove" type="button" class="lp-remove" hidden>Remove link</button>
     </div>
 
+    <div class="pub-back" id="pub-panel" hidden>
+      <div class="pub">
+        <h2>Publish to GitHub</h2>
+        <p class="pub-note" id="pub-intro">
+          This opens a pull request with your page. Nothing reaches the site until it is reviewed.
+        </p>
+        <label>GitHub token
+          <input id="pub-token" type="password" autocomplete="off" spellcheck="false"
+            placeholder="github_pat_…" /></label>
+        <p class="pub-note">
+          Create a <b>fine-grained</b> token with access to this one repository, and give it
+          <b>Contents</b> and <b>Pull requests</b> read and write.
+          <a id="pub-make" href="#" target="_blank" rel="noopener">Make one</a>.
+          It is kept in this browser and sent only to GitHub.
+        </p>
+        <p class="pub-status" id="pub-status"></p>
+        <div class="pub-row">
+          <button id="pub-go" type="button" class="primary">Publish</button>
+          <button id="pub-forget" type="button">Forget token</button>
+          <span class="spacer"></span>
+          <button id="pub-close" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+
     <div class="ed-source" id="source-panel" hidden>
       <div class="src-head"><b>Markdown</b><button id="source-close" type="button">Close</button></div>
       <pre id="preview"></pre>
     </div>
   </div>
 
-  <script is:inline define:vars={{ TEMPLATES, BASE: url('/'), DEV, FLAGS, NATION_NAMES, ARTICLES: existing }}>
+  <script is:inline define:vars={{ TEMPLATES, BASE: url('/'), DEV, REPO, FLAGS, NATION_NAMES, ARTICLES: existing }}>
     const $ = (s, r = document) => r.querySelector(s);
     const el = (t, c, txt) => { const n = document.createElement(t); if (c) n.className = c; if (txt != null) n.textContent = txt; return n; };
     const q = (s) => '"' + String(s ?? '').replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
@@ -246,6 +274,10 @@ const DEV = import.meta.env.DEV;
     // directory and writes a different file, and a portal and a navbox both share
     // their slug with the nation's article, so the kind cannot be read off the name.
     let pageKind = 'article';
+    // The file this page came from. The slug box only exists on the dev server, so on
+    // the published site this is the only thing that knows a portal is filed under its
+    // nation rather than under "Portal:Nichirin".
+    let pageSlug = '';
     let navboxLead = '';
     // A portal's body is not editable here. Two nations have no overview article yet
     // and their portal still carries its own paragraph, so whatever was loaded is
@@ -1621,6 +1653,7 @@ const DEV = import.meta.env.DEV;
       $('#f-navbox-on').checked = data.navbox !== 'none';
       $('#f-coords').value = data.coords || '';
       $('#f-ooc').checked = !!data.ooc;
+      pageSlug = bare;
       if (DEV) { $('#slug').value = bare; slugTouched = true; }
       setInfobox(data.infobox || []);
       paintSettings();
@@ -1868,7 +1901,7 @@ const DEV = import.meta.env.DEV;
     };
     /** Clear the desk and start a page of the given kind. */
     function blank(kind, slug = '') {
-      pageKind = kind; navboxLead = ''; portalBody = '';
+      pageKind = kind; navboxLead = ''; portalBody = ''; pageSlug = slug;
       $('#settings').querySelectorAll('input[type=text], textarea').forEach((i) => i.value = '');
       $('#f-ooc').checked = false;
       $('#f-navbox-on').checked = true;
@@ -1909,6 +1942,7 @@ const DEV = import.meta.env.DEV;
       const id = $('#f-nation').value;
       const name = $('#f-nation').selectedOptions[0]?.textContent || id;
       if (!id) return;
+      pageSlug = id;
       $('#slug').value = id;
       if (!$('#f-title').value.trim()) {
         $('#f-title').value = pageKind === 'portal' ? `Portal:${name}` : `${name} Articles`;
@@ -1938,7 +1972,7 @@ const DEV = import.meta.env.DEV;
       URL.revokeObjectURL(a.href);
     };
     async function downloadPage() {
-      const stem = slugify($('#f-title').value) || 'article';
+      const stem = slugify($('#slug')?.value || pageSlug || $('#f-title').value) || 'article';
       const md = toMarkdown();
       const used = [...staged.entries()].filter(([p]) => md.includes(p));
       if (!used.length) { saveAs(new Blob([md], { type: 'text/markdown' }), `${stem}.md`); return; }
@@ -1949,8 +1983,154 @@ const DEV = import.meta.env.DEV;
       saveAs(zip(entries), `${stem}.zip`);
       flash(`Zipped with ${used.length} image${used.length === 1 ? '' : 's'}.`);
     }
+    /* ---------- publish: a pull request, straight from the browser ----------
+       api.github.com allows cross-origin calls, so the whole flow runs here with no
+       server of any kind. A contributor without push access gets a fork first. */
+
+    const GH = 'https://api.github.com';
+    const TOKEN_KEY = 'talopedia-gh-token';
+    const token = {
+      get: () => { try { return localStorage.getItem(TOKEN_KEY) || ''; } catch { return ''; } },
+      set: (v) => { try { v ? localStorage.setItem(TOKEN_KEY, v) : localStorage.removeItem(TOKEN_KEY); } catch {} },
+    };
+
+    async function gh(path, opts = {}) {
+      const r = await fetch(path.startsWith('http') ? path : GH + path, {
+        ...opts,
+        headers: {
+          accept: 'application/vnd.github+json',
+          authorization: `Bearer ${token.get()}`,
+          ...(opts.body ? { 'content-type': 'application/json' } : {}),
+          ...opts.headers,
+        },
+      });
+      const text = await r.text();
+      const data = text ? JSON.parse(text) : {};
+      if (!r.ok) throw new Error(data.message || `${r.status} ${r.statusText}`);
+      return data;
+    }
+
+    /** base64 of a byte array, in chunks: spreading a whole file blows the call stack. */
+    function b64(bytes) {
+      let out = '';
+      for (let i = 0; i < bytes.length; i += 0x8000) {
+        out += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+      }
+      return btoa(out);
+    }
+    const b64text = (s) => b64(new TextEncoder().encode(s));
+
+    /** Where this page belongs in the repository. */
+    function targetPath(slug) {
+      if (pageKind === 'portal') return `src/content/portals/${slug}.md`;
+      if (pageKind === 'navbox') return `src/content/data/navboxes/${slug}.yaml`;
+      return `src/content/articles/${slug}.md`;
+    }
+
+    const pubSay = (msg, bad = false) => {
+      const el = $('#pub-status');
+      el.textContent = msg;
+      el.className = 'pub-status' + (bad ? ' bad' : '');
+    };
+
+    async function putFile(repo, branch, path, contentB64, message) {
+      // An existing file needs the blob it replaces, or GitHub refuses the write.
+      let sha;
+      try {
+        sha = (await gh(`/repos/${repo}/contents/${encodeURI(path)}?ref=${branch}`)).sha;
+      } catch { /* new file */ }
+      await gh(`/repos/${repo}/contents/${encodeURI(path)}`, {
+        method: 'PUT',
+        body: JSON.stringify({ message, content: contentB64, branch, ...(sha && { sha }) }),
+      });
+    }
+
+    async function publish() {
+      const slug = slugify($('#slug')?.value || pageSlug || $('#f-title').value);
+      if (!slug) { pubSay('Give the page a title first.', true); return; }
+      const markdown = toMarkdown();
+      const used = [...staged.entries()].filter(([p]) => markdown.includes(p));
+
+      $('#pub-go').disabled = true;
+      try {
+        pubSay('Checking the token…');
+        const me = await gh('/user');
+        const base = await gh(`/repos/${REPO}`);
+        const canPush = !!base.permissions?.push;
+
+        let work = REPO;
+        if (!canPush) {
+          pubSay(`Forking ${REPO} to ${me.login}…`);
+          await gh(`/repos/${REPO}/forks`, { method: 'POST' });
+          work = `${me.login}/${base.name}`;
+          // A fork is made in the background, so wait for it to answer.
+          for (let i = 0; i < 20; i++) {
+            try { await gh(`/repos/${work}`); break; } catch { await new Promise((r) => setTimeout(r, 1500)); }
+          }
+        }
+
+        const main = base.default_branch;
+        const tip = await gh(`/repos/${REPO}/git/ref/heads/${main}`);
+        const branch = `talopedia/${slug}-${Date.now().toString(36)}`;
+        pubSay('Making a branch…');
+        await gh(`/repos/${work}/git/refs`, {
+          method: 'POST',
+          body: JSON.stringify({ ref: `refs/heads/${branch}`, sha: tip.object.sha }),
+        });
+
+        pubSay('Committing the page…');
+        await putFile(work, branch, targetPath(slug), b64text(markdown), `${slug}: edit from the wiki editor`);
+
+        for (const [i, [path, item]] of used.entries()) {
+          pubSay(`Committing image ${i + 1} of ${used.length}…`);
+          const bytes = new Uint8Array(await item.file.arrayBuffer());
+          await putFile(work, branch, 'public' + path, b64(bytes), `${slug}: add ${path.split('/').pop()}`);
+        }
+
+        pubSay('Opening the pull request…');
+        const pr = await gh(`/repos/${REPO}/pulls`, {
+          method: 'POST',
+          body: JSON.stringify({
+            title: `${$('#f-title').value || slug}`,
+            head: canPush ? branch : `${me.login}:${branch}`,
+            base: main,
+            body: `Written in the wiki editor by @${me.login}.\n\n`
+              + `Page: \`${targetPath(slug)}\`${used.length ? `\nImages: ${used.length}` : ''}`,
+          }),
+        });
+        pubSay('');
+        $('#pub-panel').hidden = true;
+        flash(`Opened pull request #${pr.number}.`);
+        window.open(pr.html_url, '_blank', 'noopener');
+      } catch (e) {
+        pubSay(String(e.message || e), true);
+      } finally {
+        $('#pub-go').disabled = false;
+      }
+    }
+
+    if ($('#publish')) {
+      const panel = $('#pub-panel');
+      $('#publish').onclick = () => {
+        panel.hidden = false;
+        $('#pub-token').value = token.get();
+        $('#pub-make').href =
+          `https://github.com/settings/personal-access-tokens/new?name=${encodeURIComponent('The Talopedia')}`
+          + `&description=${encodeURIComponent('Opens pull requests from the wiki editor')}`;
+        pubSay(token.get() ? '' : 'Paste a token to publish.');
+        (token.get() ? $('#pub-go') : $('#pub-token')).focus();
+      };
+      $('#pub-close').onclick = () => { panel.hidden = true; };
+      panel.onclick = (e) => { if (e.target === panel) panel.hidden = true; };
+      $('#pub-token').oninput = () => token.set($('#pub-token').value.trim());
+      $('#pub-forget').onclick = () => { token.set(''); $('#pub-token').value = ''; pubSay('Token forgotten.'); };
+      $('#pub-go').onclick = () => {
+        if (!token.get()) { pubSay('Paste a token first.', true); $('#pub-token').focus(); return; }
+        publish();
+      };
+    }
+
     $('#download').onclick = downloadPage;
-    $('#save-dl')?.addEventListener('click', downloadPage);
     $('#copy').onclick = async () => {
       await navigator.clipboard.writeText(toMarkdown());
       flash('Markdown copied.');
@@ -2836,6 +3016,38 @@ const DEV = import.meta.env.DEV;
       border: 1px dashed var(--rule); border-radius: 3px; padding: 4px 11px; cursor: pointer;
     }
     .tbl-bar button:hover { color: var(--ink); border-style: solid; }
+
+    /* ---- publish panel ---- */
+    .pub-back {
+      position: fixed; inset: 0; z-index: 80; display: flex; align-items: center;
+      justify-content: center; background: rgba(0, 0, 0, .55); padding: 20px;
+    }
+    .pub {
+      width: min(520px, 100%); padding: 22px 24px; border-radius: 10px;
+      background: var(--lift); border: 1px solid var(--rule);
+    }
+    .pub h2 { font: 400 21px/1.3 var(--display); margin: 0 0 10px; }
+    .pub label { display: block; font: 500 12px/1.4 var(--body); color: var(--ink); margin: 14px 0 0; }
+    .pub input {
+      display: block; box-sizing: border-box; width: 100%; margin-top: 5px;
+      font: 13.5px var(--body); padding: 8px 9px; color: var(--ink);
+      background: var(--paper); border: 1px solid var(--rule); border-radius: 5px;
+    }
+    .pub input:focus { outline: none; border-color: var(--link); }
+    .pub-note { font-size: 12.5px; line-height: 1.6; color: var(--muted); margin: 10px 0 0; }
+    .pub-note b { color: var(--ink); font-weight: 600; }
+    .pub-status { font-size: 12.5px; color: var(--muted); margin: 12px 0 0; min-height: 1.2em; }
+    .pub-status.bad { color: #e08c8c; }
+    .pub-row { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
+    .pub-row .spacer { flex: 1; }
+    .pub-row button {
+      font: 12.5px var(--body); color: var(--ink); background: var(--paper);
+      border: 1px solid var(--rule); border-radius: 5px; padding: 7px 14px; cursor: pointer;
+    }
+    .pub-row button:hover { background: var(--band); }
+    .pub-row button.primary { background: #2f6b46; border-color: #2f6b46; color: #fff; }
+    .pub-row button.primary:hover { background: #387e52; }
+    .pub-row button:disabled { opacity: .5; cursor: default; }
 
     /* ---- link popover ---- */
     .link-pop {

@@ -22,6 +22,8 @@ jobs:
         env:
           SITE_URL: ${{ steps.pages.outputs.origin }}
           BASE_PATH: ${{ vars.BASE_PATH || steps.pages.outputs.base_path }}
+          # The repository the editor opens pull requests against, so a rename carries.
+          GITHUB_REPO: ${{ github.repository }}
       - uses: actions/upload-pages-artifact@v5
         with: { path: dist }
   deploy:
