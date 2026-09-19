@@ -2636,9 +2636,14 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       return assetsLoaded;
     }
 
+    // macOS stores "Kōrihama" decomposed, as o plus a combining macron, while typing
+    // it gives the single precomposed character. Comparing them raw finds nothing, so
+    // both sides are folded down to plain letters first.
+    const fold = (s) => String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
     function paintAssets() {
-      const q = $('#mp-q').value.trim().toLowerCase();
-      const iq = $('#mp-iq').value.trim().toLowerCase();
+      const q = fold($('#mp-q').value.trim());
+      const iq = fold($('#mp-iq').value.trim());
       // The loose files at the top of /assets are the site's own banner and logo and
       // never belong in an article. media/ is 300-odd photos, a wall nobody browses, so
       // it is reachable by searching rather than by scrolling.
@@ -2649,7 +2654,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         ...ASSETS.filter((a) => a.group !== 'assets'),
       ]
         .filter((a) => (q
-          ? a.name.toLowerCase().includes(q) || a.group.toLowerCase().includes(q)
+          ? fold(a.name).includes(q) || fold(a.group).includes(q)
           : a.group !== 'media'))
         .sort((a, b) => rank(a.group) - rank(b.group) || a.name.localeCompare(b.name));
 
@@ -2693,17 +2698,22 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       // article needs is here: former states, colonies and wartime variants are not
       // nations in the registry, so nothing in the registry could ever offer them.
       const held = new Set(icons.map((i) => i.src));
+      const GROUP = { flags: 'flag', emblems: 'icon', subdivisions: 'subdivision' };
       for (const a of ASSETS) {
-        if (!/^(flags|emblems)$/.test(a.group) || held.has(a.path)) continue;
-        icons.push({ slug: a.path, src: a.path, kind: a.group === 'flags' ? 'flag' : 'icon',
+        if (!GROUP[a.group] || held.has(a.path)) continue;
+        icons.push({ slug: a.path, src: a.path, kind: GROUP[a.group],
           label: displayOf(a.name.replace(/\.[^.]+$/, '')), loose: true });
       }
       icons.sort((a, b) => a.kind.localeCompare(b.kind) || a.label.localeCompare(b.label));
-      const shown = icons.filter((i) => !iq || i.label.toLowerCase().includes(iq) || i.slug.includes(iq));
+      const shown = icons.filter((i) => !iq || fold(i.label).includes(iq) || fold(i.slug).includes(iq));
       if (!shown.length && !arrows.length) { mpIcons.innerHTML = '<p class="mp-empty">Nothing matches.</p>'; }
       let kind = null;
       for (const i of shown) {
-        if (i.kind !== kind) { kind = i.kind; mpIcons.append(el('div', 'mp-group', kind === 'flag' ? 'flags' : 'emblems')); }
+        if (i.kind !== kind) {
+          kind = i.kind;
+          mpIcons.append(el('div', 'mp-group',
+            kind === 'flag' ? 'flags' : kind === 'subdivision' ? 'subdivisions' : 'emblems'));
+        }
         const b = el('button', 'mp-icon');
         b.type = 'button';
         // A registered nation goes in by name, so renaming it carries. One that is

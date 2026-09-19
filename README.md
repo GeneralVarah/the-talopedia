@@ -44,8 +44,8 @@ resolved at compile time would freeze until that particular file was edited next
 reach the renamed article and nothing else. Editing `src/lib` itself still needs `npm run clean`,
 because that cache lives in `node_modules/.astro`.
 
-The Icons tab of the Media panel lists every flag and emblem on disk, not only the
-registered nations. A nation from `nations.yaml` goes in as `:flag[slug]`, so renaming it
+The Icons tab of the Media panel lists every flag, emblem and subdivision badge on disk,
+not only the registered nations. A nation from `nations.yaml` goes in as `:flag[slug]`, so renaming it
 carries everywhere; anything else is a file with no name to follow, so it goes in as
 `:img[path]`. That is why a war article's belligerents are a mixture of the two.
 
