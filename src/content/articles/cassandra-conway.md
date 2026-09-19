@@ -7,7 +7,7 @@ infobox:
   - { office: "Director of MAJESTY", term: "Incumbent | February 3rd, 1928 –" }
   - { label: "Vice Director", value: "Goro Kurotowa" }
   - { label: "Preceded by", value: "Office Established" }
-  - { section: "ONI Chief of Ground Operations" }
+  - { office: "ONI Chief of Ground Operations", term: "" }
   - { label: "Supreme Protector", value: "[[archer-maine]]" }
   - { label: "Preceded by", value: "Connor Linedell" }
   - { label: "Succeeded by", value: "Eric D’Angelo" }

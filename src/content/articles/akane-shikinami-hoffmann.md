@@ -14,7 +14,6 @@ infobox:
     value:
       - "Mieko Kuroda"
       - "Yoshiyuki Kaji"
-  - { section: "SED Liaison Officer for the White Army September 22, 1922 – December 21, 1924" }
   - { office: "SED Liaison Officer for the White Army", term: "September 22, 1922 – December 21, 1924" }
   - { label: "Handler", value: "Timo Werner" }
   - { label: "Commander", value: "Semen Voronovkin" }
