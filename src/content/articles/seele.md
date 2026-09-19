@@ -18,8 +18,8 @@ infobox:
     value:
       - "[[yachimata|Yachimata]]"
       - "[[uzume|Uzume]]"
-      - "Futsunushi"
-      - "Takemikazuchi"
+      - "[[futsunushi|Futsunushi]]"
+      - "[[takemikazuchi|Takemikazuchi]]"
   - label: "Special Operatives"
     value:
       - "Sae Kujō"
