@@ -322,9 +322,10 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     // the published site this is the only thing that knows a portal is filed under its
     // nation rather than under "Portal:Nichirin".
     let pageSlug = '';
-    // The title the open page had when it was loaded. Saving under the same file name
-    // with a different title is how an article gets used as a template and overwritten.
-    let loadedTitle = '';
+    // The title and the text the open page had when it was loaded. Saving under the
+    // same file name with a different title is how an article gets used as a template
+    // and overwritten; the text is what tells a rename apart from a replacement.
+    let loadedTitle = '', loadedBody = '';
     let navboxLead = '';
     // A portal's body is not editable here. Two nations have no overview article yet
     // and their portal still carries its own paragraph, so whatever was loaded is
@@ -1886,6 +1887,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       // A portal has no body of its own, so it is not given an empty paragraph.
       if (!body.children.length && pageKind !== 'portal') body.append(block('para'));
       sync();
+      loadedBody = toMarkdown();
       flash(`Opened ${data.title}.`);
     }
 
@@ -2133,7 +2135,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     };
     /** Clear the desk and start a page of the given kind. */
     function blank(kind, slug = '') {
-      pageKind = kind; navboxLead = ''; portalBody = ''; pageSlug = slug; loadedTitle = '';
+      pageKind = kind; navboxLead = ''; portalBody = ''; pageSlug = slug; loadedTitle = ''; loadedBody = '';
       $('#settings').querySelectorAll('input[type=text], textarea').forEach((i) => i.value = '');
       $('#f-ooc').checked = false;
       $('#f-navbox-on').checked = true;
@@ -2738,9 +2740,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#cart-add').onclick = async () => {
         const c = currentChange();
         if (!c) { flash('Give the page a title first.', true); return; }
-        if (overwrites(c.slug) && !confirm(
-            `${c.slug} is "${loadedTitle}". Saving replaces it with "${c.title}".\n\n`
-            + 'To keep both, cancel and use File \u25b8 Duplicate as a new page.')) return;
+        const held = occupiedBy(c.slug);
+        if (held) { refuseReplace(c.slug, held); return; }
+        if (overwrites(c.slug)) {
+          // Same file, different subject, and the text has gone too. That is a new
+          // page wearing an old file name, and it is refused rather than queried.
+          if (keptFraction() < 0.35) { refuseReplace(c.slug, loadedTitle); return; }
+          if (!confirm(`${c.slug} is "${loadedTitle}". Saving renames it to "${c.title}".\n\n`
+              + 'To keep both, cancel and use File \u25b8 Duplicate as a new page.')) return;
+        }
         await cart.put(c);
         await paintCart();
         flash(`${c.title} is waiting with ${(await cart.all()).length - 1} other change(s).`
@@ -2786,9 +2794,13 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#save').onclick = async () => {
         const slug = slugify(slugValue() || $('#f-title').value);
         if (!slug) { flash('Give the article a title first.', true); return; }
-        if (overwrites(slug) && !confirm(
-            `${slug} is "${loadedTitle}". Saving replaces it with "${$('#f-title').value.trim()}".\n\n`
-            + 'To keep both, cancel and use File \u25b8 Duplicate as a new page.')) return;
+        const held = occupiedBy(slug);
+        if (held) { refuseReplace(slug, held); return; }
+        if (overwrites(slug)) {
+          if (keptFraction() < 0.35) { refuseReplace(slug, loadedTitle); return; }
+          if (!confirm(`${slug} is "${loadedTitle}". Saving renames it to "${$('#f-title').value.trim()}".\n\n`
+              + 'To keep both, cancel and use File \u25b8 Duplicate as a new page.')) return;
+        }
         setSlug(slug);
         try {
           const r = await fetch(`${BASE.replace(/\/$/, '')}/__save`, {
@@ -3023,11 +3035,54 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const from = pageSlug || slugValue();
       pageSlug = '';
       loadedTitle = '';
+      loadedBody = '';
       setSlug('');
       slugTouched = false;          // the URL follows the title again until it is typed in
       $('#settings').hidden = false;
       $('#f-title').focus();
       flash(`Copy of ${from}. Give it a new title, and check the URL before saving.`);
+    }
+
+    /**
+     * The subject already living at this file name, when that file is not the one this
+     * page was opened from. Writing there replaces one subject with another, which is
+     * how three articles were lost in a day: everything changed except the file name.
+     *
+     * Read from the live index rather than from what was loaded, so a name typed by
+     * hand, restored from a draft, or left behind by a copy is caught the same way.
+     * A matching title is the same subject arriving by another route, and is allowed.
+     */
+    function occupiedBy(slug) {
+      if (!slug || (pageSlug && slug === pageSlug)) return null;
+      const key = pageKind === 'article' ? slug : `${pageKind}:${slug}`;
+      const held = ARTICLES.find((a) => a.slug === key);
+      if (!held) return null;
+      return held.title === $('#f-title').value.trim() ? null : held.title;
+    }
+
+    /**
+     * How much of the page that was opened is still on screen, by distinct words. A
+     * rename keeps the article and changes the name; using one as a template keeps
+     * the name of the file and changes everything else. This is what separates them.
+     */
+    function keptFraction() {
+      if (!loadedBody) return 1;
+      const words = (t) => new Set(t.toLowerCase().split(/[^a-z0-9\u00c0-\uffff]+/).filter((w) => w.length > 3));
+      const was = words(loadedBody);
+      if (was.size < 20) return 1;             // too little to judge; fall back to the prompt
+      const now = words(toMarkdown());
+      let hit = 0;
+      for (const w of was) if (now.has(w)) hit++;
+      return hit / was.size;
+    }
+
+    /** Refuse the write and put the writer in the field they have to change. */
+    function refuseReplace(slug, held) {
+      flash(`${slug} already holds \u201c${held}\u201d. Change the Article URL, `
+        + 'or open that page if you meant to edit it.', true);
+      $('#settings').hidden = false;
+      $('#f-slug').focus();
+      $('#f-slug').select();
     }
 
     /**
