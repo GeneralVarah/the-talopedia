@@ -207,6 +207,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       </div>
       <div class="set-toggles">
         <label class="check"><input id="f-ooc" type="checkbox" /> Contains out-of-character information</label>
+        <label class="check"><input id="f-sidebar-on" type="checkbox" checked /> Display sidebar
+          <span class="opt" id="sidebar-note"></span></label>
         <label class="check"><input id="f-navbox-on" type="checkbox" checked /> Display navbox
           <span class="opt" id="navbox-note"></span></label>
       </div>
@@ -1414,7 +1416,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const rows = filled.filter((r, i) =>
         r.section == null || (filled[i + 1] && filled[i + 1].section == null));
 
-      if (rows.length) {
+      if (rows.length && $('#f-sidebar-on').checked) {
         fm.push('infobox:');
         for (const r of rows) {
           if (r.office != null) { fm.push(`  - { office: ${q(r.office)}, term: ${q(r.term)} }`); continue; }
@@ -1668,6 +1670,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       meta: Object.fromEntries(fields.map((f) => [f, $(f).value])),
       ooc: $('#f-ooc').checked,
       navbox: $('#f-navbox-on').checked,
+      sidebar: $('#f-sidebar-on').checked,
       slug: slugValue(),
       // What is being edited, and the two things it holds that are never on screen.
       // Without these an undo, or the reload after a save, turns a portal into an article.
@@ -1682,6 +1685,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       for (const [f, v] of Object.entries(d.meta || {})) if ($(f)) $(f).value = v;
       $('#f-ooc').checked = !!d.ooc;
       $('#f-navbox-on').checked = d.navbox !== false;
+      $('#f-sidebar-on').checked = d.sidebar !== false;
       if (d.slug) { setSlug(d.slug); slugTouched = true; }
       pageKind = d.kind || 'article';
       portalBody = d.portalBody || '';
@@ -1752,7 +1756,11 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         ['#native-field', art], ['#romaji-field', art], ['#nation-field', !nav],
       ]) $(id).hidden = !on;
       $('#settings').querySelector('.set-toggles').hidden = !art;
-      document.querySelector('.ib-edit').hidden = !art;
+      // Not every article wants a sidebar. The rows stay in the editor while it is
+      // off, so turning it back on before saving brings them back untouched.
+      const sidebar = $('#f-sidebar-on').checked;
+      $('#sidebar-note').textContent = sidebar ? '' : 'none';
+      document.querySelector('.ib-edit').hidden = !art || !sidebar;
       // Only the types that sit somewhere on the map.
       const PLACED = ['overview', 'city', 'subdivision', 'continent', 'geography'];
       $('#coords-field').hidden = !art || !PLACED.includes(t);
@@ -1874,6 +1882,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#f-icon').value = data.icon || '';
       $('#f-authors').value = (data.authors || []).join(', ');
       $('#f-navbox-on').checked = data.navbox !== 'none';
+      $('#f-sidebar-on').checked = !!(data.infobox || []).length;
       $('#f-coords').value = data.coords || '';
       $('#f-ooc').checked = !!data.ooc;
       pageSlug = bare;
@@ -2139,6 +2148,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#settings').querySelectorAll('input[type=text], textarea').forEach((i) => i.value = '');
       $('#f-ooc').checked = false;
       $('#f-navbox-on').checked = true;
+      $('#f-sidebar-on').checked = true;
       $('#canvas-title').textContent = '';
       setSlug(slug); slugTouched = !!slug;
       try { sessionStorage.removeItem(DRAFT); } catch {}
@@ -2192,7 +2202,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       if (id) location.href = `${BASE.replace(/\/$/, '')}/edit?a=navbox:${id}`;
     };
     $('#f-banner-pick').onclick = () => { $('#f-banner').focus(); openMedia(); };
-    ['#f-type', '#f-nation', '#f-navbox-on'].forEach((id) => {
+    ['#f-type', '#f-nation', '#f-navbox-on', '#f-sidebar-on'].forEach((id) => {
       $(id).addEventListener('change', paintSettings);
     });
     $('#settings').addEventListener('input', () => { paintSettings(); sync(); });
@@ -2540,6 +2550,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#f-crumb').value = '';
       $('#f-authors').value = [].concat(data.authors ?? []).join(', ');
       $('#f-navbox-on').checked = data.navbox !== 'none';
+      $('#f-sidebar-on').checked = !!rows.length;
       $('#f-coords').value = data.coords || '';
       $('#f-ooc').checked = data.ooc === true || data.ooc === 'true';
       setInfobox(rows);
