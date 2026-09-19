@@ -22,7 +22,7 @@ infobox:
   - { label: "Minister of Defense", value: "[[toranosuke-saionji]]" }
   - { label: "Marshal-General of the Bulwark", value: "Kiyoshi Kiryū" }
   - { label: "Marshal-Admiral of the Maelstrom", value: "[[suiren-makinami]]" }
-  - { label: "Marshal-", value: "Hayato Aotaka" }
+  - { label: "Marshal-Commodore of the Firmament", value: "Hayato Aotaka" }
   - { section: "Personnel" }
   - { label: "Military Age", value: "18" }
   - { label: "Conscription", value: "Selective" }
