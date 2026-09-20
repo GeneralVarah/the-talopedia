@@ -6,18 +6,18 @@ infobox:
   - { image: "/assets/old-media/media/elysian-civil-war-1.jpg", caption: "Destroyed civilian buildings in the aftermath of the Battle of Nexus" }
   - label: "Date"
     value:
-      - "17 August 1920- 4 June 1922"
+      - "August 17, 1920- June 4, 1922"
       - "(1 year, 9 months, 2 weeks, 4 days)"
   - { label: "Location", value: "[[united-states-of-elysia]]" }
   - { label: "Result", value: "Revolutionary Guard victory" }
   - { label: "Territorial Changes", value: "Establishment of the Elysian State of Unity" }
   - { section: "Belligerents" }
-  - label: "Revolutionary Guard:"
+  - label: "Revolutionary Guard: Spartacus Division (1920) Revolutionary Guard of Elysia (1921-)"
     value:
       - "Elysian Whites:"
-      - "United States of Elysia"
+      - "[[futu|United States of Elysia]]"
   - { section: "Commanders and Leaders" }
-  - label: "[[archer-S-maine|Archer S. Maine]]"
+  - label: "[[archer-S-maine|Archer S. Maine ]]Arianne Malloran Elias Gray George Elwood (1921-)"
     value:
       - "Vincent Stone"
       - "Francis R. Wallace"
@@ -25,18 +25,19 @@ infobox:
       - "Cooper Beckett"
       - "Nicholas A. Andersen"
   - { section: "Strength" }
-  - { label: "Spartacus Division: 140,000 – 150,000 (peak)", value: "United States Army: 1,430,000 (peak)" }
+  - { label: "Spartacus Division: 140,000 – 150,000 (peak) People's Volunteer Corps: 4,300,000 (peak)", value: "United States Army: 1,430,000 (peak)" }
   - { section: "Casualties and Losses" }
   - { label: "~800,000 KIA Or MIA", value: "~1,200,000 KIA or POW" }
   - { label: "~4,500,000 Total Casualties", value: "1-2 million refugees outside Elysia" }
 ---
+
 **The Elysian Civil War** was a civil conflict fought for the control and leadership of the United States of [[elysia]] between 1920 and 1922. The war was waged in reaction to the oppressive politics of Elysian President Vincent Stone and the Years of Oppression. Starting off as a series of prison riots in government internment and labour camps, the conflict soon erupted into a full-on popular uprising against the current government. It led to the formation of the Elysian Reconstruction Authority and, eventually, the [[elysian-state-of-unity]] in its territory.
 
 The end of the Great War was seen as a great disappointment by the people of Elysia. An atmosphere of bitterness had descended upon the population as millions mourned for the people lost in the war. The political climate quickly acclimated to this atmosphere, giving extremist parties fertile breeding ground to expand and build their support bases. The communists especially started gaining significant momentum in congress, leading to corporate lobbyists and right-wing political parties to ferment the Red Scare in response.
 
 This air of political rivalry eventually culminated during the presidency of Right-Wing politician Vincent Stone, who aggressively cracked down on most left-wing politicians under the excuse of foreign conspiracy. Stone’s political terror created an incredibly tense atmosphere between the government and its people, with the uprising of the Spartacus Division being the final straw. Seeing an opportunity and a just cause to rally around, military defectors and civilian volunteers formed the Elysian Revolutionary Guard against what would come to be called the Elysian White Army.
 
-Initially, the civil war was limited only to the northeastern parts of the country, with the Revolutionary Guard seizing arms from army garrisons and gathering support from the smaller towns and cities in the area. Officially, the first large-scale skirmish of the war was fought in Fort Union on December 20th 1920, following the government’s declaration of martial law and the deployment of army units against the Guard. The Guard would quickly begin scoring victories across Elysia, advancing southward across the Saharan seaboard and driving the White Armies into a retreat.
+Initially, the civil war was limited only to the northeastern parts of the country, with the Revolutionary Guard seizing arms from army garrisons and gathering support from the smaller towns and cities in the area. Officially, the first large-scale skirmish of the war was fought in Fort Union on December 20, 1920, following the government’s declaration of martial law and the deployment of army units against the Guard. The Guard would quickly begin scoring victories across Elysia, advancing southward across the Saharan seaboard and driving the White Armies into a retreat.
 
 The Guard would capture Metro Regima without a fight in March of 1921, marking a major turning point in the war. The Guard’s momentum would inspire various other uprisings in Northeastern Elysia, including the Corona Revolt in what is known today as Dogma. The advance would come to a screeching halt, however, as the White Armies began digging in for a prolonged period of siege warfare across a trench network stretching from the Great Lakes to the Sahara referred to White Army command as the Tango-Line. It was at this stage of the war when the White Army began making any meaningful progress, capturing back territory in the more rural parts of the country, and severing Corona off from the rest of the Guard, beginning a prolonged siege that would last until February of 1922.
 
@@ -45,7 +46,7 @@ This period of stalemate ultimately ended following the defection of Colonel [[g
 Following the fall of Nexus to the Revolutionary Guard and the death of the President, the White Army’s central command structure had practically collapsed. Sporadic fighting still occurred in cities in the North and Southwest; however, by the end of May, any organized major resistance had mostly fizzled out, with many remaining Army units simply defecting to the Guard or integrating back into civilian life. White Partisans continued to operate in the country until 1926, when a raid on partisan leaders by the Ministry of the Interior effectively ended all Partisan activity in the country. The war ended with an estimated 4,500,000 total casualties, mostly consisting of civilians on the side of the Revolutionary Guard.
 
 <div class="imgrid">
-<figure style="flex:2.41"><img src="/assets/old-media/media/elysian-civil-war-2.jpg" alt="Members of the Spartacus Division just before the assault on Griffon Hall."><figcaption>Members of the Spartacus Division just before the assault on Griffon Hall.</figcaption></figure>
+<figure style="flex:2.410"><img src="/assets/old-media/media/elysian-civil-war-2.jpg" alt="Members of the Spartacus Division just before the assault on Griffon Hall."><figcaption>Members of the Spartacus Division just before the assault on Griffon Hall.</figcaption></figure>
 </div>
 
 ## Background
@@ -83,8 +84,32 @@ Despite continued sabotage by Ranger detachments in White Army territory, the Re
 This major advantage culminated in a major offensive by Guard forces in December of 1921, piercing through and encircling many White Army formations simultaneously all across the Tango-Line. With the White Army thrown into nigh total disarray, they began enacting a scorched-earth campaign as they retreated south.
 
 <div class="imgrid">
-<figure style="flex:1.0"><img src="/assets/old-media/media/elysian-civil-war-4.png" alt=""><figcaption></figcaption></figure>
+<figure style="flex:0.948"><img src="https://lh3.googleusercontent.com/d/1oUIOznP_HE3Jks65rcO-BQtEeQzbGfsv=w2000" alt="Frontlines and main offensives in April 1921. The siege of Corona continues, and trench warfare across the Tango-Line begins. Areas controlled by the Elysian Whites and their offensive marked in blue. Areas controlled by the Revolutionary Guard and their offensive marked in red."><figcaption>Frontlines and main offensives in April 1921. The siege of Corona continues, and trench warfare across the Tango-Line begins. Areas controlled by the Elysian Whites and their offensive marked in blue. Areas controlled by the Revolutionary Guard and their offensive marked in red.</figcaption></figure>
 </div>
+
+### Siege of Corona
+
+Soon after the Battle of Fort Union and the Guard takeover of Metro Regima, a significant portion of the military and civilian population in and around the city of Corona (now Dogma), inspired and sympathizing with the cause of the Revolutionary Guard, rose up as an independent contingent of the Guard. Intending to take the northern parts of the country into the control of the Guard, the Corona contingent was met with stiff resistance from neighboring cities and regions, with the Contingent soon sent back to the city of Corona to dig in for a prolonged siege. Besides the Battle of Nexus, the Siege of Corona soon became the most bloody theater of the conflict, with the city’s defenses being under constant bombardment by White Army forces. Thousands of civilians suffered from starvation as the only avenue of resupply was through shipping via Lake Skandario.
+
+The siege would come to a swift end in February of 1922 following the collapse of the White Army’s central command structure. The White Army units left in the northern parts of the country quickly surrendered to advancing Guard units. The humanitarian relief mission would last until January of 1924.
+
+### Battle of Nexus
+
+The White Army’s retreat south following the collapse of the Tango-Line quickly devolved into chaos. In the panic to escape from the advancing Guard formations, swathes of equipment were left behind intact and quickly reappropriated into the Guard’s use. Falling back to Nexus through the Saharan seaboard, the retreating armies burned the city of Aquila down behind them as they began setting up defensive positions in and around the capital city of Nexus. This slowed the Revolutionary Guard’s advance enough for them to set up proper trench networks surrounding the city, leading to a weeks long siege of the city. The situation inside the city became dire as the Revolutionary Guard cut off all means of direct escape from inside its walls. The White Army, originally composed of professional soldiers with years of experience, was now mass conscripting civilians to fight against the approaching army. Many of these improvised formations would quickly surrender or be wiped out after being sent into combat for the first time.
+
+This state of gridlock was eventually broken on the 14th of January, when following a massive wave of surrenders across the front, Guard command decided it was time to blitz into the city all at once. After a prolonged artillery barrage covering the entire city, a mass charge of all Guard units was ordered to capture the city from the White Army’s control. Within the span of a few hours, the last White Army defenders of the city had surrendered, and the remaining senior members of the government either arrested or summarily executed. This battle would ultimately see the last large-scale engagement of the war, with the White Army having been effectively paralyzed.
+
+### Red and White terror
+
+Both the White Army and Revolutionary Guard committed acts of political violence during the war, referred to as the White terror and Red terror respectively. The terror consisted of a calculated aspect of general warfare and, on the other hand, the local, personal murders and corresponding acts of revenge. In the former, the commanding staff planned and organised the actions and gave orders to the lower ranks. At least a fifth of the Red terror and most of the White terror was centrally led. The main goals of the terror were to destroy the command structure of the enemy; to clear and secure the areas governed and occupied by armies; and to create shock and fear among the civil population and the enemy soldiers. Additionally, the common troops' paramilitary nature and their lack of combat skills drove them to use political violence as a military weapon.
+
+It is important however to note that the White Terror was far more prevalent compared to the Red Terror, with Army command having issued the “Shoot-on-the-spot” decree soon after the fall of Fort Union. In general, the White Terror simply acted as a wartime continuation of President Stone’s oppressive policies, with many civilians displaying even a hint of sympathy toward the Guard in public being tried for treason and executed. Total estimates for people killed during the terror range in the hundreds of thousands, with ~30,000 attributed to the Guard, and ~300,000 to the White Army.
+
+### End
+
+Following the fall of Nexus on the 14th of January and the death or capture of most of the White Army’s central leadership, the organization began quickly fizzling out. Even those most loyal to the White Army’s cause saw continuing fighting as a pointless endeavour after the death of the President. A wave of desertions followed, with many who feared persecution from the Guard fleeing to neighboring Hollosend and Calveria, as well as Evrian nations such as St. Testudera and Elvester. With most organized resistance having quickly folded, the Guard declared itself victorious in the Elysian Civil War, declaring the establishment of the Elysian Reconstruction Authority as a continuation of the United States.
+
+The White Army had been defeated. The government forces had lost the civil war, several military leaders committed suicide or were arrested and tried for their crimes. Many of them were sentenced to either forced labour or death, with a very rare few pardoned for any crimes by Supreme Protector Archer Maine later on.
 
 ## Aftermath and Impact
 

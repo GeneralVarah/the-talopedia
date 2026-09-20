@@ -1,6 +1,6 @@
 ---
 title: "Karjania"
-nativeTitle: "Karjanmaan Yhdistyneet Sosialistiset Valtiot"
+nativeTitle: "Karjanmaan Yhdistyneet Sosialistiset Valtiot (Routan)"
 type: overview
 nation: karjania
 infobox:
@@ -15,11 +15,8 @@ infobox:
   - { section: "Administration" }
   - { label: "Government", value: "One-Party Communist State" }
   - { label: "Chairman of the Communist Party", sub: true, value: "Yrjö Sinnar" }
-  - label: "Premier of the State"
-    sub: true
-    value:
-      - "Nooa Laukkanen"
-      - "Aili Lehtinen"
+  - { label: "Premier of the State", sub: true, value: "Nooa Laukkanen" }
+  - { label: "Speaker of Congress", sub: true, value: "Aili Lehtinen" }
   - { label: "Legislature", value: "Karjanian Communist Congress" }
   - { label: "Formation", value: "1920 January 8th" }
   - { section: "Demographics" }
@@ -79,7 +76,7 @@ The land that is now Karjania was inhabited by various early tribes around 7500 
 
 In 1477, the 3 kingdoms and their leaders signed the Treaty of Roudanjärvi, which established the **Karjan Confederation**, uniting the 3 nations into a single state. The Karjan Confederation was an electoral monarchy; a group of 50 nobles would vote for a King, who would then reign until their deaths. The first king of the Confederation was King Carl I of Karjania. During this period, [will talk with Rudania for lore here]. In 1778, Olaf Virtanen was elected King, with the name Olaf IV. This caused discontent among the general population and especially within the military, leading to a coup by several soldiers and the proclamation of the First Karjanian Republic. This period lasted between 1778 and 1781 and was known as the Age of the Republic **.** After the death of the Military Leader in 1781, the nobles reclaimed power and elected young Kristian IV, also known as Kristian the Great. He is the longest-reigning monarch in Karjanian history, ruling for over 55 years between 1781 and 1837. He was the first recorded Karjanian to live over 100 years, dying at 102. The period between 1782 and 1882 is known as the Golden 100 Years. This era included the development and financing of the arts, an improving literacy rate, and a growing number of non-religious people. Several new buildings and universities were constructed, and the Confederation adopted a new anthem, “Maamme”.
 
-On November 17th, 1920, King Kristian V died after a reign of 43 years, triggering a chain of events. This was the spark that ignited the Karjanian Civil War. Soon after, Yrjö Sinnar declared the Pietari Commune, and socialists took control of the capital. In Roudanjärvi, the 2nd Karjanian Republic was declared by Heikki Aaltonen, a noble on the former council of electors. Soon after, Yrjö Sinnar declared the establishment of the United Socialist States of Karjania and declared war on the rest of the country, officially starting the civil war on January 8th, 1920. In Toksavaara, the Free Esti State declared independence, while in Murmánska, the Saamit Socialist State (S.S.S.) was created. After roughly 8 months of fighting and over 100,000 casualties, the Aaltonnen surrendered and were executed, along with 724 other government members and generals. After the conquest of the Free Esti State, the S.S.S. and the U.S.S.K. united into a single entity, establishing the Karjanian Communist Congress.
+On November 17, 1920, King Kristian V died after a reign of 43 years, triggering a chain of events. This was the spark that ignited the Karjanian Civil War. Soon after, Yrjö Sinnar declared the Pietari Commune, and socialists took control of the capital. In Roudanjärvi, the 2nd Karjanian Republic was declared by Heikki Aaltonen, a noble on the former council of electors. Soon after, Yrjö Sinnar declared the establishment of the United Socialist States of Karjania and declared war on the rest of the country, officially starting the civil war on January 8, 1920. In Toksavaara, the Free Esti State declared independence, while in Murmánska, the Saamit Socialist State (S.S.S.) was created. After roughly 8 months of fighting and over 100,000 casualties, the Aaltonnen surrendered and were executed, along with 724 other government members and generals. After the conquest of the Free Esti State, the S.S.S. and the U.S.S.K. united into a single entity, establishing the Karjanian Communist Congress.
 
 ## Military
 
@@ -122,7 +119,7 @@ Karjania has a mixed elevation due to its vast size and varied landscapes. In th
 Karjania has a varied climate, mainly divided between boreal and humid continental. Thule and Cuohpajálla have a polar climate. In Karjania, winters are very harsh and long. All of Karjania experiences snowfall in winter, with some places, especially Thule, covered by snow year-round. The average temperature in mainland Karjania is 6.2 C°. In winter, temperatures may drop to -25 C°. Karjania sees an average of 650mm of rain annually.
 
 <div class="imgrid">
-<figure style="flex:2.0"><img src="/assets/old-media/media/karjania-2.jpg" alt="Northern Karjania (Kuolan) during winter"><figcaption>Northern Karjania (Kuolan) during winter</figcaption></figure>
+<figure style="flex:2.000"><img src="/assets/old-media/media/karjania-2.jpg" alt="Northern Karjania (Kuolan) during winter"><figcaption>Northern Karjania (Kuolan) during winter</figcaption></figure>
 </div>
 
 ### Largest Cities
@@ -169,4 +166,4 @@ In terms of Religion, most of Karjania identify as non-religious, about 71%. 23%
 
 The median age in Karjania is 21.9. The population is 53.3% female and 46.6% male. In Karjania, homosexuality is not punished. The GDP per capita is $45,399. In a 1921 survey, 85.3% of Karjanians said they're proud of their homeland. The most common cause of death in Karjania is heart disease.
 
-See Also: [[sport-in-karjania]], [[portal:karjania|Portal:Karjania]]
+See Also: [[sport-in-karjania]], [[portal:karjania]]

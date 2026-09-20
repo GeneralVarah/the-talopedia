@@ -4,6 +4,7 @@ import Base from '../layouts/Base.astro';
 import { navbox, nations, url } from '../lib/registry.mjs';
 import { resolveHtml } from '../lib/navbox.mjs';
 import { asset } from '../lib/inline.mjs';
+import { featured, overview, firstImage, linkFirstMention } from '../lib/featured.mjs';
 
 // The front page is an ordinary article, so it opens in the editor like any other.
 export const HOME = 'home';
@@ -33,22 +34,24 @@ const stats = [
 ];
 
 /**
- * The featured article's own sidebar picture, floated beside its summary. Read off
- * whichever article the section links to first, so changing the feature changes the
- * picture and there is nothing to keep in step by hand.
+ * Today's featured article, written out in full: its own sidebar picture floated
+ * beside its overview. The front page carries the heading and nothing under it, so
+ * there is no copy of the text to go stale and nobody has to change it each morning.
  */
-function featured() {
-  const section = (home?.body ?? '').split(/^##\s+Featured Article\s*$/m)[1];
-  const slug = section?.match(/\[\[([^\]|#]+)/)?.[1];
-  const entry = slug && articles.find((a) => a.id === slug);
-  const row = entry?.data.infobox?.find((r) => r.image || r.images?.[0]?.src);
-  const src = row?.image || row?.images?.[0]?.src;
-  if (!src) return '';
-  const alt = (entry.data.title ?? slug).replace(/"/g, '&quot;');
-  return `<figure class="float float-right" style="width:220px">`
-    + `<img src="${asset(src)}" alt="${alt}"></figure>`;
-}
-const featuredImg = featured();
+const pick = featured(articles);
+const featuredPanel = !pick ? '' : (() => {
+  const title = (pick.data.title ?? pick.id).replace(/"/g, '&quot;');
+  const fig = `<figure class="float float-right feat-pic">`
+    + `<img src="${asset(firstImage(pick.data))}" alt="${title}"></figure>`;
+  const href = url('/' + pick.id);
+  const body = overview(resolveHtml(pick.rendered?.html));
+  const linked = linkFirstMention(body, pick.data.title ?? pick.id, href);
+  // A lede that never names its subject gets a plain link instead, so the panel is
+  // never a dead end.
+  return linked
+    ? `${fig}${linked}`
+    : `${fig}${body}<p class="more"><a href="${href}">Read all of ${title}</a></p>`;
+})();
 
 /**
  * Each `## Section` of the front page becomes its own panel, as on Wikipedia's main page.
@@ -64,8 +67,10 @@ function splitHome(html = '') {
     const head = chunk.slice(0, end);
     const rest = chunk.slice(end);
     if (/id="introduction"/.test(head)) { intro = rest; continue; }
-    const lead = /id="featured-article"/.test(head) ? featuredImg : '';
-    boxes.push(`<section class="hbox">${head}<div class="hbox-body">${lead}${rest}</div></section>`);
+    // The featured panel's contents are generated; whatever the front page has
+    // under that heading is a leftover and is replaced.
+    const inner = /id="featured-article"/.test(head) ? featuredPanel : rest;
+    boxes.push(`<section class="hbox">${head}<div class="hbox-body">${inner}</div></section>`);
   }
   return { lede, intro, body: boxes.join('') };
 }

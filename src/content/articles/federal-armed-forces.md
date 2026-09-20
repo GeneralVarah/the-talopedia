@@ -9,7 +9,7 @@ infobox:
     value:
       - "Schutz des Bundes, Dienst dem Volke"
       - "\"Protection of the Confederation, Service to the People\""
-  - { label: "Founded", value: "1 August, 1931" }
+  - { label: "Founded", value: ":date[1931-08-01|ago]" }
   - label: "Service Branches"
     value:
       - "Bundesheer"

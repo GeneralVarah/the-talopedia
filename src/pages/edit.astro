@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import { TEMPLATES } from '../lib/templates.mjs';
 import { ARTICLE_TYPES } from '../content.config';
 import { nations, url } from '../lib/registry.mjs';
+import { icNow } from '../lib/icclock.mjs';
 import fs from 'node:fs';
 import { parse as parseYaml } from 'yaml';
 
@@ -43,6 +44,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           <button id="new-navbox" type="button">New navbox</button>
           <div class="menu-sep"></div>
           <button id="open-file" type="button">Open a file…</button>
+          <button id="duplicate" type="button">Duplicate as a new page…</button>
           <input id="open-file-input" type="file" accept=".md,.markdown,.yaml,.yml" hidden />
           <div class="menu-sep"></div>
           <input id="file-q" type="search" placeholder="Search articles" autocomplete="off" />
@@ -89,7 +91,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           <div class="mp-tabs">
             <button type="button" class="on" data-pane="images">Images</button>
             <button type="button" data-pane="icons">Icons</button>
-            <button type="button" data-pane="tables">Table</button>
           </div>
 
           <div class="mp-pane" id="pane-images">
@@ -138,9 +139,37 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             <div class="mp-body" id="mp-icons"></div>
           </div>
 
-          <div class="mp-pane" id="pane-tables" hidden>
-            <div class="tbl-pick" id="tbl-pick"></div>
-            <p class="tbl-size"><span id="tbl-label">0 × 0</span></p>
+        </div>
+      </div>
+
+      <div class="drop">
+        <button id="ins" type="button" title="Insert">
+          <svg viewBox="0 0 16 16"><path d="M8 3.2v9.6M3.2 8h9.6"/></svg>
+          Insert <span class="caret">▾</span>
+        </button>
+        <div class="drop-menu list ins-menu" id="ins-menu" hidden>
+          <div class="ins-item" data-ins="table">
+            <button type="button">Table<span class="ins-arrow">›</span></button>
+            <div class="ins-sub">
+              <div class="tbl-pick" id="tbl-pick"></div>
+              <p class="tbl-size"><span id="tbl-label">0 × 0</span></p>
+            </div>
+          </div>
+          <div class="ins-item" data-ins="date">
+            <button type="button">Date<span class="ins-arrow">›</span></button>
+            <div class="ins-sub ins-sub-date">
+              <label class="ins-f">Date<input id="dt-date" type="date" /></label>
+              <label class="ins-f">Show
+                <span class="mp-seg" id="dt-mode">
+                  <button type="button" class="on" data-mode="">Plain</button>
+                  <button type="button" data-mode="ago">Elapsed</button>
+                  <button type="button" data-mode="age">Age</button>
+                </span>
+              </label>
+              <label class="ins-f" id="dt-born-row" hidden>Born<input id="dt-born" type="date" /></label>
+              <p class="mp-hint" id="dt-preview"></p>
+              <button id="dt-go" type="button" class="primary">Insert</button>
+            </div>
           </div>
         </div>
       </div>
@@ -159,6 +188,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             <button id="save" type="button" class="primary">Save</button>
           </Fragment>
         )}
+        <input id="f-summary" type="text" placeholder="What changed?" spellcheck="false"
+          title="A line describing this edit. It becomes the commit message and shows in the page's history." />
         <button id="cart-add" type="button" class="commit"
           title="Put this page with the others, to be pushed as one pull request">Commit</button>
         <button id="cart-open" type="button" title="Pages waiting to be pushed">
@@ -181,10 +212,13 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         <label id="crumb-field" hidden>Breadcrumb <span class="opt">navbox</span>
           <input id="f-crumb" type="text" placeholder="[[portal:nichirin|Portal:Nichirin]] • [[nichirin|Overview]]" /></label>
         <label id="native-field">Native title <span class="opt">optional</span>
-          <textarea id="f-native" rows="2" placeholder="宮本幕府"
+          <textarea id="f-native" rows="1" placeholder="宮本幕府"
             title="One line per official language"></textarea></label>
         <label id="romaji-field">Romanization <span class="opt">optional</span>
           <input id="f-romaji" type="text" placeholder="Miyamoto Bakufu" /></label>
+        <label id="url-field">Article URL <span class="opt">the file name</span>
+          <input id="f-slug" type="text" placeholder="emeka-okafor" spellcheck="false"
+            title="The address this page is served at, and the name of its file" /></label>
         <label id="type-field">Article type<select id="f-type">{ARTICLE_TYPES.map((t) => <option value={t}>{t}</option>)}</select></label>
         <label id="nation-field">Associated nation<select id="f-nation"><option value="">(none)</option>
           {nationList.map((n) => <option value={n.id}>{n.name}</option>)}</select></label>
@@ -203,6 +237,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       </div>
       <div class="set-toggles">
         <label class="check"><input id="f-ooc" type="checkbox" /> Contains out-of-character information</label>
+        <label class="check"><input id="f-sidebar-on" type="checkbox" checked /> Display sidebar
+          <span class="opt" id="sidebar-note"></span></label>
         <label class="check"><input id="f-navbox-on" type="checkbox" checked /> Display navbox
           <span class="opt" id="navbox-note"></span></label>
       </div>
@@ -304,7 +340,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     </div>
   </div>
 
-  <script is:inline define:vars={{ TEMPLATES, BASE: url('/'), DEV, REPO, FLAGS, NATION_NAMES, ARTICLES: existing }}>
+  <script is:inline define:vars={{ TEMPLATES, BASE: url('/'), DEV, REPO, FLAGS, NATION_NAMES, ARTICLES: existing,
+    IC_NOW: icNow().toISOString().slice(0, 10) }}>
     const $ = (s, r = document) => r.querySelector(s);
     const el = (t, c, txt) => { const n = document.createElement(t); if (c) n.className = c; if (txt != null) n.textContent = txt; return n; };
     const q = (s) => '"' + String(s ?? '').replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
@@ -318,6 +355,10 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     // the published site this is the only thing that knows a portal is filed under its
     // nation rather than under "Portal:Nichirin".
     let pageSlug = '';
+    // The title and the text the open page had when it was loaded. Saving under the
+    // same file name with a different title is how an article gets used as a template
+    // and overwritten; the text is what tells a rename apart from a replacement.
+    let loadedTitle = '', loadedBody = '';
     let navboxLead = '';
     // A portal's body is not editable here. Two nations have no overview article yet
     // and their portal still carries its own paragraph, so whatever was loaded is
@@ -352,9 +393,47 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 
     // Arrows and flags are shown as themselves, not as :up or :flag[nichirin].
     const ARROW = { up: '\u25B2', down: '\u25BC' };
+    const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'];
+    const longDate = (iso) => {
+      const [y, m, d] = iso.split('-').map(Number);
+      return `${MONTHS[m - 1]} ${d}, ${y}`;
+    };
+    /** Whole years from one date to another, the way an age is counted. */
+    function yearsBetween(fromIso, toIso) {
+      const [fy, fm, fd] = fromIso.split('-').map(Number);
+      const [ty, tm, td] = toIso.split('-').map(Number);
+      return ty - fy - (tm < fm || (tm === fm && td < fd) ? 1 : 0);
+    }
+    /**
+     * What :date[...] will say once published. The article stores the date and the
+     * kind of working-out; the number is recomputed on every build against the Avium
+     * clock, so an age never goes stale in the text.
+     */
+    function dateLabel(arg) {
+      const [iso, mode = ''] = String(arg).split('|');
+      const date = iso.trim();
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return arg;
+      const long = longDate(date);
+      const [kind, from] = mode.trim().split(':');
+      if (kind === 'ago') {
+        const n = yearsBetween(date, IC_NOW);
+        return `${long} (${n === 0 ? 'this year' : `${n} year${n === 1 ? '' : 's'} ago`})`;
+      }
+      if (kind === 'age') {
+        return `${long} (aged ${/^\d{4}-\d{2}-\d{2}$/.test(from || '')
+          ? yearsBetween(from, date) : yearsBetween(date, IC_NOW)})`;
+      }
+      return long;
+    }
+
     function tokenHtml(kind, arg) {
       if (kind === 'up' || kind === 'down') {
         return `<span class="tok arrow ${kind}" data-tok="${kind}" contenteditable="false">${ARROW[kind]}</span>`;
+      }
+      if (kind === 'date') {
+        return `<span class="tok date" data-tok="date" data-slug="${esc(arg)}" contenteditable="false">`
+          + `${esc(dateLabel(arg))}</span>`;
       }
       // :img carries its own path and an optional pixel width; :icon and :flag look
       // the subject up in the registry.
@@ -405,10 +484,40 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       return out;
     }
 
+    /**
+     * Word processors mark emphasis with styles rather than tags, so a tag list alone
+     * reads a Google Docs paste as unformatted. These answer the same question the
+     * tags do, and Docs' own wrapper is the reason the negative cases are checked:
+     * every copied run arrives inside a <b style="font-weight:normal">.
+     */
+    function marksOf(n) {
+      const st = n.style || {};
+      const w = st.fontWeight;
+      const bold = w ? (w === 'bold' || w === 'bolder' || Number(w) >= 600)
+                     : (n.tagName === 'B' || n.tagName === 'STRONG');
+      const italic = st.fontStyle ? st.fontStyle === 'italic'
+                                  : (n.tagName === 'I' || n.tagName === 'EM');
+      const va = st.verticalAlign;
+      const sup = va === 'super' || n.tagName === 'SUP';
+      const sub = va === 'sub' || n.tagName === 'SUB';
+      return [bold && 'b', italic && 'i', sup && 'sup', sub && 'sub'].filter(Boolean);
+    }
+
+    /** A link's real target. Google rewrites every one it copies through a redirect. */
+    function hrefOf(n) {
+      const raw = n.getAttribute('href') || '';
+      const m = raw.match(/^https?:\/\/(?:www\.)?google\.[a-z.]+\/url\?(.*)$/i);
+      if (!m) return raw;
+      const q = new URLSearchParams(m[1]).get('q');
+      return q || raw;
+    }
+
     /** Strip a pasted fragment down to what this editor can represent. */
     function keepTokens(html) {
       const doc = new DOMParser().parseFromString(html, 'text/html');
-      const KEEP = new Set(['B', 'STRONG', 'I', 'EM', 'SUP', 'SUB', 'BR']);
+      // A block on the clipboard is a line here: the editor's own blocks are made by
+      // the writer, never by whatever the text was pasted out of.
+      const BLOCK = new Set(['P', 'DIV', 'LI', 'TR', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6']);
       const walk = (node) => {
         let out = '';
         for (const n of node.childNodes) {
@@ -417,17 +526,24 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           const tag = n.tagName;
           if (tag === 'IMG' && n.dataset.tok) {
             out += tokenHtml(n.dataset.tok, n.dataset.slug || n.getAttribute('src'));
-          } else if (tag === 'SPAN' && n.dataset.tok) {
-            out += tokenHtml(n.dataset.tok, n.dataset.slug || '');
-          } else if (tag === 'A' && n.dataset.slug) {
-            out += `<a href="#" data-slug="${esc(n.dataset.slug)}">${walk(n)}</a>`;
-          } else if (tag === 'BR') {
-            out += '<br>';
-          } else if (KEEP.has(tag)) {
-            out += `<${tag.toLowerCase()}>${walk(n)}</${tag.toLowerCase()}>`;
-          } else {
-            out += walk(n);
+            continue;
           }
+          if (tag === 'SPAN' && n.dataset.tok) {
+            out += tokenHtml(n.dataset.tok, n.dataset.slug || '');
+            continue;
+          }
+          if (tag === 'BR') { out += '<br>'; continue; }
+          if (tag === 'STYLE' || tag === 'SCRIPT' || tag === 'IMG') continue;
+
+          let inner = walk(n);
+          for (const mark of marksOf(n)) inner = inner.trim() ? `<${mark}>${inner}</${mark}>` : inner;
+          if (tag === 'A') {
+            const href = n.dataset.slug ? '#' : hrefOf(n);
+            const slug = n.dataset.slug ? ` data-slug="${esc(n.dataset.slug)}"` : '';
+            if (href && inner.trim()) inner = `<a href="${esc(href)}"${slug}>${inner}</a>`;
+          }
+          if (BLOCK.has(tag) && out && !out.endsWith('<br>') && inner.trim()) out += '<br>';
+          out += inner;
         }
         return out;
       };
@@ -474,10 +590,13 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           pasteGrid(cell, text);
           return;
         }
-        // Flags, icons and links survive a copy between fields; everything else
-        // arrives as plain text, because the editor has no styling to paste into.
-        if (html && /data-tok=|data-slug=/.test(html)) {
-          document.execCommand('insertHTML', false, keepTokens(html));
+        // Bold, italics, superscript and links come across from wherever the text
+        // was copied. Everything else is dropped, because the stylesheet is the
+        // Manual of Style and there is nothing else to paste into.
+        const clean = plainPaste || !html ? '' : keepTokens(html);
+        plainPaste = false;
+        if (clean.replace(/<[^>]*>/g, '').trim()) {
+          document.execCommand('insertHTML', false, clean);
           return;
         }
         document.execCommand('insertText', false, text);
@@ -489,6 +608,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       d.addEventListener('focusin', () => { focused = d; });
       return d;
     }
+
+    /**
+     * Set by the shortcut for pasting without formatting, and read by the next paste.
+     * The event itself does not say which shortcut opened it.
+     */
+    let plainPaste = false;
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === 'v' || e.key === 'V')) plainPaste = true;
+    }, true);
 
     let focused = null;      // last focused rich-text surface
     let lastPath = null;     // last focused image path field
@@ -1044,6 +1172,21 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       return grid;
     }
 
+/**
+ * A cell's text, wherever in the cell it ended up. Each cell holds an editable box,
+ * but the caret can land in the cell itself, and anything typed there sat outside the
+ * box where the serializer never looked: the rows showed on screen and saved blank.
+ */
+    function cellMd(c) {
+      let out = '';
+      for (const n of c.childNodes) {
+        if (n.nodeType === 3) { out += n.nodeValue; continue; }
+        if (n.nodeType !== 1) continue;
+        out += n.classList.contains('ce') ? htmlToMd(n, '<br>') : htmlToMd({ childNodes: [n] }, '<br>');
+      }
+      return out.trim();
+    }
+
     function tableEditor(rows) {
       const wrap = el('div', 'tbl-wrap');
       const table = el('table', 'ed-tbl');
@@ -1067,6 +1210,27 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         }
         document.execCommand('insertText', false, text);
       });
+      // Put stray text back inside the cell's box once the caret has gone, when
+      // moving a node can no longer drag the caret along with it.
+      table.addEventListener('focusout', () => {
+        let moved = false;
+        for (const c of table.querySelectorAll('th, td:not(.row-x)')) {
+          const box = c.querySelector('.ce');
+          if (!box) continue;
+          const before = [], after = [];
+          let seen = false;
+          for (const n of c.childNodes) {
+            if (n === box) { seen = true; continue; }
+            (seen ? after : before).push(n);
+          }
+          if (!before.length && !after.length) continue;
+          before.reverse().forEach((n) => box.prepend(n));
+          after.forEach((n) => box.append(n));
+          moved = true;
+        }
+        if (moved) sync();
+      });
+
       const tbody = el('tbody');
       table.append(tbody);
 
@@ -1282,7 +1446,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           kind,
           rows: [...b.querySelectorAll('tbody tr')].map((tr, r) =>
             [...tr.children].filter((c) => !c.classList.contains('row-x')).map((c) => {
-              const text = htmlToMd(c.querySelector('.ce'), '<br>').trim();
+              const text = cellMd(c);
               const head = c.tagName === 'TH', cs = c.colSpan || 1, rs = c.rowSpan || 1;
               // A plain cell stays a plain string, so a table with no spans and one
               // header row serializes as the markdown table it has always been.
@@ -1357,7 +1521,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const rows = filled.filter((r, i) =>
         r.section == null || (filled[i + 1] && filled[i + 1].section == null));
 
-      if (rows.length) {
+      if (rows.length && $('#f-sidebar-on').checked) {
         fm.push('infobox:');
         for (const r of rows) {
           if (r.office != null) { fm.push(`  - { office: ${q(r.office)}, term: ${q(r.term)} }`); continue; }
@@ -1611,7 +1775,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       meta: Object.fromEntries(fields.map((f) => [f, $(f).value])),
       ooc: $('#f-ooc').checked,
       navbox: $('#f-navbox-on').checked,
-      slug: DEV ? $('#slug').value : '',
+      sidebar: $('#f-sidebar-on').checked,
+      slug: slugValue(),
       // What is being edited, and the two things it holds that are never on screen.
       // Without these an undo, or the reload after a save, turns a portal into an article.
       kind: pageKind,
@@ -1625,7 +1790,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       for (const [f, v] of Object.entries(d.meta || {})) if ($(f)) $(f).value = v;
       $('#f-ooc').checked = !!d.ooc;
       $('#f-navbox-on').checked = d.navbox !== false;
-      if (DEV && d.slug) { $('#slug').value = d.slug; slugTouched = true; }
+      $('#f-sidebar-on').checked = d.sidebar !== false;
+      if (d.slug) { setSlug(d.slug); slugTouched = true; }
       pageKind = d.kind || 'article';
       portalBody = d.portalBody || '';
       navboxLead = d.navboxLead || '';
@@ -1695,7 +1861,11 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         ['#native-field', art], ['#romaji-field', art], ['#nation-field', !nav],
       ]) $(id).hidden = !on;
       $('#settings').querySelector('.set-toggles').hidden = !art;
-      document.querySelector('.ib-edit').hidden = !art;
+      // Not every article wants a sidebar. The rows stay in the editor while it is
+      // off, so turning it back on before saving brings them back untouched.
+      const sidebar = $('#f-sidebar-on').checked;
+      $('#sidebar-note').textContent = sidebar ? '' : 'none';
+      document.querySelector('.ib-edit').hidden = !art || !sidebar;
       // Only the types that sit somewhere on the map.
       const PLACED = ['overview', 'city', 'subdivision', 'continent', 'geography'];
       $('#coords-field').hidden = !art || !PLACED.includes(t);
@@ -1728,7 +1898,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     // A snapshot stack rather than execCommand('undo'): adding or removing a
     // block is not a text edit, so the browser's own history does not see it.
     const past = [], future = [];
-    let quiet = false, lastPush = 0;
+    let quiet = false, lastPush = 0, runStart = 0;
 
     function paintHistory() {
       $('#undo').disabled = past.length < 2;
@@ -1738,36 +1908,44 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       if (quiet) return;
       const now = JSON.stringify(snapshot());
       if (past.length && past[past.length - 1] === now) return;
-      // Typing coalesces into one step; a structural change always starts a new one.
+      // Typing coalesces into one step, but a run has a ceiling. Coalescing on the
+      // pause alone meant an uninterrupted stretch of typing became a single step, so
+      // one undo threw away everything back to the last time the writer stopped.
       const t = Date.now();
-      if (past.length > 1 && t - lastPush < 600) past.pop();
+      if (past.length > 1 && t - lastPush < 600 && t - runStart < 1500) past.pop();
+      else runStart = t;
       lastPush = t;
       past.push(now);
       if (past.length > 80) past.shift();
       future.length = 0;
       paintHistory();
     }
-    function step(from, to) {
-      if (from.length < 2) return;
-      to.push(from.pop());
+    /**
+     * Put a remembered state back without the page moving under the writer. restore()
+     * rebuilds the body and the sidebar, which drops the scroll position to wherever
+     * the shorter document ends; put it back where it was.
+     */
+    function apply(state) {
+      const y = window.scrollY;
       quiet = true;
-      restore(JSON.parse(from[from.length - 1]));
+      restore(state);
       quiet = false;
       paintCanvas(); paintToc();
       $('#preview').textContent = toMarkdown();
       paintHistory();
+      window.scrollTo(0, y);
+    }
+    function step(from, to) {
+      if (from.length < 2) return;
+      to.push(from.pop());
+      apply(JSON.parse(from[from.length - 1]));
     }
     $('#undo').onclick = () => step(past, future);
     $('#redo').onclick = () => {
       if (!future.length) return;
-      quiet = true;
       const next = future.pop();
       past.push(next);
-      restore(JSON.parse(next));
-      quiet = false;
-      paintCanvas(); paintToc();
-      $('#preview').textContent = toMarkdown();
-      paintHistory();
+      apply(JSON.parse(next));
     };
 
     function sync() {
@@ -1809,10 +1987,12 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#f-icon').value = data.icon || '';
       $('#f-authors').value = (data.authors || []).join(', ');
       $('#f-navbox-on').checked = data.navbox !== 'none';
+      $('#f-sidebar-on').checked = !!(data.infobox || []).length;
       $('#f-coords').value = data.coords || '';
       $('#f-ooc').checked = !!data.ooc;
       pageSlug = bare;
-      if (DEV) { $('#slug').value = bare; slugTouched = true; }
+      loadedTitle = (data.title || '').trim();
+      setSlug(bare); slugTouched = true;
       setInfobox(data.infobox || []);
       paintSettings();
       body.innerHTML = '';
@@ -1821,6 +2001,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       // A portal has no body of its own, so it is not given an empty paragraph.
       if (!body.children.length && pageKind !== 'portal') body.append(block('para'));
       sync();
+      loadedBody = toMarkdown();
       flash(`Opened ${data.title}.`);
     }
 
@@ -1871,6 +2052,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     dropdown($('#more'), $('#more-menu'));
     dropdown($('#style'), $('#style-menu'));
     dropdown($('#insert'), $('#insert-menu'));
+    dropdown($('#ins'), $('#ins-menu'));
     document.addEventListener('click', () => {
       document.querySelectorAll('.drop-menu').forEach((m) => m.hidden = true);
       pickTarget = null;      // the panel is shut; it is not aimed at anything now
@@ -1911,6 +2093,44 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#tbl-label').textContent = '0 \u00d7 0';
       pick.querySelectorAll('.tbl-cell').forEach((x) => x.classList.remove('on'));
     };
+
+    /* ---------- date ---------- */
+    let dtMode = '';
+    const dtArg = () => {
+      const d = $('#dt-date').value;
+      if (!d) return '';
+      const born = $('#dt-born').value;
+      if (dtMode === 'age' && born) return `${d}|age:${born}`;
+      return dtMode ? `${d}|${dtMode}` : d;
+    };
+    function paintDate() {
+      // Born only means something for an age, and only then as the other end of it.
+      $('#dt-born-row').hidden = dtMode !== 'age';
+      const arg = dtArg();
+      $('#dt-preview').textContent = arg ? dateLabel(arg) : 'Pick a date.';
+      $('#dt-preview').className = 'mp-hint' + (arg ? ' ok' : '');
+      $('#dt-go').disabled = !arg;
+    }
+    document.querySelectorAll('#dt-mode button').forEach((b) => {
+      b.onmousedown = (e) => e.preventDefault();
+      b.onclick = () => {
+        document.querySelectorAll('#dt-mode button').forEach((x) => x.classList.toggle('on', x === b));
+        dtMode = b.dataset.mode;
+        paintDate();
+      };
+    });
+    // A native date picker opens wherever its value points, and with none it opens on
+    // the real year. Avium is in 1934, which is where the writer means to be.
+    $('#dt-date').value = IC_NOW;
+    $('#dt-date').oninput = paintDate;
+    $('#dt-born').oninput = paintDate;
+    $('#dt-go').onclick = () => {
+      const arg = dtArg();
+      if (!arg) return;
+      if (!insertToken('date', arg)) return;
+      document.querySelectorAll('.drop-menu').forEach((m) => { m.hidden = true; });
+    };
+    paintDate();
 
     /* ---------- link popover ---------- */
     const pop = $('#link-pop');
@@ -2050,7 +2270,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     // The canvas title is the real title field; the settings box is the same value.
     $('#canvas-title').addEventListener('input', () => {
       $('#f-title').value = $('#canvas-title').textContent.trim();
-      if (!slugTouched && DEV) $('#slug').value = slugify($('#f-title').value);
+      if (!slugTouched) setSlug(slugify($('#f-title').value));
       sync();
     });
     $('#canvas-title').addEventListener('keydown', (e) => {
@@ -2068,12 +2288,13 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     };
     /** Clear the desk and start a page of the given kind. */
     function blank(kind, slug = '') {
-      pageKind = kind; navboxLead = ''; portalBody = ''; pageSlug = slug;
+      pageKind = kind; navboxLead = ''; portalBody = ''; pageSlug = slug; loadedTitle = ''; loadedBody = '';
       $('#settings').querySelectorAll('input[type=text], textarea').forEach((i) => i.value = '');
       $('#f-ooc').checked = false;
       $('#f-navbox-on').checked = true;
+      $('#f-sidebar-on').checked = true;
       $('#canvas-title').textContent = '';
-      if (DEV) { $('#slug').value = slug; slugTouched = !!slug; }
+      setSlug(slug); slugTouched = !!slug;
       try { sessionStorage.removeItem(DRAFT); } catch {}
       setInfobox(kind === 'article' ? (TEMPLATES[$('#f-type').value] || []) : []);
       body.innerHTML = '';
@@ -2110,7 +2331,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const name = $('#f-nation').selectedOptions[0]?.textContent || id;
       if (!id) return;
       pageSlug = id;
-      $('#slug').value = id;
+      setSlug(id);
       if (!$('#f-title').value.trim()) {
         $('#f-title').value = pageKind === 'portal' ? `Portal:${name}` : `${name} Articles`;
       }
@@ -2125,7 +2346,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       if (id) location.href = `${BASE.replace(/\/$/, '')}/edit?a=navbox:${id}`;
     };
     $('#f-banner-pick').onclick = () => { $('#f-banner').focus(); openMedia(); };
-    ['#f-type', '#f-nation', '#f-navbox-on'].forEach((id) => {
+    ['#f-type', '#f-nation', '#f-navbox-on', '#f-sidebar-on'].forEach((id) => {
       $(id).addEventListener('change', paintSettings);
     });
     $('#settings').addEventListener('input', () => { paintSettings(); sync(); });
@@ -2139,7 +2360,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       URL.revokeObjectURL(a.href);
     };
     async function downloadPage() {
-      const stem = slugify($('#slug')?.value || pageSlug || $('#f-title').value) || 'article';
+      const stem = slugify(slugValue() || pageSlug || $('#f-title').value) || 'article';
       const md = toMarkdown();
       const used = [...staged.entries()].filter(([p]) => md.includes(p));
       if (!used.length) { saveAs(new Blob([md], { type: 'text/markdown' }), `${stem}.md`); return; }
@@ -2224,7 +2445,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     }
 
     async function publish() {
-      const slug = slugify($('#slug')?.value || pageSlug || $('#f-title').value);
+      const slug = slugify(slugValue() || pageSlug || $('#f-title').value);
       if (!slug) { pubSay('Give the page a title first.', true); return; }
       const markdown = toMarkdown();
       const used = [...staged.entries()].filter(([p]) => markdown.includes(p));
@@ -2274,7 +2495,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         });
 
         pubSay('Committing the page…');
-        await putFile(work, branch, targetPath(slug), b64text(markdown), `${slug}: edit from the wiki editor`);
+        await putFile(work, branch, targetPath(slug), b64text(markdown),
+          commitMsg(slug, $('#f-summary').value.trim()));
 
         for (const [i, [path, item]] of used.entries()) {
           pubSay(`Committing image ${i + 1} of ${used.length}…`);
@@ -2473,6 +2695,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#f-crumb').value = '';
       $('#f-authors').value = [].concat(data.authors ?? []).join(', ');
       $('#f-navbox-on').checked = data.navbox !== 'none';
+      $('#f-sidebar-on').checked = !!rows.length;
       $('#f-coords').value = data.coords || '';
       $('#f-ooc').checked = data.ooc === true || data.ooc === 'true';
       setInfobox(rows);
@@ -2484,6 +2707,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 
     if ($('#open-file')) {
       $('#open-file').onclick = () => $('#open-file-input').click();
+      $('#duplicate').onclick = duplicate;
       $('#open-file-input').onchange = async (e) => {
         const f = e.target.files[0];
         e.target.value = '';
@@ -2491,7 +2715,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         try {
           fromMarkdown(await f.text());
           pageSlug = f.name.replace(/\.(md|markdown|ya?ml)$/i, '');
-          if (DEV) { $('#slug').value = pageSlug; slugTouched = true; }
+          loadedTitle = $('#f-title').value.trim();
+          setSlug(pageSlug); slugTouched = true;
           flash(`Opened ${f.name}.`);
         } catch (err) {
           flash(`Could not read ${f.name}: ${err.message}`, true);
@@ -2527,8 +2752,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     };
 
     /** This page as a change: the file it writes, and the pictures it brings with it. */
+/**
+ * The line that goes into the commit and so into the page's history. Every commit the
+ * editor made before this field existed says the same thing, which made the log
+ * useless for review.
+ */
+    const commitMsg = (slug, summary) => `${slug}: ${summary || 'edit from the wiki editor'}`;
+
     function currentChange() {
-      const slug = slugify($('#slug')?.value || pageSlug || $('#f-title').value);
+      const slug = slugify(slugValue() || pageSlug || $('#f-title').value);
       if (!slug) return null;
       const markdown = toMarkdown();
       return {
@@ -2536,6 +2768,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         kind: pageKind,
         slug,
         title: $('#f-title').value || slug,
+        summary: $('#f-summary').value.trim(),
         path: targetPath(slug),
         markdown,
         images: [...staged.entries()].filter(([p]) => markdown.includes(p))
@@ -2633,7 +2866,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         let done = 0;
         for (const c of list) {
           pubSay(`Committing ${++done} of ${list.length}: ${c.title}\u2026`);
-          await putFile(work, branch, c.path, b64text(c.markdown), `${c.slug}: edit from the wiki editor`);
+          await putFile(work, branch, c.path, b64text(c.markdown), commitMsg(c.slug, c.summary));
           for (const im of c.images) {
             const bytes = new Uint8Array(await im.file.arrayBuffer());
             await putFile(work, branch, 'public' + im.path, b64(bytes),
@@ -2671,7 +2904,17 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#cart-add').onclick = async () => {
         const c = currentChange();
         if (!c) { flash('Give the page a title first.', true); return; }
+        const held = occupiedBy(c.slug);
+        if (held) { refuseReplace(c.slug, held); return; }
+        if (overwrites(c.slug)) {
+          // Same file, different subject, and the text has gone too. That is a new
+          // page wearing an old file name, and it is refused rather than queried.
+          if (keptFraction() < 0.35) { refuseReplace(c.slug, loadedTitle); return; }
+          if (!confirm(`${c.slug} is "${loadedTitle}". Saving renames it to "${c.title}".\n\n`
+              + 'To keep both, cancel and use File \u25b8 Duplicate as a new page.')) return;
+        }
         await cart.put(c);
+        $('#f-summary').value = '';       // the next edit gets its own line
         await paintCart();
         flash(`${c.title} is waiting with ${(await cart.all()).length - 1} other change(s).`
           .replace(' with 0 other change(s)', ', on its own so far'));
@@ -2707,13 +2950,23 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     const slugify = (s) => s.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     let slugTouched = false;
 
+    $('#f-slug').oninput = () => { slugTouched = true; showUrl($('#f-slug').value); };
     if (DEV) {
       const slugBox = $('#slug');
-      slugBox.oninput = () => { slugTouched = true; };
+      // Typing in either box is the same act, and both show the same name.
+      slugBox.oninput = () => { slugTouched = true; $('#f-slug').value = slugBox.value; };
+      $('#f-slug').addEventListener('input', () => { slugBox.value = $('#f-slug').value; });
       $('#save').onclick = async () => {
-        const slug = slugify(slugBox.value || $('#f-title').value);
+        const slug = slugify(slugValue() || $('#f-title').value);
         if (!slug) { flash('Give the article a title first.', true); return; }
-        slugBox.value = slug;
+        const held = occupiedBy(slug);
+        if (held) { refuseReplace(slug, held); return; }
+        if (overwrites(slug)) {
+          if (keptFraction() < 0.35) { refuseReplace(slug, loadedTitle); return; }
+          if (!confirm(`${slug} is "${loadedTitle}". Saving renames it to "${$('#f-title').value.trim()}".\n\n`
+              + 'To keep both, cancel and use File \u25b8 Duplicate as a new page.')) return;
+        }
+        setSlug(slug);
         try {
           const r = await fetch(`${BASE.replace(/\/$/, '')}/__save`, {
             method: 'POST',
@@ -2937,6 +3190,95 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       note.className = 'mp-hint ' + (bad ? 'bad' : 'ok');
     }
 
+    /**
+     * Cut this page loose from the file it was opened from, so what follows is saved
+     * as a new one. Using an article as a template and saving it back over the
+     * original is the accident this exists to prevent.
+     */
+    function duplicate() {
+      if (!pageSlug && !slugValue()) { flash('Nothing is open to copy.', true); return; }
+      const from = pageSlug || slugValue();
+      pageSlug = '';
+      loadedTitle = '';
+      loadedBody = '';
+      setSlug('');
+      slugTouched = false;          // the URL follows the title again until it is typed in
+      $('#settings').hidden = false;
+      $('#f-title').focus();
+      flash(`Copy of ${from}. Give it a new title, and check the URL before saving.`);
+    }
+
+    /**
+     * The subject already living at this file name, when that file is not the one this
+     * page was opened from. Writing there replaces one subject with another, which is
+     * how three articles were lost in a day: everything changed except the file name.
+     *
+     * Read from the live index rather than from what was loaded, so a name typed by
+     * hand, restored from a draft, or left behind by a copy is caught the same way.
+     * A matching title is the same subject arriving by another route, and is allowed.
+     */
+    function occupiedBy(slug) {
+      if (!slug || (pageSlug && slug === pageSlug)) return null;
+      const key = pageKind === 'article' ? slug : `${pageKind}:${slug}`;
+      const held = ARTICLES.find((a) => a.slug === key);
+      if (!held) return null;
+      return held.title === $('#f-title').value.trim() ? null : held.title;
+    }
+
+    /**
+     * How much of the page that was opened is still on screen, by distinct words. A
+     * rename keeps the article and changes the name; using one as a template keeps
+     * the name of the file and changes everything else. This is what separates them.
+     */
+    function keptFraction() {
+      if (!loadedBody) return 1;
+      const words = (t) => new Set(t.toLowerCase().split(/[^a-z0-9\u00c0-\uffff]+/).filter((w) => w.length > 3));
+      const was = words(loadedBody);
+      if (was.size < 20) return 1;             // too little to judge; fall back to the prompt
+      const now = words(toMarkdown());
+      let hit = 0;
+      for (const w of was) if (now.has(w)) hit++;
+      return hit / was.size;
+    }
+
+    /** Refuse the write and put the writer in the field they have to change. */
+    function refuseReplace(slug, held) {
+      flash(`${slug} already holds \u201c${held}\u201d. Change the Article URL, `
+        + 'or open that page if you meant to edit it.', true);
+      $('#settings').hidden = false;
+      $('#f-slug').focus();
+      $('#f-slug').select();
+    }
+
+    /**
+     * True when saving now would write over the page this one was opened from, under a
+     * title that is no longer that page's.
+     */
+    function overwrites(slug) {
+      if (!pageSlug || slug !== pageSlug || !loadedTitle) return false;
+      return $('#f-title').value.trim() !== loadedTitle;
+    }
+
+    /** The file name this page is saved under, wherever it was typed. Declared
+        rather than assigned: it is called from further up the file than it sits. */
+    function slugValue() { return $('#f-slug').value || $('#slug')?.value || ''; }
+    function setSlug(v) {
+      $('#f-slug').value = v;
+      if ($('#slug')) $('#slug').value = v;
+      showUrl(v);
+    }
+
+    /**
+     * Keep the address bar naming the page that would be written. A new page made by
+     * copying an old one used to leave the old one's address on screen, which reads
+     * like the original is still open and about to be written over.
+     */
+    function showUrl(slug) {
+      const prefix = pageKind === 'article' ? '' : `${pageKind}:`;
+      const q = slug ? `?a=${encodeURIComponent(prefix + slug)}` : '';
+      history.replaceState(null, '', location.pathname + q);
+    }
+
     // The picture the Media panel was opened for. Working this out from whatever has
     // focus does not survive the panel taking focus itself, so the caller says outright.
     let pickTarget = null;
@@ -2979,6 +3321,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     let insertAs = 'image';
     let insertRatio = '';
 
+    /** How wide a picture dropped into a table cell starts out. */
+    const CELL_WIDTH = 96;
+
     function useImage(path) {
       // Whatever the panel was opened for wins, then a field still being typed in.
       if (pickTarget?.isConnected) {
@@ -2990,6 +3335,14 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       if (field) return fill(field, path);
       const near = activeText()?.closest?.('figure, tr[data-kind="image"]');
       if (near) return fill(near.querySelector('input.path'), path);
+      // A picture in a table cell is an inline mark, because a figure cannot live in
+      // a cell. It carries a width so it renders as a picture; an icon left at its
+      // natural size comes out one line tall, which is right for a flag and useless
+      // for a photograph.
+      if (activeText()?.closest?.('.ed-tbl')) {
+        insertToken('img', `${path}|${CELL_WIDTH}`);
+        return;
+      }
       // A grid the writer is already standing in gains another picture.
       const grid = activeText()?.closest?.('.blk-grid');
       if (insertAs === 'grid' && grid) {
@@ -3009,8 +3362,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const mark = 'tok-' + Date.now();
       const html = tokenHtml(kind, slug).replace('<img ', `<img data-new="${mark}" `) + '\u00a0';
       if (!insertAtCaret(html)) {
-        flash('Put the cursor where the icon should go.', true);
-        return;
+        flash('Put the cursor where it should go.', true);
+        return false;                    // the caller leaves its menu open to retry
       }
       // execCommand leaves a trailing <br> after the inserted run; a table cell
       // would serialize that as a line break, so drop the one we just caused.
@@ -3022,9 +3375,10 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         img.removeAttribute('data-new');
       }
       sync();
+      return true;
     }
 
-    const PANES = ['images', 'icons', 'tables'];
+    const PANES = ['images', 'icons'];
     /** Open the Media panel on its image list, to fill whichever field was just focused. */
     function openMedia() {
       document.querySelectorAll('.drop-menu').forEach((m) => { m.hidden = m.id !== 'insert-menu'; });
@@ -3078,7 +3432,11 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     }
     $('#mp-iq').oninput = paintAssets;
     // The menu stays open while you browse it, unlike a one-shot command.
+    // A click anywhere shuts every menu. These two are panels to work in rather than
+    // lists to pick from, so a click inside one must not reach that handler; each
+    // closes itself once it has done the thing it was opened for.
     $('#insert-menu').addEventListener('click', (e) => e.stopPropagation());
+    $('#ins-menu').addEventListener('click', (e) => e.stopPropagation());
     // Nothing in the panel may take focus, or the caret in the article is lost
     // before the chosen image or icon can be inserted at it.
     $('#insert-menu').addEventListener('mousedown', (e) => {
@@ -3272,6 +3630,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 0 8px;
     }
     .ed-tools select { max-width: 190px; cursor: pointer; }
+    #f-summary { width: 190px; }
+    @media (max-width: 1100px) { #f-summary { width: 120px; } }
     .ed-tools select:focus, .ed-tools input:focus { outline: none; border-color: var(--link); }
     /* Must out-specify the toolbar's own button rule above, hence button.primary. */
     .ed-tools button.primary {
@@ -3451,7 +3811,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       outline: none; border-color: var(--link);
     }
     .ed-settings input::placeholder, .ed-settings textarea::placeholder { color: #5c656e; }
-    .ed-settings textarea { resize: vertical; line-height: 1.45; min-height: 34px; }
+    /* One row that matches an input exactly, and still pulls open for a second
+       official language. The taller line box was what made it stand proud. */
+    .ed-settings textarea { resize: vertical; line-height: normal; min-height: 0; }
     .ed-settings .check {
       display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 400;
       color: var(--ink); cursor: pointer;
@@ -3524,7 +3886,29 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     .mp-pane { display: block; }
     .mp-pane[hidden] { display: none; }
     #insert-menu { max-width: calc(100vw - 24px); }
-    .tbl-pick {
+      /* A list of things to insert; each opens its own panel beside it on hover, so
+       the menu is never every panel at once. */
+    .ins-menu { min-width: 150px; }
+    .ins-item { position: relative; }
+    .ins-item > button { display: flex; align-items: center; gap: 8px; }
+    .ins-arrow { margin-left: auto; color: var(--muted); }
+    .ins-item:hover > button, .ins-item:focus-within > button { background: var(--band); }
+    .ins-sub {
+      display: none; position: absolute; left: 100%; top: -5px; z-index: 31;
+      min-width: 232px; padding: 12px 14px;
+      background: var(--lift); border: 1px solid var(--rule); border-radius: 8px;
+      box-shadow: 0 10px 28px rgb(0 0 0 / .55);
+    }
+    .ins-item:hover > .ins-sub, .ins-item:focus-within > .ins-sub { display: block; }
+    /* A label above its control, which is what stops the rows looking like a form
+       printed by a machine. */
+    .ins-f { display: block; font: 700 11px/1 var(--body); color: var(--muted); margin-bottom: 12px; }
+    .ins-f > input, .ins-f > .mp-seg { display: flex; margin-top: 6px; width: 100%; }
+    .ins-f > input { box-sizing: border-box; }
+    .ins-sub .mp-seg button { flex: 1; white-space: nowrap; }
+    .ins-sub .mp-hint { margin: 0 0 12px; }
+    .ins-sub #dt-go { width: 100%; }
+  .tbl-pick {
       display: grid; grid-template-columns: repeat(8, 20px); gap: 3px;
       padding: 12px 12px 6px; justify-content: center;
     }

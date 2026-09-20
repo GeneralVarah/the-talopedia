@@ -5,7 +5,7 @@ type: character
 nation: nichirin
 infobox:
   - { image: "https://lh3.googleusercontent.com/pw/AP1GczNEHSyso2K9OAjlY2kaGJJusu5STapO9Os5Gb65XGp8sh_5saXjpbZIQ7Fnw2BeqJa3DheiC9laZc_bACI1hwdf8lYD56eO_fOycP-9KJZqfVAynQJi4Yn4NP6Dz-4rKcvbXgZhvqc6qUSObR4DZjXS=w2000", caption: "" }
-  - { office: "Sei'I Tai Shogun", term: "Incumbent | October 1, 1923 –" }
+  - { office: "Sei'i Tai Shogun", term: "Incumbent | October 1, 1923 –" }
   - { label: "Preceded by", value: "Masanori Miyamoto" }
   - label: "Senior Shogunal Advisors"
     value:
@@ -17,7 +17,7 @@ infobox:
   - label: "Born"
     value:
       - "Masashi Miyamoto"
-      - "June 6, 1896"
+      - ":date[1896-06-06|age]"
       - "Shinkeisei, Nichirin"
   - label: "Parents"
     value:
@@ -37,21 +37,17 @@ infobox:
 
 ## Early Life and Education
 
-Masashi Miyamoto was born on June 6, 1896, at [[shinkeisei]] Central Hospital in Mukōjima, Shinkeisei, the son of Shogun Masanori Miyamoto and his midaidokoro, Rie Takatsukasa. His sister, Keiko, was born in 1898, two years later. Despite his heritage, Masanori enrolled both children in ordinary schools in Shinkeisei rather than arranging private instruction, a decision that was unusual for a Shogunal household and whose reasoning Masanori never publicly disclosed.
+<figure class="float float-left" style="width:320px"><img src="/assets/old-media/media/masashi-miyamoto-2.jpg" alt="Masashi and Keiko in Shizuhata, c. 1906."><figcaption>Masashi and Keiko in Shizuhata, c. 1906.</figcaption></figure>
 
-<div class="imgrid">
-<figure style="flex:1.339"><img src="/assets/old-media/media/masashi-miyamoto-2.jpg" alt="Masashi and Keiko in Shizuhata, c. 1906."><figcaption>Masashi and Keiko in Shizuhata, c. 1906.</figcaption></figure>
-</div>
+Masashi Miyamoto was born on June 6, 1896, at [[shinkeisei]] Central Hospital in Mukōjima, Shinkeisei, the son of Shogun Masanori Miyamoto and his midaidokoro, Rie Takatsukasa. His sister, Keiko, was born in 1898, two years later. Despite his heritage, Masanori enrolled both children in ordinary schools in Shinkeisei rather than arranging private instruction, a decision that was unusual for a Shogunal household and whose reasoning Masanori never publicly disclosed.
 
 Among his classmates, Masashi was largely isolated as his peers were aware of his lineage and kept their distance accordingly. Keiko, two years his junior and subject to the same circumstances, became his closest companion throughout childhood and early adolescence, a closeness shaped in part by their shared position.
 
 In 1910, Takatsukasa died of [parathyroid cancer](https://en.wikipedia.org/wiki/Parathyroid_carcinoma), leaving Masanori as the sole guardian of both children when Masashi was fourteen. Masanori did not substantially fill the domestic role his wife had held. The household continued to function under caretakers, but accounts from the period suggest Masashi and Keiko became more dependent on each other in the years following their mother's death.
 
-Masashi was accepted into [[takarazuka]] Imperial University in 1914, studying political science. His years at Takarazuka coincided with the entirety of the Great War, during which Nichirin mobilized significant military and economic resources. As heir apparent-designate, he was kept from active service, a decision consistent with Masanori's approach to succession, though it distinguished Masashi from much of the generation surrounding him.
+<figure class="float float-right" style="width:320px"><img src="/assets/old-media/media/masashi-miyamoto-3.jpg" alt="Masashi (first row, far left) attending a lecture at Takarazuka Imperial University, c. 1915."><figcaption>Masashi (first row, far left) attending a lecture at Takarazuka Imperial University, c. 1915.</figcaption></figure>
 
-<div class="imgrid">
-<figure style="flex:1.792"><img src="/assets/old-media/media/masashi-miyamoto-3.jpg" alt="Masashi (first row, far left) attending a lecture at Takarazuka Imperial University, c. 1915."><figcaption>Masashi (first row, far left) attending a lecture at Takarazuka Imperial University, c. 1915.</figcaption></figure>
-</div>
+Masashi was accepted into [[takarazuka]] Imperial University in 1914, studying political science. His years at Takarazuka coincided with the entirety of the Great War, during which Nichirin mobilized significant military and economic resources. As heir apparent-designate, he was kept from active service, a decision consistent with Masanori's approach to succession, though it distinguished Masashi from much of the generation surrounding him.
 
 Keiko, by contrast, was dispatched to the front in a supervisory capacity, an arrangement she reportedly strenuously objected to. The separation and the asymmetry of their wartime experiences introduced significant strain into their relationship. Masashi graduated in 1918 with a Bachelor of Science in Political Science as the war drew to a conclusion.
 
@@ -71,11 +67,9 @@ Keiko's proclamation broadcast, transmitted from the seized government radio sta
 
 Keiko and a small group of loyalists, including a wounded Yagura, fled south by convoy toward Sangai. The convoy was ambushed near Kagamidaira by a detachment of the Army of the Matsuhana. Keiko escaped on foot, swam the Haguregumo River with her remaining loyalists, and reached the southern bank, where Okamura's forces were waiting. Okamura shot Keiko at the riverbank while Yagura and the remaining loyalists were executed.
 
-Masashi returned from Arlbern on March 6, 1924, learning of Keiko’s death. His own convoy traveled to the southern bank of the Haguregumo River to retrieve Keiko's body while Okamura was present at the site with her forces. The exchange that followed ended when Okamura drew her sidearm and fired at Masashi at close range, striking him in the right eye. Makinami extracted him under fire as Okamura's forces engaged the Shogun's guard. Masashi survived while Okamura retreated into Sangai. He lost the use of his right eye as a result of the wound and has worn a prosthetic covering since his recovery.
+<figure class="float float-right" style="width:320px"><img src="/assets/old-media/media/masashi-miyamoto-4.jpg" alt="Masashi paying his respects at the funeral of Princess Keiko, c. 1924."><figcaption>Masashi paying his respects at the funeral of Princess Keiko, c. 1924.</figcaption></figure>
 
-<div class="imgrid">
-<figure style="flex:1.792"><img src="/assets/old-media/media/masashi-miyamoto-4.jpg" alt="Masashi paying his respects at the funeral of Princess Keiko, c. 1924."><figcaption>Masashi paying his respects at the funeral of Princess Keiko, c. 1924.</figcaption></figure>
-</div>
+Masashi returned from Arlbern on March 6, 1924, learning of Keiko’s death. His own convoy traveled to the southern bank of the Haguregumo River to retrieve Keiko's body while Okamura was present at the site with her forces. The exchange that followed ended when Okamura drew her sidearm and fired at Masashi at close range, striking him in the right eye. Makinami extracted him under fire as Okamura's forces engaged the Shogun's guard. Masashi survived while Okamura retreated into Sangai. He lost the use of his right eye as a result of the wound and has worn a prosthetic covering since his recovery.
 
 ### Sangai Operation and Trial of Okamura
 
@@ -87,6 +81,8 @@ The trial of Yuriko Okamura opened on December 10, 1924, in the Grand Hall of th
 
 However, Masashi overrode the judgment from the bench, declaring Okamura guilty of treason, murder, and conspiracy, and ordered her execution at dawn. She was executed by firing squad on December 11, 1924. The decision to override a tribunal acquittal by Shogunal decree was without modern precedent in Nichirian legal history and drew significant commentary from legal scholars in the years that followed. Masashi appointed Makinami as interim Minister of Foreign Affairs the same day, a position she would hold concurrently with her existing offices for the following three years.
 
+<figure class="float float-left" style="width:320px"><img src="/assets/old-media/media/masashi-miyamoto-5.jpg" alt="Masashi and Chief Liaison Officer Akane Shikinami-Hoffmann during the Tōhara Conference, c. 1926. Marshal-Admiral Suiren Makinami visible in the background."><figcaption>Masashi and Chief Liaison Officer Akane Shikinami-Hoffmann during the Tōhara Conference, c. 1926. Marshal-Admiral Suiren Makinami visible in the background.</figcaption></figure>
+
 ## Political Career
 
 ### Normalization of Nichirin-Guandong Relations
@@ -96,10 +92,6 @@ Masashi's most significant foreign policy initiative was the normalization of Ni
 In March 1926, Masashi convened the Tōhara Conference, at which Nichirian and Guandongese delegations negotiated a framework for normalized relations. The conference produced agreements on mutual recognition, trade protocols, and joint border administration in the newly annexed autonomous prefectures in Eastern Manshu. The joint patrol program that followed saw Nichirian and Guandongese soldiers operating in shared border sectors for the first time, with incident rates dropping significantly within months of its implementation.
 
 The decision was among the most contested of his tenure. Senior military figures, most prominently General Mayu Kitta, the decorated commander of the Defense of [[mizuhara]] and one of the most publicly respected figures in Nichirian military history, opposed normalization on the grounds that it constituted a betrayal of the war's costs. Kitta's dissent was public and sustained throughout the months following the conference. Conservative factions within the government characterized Masashi's policy as dangerously idealistic, but he did not reverse course.
-
-<div class="imgrid">
-<figure style="flex:1.792"><img src="/assets/old-media/media/masashi-miyamoto-5.jpg" alt="Masashi and Chief Liaison Officer Akane Shikinami-Hoffmann during the Tōhara Conference, c. 1926. Marshal-Admiral Suiren Makinami visible in the background."><figcaption>Masashi and Chief Liaison Officer Akane Shikinami-Hoffmann during the Tōhara Conference, c. 1926. Marshal-Admiral Suiren Makinami visible in the background.</figcaption></figure>
-</div>
 
 ### Assassination of Hideki Otonashi
 

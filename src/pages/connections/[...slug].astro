@@ -1,0 +1,122 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { graph } from '../../lib/links.mjs';
+import { titleFor, exists, nation, url } from '../../lib/registry.mjs';
+
+export async function getStaticPaths() {
+  const all = await getCollection('articles');
+  const portals = await getCollection('portals');
+  // The graph is over every page at once, so it is built here and handed to each.
+  const pages = [
+    ...all.map((e) => [e.id, e]),
+    ...portals.map((e) => [`portal:${e.id}`, e]),
+  ];
+  const g = graph(pages);
+  // The registry keeps only what a link needs to render, so the rest of what a row
+  // says about a page is collected here while the whole collection is in hand.
+  const meta = Object.fromEntries([
+    ...all.map((e) => [e.id, { type: e.data.type, nation: e.data.nation }]),
+    ...portals.map((e) => [`portal:${e.id}`, { type: 'portal', nation: e.data.nation }]),
+  ]);
+  return [
+    ...all.filter((e) => e.id !== 'home').map((e) => ({ params: { slug: e.id }, props: { entry: e, kind: 'article', g, meta } })),
+    ...portals.map((e) => ({ params: { slug: `portal/${e.id}` }, props: { entry: e, kind: 'portal', g, meta } })),
+  ];
+}
+
+const { entry, kind, g, meta } = Astro.props;
+const key = kind === 'portal' ? `portal:${entry.id}` : entry.id;
+
+const href = (s) => (s.startsWith('portal:') ? url(`/portal/${s.slice(7)}`) : url(`/${s}`));
+const label = (s) => (s.startsWith('portal:') ? `Portal: ${titleFor(s.slice(7))}` : titleFor(s));
+
+/** A row is the page's flag, its name, and what kind of page it is. */
+const row = (s) => {
+  const m = meta[s] || {};
+  return { slug: s, label: label(s), href: href(s), type: m.type || '',
+           flag: m.nation ? nation(m.nation)?.flag : null };
+};
+const byNationThenName = (a, b) =>
+  (a.flag || '~').localeCompare(b.flag || '~') || a.label.localeCompare(b.label);
+
+const outSet = g.out.get(key) || new Set();
+const inSet = g.in.get(key) || new Set();
+
+const into = [...inSet].map(row).sort(byNationThenName);
+const outAll = [...outSet];
+// A link to a page nobody has written is a request, not a connection, so the two are
+// counted apart: the red ones are this page's share of the backlog.
+const live = outAll.filter((s) => s.startsWith('portal:') || exists(s))
+  .map(row).sort(byNationThenName);
+const wanted = outAll.filter((s) => !s.startsWith('portal:') && !exists(s)).sort();
+---
+
+<Base title={entry.data.title} slug={key} view="connections">
+  <div class="article">
+
+    <div class="conn">
+      <section>
+        <h2>Incoming <span class="count">{into.length}</span></h2>
+        {into.length ? (
+          <ul class="conn-list">
+            {into.map((r) => (
+              <li>
+                {r.flag && <img class="ico" src={url(r.flag)} alt="" loading="lazy" />}
+                <a href={r.href}>{r.label}</a>
+                {r.type && <span class="kind">{r.type}</span>}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="none">Nothing links here.</p>
+        )}
+      </section>
+
+      <section>
+        <h2>Outgoing <span class="count">{live.length}</span></h2>
+        {live.length ? (
+          <ul class="conn-list">
+            {live.map((r) => (
+              <li>
+                {r.flag && <img class="ico" src={url(r.flag)} alt="" loading="lazy" />}
+                <a href={r.href}>{r.label}</a>
+                {r.type && <span class="kind">{r.type}</span>}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="none">No links out.</p>
+        )}
+
+        {wanted.length > 0 && (
+          <>
+            <h3>Wanted <span class="count">{wanted.length}</span></h3>
+            <ul class="conn-list">
+              {wanted.map((s) => <li><a class="wl new" href={href(s)}>{label(s)}</a></li>)}
+            </ul>
+          </>
+        )}
+      </section>
+    </div>
+  </div>
+</Base>
+
+<style>
+  /* Two columns while there is room, so the two directions read side by side. */
+  .conn { display: grid; gap: 4px 36px; grid-template-columns: 1fr; }
+  @media (min-width: 760px) { .conn { grid-template-columns: 1fr 1fr; } }
+  .conn h2 { margin-top: 0; }
+  .conn h3 { font-size: 15px; margin: 18px 0 2px; }
+  .conn .count { font: 400 12px/1 var(--body); color: var(--muted); vertical-align: middle; }
+  .conn-list { list-style: none; margin: 0; padding: 0; }
+  /* A row is a flag, a name, and what kind of page it is, on one line. */
+  .conn-list li {
+    display: flex; align-items: baseline; gap: 7px;
+    padding: 4px 4px; border-bottom: 1px solid var(--hair);
+  }
+  .conn-list li:hover { background: color-mix(in srgb, var(--band) 55%, transparent); }
+  .conn-list .ico { flex: none; }
+  .conn-list .kind { margin-left: auto; font-size: 11px; color: var(--muted); text-transform: lowercase; }
+  .conn .none { color: var(--muted); font-size: 13px; line-height: 1.55; }
+</style>

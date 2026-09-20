@@ -135,7 +135,7 @@ For approximately 2,000 years before the Federal Compact, Mithraism served as th
 
 ### The Federal Compact and Constitutional Secularism
 
-The signing of the Peymān-e Mellī on 3 March 1878 represented the most significant political challenge the Moubadān had faced in their institutional history. The Compact's constitutional secularism — Article Two's guarantee of equal religious tolerance and the federal state's explicit maintenance of no opinion on religion — dismantled at a stroke the institutional relationship between Mithraism and Nourestan's governance that had sustained the Moubadān's political influence for two millennia.
+The signing of the Peymān-e Mellī on March 3, 1878 represented the most significant political challenge the Moubadān had faced in their institutional history. The Compact's constitutional secularism — Article Two's guarantee of equal religious tolerance and the federal state's explicit maintenance of no opinion on religion — dismantled at a stroke the institutional relationship between Mithraism and Nourestan's governance that had sustained the Moubadān's political influence for two millennia.
 
 The mainstream Moubadān recognized that the alternative to a secular federation was either Mithraic dominance — which would have prevented Dashtestan, Shushestan, and Azadestan-e Kuchak from signing — or no federation at all, which the Ymirian colonial threat made existentially dangerous. The sacred fire in Mehrāvar continued to burn. The festivals continued to be observed. What changed was the institutional relationship with political power.
 

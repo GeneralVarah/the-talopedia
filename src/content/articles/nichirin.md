@@ -31,7 +31,7 @@ infobox:
       - "[[kanade-tachibana]]"
       - "[[akane-shikinami-hoffmann]]"
   - { label: "Legislature", value: "Rule by Decree" }
-  - { label: "Formation", value: "June 22, 1603" }
+  - { label: "Formation", value: ":date[1603-06-22|ago]" }
   - { section: "Demographics" }
   - { label: "Population", value: "1929 Census" }
   - { label: "Total", sub: true, value: ":up 371,758,000" }

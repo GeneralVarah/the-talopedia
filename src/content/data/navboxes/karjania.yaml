@@ -83,7 +83,7 @@ groups:
           - "taistojen-tiella|Taistojen Tiellä"
           - "sport-in-karjania"
           - "red-arena"
-          - "list-of-karjanian-sport-competition-winners"
+          - "karjanian-premier-league"
   - label: "Miscellaneous"
     rows:
       - label: "Historical Figures"
