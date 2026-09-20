@@ -21,6 +21,7 @@ export const ACCOUNT_OF = {
   varahmehr: 'GeneralVarah',
   shivon: 'khanategolden-tech',
   alemannia: 'mrrv533-creator',
+  albinya: 'kiohit05-cyber',
 };
 
 /**
