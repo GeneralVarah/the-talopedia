@@ -1,0 +1,67 @@
+name: Auto-merge
+# A page edit from the editor arrives as a pull request, and every one of them was
+# being merged by hand. This merges the routine ones: a known nation's account,
+# touching nothing but pages and images, and still building. Anything else is left
+# open for a person to look at.
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+permissions: { contents: write, pull-requests: write, actions: write }
+concurrency:
+  group: automerge-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      # main, never the pull request's own copy of the repository. The allowlist read
+      # below has to be the one already on the branch being merged into, or a pull
+      # request could add its own author to it.
+      - uses: actions/checkout@v7
+
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          writers=$(node -e 'import("./src/lib/contributors.mjs").then(m => console.log(Object.values(m.ACCOUNT_OF).join("\n")))')
+          if ! grep -qxF "$AUTHOR" <<<"$writers"; then
+            echo "$AUTHOR does not write for a nation, so this one waits." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          stray=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename' \
+                  | grep -Ev '^(src/content/|public/assets/)' || true)
+          if [ -n "$stray" ]; then
+            { echo "Changes more than pages, so this one waits:"; echo '```'; echo "$stray"; echo '```'; } \
+              >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          echo "go=1" >> "$GITHUB_OUTPUT"
+
+      # The pages as they would stand on main. Safe to build unread: the step above
+      # has established that nothing outside the content tree changed.
+      - if: steps.check.outputs.go
+        uses: actions/checkout@v7
+        with: { ref: "refs/pull/${{ github.event.pull_request.number }}/merge" }
+      - if: steps.check.outputs.go
+        uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm }
+      - if: steps.check.outputs.go
+        run: npm ci
+      - if: steps.check.outputs.go
+        run: npm run build
+
+      - if: steps.check.outputs.go
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh pr merge "$PR" --repo "$REPO" --squash
+          # A merge made with the workflow's own token raises no push event, so the
+          # site would never rebuild. workflow_dispatch is the documented exception.
+          gh workflow run deploy.yml --repo "$REPO"
