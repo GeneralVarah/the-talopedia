@@ -15,7 +15,7 @@ infobox:
     value:
       - ":img[/assets/flags/vangalam.png] Bangali"
       - ":img[/assets/flags/horai.jpg] Hōraian"
-  - { label: "Born", value: "1 June, 1894" }
+  - { label: "Born", value: "June 1, 1894" }
 ---
 
 

@@ -1,0 +1,67 @@
+---
+import Base from '../layouts/Base.astro';
+import { contributors, WRITES_FOR } from '../lib/contributors.mjs';
+import { nation, url } from '../lib/registry.mjs';
+
+const board = contributors();
+const top = board?.[0]?.lines ?? 1;
+---
+
+<Base title="Contributors" description="Who has written the Talopedia, by lines of content added.">
+  <div class="article">
+    {board === null ? (
+      <p>
+        This list is built from the repository's history, which is not available here.
+        A full clone is needed; a shallow one has nothing to count.
+      </p>
+    ) : board.length === 0 ? (
+      <p>Nobody has written anything yet.</p>
+    ) : (
+      <>
+        <table class="board">
+          <thead>
+            <tr><th class="rank"></th><th>Contributor</th><th class="num">Articles</th><th class="num">Lines</th><th class="num">Edits</th></tr>
+          </thead>
+          <tbody>
+            {board.map((c, i) => (
+              <tr>
+                <td class="rank">{i + 1}</td>
+                <td>
+                  {(() => { const n = nation(WRITES_FOR[c.name]); return n ? (
+                    <>
+                      {n.flag && <img class="ico" src={url(n.flag)} alt="" loading="lazy" />}
+                      <a href={url(`/portal/${n.id}`)}>{n.name}</a>
+                      {' '}<a class="who" href={`https://github.com/${c.name}`} rel="noopener">({c.name})</a>
+                    </>
+                  ) : (
+                    <a class="who" href={`https://github.com/${c.name}`} rel="noopener">{c.name}</a>
+                  ); })()}
+                  <span class="bar" style={`width:${Math.max(2, Math.round((c.lines / top) * 100))}%`}></span>
+                </td>
+                <td class="num">{c.articles}</td>
+                <td class="num">{c.lines.toLocaleString()}</td>
+                <td class="num">{c.commits}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </>
+    )}
+  </div>
+</Base>
+
+<style>
+  .board { width: 100%; border-collapse: collapse; margin: 6px 0 18px; }
+  .board th, .board td { border-bottom: 1px solid var(--hair); padding: 8px 10px; text-align: left; }
+  .board thead th { font-size: 12px; color: var(--muted); font-weight: 700; border-bottom-color: var(--rule); }
+  .board .rank { width: 34px; color: var(--muted); text-align: right; padding-right: 14px; }
+  .board .num { width: 74px; text-align: right; font-variant-numeric: tabular-nums; }
+  /* The bar sits under the name rather than in a column of its own, so a long name
+     never squeezes it to nothing. */
+  .board .bar {
+    display: block; height: 3px; margin-top: 5px; border-radius: 2px;
+    background: var(--link); opacity: .55;
+  }
+  .board .ico { margin-right: 5px; vertical-align: -2px; }
+  .board .who { color: var(--muted); }
+</style>

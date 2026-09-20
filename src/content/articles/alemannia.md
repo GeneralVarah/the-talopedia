@@ -26,7 +26,7 @@ infobox:
       - "Bundesversammlung"
       - "• Staatenrat (Upper House)"
       - "• Nationalrat (Lower House)"
-  - { label: "Formation", value: "05 April, 1931" }
+  - { label: "Formation", value: "April 5, 1931" }
   - { section: "Demographics" }
   - { label: "Population", value: "1931 Census" }
   - { label: "Total", sub: true, value: "157,800,000" }

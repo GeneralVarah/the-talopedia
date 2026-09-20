@@ -1,6 +1,9 @@
 name: Deploy
 on:
   push: { branches: [main] }
+  # The front page features a different article each day, picked at build time, so
+  # the site rebuilds itself shortly after midnight UTC whether or not anyone edited.
+  schedule: [{ cron: '7 0 * * *' }]
   workflow_dispatch:
 permissions: { contents: read, pages: write, id-token: write }
 concurrency: { group: pages, cancel-in-progress: true }
@@ -9,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        # The contributors page is built from the log, so the whole history is needed.
+        with: { fetch-depth: 0 }
       - uses: actions/setup-node@v7
         with: { node-version: 22, cache: npm }
       # Runs before the build, not after it: the build reads the outputs below, and a

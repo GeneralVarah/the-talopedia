@@ -4,7 +4,7 @@ type: event
 navbox: site
 infobox:
   - { image: "/assets/old-media/media/the-great-war-1.jpg", caption: "" }
-  - { label: "Date", value: "28 July, 1914 – 11 November, 1918" }
+  - { label: "Date", value: "July 28, 1914 – November 11, 1918" }
   - { label: "Location", value: "Global" }
   - { label: "Result", value: "Inconclusive" }
   - { section: "Belligerents" }
@@ -82,7 +82,7 @@ infobox:
   - { value: "72–79 million deaths (military and civilian)" }
 ---
 
-**The Great War**, also known as **the World War**, was a global conflict fought from 28 July 1914 to 11 November 1918 between two major coalitions: the Entente, led principally by Arverne, [[elvester]], [[nichirin]], and [[rudania]], and the Central Powers, led by the Holy Evrian Empire, the Xing Empire, and Askurias. Combat took place across [[evria]], [[valtheria]], [[elysia]], parts of [[pelagonia]], and the Panthalassan Ocean. The war introduced or accelerated the use of armored vehicles, military aviation, and chemical warfare. Between 72 and 79 million people are estimated to have died as a result of the conflict, including combatants, civilians killed by military action, and victims of war-related disease and genocide. The war ended without a decisive victory for either coalition, and its political consequences, including the dissolution of the Holy Evrian Empire and the reshaping of both the Evrian territorial order, continued to define the international landscape into the following decades.
+**The Great War**, also known as **the World War**, was a global conflict fought from July 28, 1914 to November 11, 1918 between two major coalitions: the Entente, led principally by Arverne, [[elvester]], [[nichirin]], and [[rudania]], and the Central Powers, led by the Holy Evrian Empire, the Xing Empire, and Askurias. Combat took place across [[evria]], [[valtheria]], [[elysia]], parts of [[pelagonia]], and the Panthalassan Ocean. The war introduced or accelerated the use of armored vehicles, military aviation, and chemical warfare. Between 72 and 79 million people are estimated to have died as a result of the conflict, including combatants, civilians killed by military action, and victims of war-related disease and genocide. The war ended without a decisive victory for either coalition, and its political consequences, including the dissolution of the Holy Evrian Empire and the reshaping of both the Evrian territorial order, continued to define the international landscape into the following decades.
 
 ## Background
 

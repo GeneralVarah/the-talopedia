@@ -22,8 +22,8 @@ infobox:
   - { section: "Personal Details" }
   - label: "Nationality"
     value:
-      - "[[nichirin|Nichirian]]"
-      - "[[arlbernian]]"
+      - ":flag[nichirin] [[nichirin|Nichirian]]"
+      - ":flag[alemannia] [[alemannia|Alemannian]]"
   - label: "Born"
     value:
       - "Akane Margarethe Shikinami-Hoffmann"
@@ -37,14 +37,13 @@ infobox:
   - { section: "Nichirian Name" }
   - { label: "Kanji", value: "式波 茜" }
   - { label: "Aldrige Rōmaji", value: "Shikinami Akane" }
-  - { label: "Literal Meaning", value: "\"Ceremonial waves, a brilliant madder red.\"" }
 ---
 
-**Akane Margarethe Shikinami-Hoffmann** (式波・ホフマン 茜; born December 4, 1900) is a [[nichirin|Nichirian]] government official serving as Senior Shogunal Advisor and Chief Liaison Officer under Shogun [[masashi-miyamoto]]. Born to a Nichirian mother and an [[arlbernian]] father, she served under the Arlbernian Staatsevidenzdienst during the Vostokiyan Civil War before entering Nichirian government service. Appointed Senior Shogunal Advisor and Chief Liaison Officer in June 1927, she is responsible for coordination between the Bakufu and foreign governments during diplomatic dialogue. Fluent in eight languages, including Nichirian, Arvernois, Rudanian, Alemannian, Vicilian, Skjarnish, Karjanian, and Elvesterian, with working knowledge of Hezhouan, she is one of the most linguistically versatile diplomats in Nichirian government service.
+**Akane Margarethe Shikinami-Hoffmann** (式波・ホフマン 茜; born December 4, 1900) is a [[nichirin|Nichirian]] government official serving as Senior Shogunal Advisor and Chief Liaison Officer under Shogun [[masashi-miyamoto]]. Born to a Nichirian mother and an Arlbernian father, she served under the Arlbernian Staatsevidenzdienst during the Rudanian Civil War before entering Nichirian government service. Appointed Senior Shogunal Advisor and Chief Liaison Officer in June 1927, she is responsible for coordination between the Bakufu and foreign governments during diplomatic dialogue. Fluent in eight languages, including Nichirian, [[arverne|Arvernois]], [[rudania|Rudanian]], [[alemannia|Alemannian]], Vicilian, [[skjarnland|Skjarnish]], [[karjania|Karjanian]], and [[elvester|Elvesterian]], with working knowledge of Hezhouan, she is one of the most linguistically versatile diplomats in Nichirian government service.
 
 ## Early Life and Education
 
-Akane Shikinami-Hoffmann was born on December 4, 1900, in Veynach, Holy Evrian Empire, the daughter of Hauptmann Friedrich Hoffmann, an officer in the Holy Evrian Army, and Kyoko Shikinami, a Nichirian national. Her maternal grandmother, Hanae Shikinami, was a concert pianist who had performed for the Arlbernian Imperial Court, a connection that brought the Shikinami family into contact with Arlbernian society and eventually produced her parents' marriage. Friedrich was posted to Veynach throughout Akane's early childhood. Kyoko, who had trained as a pianist before her marriage, did not continue performing after the birth.
+Akane Shikinami-Hoffmann was born on December 4, 1900, in Veynach, [[holy-evrian-empire]], the daughter of Hauptmann Friedrich Hoffmann, an officer in the Holy Evrian Army, and Kyoko Shikinami, a Nichirian national. Her maternal grandmother, Hanae Shikinami, was a concert pianist who had performed for the Arlbernian Imperial Court, a connection that brought the Shikinami family into contact with Arlbernian society and eventually produced her parents' marriage. Friedrich was posted to Veynach throughout Akane's early childhood. Kyoko, who had trained as a pianist before her marriage, did not continue performing after the birth.
 
 Following difficulties in the Hoffmann household, Akane was sent to live with her paternal grandparents, Otto and Greta Hoffmann, at their estate in Nürbrecht in 1906, where she remained through her adolescence. Otto Hoffmann was Bairather gentry, and the household maintained the customs of the provincial Arlbernian aristocracy. Akane received private instruction at the estate, covering classical education alongside martial disciplines such as marksmanship, riding, and fencing. She became fluent in High Alemannian and conversant in Arvernois and Rudanian during this period. She also maintained limited correspondence with her maternal grandmother in Nichirin, through which she received early exposure to written Nichirian, though the correspondence lapsed in her adolescence.
 
@@ -74,7 +73,7 @@ She was transferred to the prefectural capital of Satsuno on November 4, 1924, a
 
 ## Political Career
 
-<figure class="float float-left" style="width:300px"><img src="/assets/old-media/media/akane-shikinami-hoffmann-4.jpg" alt="Shikinami-Hoffmann with Marshal-Admiral Makinami during the Third Tripartite Conference in Shinkeisei, 17 May 1926."><figcaption>Shikinami-Hoffmann with Marshal-Admiral Makinami during the Third Tripartite Conference in Shinkeisei, 17 May 1926.</figcaption></figure>
+<figure class="float float-left" style="width:300px"><img src="/assets/old-media/media/akane-shikinami-hoffmann-4.jpg" alt="Shikinami-Hoffmann with Marshal-Admiral Makinami during the Third Tripartite Conference in Shinkeisei, May 17, 1926."><figcaption>Shikinami-Hoffmann with Marshal-Admiral Makinami during the Third Tripartite Conference in Shinkeisei, May 17, 1926.</figcaption></figure>
 
 Shikinami-Hoffmann continued in Nichirian government service on a contracted basis. In early 1926, she was brought to [[shinkeisei]] to work directly under the Interim Minister of Foreign Affairs, [[suiren-makinami]], in preparation for a series of diplomatic conferences. She served as translator and liaison at several major diplomatic engagements between 1926 and 1927, including the Third Tripartite Conference and the Tōhara Conference.
 

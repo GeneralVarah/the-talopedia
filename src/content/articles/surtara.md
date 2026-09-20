@@ -1,7 +1,7 @@
 ---
 title: "Surtara"
 type: celestial
-authors: [alemannia]
+authors: [alemannia, nichirin]
 navbox: site
 ooc: true
 infobox:
@@ -49,6 +49,7 @@ infobox:
       - "1% water vapor"
       - "1% trace gases"
 ---
+
 **Surtara** is the second planet in the [[ignis-system|Ignis system]], orbiting Ignis Prime and Umbra Magna at a distance of 0.8254 astronomical units every 274 sidereal days. The planet's surface is characterized by vast seas of dunes, rocky table mountains, and eroded highlands. With a radius of 6,052 kilometers, it is about 95% the size of [[avium]] and is a dense terrestrial planet with a thick atmosphere, a warm climate, and a harsh, arid landscape. Its orange-gold color and high reflectivity make it one of the brightest objects in the night sky of the Ignis system when viewed from Avium, reaching an apparent magnitude of -7.51.
 
 ## Nomenclature

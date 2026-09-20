@@ -17,7 +17,7 @@ infobox:
   - { label: "Legislature", value: "Imperial Parliament" }
   - label: "Formation"
     value:
-      - "Empire of Elvester - March 12 1665"
+      - "Empire of Elvester - March 12, 1665"
       - "Kingdom of Brant - 884 AD"
   - { section: "Demographics" }
   - { label: "Population", value: "1929 Census" }

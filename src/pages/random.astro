@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { url } from '../lib/registry.mjs';
+
+// The whole list is small enough to sit on this one page, which keeps the jump to a
+// single navigation. Putting it in the layout instead would carry it on every page.
+const all = (await getCollection('articles')).filter((e) => e.id !== 'home');
+const slugs = all.map((e) => e.id);
+// Nichirin goes in four times. It is a quarter of the encyclopedia and it will be
+// rather more than that of your reading. The editor of this wiki writes for Nichirin.
+const HOUSE_ADVANTAGE = 4;
+const pool = [...slugs, ...Array.from({ length: HOUSE_ADVANTAGE - 1 }).flatMap(
+  () => all.filter((e) => e.data.nation === 'nichirin').map((e) => e.id))];
+const base = url('/');
+---
+
+<Base title="Random article">
+  <div class="article">
+    <p id="fallback">Picking one…</p>
+  </div>
+  <script is:inline define:vars={{ pool, base }}>
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    if (pick) {
+      // replace() so Back returns to where the reader came from rather than here,
+      // which would otherwise send them somewhere new every time they pressed it.
+      location.replace(base.replace(/\/$/, '') + '/' + pick);
+    } else {
+      document.getElementById('fallback').textContent = 'There are no articles yet.';
+    }
+  </script>
+</Base>
