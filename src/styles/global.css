@@ -396,6 +396,7 @@ figcaption:empty { display: none; }
 .hbox-body > :first-child { margin-top: 0; }
 .hbox-body > :last-child { margin-bottom: 0; }
 .hbox-body > .navbox { border: 0; margin: -14px -16px; }
+.hbox-body .more { clear: both; margin-bottom: 0; font-size: 13px; }
 /* The banner panel: a headerless .hbox. Banner, then a stat band that echoes the
    header band on the other panels, then the text. Three bands, nothing floating. */
 .home-hero { padding: 0; overflow: hidden; }

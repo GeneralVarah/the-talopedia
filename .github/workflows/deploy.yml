@@ -1,6 +1,9 @@
 name: Deploy
 on:
   push: { branches: [main] }
+  # The front page features a different article each day, picked at build time, so
+  # the site rebuilds itself shortly after midnight UTC whether or not anyone edited.
+  schedule: [{ cron: '7 0 * * *' }]
   workflow_dispatch:
 permissions: { contents: read, pages: write, id-token: write }
 concurrency: { group: pages, cancel-in-progress: true }
