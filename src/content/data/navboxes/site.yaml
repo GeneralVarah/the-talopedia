@@ -1,5 +1,8 @@
 # The front page navigation. A bare nation id picks up its flag automatically, and
 # a nation with `portal: true` in nations.yaml renders bold and links to its portal.
+#
+# A new nation is listed here by hand. `navbox: site` on an article says which navbox
+# that article carries at the foot of the page; it does not put the nation in one.
 groups:
   - label: Nations
     rows:
