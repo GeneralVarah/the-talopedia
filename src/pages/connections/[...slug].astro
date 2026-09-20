@@ -1,0 +1,79 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { graph } from '../../lib/links.mjs';
+import { titleFor, exists, url } from '../../lib/registry.mjs';
+
+export async function getStaticPaths() {
+  const all = await getCollection('articles');
+  const portals = await getCollection('portals');
+  // The graph is over every page at once, so it is built here and handed to each.
+  const pages = [
+    ...all.map((e) => [e.id, e]),
+    ...portals.map((e) => [`portal:${e.id}`, e]),
+  ];
+  const g = graph(pages);
+  return [
+    ...all.filter((e) => e.id !== 'home').map((e) => ({ params: { slug: e.id }, props: { entry: e, kind: 'article', g } })),
+    ...portals.map((e) => ({ params: { slug: `portal/${e.id}` }, props: { entry: e, kind: 'portal', g } })),
+  ];
+}
+
+const { entry, kind, g } = Astro.props;
+const key = kind === 'portal' ? `portal:${entry.id}` : entry.id;
+
+const href = (s) => (s.startsWith('portal:') ? url(`/portal/${s.slice(7)}`) : url(`/${s}`));
+const label = (s) => (s.startsWith('portal:') ? `Portal: ${titleFor(s.slice(7))}` : titleFor(s));
+const sortByLabel = (a, b) => label(a).localeCompare(label(b));
+
+const out = [...(g.out.get(key) || [])].sort(sortByLabel);
+const into = [...(g.in.get(key) || [])].sort(sortByLabel);
+const boxes = (g.boxes.get(entry.id) || []).slice().sort();
+// A link to a page nobody has written is a request, not a connection, so the two are
+// counted apart: the red ones are this article's share of the backlog.
+const live = out.filter((s) => s.startsWith('portal:') || exists(s));
+const wanted = out.filter((s) => !s.startsWith('portal:') && !exists(s));
+---
+
+<Base title={entry.data.title} slug={key} view="connections">
+  <div class="article">
+    <div class="conn">
+      <section>
+        <h2>What links here</h2>
+        {into.length
+          ? <ul>{into.map((s) => <li><a href={href(s)}>{label(s)}</a></li>)}</ul>
+          : <p class="none">Nothing links here yet.</p>}
+      </section>
+
+      <section>
+        <h2>Links from this page</h2>
+        {live.length
+          ? <ul>{live.map((s) => <li><a href={href(s)}>{label(s)}</a></li>)}</ul>
+          : <p class="none">This page links nowhere yet.</p>}
+        {wanted.length > 0 && (
+          <>
+            <h3>Wanted</h3>
+            <ul>{wanted.map((s) => <li><a class="wl new" href={href(s)}>{label(s)}</a></li>)}</ul>
+          </>
+        )}
+      </section>
+    </div>
+
+    {boxes.length > 0 && (
+      <p class="note">
+        Carried by the {boxes.map((b, i) => <>{i > 0 && ', '}<b>{b}</b></>)} navbox.
+      </p>
+    )}
+  </div>
+</Base>
+
+<style>
+  /* Two columns while there is room, so the two directions read side by side. */
+  .conn { display: grid; gap: 8px 32px; grid-template-columns: 1fr; }
+  @media (min-width: 760px) { .conn { grid-template-columns: 1fr 1fr; } }
+  .conn h2 { margin-top: 0; }
+  .conn h3 { font-size: 14px; margin: 14px 0 4px; color: var(--muted); }
+  .conn ul { margin: 0; padding-left: 18px; line-height: 1.7; }
+  .conn .none { color: var(--muted); }
+  .note { font-size: 12px; color: var(--muted); margin-top: 18px; }
+</style>

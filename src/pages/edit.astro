@@ -160,6 +160,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             <button id="save" type="button" class="primary">Save</button>
           </Fragment>
         )}
+        <input id="f-summary" type="text" placeholder="What changed?" spellcheck="false"
+          title="A line describing this edit. It becomes the commit message and shows in the page's history." />
         <button id="cart-add" type="button" class="commit"
           title="Put this page with the others, to be pushed as one pull request">Commit</button>
         <button id="cart-open" type="button" title="Pages waiting to be pushed">
@@ -2387,7 +2389,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         });
 
         pubSay('Committing the page…');
-        await putFile(work, branch, targetPath(slug), b64text(markdown), `${slug}: edit from the wiki editor`);
+        await putFile(work, branch, targetPath(slug), b64text(markdown),
+          commitMsg(slug, $('#f-summary').value.trim()));
 
         for (const [i, [path, item]] of used.entries()) {
           pubSay(`Committing image ${i + 1} of ${used.length}…`);
@@ -2643,6 +2646,13 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     };
 
     /** This page as a change: the file it writes, and the pictures it brings with it. */
+/**
+ * The line that goes into the commit and so into the page's history. Every commit the
+ * editor made before this field existed says the same thing, which made the log
+ * useless for review.
+ */
+    const commitMsg = (slug, summary) => `${slug}: ${summary || 'edit from the wiki editor'}`;
+
     function currentChange() {
       const slug = slugify(slugValue() || pageSlug || $('#f-title').value);
       if (!slug) return null;
@@ -2652,6 +2662,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         kind: pageKind,
         slug,
         title: $('#f-title').value || slug,
+        summary: $('#f-summary').value.trim(),
         path: targetPath(slug),
         markdown,
         images: [...staged.entries()].filter(([p]) => markdown.includes(p))
@@ -2749,7 +2760,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         let done = 0;
         for (const c of list) {
           pubSay(`Committing ${++done} of ${list.length}: ${c.title}\u2026`);
-          await putFile(work, branch, c.path, b64text(c.markdown), `${c.slug}: edit from the wiki editor`);
+          await putFile(work, branch, c.path, b64text(c.markdown), commitMsg(c.slug, c.summary));
           for (const im of c.images) {
             const bytes = new Uint8Array(await im.file.arrayBuffer());
             await putFile(work, branch, 'public' + im.path, b64(bytes),
@@ -2797,6 +2808,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
               + 'To keep both, cancel and use File \u25b8 Duplicate as a new page.')) return;
         }
         await cart.put(c);
+        $('#f-summary').value = '';       // the next edit gets its own line
         await paintCart();
         flash(`${c.title} is waiting with ${(await cart.all()).length - 1} other change(s).`
           .replace(' with 0 other change(s)', ', on its own so far'));
@@ -3507,6 +3519,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 0 8px;
     }
     .ed-tools select { max-width: 190px; cursor: pointer; }
+    #f-summary { width: 190px; }
+    @media (max-width: 1100px) { #f-summary { width: 120px; } }
     .ed-tools select:focus, .ed-tools input:focus { outline: none; border-color: var(--link); }
     /* Must out-specify the toolbar's own button rule above, hence button.primary. */
     .ed-tools button.primary {

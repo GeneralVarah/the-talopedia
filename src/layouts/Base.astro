@@ -102,6 +102,12 @@ for (const h of headings) {
                 </span>
                 <span class="tabs-r">
                   <a class="tab" href={url(`/edit?a=${encodeURIComponent(editSlug || slug)}`)}>{editLabel}</a>
+                  {view === 'history'
+                    ? <span class="tab on">History</span>
+                    : <a class="tab" href={url(`/history${pagePath}`)}>History</a>}
+                  {view === 'connections'
+                    ? <span class="tab on">Connections</span>
+                    : <a class="tab" href={url(`/connections${pagePath}`)}>Connections</a>}
                 </span>
               </nav>
             )}

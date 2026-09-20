@@ -1,0 +1,85 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { historyOf } from '../../lib/revisions.mjs';
+
+export async function getStaticPaths() {
+  const all = await getCollection('articles');
+  const portals = await getCollection('portals');
+  return [
+    ...all.filter((e) => e.id !== 'home').map((e) => ({ params: { slug: e.id }, props: { entry: e, kind: 'article' } })),
+    ...portals.map((e) => ({ params: { slug: `portal/${e.id}` }, props: { entry: e, kind: 'portal' } })),
+  ];
+}
+
+const { entry, kind } = Astro.props;
+const revs = historyOf(entry.id, kind);
+const when = (iso) => new Date(iso).toLocaleString('en-GB',
+  { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+// Commits the editor wrote before it asked for a summary all read the same, and
+// repeating that line down the page tells the reader nothing.
+const BOILERPLATE = /: edit from the wiki editor$/;
+const said = (s) => (BOILERPLATE.test(s) ? '' : s.replace(/^[a-z0-9-]+:\s*/, ''));
+/** A diff as lines already labelled, so the template holds no logic. */
+const lines = (patch) => patch.split('\n').map((text) => ({
+  text,
+  cls: text.startsWith('+') ? 'add' : text.startsWith('-') ? 'del' : text.startsWith('@@') ? 'at' : '',
+}));
+/** "+12 -3", with a side left out when it is zero. */
+const size = (r) => [r.added ? '+' + r.added : '', r.removed ? '\u2212' + r.removed : ''].filter(Boolean).join('  ');
+const tail = revs === null ? ''
+  : revs.length === 0 ? 'No changes since this page was brought over from the old documents.'
+  : revs.length + (revs.length === 1 ? ' change' : ' changes') + ' since this page was brought over from the old documents.';
+---
+
+<Base title={entry.data.title} slug={kind === 'portal' ? `portal:${entry.id}` : entry.id} view="history">
+  <div class="article">
+    {revs === null ? (
+      <p>The history is read from the repository, which is not available here. A full
+        clone is needed; a shallow one has nothing to show.</p>
+    ) : (
+      <>
+        <ol class="revs">
+          {revs.map((r) => (
+            <li>
+              <div class="rev-head">
+                <span class="rev-when">{when(r.date)}</span>
+                <span class="rev-who">{r.author}</span>
+                <span class="rev-size">{size(r)}</span>
+              </div>
+              {said(r.summary)
+                ? <p class="rev-said">{said(r.summary)}</p>
+                : <p class="rev-said none">No summary given</p>}
+              <details>
+                <summary>What changed</summary>
+                <pre class="diff">{lines(r.patch).map((l) => <span class={l.cls}>{l.text + '\n'}</span>)}</pre>
+              </details>
+            </li>
+          ))}
+        </ol>
+        <p class="note">{tail}</p>
+      </>
+    )}
+  </div>
+</Base>
+
+<style>
+  .revs { list-style: none; margin: 4px 0 18px; padding: 0; }
+  .revs > li { border-bottom: 1px solid var(--hair); padding: 12px 0; }
+  .rev-head { display: flex; align-items: baseline; gap: 12px; font-size: 12px; color: var(--muted); }
+  .rev-who { font-weight: 700; color: var(--ink); }
+  .rev-size { margin-left: auto; font-variant-numeric: tabular-nums; }
+  .rev-size { white-space: pre; }
+  .rev-said { margin: 5px 0 6px; }
+  .rev-said.none { color: var(--muted); font-style: italic; }
+  details > summary { cursor: pointer; font-size: 12px; color: var(--link); }
+  .diff {
+    margin: 8px 0 0; padding: 10px 12px; overflow-x: auto;
+    background: var(--paper); border: 1px solid var(--hair); border-radius: 4px;
+    font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre;
+  }
+  .diff .add { color: #6fbf73; }
+  .diff .del { color: #e07a6a; }
+  .diff .at { color: var(--muted); }
+  .note { font-size: 12px; color: var(--muted); }
+</style>
