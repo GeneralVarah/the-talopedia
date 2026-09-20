@@ -1,7 +1,7 @@
 ---
 title: "Albinya"
 type: overview
-authors: [Mainländer]
+authors: [albinya]
 navbox: site
 infobox:
   - { image: "https://lh3.googleusercontent.com/d/1C-2cbtkObXJHeKGomRiErrf78nEel2Fx=w2000", caption: "Flag" }
