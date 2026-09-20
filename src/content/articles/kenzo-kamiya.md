@@ -4,7 +4,7 @@ nativeTitle: "神谷 謙三"
 type: character
 nation: nichirin
 infobox:
-  - { image: "https://lh3.googleusercontent.com/pw/AP1GczNq7AyMyGiQVoIZc1Jhh-N9EVylSeIar7pJjJWoGdQcp9DhyVLu5YT8Fu15hm5ahvs1hmc0NPYXs6KbRO4-5h9d7hZvlRif1PNfUYqsTFjI2g4Ro50uU63WzTnRVLtZDq1bdl5OHC3WaW5tWvKbzlYi=w2000", caption: "" }
+  - { image: "https://lh3.googleusercontent.com/pw/AP1GczNUyZlTrs8gmw6a0f878NNWHfJvkqHm1p2WxZmPTUE9W7OOLf4XSbI1sWwOlIy3IsNKQaH-HZ-NAW7XC0Oh1IYqyQs_FcT2m2NqbVkckMdRHI69nbfLByHeOVHmAXl4Lkky7uyv_ZKZYOwn22ETAgJ0=w2000", caption: "" }
   - { office: "Minister of Justice", term: "Incumbent | July 8, 1928 –" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - { label: "Preceded by", value: "Teijo Okuda" }
