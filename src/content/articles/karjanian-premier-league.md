@@ -20,7 +20,7 @@ infobox:
   - { label: "Most championships", value: "Roudanjärvi JK (12)" }
 ---
 
-The Karjanian Premier League (KPL) (Routan: *Karjanmaan Valioliiga*) is a professional football league in Karjania and the highest level of the Karjanian Football Pyramid. It is competed by 16 clubs every year, with the bottom two relegated to the Karjanian Secondary League. The KPL was founded in 1896 as the Royal First League. The first 3 finishers automatically qualify for the Karjanian Super Cup, and if the winner of the cup finishes in the top 3, the 4th place club qualifies as well. It is governed by the KAF. The league is where majority of the [[karjanian-national-football-team]] play.
+The Karjanian Premier League (KPL) (Routan: *Karjanmaan Valioliiga*) is a professional football league in Karjania and the highest level of the Karjanian Football Pyramid. It is competed by 16 clubs every year, with the bottom two relegated to the [[karjanian-secondary-league]]. The KPL was founded in 1896 as the Royal First League. The first 3 finishers automatically qualify for the Karjanian Super Cup, and if the winner of the cup finishes in the top 3, the 4th place club qualifies as well. It is governed by the KAF. The league is where majority of the [[karjanian-national-football-team]] play.
 
 ## Structure
 
