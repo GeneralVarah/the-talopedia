@@ -4,6 +4,7 @@ nativeTitle: "火花 鈴"
 type: character
 nation: nichirin
 infobox:
+  - { image: "https://lh3.googleusercontent.com/pw/AP1GczMKvrkfbg-kllalnk8gz9cRmwwKf6CAM_GIZ3DwpGNFHCS8D4yT93qA2WCO0yj4GC00Fi5ucaVOj15Rk_tAt0BZ-CCsInmDm8UgGFSvGQMHjlXsw2lVmA8LqZfcqYHr1T6iPibz0kZGA2fzyNT8qboC=w2000", caption: "" }
   - { office: "Minister of Economy, Trade, and Industry", term: "Incumbent | August 4, 1930 –" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - { label: "Preceded by", value: "[[kishibe-toda]]" }
