@@ -39,31 +39,26 @@ const wanted = out.filter((s) => !s.startsWith('portal:') && !exists(s));
   <div class="article">
     <div class="conn">
       <section>
-        <h2>What links here</h2>
+        <h2>What links here <span class="count">{into.length}</span></h2>
         {into.length
           ? <ul>{into.map((s) => <li><a href={href(s)}>{label(s)}</a></li>)}</ul>
           : <p class="none">Nothing links here yet.</p>}
       </section>
 
       <section>
-        <h2>Links from this page</h2>
+        <h2>Links from this page <span class="count">{live.length}</span></h2>
         {live.length
           ? <ul>{live.map((s) => <li><a href={href(s)}>{label(s)}</a></li>)}</ul>
           : <p class="none">This page links nowhere yet.</p>}
         {wanted.length > 0 && (
           <>
-            <h3>Wanted</h3>
+            <h3>Wanted <span class="count">{wanted.length}</span></h3>
             <ul>{wanted.map((s) => <li><a class="wl new" href={href(s)}>{label(s)}</a></li>)}</ul>
           </>
         )}
       </section>
     </div>
 
-    {boxes.length > 0 && (
-      <p class="note">
-        Carried by the {boxes.map((b, i) => <>{i > 0 && ', '}<b>{b}</b></>)} navbox.
-      </p>
-    )}
   </div>
 </Base>
 
@@ -75,5 +70,6 @@ const wanted = out.filter((s) => !s.startsWith('portal:') && !exists(s));
   .conn h3 { font-size: 14px; margin: 14px 0 4px; color: var(--muted); }
   .conn ul { margin: 0; padding-left: 18px; line-height: 1.7; }
   .conn .none { color: var(--muted); }
-  .note { font-size: 12px; color: var(--muted); margin-top: 18px; }
+  .conn .count { font: 400 12px/1 var(--body); color: var(--muted); vertical-align: middle; }
+  .conn li { padding: 1px 0; }
 </style>

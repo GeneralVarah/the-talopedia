@@ -14,8 +14,12 @@ export async function getStaticPaths() {
 
 const { entry, kind } = Astro.props;
 const revs = historyOf(entry.id, kind);
-const when = (iso) => new Date(iso).toLocaleString('en-GB',
-  { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+/** "21:29, 19 September 2026", the way a history page states a revision. */
+const when = (iso) => {
+  const d = new Date(iso);
+  return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+    + ', ' + d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+};
 // Commits the editor wrote before it asked for a summary all read the same, and
 // repeating that line down the page tells the reader nothing.
 const BOILERPLATE = /: edit from the wiki editor$/;
@@ -25,11 +29,12 @@ const lines = (patch) => patch.split('\n').map((text) => ({
   text,
   cls: text.startsWith('+') ? 'add' : text.startsWith('-') ? 'del' : text.startsWith('@@') ? 'at' : '',
 }));
-/** "+12 -3", with a side left out when it is zero. */
-const size = (r) => [r.added ? '+' + r.added : '', r.removed ? '\u2212' + r.removed : ''].filter(Boolean).join('  ');
-const tail = revs === null ? ''
-  : revs.length === 0 ? 'No changes since this page was brought over from the old documents.'
-  : revs.length + (revs.length === 1 ? ' change' : ' changes') + ' since this page was brought over from the old documents.';
+/** The net change in lines, which is what tells a reader how big an edit was. */
+const net = (r) => {
+  const n = r.added - r.removed;
+  return { text: (n > 0 ? '+' : n < 0 ? '\u2212' : '\u00b1') + Math.abs(n),
+           cls: n > 0 ? 'plus' : n < 0 ? 'minus' : 'same' };
+};
 ---
 
 <Base title={entry.data.title} slug={kind === 'portal' ? `portal:${entry.id}` : entry.id} view="history">
@@ -42,44 +47,53 @@ const tail = revs === null ? ''
         <ol class="revs">
           {revs.map((r) => (
             <li>
-              <div class="rev-head">
+              <div class="rev-line">
                 <span class="rev-when">{when(r.date)}</span>
                 <span class="rev-who">{r.author}</span>
-                <span class="rev-size">{size(r)}</span>
+                <span class={'rev-net ' + net(r).cls}>{net(r).text}</span>
+                <span class="rev-plusminus">{'+' + r.added + ' \u2212' + r.removed}</span>
+                {said(r.summary)
+                  ? <span class="rev-said">{said(r.summary)}</span>
+                  : <span class="rev-said none">no summary</span>}
               </div>
-              {said(r.summary)
-                ? <p class="rev-said">{said(r.summary)}</p>
-                : <p class="rev-said none">No summary given</p>}
               <details>
-                <summary>What changed</summary>
+                <summary>Show changes</summary>
                 <pre class="diff">{lines(r.patch).map((l) => <span class={l.cls}>{l.text + '\n'}</span>)}</pre>
               </details>
             </li>
           ))}
         </ol>
-        <p class="note">{tail}</p>
       </>
     )}
   </div>
 </Base>
 
 <style>
-  .revs { list-style: none; margin: 4px 0 18px; padding: 0; }
-  .revs > li { border-bottom: 1px solid var(--hair); padding: 12px 0; }
-  .rev-head { display: flex; align-items: baseline; gap: 12px; font-size: 12px; color: var(--muted); }
-  .rev-who { font-weight: 700; color: var(--ink); }
-  .rev-size { margin-left: auto; font-variant-numeric: tabular-nums; }
-  .rev-size { white-space: pre; }
-  .rev-said { margin: 5px 0 6px; }
+  .revs { list-style: none; margin: 2px 0 8px; padding: 0; }
+  .revs > li { border-bottom: 1px solid var(--hair); padding: 9px 4px; }
+  .revs > li:hover { background: color-mix(in srgb, var(--band) 55%, transparent); }
+  /* One line per revision, as a history page reads it: when, who, how much, and what
+     they said they were doing. */
+  .rev-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: 3px 10px; }
+  .rev-when { font-size: 13px; color: var(--muted); white-space: nowrap; }
+  .rev-who { font-weight: 700; }
+  .rev-net { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .rev-net.plus { color: #6fbf73; }
+  .rev-net.minus { color: #e07a6a; }
+  .rev-net.same { color: var(--muted); }
+  .rev-plusminus { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .rev-said { flex: 1 1 260px; }
   .rev-said.none { color: var(--muted); font-style: italic; }
-  details > summary { cursor: pointer; font-size: 12px; color: var(--link); }
+  details > summary {
+    cursor: pointer; font-size: 12px; color: var(--link);
+    margin-top: 6px; width: max-content;
+  }
   .diff {
-    margin: 8px 0 0; padding: 10px 12px; overflow-x: auto;
-    background: var(--paper); border: 1px solid var(--hair); border-radius: 4px;
+    margin: 8px 0 2px; padding: 10px 12px; overflow-x: auto;
+    background: var(--paper); border: 1px solid var(--hair); border-radius: 3px;
     font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre;
   }
   .diff .add { color: #6fbf73; }
   .diff .del { color: #e07a6a; }
   .diff .at { color: var(--muted); }
-  .note { font-size: 12px; color: var(--muted); }
 </style>
