@@ -1,8 +1,8 @@
 name: Auto-merge
 # A page edit from the editor arrives as a pull request, and every one of them was
-# being merged by hand. This merges the routine ones: a known nation's account,
-# touching nothing but pages and images, and still building. Anything else is left
-# open for a person to look at.
+# being merged by hand. A nation's edits to its own pages merge themselves; anything
+# touching another nation's page, a communal one, or anything that is not a page at
+# all is left open. .github/gate.mjs holds the rule and says why it declined.
 on:
   pull_request_target:
     types: [opened, reopened, synchronize]
@@ -14,47 +14,40 @@ jobs:
   merge:
     runs-on: ubuntu-latest
     steps:
-      # main, never the pull request's own copy of the repository. The allowlist read
-      # below has to be the one already on the branch being merged into, or a pull
-      # request could add its own author to it.
+      # main, never the pull request's own copy. The rule and the bylines it reads
+      # have to be the ones already on the branch being merged into, or a pull request
+      # could rewrite either in the act of passing them. The whole history, because
+      # the gate diffs against the merge base.
       - uses: actions/checkout@v7
+        with: { fetch-depth: 0 }
 
-      - id: check
+      - id: gate
         env:
-          GH_TOKEN: ${{ github.token }}
-          AUTHOR: ${{ github.event.pull_request.user.login }}
-          PR: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          ADMIN: ${{ github.repository_owner }}
+          BASE: ${{ github.event.pull_request.base.ref }}
+          HEAD: FETCH_HEAD
         run: |
           set -euo pipefail
-          writers=$(node -e 'import("./src/lib/contributors.mjs").then(m => console.log(Object.values(m.ACCOUNT_OF).join("\n")))')
-          if ! grep -qxF "$AUTHOR" <<<"$writers"; then
-            echo "$AUTHOR does not write for a nation, so this one waits." >> "$GITHUB_STEP_SUMMARY"
-            exit 0
-          fi
-          stray=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename' \
-                  | grep -Ev '^(src/content/|public/assets/)' || true)
-          if [ -n "$stray" ]; then
-            { echo "Changes more than pages, so this one waits:"; echo '```'; echo "$stray"; echo '```'; } \
-              >> "$GITHUB_STEP_SUMMARY"
-            exit 0
-          fi
-          echo "go=1" >> "$GITHUB_OUTPUT"
+          git fetch --quiet origin "pull/${{ github.event.pull_request.number }}/head"
+          verdict=$(node .github/gate.mjs)
+          echo "$verdict" >> "$GITHUB_STEP_SUMMARY"
+          [ "$verdict" = merge ] && echo "go=1" >> "$GITHUB_OUTPUT" || true
 
-      # The pages as they would stand on main. Safe to build unread: the step above
-      # has established that nothing outside the content tree changed.
-      - if: steps.check.outputs.go
+      # The pages as they would stand on main. Safe to build unread: the gate has
+      # established that nothing outside the content tree changed.
+      - if: steps.gate.outputs.go
         uses: actions/checkout@v7
         with: { ref: "refs/pull/${{ github.event.pull_request.number }}/merge" }
-      - if: steps.check.outputs.go
+      - if: steps.gate.outputs.go
         uses: actions/setup-node@v7
         with: { node-version: 22, cache: npm }
-      - if: steps.check.outputs.go
+      - if: steps.gate.outputs.go
         run: npm ci
-      - if: steps.check.outputs.go
+      - if: steps.gate.outputs.go
         run: npm run build
 
-      - if: steps.check.outputs.go
+      - if: steps.gate.outputs.go
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}

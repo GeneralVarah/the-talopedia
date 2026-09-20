@@ -1860,6 +1860,16 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         ['#type-field', art], ['#authors-field', art], ['#icon-field', art],
         ['#native-field', art], ['#romaji-field', art], ['#nation-field', !nav],
       ]) $(id).hidden = !on;
+      // The byline says who may edit the page once it exists, so it stops being
+      // editable once the page does. `authors` carries the byline when it is set and
+      // `nation` carries it when it is not, so whichever one is holding it locks; a
+      // nation that is only choosing the navbox stays free. The dev server is the way
+      // back in, and a pull request that moves a byline is reviewed rather than merged.
+      const key = pageKind === 'article' ? slugValue() : `${pageKind}:${slugValue()}`;
+      const settled = !DEV && ARTICLES.some((a) => a.slug === key);
+      $('#f-authors').readOnly = settled;
+      $('#f-authors').title = settled ? 'Set when the page was created.' : '';
+      $('#f-nation').disabled = settled && !$('#f-authors').value.trim();
       $('#settings').querySelector('.set-toggles').hidden = !art;
       // Not every article wants a sidebar. The rows stay in the editor while it is
       // off, so turning it back on before saving brings them back untouched.
@@ -3811,6 +3821,11 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       outline: none; border-color: var(--link);
     }
     .ed-settings input::placeholder, .ed-settings textarea::placeholder { color: #5c656e; }
+    /* A byline that is settled. Readable, plainly not typeable. The attribute rather
+       than :read-only, which also matches every checkbox. */
+    .ed-settings input[readonly], .ed-settings select:disabled {
+      color: var(--muted); background: var(--band); cursor: default;
+    }
     /* One row that matches an input exactly, and still pulls open for a second
        official language. The taller line box was what made it stand proud. */
     .ed-settings textarea { resize: vertical; line-height: normal; min-height: 0; }
