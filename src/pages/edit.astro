@@ -2056,6 +2056,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     dropdown($('#more'), $('#more-menu'));
     dropdown($('#style'), $('#style-menu'));
     dropdown($('#insert'), $('#insert-menu'));
+    dropdown($('#ins'), $('#ins-menu'));
     document.addEventListener('click', () => {
       document.querySelectorAll('.drop-menu').forEach((m) => m.hidden = true);
       pickTarget = null;      // the panel is shut; it is not aimed at anything now

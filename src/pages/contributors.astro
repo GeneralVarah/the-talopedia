@@ -1,55 +1,37 @@
 ---
+import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import { contributors, WRITES_FOR } from '../lib/contributors.mjs';
+import { contributors } from '../lib/contributors.mjs';
 import { nation, url } from '../lib/registry.mjs';
 
-const board = contributors();
-const top = board?.[0]?.lines ?? 1;
+const board = contributors(await getCollection('articles'));
+const top = board[0]?.articles ?? 1;
 ---
 
-<Base title="Contributors" description="Who has written the Talopedia, by lines of content added.">
+<Base title="Contributors" description="Who has written the Talopedia.">
   <div class="article">
-    {board === null ? (
-      <p>
-        This list is built from the repository's history, which is not available here.
-        A full clone is needed; a shallow one has nothing to count.
-      </p>
-    ) : board.length === 0 ? (
-      <p>Nobody has written anything yet.</p>
-    ) : (
-      <>
-        <table class="board">
-          <thead>
-            <tr><th class="rank"></th><th>Contributor</th><th class="num">Articles</th><th class="num">Lines</th><th class="num">Edits</th></tr>
-          </thead>
-          <tbody>
-            {board.map((c, i) => (
-              <tr>
-                <td class="rank">{i + 1}</td>
-                <td>
-                  {(() => { const n = nation(WRITES_FOR[c.name]); return n ? (
-                    <>
-                      {n.flag && <img class="ico" src={url(n.flag)} alt="" loading="lazy" />}
-                      <a href={url(`/portal/${n.id}`)}>{n.name}</a>
-                      {' '}<a class="who" href={`https://github.com/${c.name}`} rel="noopener">({c.name})</a>
-                    </>
-                  ) : (
-                    <a class="who" href={`https://github.com/${c.name}`} rel="noopener">{c.name}</a>
-                  ); })()}
-                  <span class="bar" style={`width:${Math.max(2, Math.round((c.lines / top) * 100))}%`}></span>
-                </td>
-                <td class="num">{c.articles}</td>
-                <td class="num">{c.lines.toLocaleString()}</td>
-                <td class="num">{c.commits}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </>
-    )}
+    <table class="board">
+      <thead>
+        <tr><th class="rank"></th><th>Contributor</th><th class="num">Articles</th><th class="num">Lines</th></tr>
+      </thead>
+      <tbody>
+        {board.map((c, i) => (
+          <tr>
+            <td class="rank">{i + 1}</td>
+            <td>
+              {nation(c.id)?.flag && <img class="ico" src={url(nation(c.id).flag)} alt="" loading="lazy" />}
+              <a href={url(`/portal/${c.id}`)}>{nation(c.id)?.name ?? c.id}</a>
+              {c.account && <>{' '}<a class="who" href={`https://github.com/${c.account}`} rel="noopener">({c.account})</a></>}
+              <span class="bar" style={`width:${Math.max(2, Math.round((c.articles / top) * 100))}%`}></span>
+            </td>
+            <td class="num">{c.articles}</td>
+            <td class="num">{c.lines.toLocaleString()}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   </div>
 </Base>
-
 <style>
   .board { width: 100%; border-collapse: collapse; margin: 6px 0 18px; }
   .board th, .board td { border-bottom: 1px solid var(--hair); padding: 8px 10px; text-align: left; }
