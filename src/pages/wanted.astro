@@ -33,17 +33,10 @@ wanted.sort((a, b) => b.from.length - a.from.length || a.title.localeCompare(b.t
 
 const href = (s) => (s.startsWith('portal:') ? url(`/portal/${s.slice(7)}`) : url(`/${s}`));
 const flagOf = (id) => (id ? nation(id)?.flag : null);
-const asked = wanted.reduce((n, w) => n + w.from.length, 0);
 ---
 
 <Base title="Wanted articles" description="Subjects the Talopedia names but has not written yet.">
   <div class="article">
-    <p class="lead">
-      {wanted.length} subject{wanted.length === 1 ? ' is' : 's are'} named somewhere in
-      the Talopedia but {wanted.length === 1 ? 'has' : 'have'} no article yet, between
-      them asked for {asked} time{asked === 1 ? '' : 's'}. The most-wanted are first.
-    </p>
-
     <ul class="want-list">
       {wanted.map((w) => (
         <li>
@@ -68,7 +61,6 @@ const asked = wanted.reduce((n, w) => n + w.from.length, 0);
 </Base>
 
 <style>
-  .lead { color: var(--muted); margin: 2px 0 18px; }
   .want-list { list-style: none; margin: 0; padding: 0; }
   .want-list li {
     display: flex; align-items: baseline; gap: 10px;

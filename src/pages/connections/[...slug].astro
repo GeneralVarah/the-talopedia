@@ -69,8 +69,7 @@ const wanted = outAll.filter((s) => !s.startsWith('portal:') && !exists(s)).sort
             ))}
           </ul>
         ) : (
-          <p class="none">No page links here. An article nothing points at is hard to
-            find; adding a link from a related page fixes that.</p>
+          <p class="none">Nothing links here.</p>
         )}
       </section>
 
@@ -87,8 +86,7 @@ const wanted = outAll.filter((s) => !s.startsWith('portal:') && !exists(s)).sort
             ))}
           </ul>
         ) : (
-          <p class="none">This page links nowhere. Naming another subject in the text
-            with <code>[[double brackets]]</code> connects it.</p>
+          <p class="none">No links out.</p>
         )}
 
         {wanted.length > 0 && (

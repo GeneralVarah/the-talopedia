@@ -87,13 +87,9 @@ const sections = [
 ];
 ---
 
-<Base title="Manual of Style" description="How articles on the Talopedia are written.">
+<Base title="Manual of Style" description="How articles on the Talopedia are written."
+  headings={sections.map((s) => ({ depth: 2, slug: s.id, text: s.title }))}>
   <div class="article">
-    <p class="lead">
-      How articles are written. Everything the editor and the stylesheet already decide
-      has been left out, so what remains is the part that is yours to get right.
-    </p>
-
     {sections.map((s) => (
       <section class="mos">
         <h2 id={s.id}>{s.title}</h2>
@@ -106,7 +102,6 @@ const sections = [
 </Base>
 
 <style>
-  .lead { color: var(--muted); margin: 2px 0 20px; }
   .mos h2 { margin-top: 26px; }
   .mos-eg {
     padding: 9px 12px; border-left: 3px solid var(--rule);
