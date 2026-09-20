@@ -67,13 +67,19 @@ function hash(s) {
  */
 const REROLL = 2;
 
+/** A day whose article was chosen by hand. The draw takes over again the next day. */
+const PINNED = {
+  '2026-09-20': 'kriemhilt-von-bismarck',
+};
+
 export function featured(entries, today = new Date()) {
-  const day = `${today.toISOString().slice(0, 10)}#${REROLL}`;
+  const date = today.toISOString().slice(0, 10);
+  const day = `${date}#${REROLL}`;
   const pool = entries
     .filter((e) => e.id !== 'home')
     .filter((e) => firstImage(e.data) && overview(e.rendered?.html || '').length > 300)
     // Sorted so the pick depends on the date and the set, never on directory order.
     .sort((a, b) => a.id.localeCompare(b.id));
   if (!pool.length) return null;
-  return pool[hash(day) % pool.length];
+  return pool.find((e) => e.id === PINNED[date]) || pool[hash(day) % pool.length];
 }
