@@ -4,7 +4,7 @@ import Base from '../layouts/Base.astro';
 import { navbox, nations, url } from '../lib/registry.mjs';
 import { resolveHtml } from '../lib/navbox.mjs';
 import { asset } from '../lib/inline.mjs';
-import { featured, overview, firstImage } from '../lib/featured.mjs';
+import { featured, overview, firstImage, linkFirstMention } from '../lib/featured.mjs';
 
 // The front page is an ordinary article, so it opens in the editor like any other.
 export const HOME = 'home';
@@ -43,9 +43,14 @@ const featuredPanel = !pick ? '' : (() => {
   const title = (pick.data.title ?? pick.id).replace(/"/g, '&quot;');
   const fig = `<figure class="float float-right" style="width:220px">`
     + `<img src="${asset(firstImage(pick.data))}" alt="${title}"></figure>`;
+  const href = url('/' + pick.id);
   const body = overview(resolveHtml(pick.rendered?.html));
-  return `${fig}${body}<p class="more"><a href="${url('/' + pick.id)}">`
-    + `Read all of ${title}</a></p>`;
+  const linked = linkFirstMention(body, pick.data.title ?? pick.id, href);
+  // A lede that never names its subject gets a plain link instead, so the panel is
+  // never a dead end.
+  return linked
+    ? `${fig}${linked}`
+    : `${fig}${body}<p class="more"><a href="${href}">Read all of ${title}</a></p>`;
 })();
 
 /**

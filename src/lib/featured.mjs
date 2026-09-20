@@ -23,6 +23,34 @@ export function firstImage(data) {
   return row?.image || row?.images?.[0]?.src || '';
 }
 
+/**
+ * Link the article's own name where the overview first says it, the way a lede links
+ * its subject anywhere else. Nearly every lede opens by naming the subject in bold,
+ * so that run is the target; the plain title is the fallback for the ones that do
+ * not. Returns null when neither is there, and the caller adds a plain link instead.
+ */
+export function linkFirstMention(html, title, href) {
+  const wrap = (start, end) => {
+    // Never nest one anchor inside another. An unclosed <a> before this point means
+    // the match sits inside a link already.
+    const before = html.slice(0, start);
+    if ((before.match(/<a\b/g) || []).length > (before.match(/<\/a>/g) || []).length) return null;
+    return html.slice(0, start) + `<a href="${href}">` + html.slice(start, end) + '</a>' + html.slice(end);
+  };
+  // The subject in bold, if it turns up while the overview is still introducing it.
+  const bold = /<strong\b[^>]*>[^<]{1,90}<\/strong>/.exec(html.slice(0, 400));
+  if (bold) return wrap(bold.index, bold.index + bold[0].length);
+  // Otherwise the title as written, so long as it is text and not part of a tag.
+  const plain = html.indexOf('>' + title);
+  if (plain !== -1) return wrap(plain + 1, plain + 1 + title.length);
+  const loose = html.search(new RegExp('(?<=>)[^<]*?' + title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  if (loose !== -1) {
+    const at = html.indexOf(title, loose);
+    return wrap(at, at + title.length);
+  }
+  return null;
+}
+
 /** Stable across builds and platforms, unlike anything seeded from Math.random. */
 function hash(s) {
   let h = 2166136261;
@@ -33,8 +61,14 @@ function hash(s) {
   return h >>> 0;
 }
 
+/**
+ * Bump this to throw today's pick away and draw again. Every later day changes with
+ * it, which is the point: the sequence is a function of the date and this number.
+ */
+const REROLL = 2;
+
 export function featured(entries, today = new Date()) {
-  const day = today.toISOString().slice(0, 10);
+  const day = `${today.toISOString().slice(0, 10)}#${REROLL}`;
   const pool = entries
     .filter((e) => e.id !== 'home')
     .filter((e) => firstImage(e.data) && overview(e.rendered?.html || '').length > 300)
