@@ -15,7 +15,7 @@ infobox:
   - label: "Born"
     value:
       - "Kenzō Kamiya"
-      - "June 9, 1888"
+      - ":date[1888-06-09|age]"
       - "Tsukeno, Nichirin"
   - { label: "Alma Mater", value: "University of Shinkeisei (LLB; LLM, Criminal Law)" }
   - { section: "Nichirian Name" }

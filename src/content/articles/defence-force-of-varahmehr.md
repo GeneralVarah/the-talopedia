@@ -11,7 +11,7 @@ infobox:
       - "حفاظت پیمان"
       - "*Hefāzat-e Peymān*"
       - "\"Defence of the Compact\""
-  - { label: "Founded", value: "March 3, 1878" }
+  - { label: "Founded", value: ":date[1878-03-03|ago]" }
   - label: "Service Branches"
     value:
       - "National Force"

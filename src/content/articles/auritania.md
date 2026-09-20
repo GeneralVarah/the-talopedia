@@ -36,7 +36,7 @@ infobox:
       - "Elio Torres (Information)"
       - "Pablo Lobo (National Security)"
   - { label: "Legislature", value: "National Congress, via the Politburo and State Council" }
-  - { label: "Formation", value: "December 1, 1920" }
+  - { label: "Formation", value: ":date[1920-12-01|ago]" }
   - { section: "Demographics" }
   - { label: "Population", value: "1930 Census" }
   - { label: "Total", sub: true, value: "141,514,000" }

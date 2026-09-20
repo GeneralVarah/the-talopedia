@@ -17,11 +17,11 @@ infobox:
   - label: "Born"
     value:
       - "Cassandra"
-      - "April 20, 1897"
+      - ":date[1897-04-20]"
       - "Metro Regima, United States of Elysia"
   - label: "Died"
     value:
-      - "May 11, 1933 (aged 36)"
+      - ":date[1933-05-11|age:1897-04-20]"
       - "Rivet, Elysian State of Unity"
   - { label: "Alma Mater", value: "Emmerich Institute" }
 ---

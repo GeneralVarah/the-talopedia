@@ -18,7 +18,7 @@ infobox:
   - label: "Born"
     value:
       - "Kanade Ura"
-      - "February 25, 1899"
+      - ":date[1899-02-25|age]"
       - "Naginomiya, Nichirin"
   - label: "Parents"
     value:

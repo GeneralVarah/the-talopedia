@@ -26,7 +26,7 @@ infobox:
       - "Rada Federalna"
       - "• Rządowy (Upper House)"
       - "• Ludzie (Lower House)"
-  - { label: "Formation", value: "July 24, 1650" }
+  - { label: "Formation", value: ":date[1650-07-24|ago]" }
   - { section: "Demographics" }
   - { label: "Population", value: "1932 Census" }
   - { label: "Total", sub: true, value: "55,568,000" }

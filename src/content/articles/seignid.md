@@ -25,7 +25,7 @@ infobox:
       - "Dai Ming"
       - "Laoi Menghui"
   - { label: "Legislature", value: "Bicameral" }
-  - { label: "Formation", value: "April 19, 1759" }
+  - { label: "Formation", value: ":date[1759-04-19|ago]" }
   - { section: "Demographics" }
   - { label: "Population", value: "1928 Census" }
   - { label: "Total", sub: true, value: "246,552,000" }

@@ -19,7 +19,7 @@ infobox:
   - label: "Born"
     value:
       - "Fuka Asahina"
-      - "January 29, 1896"
+      - ":date[1896-01-29|age]"
       - "Andō, Nichirin"
   - { label: "Alma Mater", value: "Shimonosaki University of Technology (BSc, CENG; MEng, CENG)" }
   - { section: "Nichirian Name" }

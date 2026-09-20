@@ -9,8 +9,8 @@ infobox:
     value:
       - "Ipsa scientia potestas est"
       - "\"Knowledge itself is power\""
-  - { label: "Founded", value: "August 3, 1922" }
-  - { label: "Disbanded", value: "June 6, 1932" }
+  - { label: "Founded", value: ":date[1922-08-03|ago]" }
+  - { label: "Disbanded", value: ":date[1932-06-06|ago]" }
   - label: "Service Branches"
     value:
       - "Ground Operations"

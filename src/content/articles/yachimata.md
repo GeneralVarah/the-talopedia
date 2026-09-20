@@ -14,7 +14,7 @@ infobox:
   - label: "Born"
     value:
       - "Kosumi Inari"
-      - "August 9, 1892"
+      - ":date[1892-08-09|age]"
       - "Arcturus, [[skjarnland]]"
   - label: "Parents"
     value:

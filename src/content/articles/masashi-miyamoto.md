@@ -17,7 +17,7 @@ infobox:
   - label: "Born"
     value:
       - "Masashi Miyamoto"
-      - "June 6, 1896"
+      - ":date[1896-06-06|age]"
       - "Shinkeisei, Nichirin"
   - label: "Parents"
     value:

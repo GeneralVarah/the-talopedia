@@ -24,7 +24,7 @@ infobox:
   - label: "Born"
     value:
       - "Hildegard Kriemhilt Adelheid von Bismarck"
-      - "February 14, 1898"
+      - ":date[1898-02-14|age]"
       - "Akenau, Holy Evrian Empire"
   - label: "Parents"
     value:

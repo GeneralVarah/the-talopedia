@@ -26,7 +26,7 @@ infobox:
       - "Kazimir Volzhanin"
       - "Rodion Chernov"
   - { label: "Legislature", value: "Common Assembly" }
-  - { label: "Formation", value: "May 12, 1920" }
+  - { label: "Formation", value: ":date[1920-05-12|ago]" }
   - { section: "Demographics" }
   - { label: "Population", value: "1929 Census" }
   - { label: "Total", sub: true, value: "111,480,000" }

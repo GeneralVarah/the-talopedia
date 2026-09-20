@@ -37,7 +37,7 @@ infobox:
       - "Mikhail Dimitriev (Defence)"
       - "Alexis Ukhinov (Standardisation of facts)"
       - "Kadzar Jabenov (National Security)"
-  - { label: "Formation", value: "July 24, 1923" }
+  - { label: "Formation", value: ":date[1923-07-24|ago]" }
   - { section: "Demographics" }
   - { label: "Population", value: "1930 Census" }
   - { label: "Total", sub: true, value: "104,702,000" }

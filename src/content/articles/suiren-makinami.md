@@ -28,7 +28,7 @@ infobox:
   - label: "Born"
     value:
       - "Suiren Makinami"
-      - "March 31, 1894"
+      - ":date[1894-03-31|age]"
       - "Tynemouth, Elvester"
   - label: "Parents"
     value:

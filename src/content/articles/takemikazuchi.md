@@ -12,7 +12,7 @@ infobox:
   - { label: "Preceded by", value: "*Position Established*" }
   - { section: "Personal Details" }
   - { label: "Nationality", value: ":img[/assets/flags/cote-de-saumon.png] Saumonais" }
-  - { label: "Born", value: "February 29, 1896" }
+  - { label: "Born", value: ":date[1896-02-29|age]" }
 ---
 
 

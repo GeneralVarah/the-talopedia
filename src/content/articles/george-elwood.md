@@ -19,7 +19,7 @@ infobox:
   - label: "Born"
     value:
       - "George Elwood"
-      - "June 4, 1894"
+      - ":date[1894-06-04|age]"
       - "Starfell (South), United States of Elysia"
   - label: "Parents"
     value:

@@ -17,7 +17,7 @@ infobox:
   - label: "Born"
     value:
       - "Nariyoshi Miyagi"
-      - "June 9, 1870"
+      - ":date[1870-06-09|age]"
       - "Shinkeisei, Nichirin"
   - { label: "Spouse", value: "Mai Shinohara" }
   - { label: "Children", value: "Megumi Miyagi" }

@@ -27,7 +27,7 @@ infobox:
   - label: "Born"
     value:
       - "Akane Margarethe Shikinami-Hoffmann"
-      - "December 4, 1900"
+      - ":date[1900-12-04|age]"
       - "Veynach, Holy Evrian Empire"
   - label: "Parents"
     value:

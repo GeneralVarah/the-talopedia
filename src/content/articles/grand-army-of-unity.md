@@ -8,7 +8,7 @@ infobox:
     value:
       - "Si vis Pacem, Para Bellum"
       - "\"If you want Peace, Prepare for War\""
-  - { label: "Founded", value: "July 26, 1927" }
+  - { label: "Founded", value: ":date[1927-07-26|ago]" }
   - { label: "March", value: "\"[The Black Flag Unites](https://youtu.be/8IaUXefAsCU?si=8XGgAmcu2oVWupQD)\"" }
   - label: "Service Branches"
     value:

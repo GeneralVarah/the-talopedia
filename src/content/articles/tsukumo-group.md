@@ -6,7 +6,7 @@ type: company
 nation: nichirin
 infobox:
   - { image: "/assets/old-media/media/tsukumo-group-1.png", caption: "Logo" }
-  - { label: "Founded", value: "September 19, 1870" }
+  - { label: "Founded", value: ":date[1870-09-19|ago]" }
   - { label: "Founder", value: "Jūzaburō Yasuda" }
   - { label: "Headquarters", value: "Shinkeisei, [[nichirin]]" }
   - label: "Areas Served"

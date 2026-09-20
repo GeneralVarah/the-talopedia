@@ -14,7 +14,7 @@ infobox:
   - label: "Born"
     value:
       - "Suzu Hibana"
-      - "March 3, 1902"
+      - ":date[1902-03-03|age]"
       - "Seitou, Kinshū"
   - { label: "Alma Mater", value: "University of Shinkeisei (LLB)" }
   - { section: "Nichirian Name" }

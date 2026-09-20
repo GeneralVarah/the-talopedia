@@ -17,7 +17,7 @@ infobox:
   - label: "Born"
     value:
       - "Liang Weixi"
-      - "March 28, 1895"
+      - ":date[1895-03-28|age]"
       - "Kaiguan, Xing Empire"
   - label: "Parents"
     value:

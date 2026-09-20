@@ -9,7 +9,7 @@ infobox:
     value:
       - "Semper Fidelis."
       - "\"Always Loyal.\""
-  - { label: "Founded", value: "September 1, 1922" }
+  - { label: "Founded", value: ":date[1922-09-01|ago]" }
   - label: "Service Branches"
     value:
       - "Glorious Republic Army"

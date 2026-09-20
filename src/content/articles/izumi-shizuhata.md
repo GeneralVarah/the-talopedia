@@ -15,7 +15,7 @@ infobox:
   - label: "Born"
     value:
       - "Izumi Shizuhata"
-      - "November 7, 1890"
+      - ":date[1890-11-07|age]"
       - "Shizuhata, Nichirin"
   - { label: "Alma Mater", value: "Takarazuka Imperial University (BSc, Math; MSc, Econ)" }
   - { section: "Nichirian Name" }

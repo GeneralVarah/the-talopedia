@@ -15,7 +15,7 @@ infobox:
   - label: "Born"
     value:
       - "Munehiro Ogasawara"
-      - "May 13, 1867"
+      - ":date[1867-05-13|age]"
       - "[[shinkeisei]], Nichirin"
   - { label: "Spouse", value: "Yūko Teranishi" }
   - label: "Alma Mater"
