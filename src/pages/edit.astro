@@ -3432,7 +3432,11 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     }
     $('#mp-iq').oninput = paintAssets;
     // The menu stays open while you browse it, unlike a one-shot command.
+    // A click anywhere shuts every menu. These two are panels to work in rather than
+    // lists to pick from, so a click inside one must not reach that handler; each
+    // closes itself once it has done the thing it was opened for.
     $('#insert-menu').addEventListener('click', (e) => e.stopPropagation());
+    $('#ins-menu').addEventListener('click', (e) => e.stopPropagation());
     // Nothing in the panel may take focus, or the caret in the article is lost
     // before the chosen image or icon can be inserted at it.
     $('#insert-menu').addEventListener('mousedown', (e) => {
