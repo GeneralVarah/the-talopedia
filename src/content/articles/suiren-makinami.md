@@ -95,7 +95,7 @@ On March 6, Makinami accompanied Masashi's convoy to the southern bank of the Ha
 
 Makinami commanded the naval blockade of Sangai's coastline as part of the coordinated operation to capture Okamura on December 8. The blockade was established under the cover of routine patrol rotations and held until Okamura's surrender at Shichidaika.
 
-<figure class="float float-right" style="width:320px"><img src="/assets/old-media/media/suiren-makinami-6.jpg" alt="Makinami speaking during the Fourth Tripartite Conference, Mizuhara, 28 December, 1927."><figcaption>Makinami speaking during the Fourth Tripartite Conference, Mizuhara, 28 December, 1927.</figcaption></figure>
+<figure class="float float-right" style="width:320px"><img src="/assets/old-media/media/suiren-makinami-6.jpg" alt="Makinami speaking during the Fourth Tripartite Conference, Mizuhara, December 28, 1927."><figcaption>Makinami speaking during the Fourth Tripartite Conference, Mizuhara, December 28, 1927.</figcaption></figure>
 
 ### Minister of Foreign Affairs
 

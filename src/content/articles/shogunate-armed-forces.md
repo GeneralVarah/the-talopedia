@@ -10,7 +10,7 @@ infobox:
     value:
       - "天の刃、鈍らず"
       - "\"Heaven's Blade Never Dulls\""
-  - { label: "Founded", value: "1 August, 1523" }
+  - { label: "Founded", value: "August 1, 1523" }
   - label: "Service Branches"
     value:
       - "Ground Corps"

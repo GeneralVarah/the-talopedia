@@ -6,7 +6,7 @@ infobox:
   - { image: "/assets/old-media/media/elysian-civil-war-1.jpg", caption: "Destroyed civilian buildings in the aftermath of the Battle of Nexus" }
   - label: "Date"
     value:
-      - "17 August 1920- 4 June 1922"
+      - "August 17, 1920- June 4, 1922"
       - "(1 year, 9 months, 2 weeks, 4 days)"
   - { label: "Location", value: "[[united-states-of-elysia]]" }
   - { label: "Result", value: "Revolutionary Guard victory" }
@@ -37,7 +37,7 @@ The end of the Great War was seen as a great disappointment by the people of Ely
 
 This air of political rivalry eventually culminated during the presidency of Right-Wing politician Vincent Stone, who aggressively cracked down on most left-wing politicians under the excuse of foreign conspiracy. Stone’s political terror created an incredibly tense atmosphere between the government and its people, with the uprising of the Spartacus Division being the final straw. Seeing an opportunity and a just cause to rally around, military defectors and civilian volunteers formed the Elysian Revolutionary Guard against what would come to be called the Elysian White Army.
 
-Initially, the civil war was limited only to the northeastern parts of the country, with the Revolutionary Guard seizing arms from army garrisons and gathering support from the smaller towns and cities in the area. Officially, the first large-scale skirmish of the war was fought in Fort Union on December 20th 1920, following the government’s declaration of martial law and the deployment of army units against the Guard. The Guard would quickly begin scoring victories across Elysia, advancing southward across the Saharan seaboard and driving the White Armies into a retreat.
+Initially, the civil war was limited only to the northeastern parts of the country, with the Revolutionary Guard seizing arms from army garrisons and gathering support from the smaller towns and cities in the area. Officially, the first large-scale skirmish of the war was fought in Fort Union on December 20, 1920, following the government’s declaration of martial law and the deployment of army units against the Guard. The Guard would quickly begin scoring victories across Elysia, advancing southward across the Saharan seaboard and driving the White Armies into a retreat.
 
 The Guard would capture Metro Regima without a fight in March of 1921, marking a major turning point in the war. The Guard’s momentum would inspire various other uprisings in Northeastern Elysia, including the Corona Revolt in what is known today as Dogma. The advance would come to a screeching halt, however, as the White Armies began digging in for a prolonged period of siege warfare across a trench network stretching from the Great Lakes to the Sahara referred to White Army command as the Tango-Line. It was at this stage of the war when the White Army began making any meaningful progress, capturing back territory in the more rural parts of the country, and severing Corona off from the rest of the Guard, beginning a prolonged siege that would last until February of 1922.
 

@@ -14,8 +14,8 @@ infobox:
       - "Kunglinga Armén"
       - "Kunglinga Krigsmarinen"
       - "Kunglinga Flygflotta"
-  - { label: "Founded", value: "4 March 1535" }
-  - { label: "Current Form", value: "15 April 1900" }
+  - { label: "Founded", value: "March 4, 1535" }
+  - { label: "Current Form", value: "April 15, 1900" }
   - { section: "Administration" }
   - { label: "Headquarters", value: "Ministry of Defence, Kjellberg" }
   - label: "Commander-in-Chief"

@@ -73,7 +73,7 @@ She was transferred to the prefectural capital of Satsuno on November 4, 1924, a
 
 ## Political Career
 
-<figure class="float float-left" style="width:300px"><img src="/assets/old-media/media/akane-shikinami-hoffmann-4.jpg" alt="Shikinami-Hoffmann with Marshal-Admiral Makinami during the Third Tripartite Conference in Shinkeisei, 17 May 1926."><figcaption>Shikinami-Hoffmann with Marshal-Admiral Makinami during the Third Tripartite Conference in Shinkeisei, 17 May 1926.</figcaption></figure>
+<figure class="float float-left" style="width:300px"><img src="/assets/old-media/media/akane-shikinami-hoffmann-4.jpg" alt="Shikinami-Hoffmann with Marshal-Admiral Makinami during the Third Tripartite Conference in Shinkeisei, May 17, 1926."><figcaption>Shikinami-Hoffmann with Marshal-Admiral Makinami during the Third Tripartite Conference in Shinkeisei, May 17, 1926.</figcaption></figure>
 
 Shikinami-Hoffmann continued in Nichirian government service on a contracted basis. In early 1926, she was brought to [[shinkeisei]] to work directly under the Interim Minister of Foreign Affairs, [[suiren-makinami]], in preparation for a series of diplomatic conferences. She served as translator and liaison at several major diplomatic engagements between 1926 and 1927, including the Third Tripartite Conference and the Tōhara Conference.
 

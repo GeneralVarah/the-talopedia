@@ -9,7 +9,7 @@ infobox:
     value:
       - "Semper Fidelis."
       - "\"Always Loyal.\""
-  - { label: "Founded", value: "1 September, 1922" }
+  - { label: "Founded", value: "September 1, 1922" }
   - label: "Service Branches"
     value:
       - "Glorious Republic Army"
@@ -45,7 +45,7 @@ infobox:
 ---
 The **Glorious Republic Armed Forces** (Gloriosas *Fuerzas Armadas de la República;* **GRAF**) are the unified [armed forces](https://en.wikipedia.org/wiki/Armed_forces) of the [[glorious-republic-of-auritania]]. They are composed of three independent [branches](https://en.wikipedia.org/wiki/Military_branch): the Glorious Republic Army (*Glorioso Ejército de la República*), the Glorious Republic Air Force (*Gloriosas Fuerzas Aéreas de la República*), and the Glorious Republic Navy (*Gloriosa Armanda de la República*). The National Guard (*Guardia Nacional*) is the national [gendarmerie](https://en.wikipedia.org/wiki/Gendarmerie) of [[auritania]], while being responsible for law enforcement, it is controlled and administered by the Ministry of the Armed Forces, thus making it a branch of the military. The Glorious Leader and the Minister of the Armed Forces are the military’s [Command-in-Chief](https://en.wikipedia.org/wiki/Commander-in-chief).
 
-The Glorious Armed Forces have their roots in the Army of Three Guarantees (*Ejército de las Tres Garantías*) in Western Auritania and the Army of the Commoners (*Ejército de los Plebeyos*) in Eastern Auritania, which was formed on 24 February 1821 and 7 August 1819 respectively — long before the establishment of the modern day Auritania — to meet the demands of the Auritanian War of Independence against Oestenia. After their triumph in the war, the two armies were disbanded, and the newly-created Auritanian Imperial Army (*Ejército Imperial Auritano*) replaced them, thus establishing the first military service branch of the country.
+The Glorious Armed Forces have their roots in the Army of Three Guarantees (*Ejército de las Tres Garantías*) in Western Auritania and the Army of the Commoners (*Ejército de los Plebeyos*) in Eastern Auritania, which was formed on February 24, 1821 and August 7, 1819 respectively — long before the establishment of the modern day Auritania — to meet the demands of the Auritanian War of Independence against Oestenia. After their triumph in the war, the two armies were disbanded, and the newly-created Auritanian Imperial Army (*Ejército Imperial Auritano*) replaced them, thus establishing the first military service branch of the country.
 
 After the Auritanian Empire collapsed, the Auritanian Imperial Army was dissolved. In Anahuac, the Anahuacan Armed Forces (*Fuerzas Armadas de Anáhuac*) played an important political role after General Quíntin Rodríguez took power. While in Ignesia, the Military Forces of Ignesia (*Fuerzas Militares de Ignesia*) continued the Auritanian Army’s principals under President Bolívar Juan. After the Thousand Days War and the formation of the Auritine Confederation, the Anahuacan Armed Forces was disbanded and the Military Forces of Ignesia replaced it, becoming the Military Forces of the Confederation (*Fuerzas Militares de la Confederación*) which ceased to exist after the Auritanian Civil War, when it was replaced by the Auritanian Armed Forces (*Fuerzas Armadas de Auritania*) which continued to exist until the Auritanian Revolution.
 

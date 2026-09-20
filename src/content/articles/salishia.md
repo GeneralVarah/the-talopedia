@@ -13,7 +13,7 @@ infobox:
   - { label: "President", sub: true, value: "Thomas Vance" }
   - { label: "Senior Advisors", sub: true, value: "Benjamin Wilkins" }
   - { label: "Legislature", value: "Rule by Law" }
-  - { label: "Formation", value: "August 14th, 1822" }
+  - { label: "Formation", value: "August 14, 1822" }
   - { section: "Demographics" }
   - { label: "Population", value: "1930 Census" }
   - label: "Ethnic Groups"

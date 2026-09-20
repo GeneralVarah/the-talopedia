@@ -4,17 +4,17 @@ type: character
 nation: esu
 infobox:
   - { image: "https://lh3.googleusercontent.com/d/186y2jzs7NASySFVIayzCPB6nHfcWx2QA=w2000", caption: "" }
-  - { office: "Vice Director of MAJESTY", term: "February 3rd, 1928 – November 8th, 1930" }
+  - { office: "Vice Director of MAJESTY", term: "February 3, 1928 – November 8, 1930" }
   - { label: "Preceded by", value: "*Office Established*" }
   - { label: "Director", value: "[[cassandra-conway]]" }
-  - { office: "Director of SWB", term: "Incumbent | February 12th, 1933" }
+  - { office: "Director of SWB", term: "Incumbent | February 12, 1933" }
   - { label: "Vice Director", value: "Larry Foulke" }
   - { label: "Preceded by", value: "*Office Established*" }
   - { section: "Personal Details" }
   - label: "Born"
     value:
       - "Goro Kurotowa"
-      - "July 4th, 1898"
+      - "July 4, 1898"
       - "Port of Muscovite, United States of Elysia"
   - { label: "Nationality", value: "Elysian" }
   - { label: "Alias", value: "GK, Tanaka Taro, Lancelot" }
@@ -28,7 +28,7 @@ infobox:
   - { label: "Aldrige Rōmaji", value: "Kurotowa Goro" }
 ---
 
-Goro Kurotowa (クロトワ五郎, born July 4th, 1898) is an Elysian-born special forces and former espionage operative and mercenary commander. He served as an espionage operative for the USE’s Military Intelligence Service, the Unity State’s Office of Naval Intelligence, and later its Special Recon Service Branch No.12, also known as [[majesty]]. He was instrumental in the founding of MAJESTY as a separate entity from the Unity State, having made many deals with multiple foreign governments, and was the founder of the private military company Soldiers Without Borders. With a service record stretching across multiple decades, he remains a ghost story to the wider world, his existence and defection to the Miyamoto Shogunate being masked by his supposed death.
+Goro Kurotowa (クロトワ五郎, born July 4, 1898) is an Elysian-born special forces and former espionage operative and mercenary commander. He served as an espionage operative for the USE’s Military Intelligence Service, the Unity State’s Office of Naval Intelligence, and later its Special Recon Service Branch No.12, also known as [[majesty]]. He was instrumental in the founding of MAJESTY as a separate entity from the Unity State, having made many deals with multiple foreign governments, and was the founder of the private military company Soldiers Without Borders. With a service record stretching across multiple decades, he remains a ghost story to the wider world, his existence and defection to the Miyamoto Shogunate being masked by his supposed death.
 
 ## Early Life
 
@@ -40,7 +40,7 @@ The death of his youngest sibling caused great strife at home, with her mother e
 
 Kurotowa’s service within the MIS began almost immediately after his graduation at the age of 18. He was assigned to an infiltration mission to Veynach, Albern, as part of Operation Alexandria, alongside 3 other operatives. During this mission, he first came into contact with people who'd play important roles later in his life, the most important ones being Emilie Langley, a new hire but still more experienced than Kurotowa, and Cassandra Conway, the acting head of Kurotowa's group. Besides the three, a young Eric D'Angelo was attached to the group as a signal and communications specialist.
 
-Kurotowa's cell would spend almost 3 years building a robust intelligence network to both maintain an eye on any attempts to intervene in post-war Elysia as well as prepare for the operation's ultimate goal of extracting confidential intelligence files from Albern's Staatsevidenzdienst headquarters. Kurotowa would come to make connections with his cell, becoming especially good friends with Langley. The two would be the ones carrying out the operation on the ground on March 15th, 1919. Following the relative success of the operation, he and his cell would return to Elysia from Albern.
+Kurotowa's cell would spend almost 3 years building a robust intelligence network to both maintain an eye on any attempts to intervene in post-war Elysia as well as prepare for the operation's ultimate goal of extracting confidential intelligence files from Albern's Staatsevidenzdienst headquarters. Kurotowa would come to make connections with his cell, becoming especially good friends with Langley. The two would be the ones carrying out the operation on the ground on March 15, 1919. Following the relative success of the operation, he and his cell would return to Elysia from Albern.
 
 Kurotowa would remain in a domestic counter-intelligence role for the next few years, providing assistance to Conway and Langley in their respective cases when he had the time. During the Years of Oppression, Kurotowa would remain a dedicated operative for the MIS, with the closest treasonous act during the Civil War being providing intelligence to Conway, who acted as a double agent for the Revolutionary Guard. His unwitting assistance in this regard was enough for Conway to argue for a Protectorate pardon to be issued for Kurotowa. Kurotowa would continue working with Conway and Langley in piecing together the informant network utilized during the Reconstruction Period by the Unity State to follow various world events. This would continue until 1923, when he was transferred into the Office of Naval Intelligence and its 12th branch, MAJESTY.
 
@@ -56,9 +56,9 @@ Kurotowa accompanied Conway during the ONI expedition into Hyperborea, as well a
 
 ### As Vice-Director
 
-Following Conway's framed disappearance on February 3rd, 1928, Kurotowa soon followed, alongside a large contingent of other MAJESTY operatives. He joined Conway in Shivon, overseeing the day-to-day operations and construction of the organization's first proper base. As Vice-Director, he would maintain a largely managerial role at the start; however, following events within the organization, he used what little power he had to move on to a role as a representative for the group, brokering deals with foreign governments and arranging contracts with private groups personally.
+Following Conway's framed disappearance on February 3, 1928, Kurotowa soon followed, alongside a large contingent of other MAJESTY operatives. He joined Conway in Shivon, overseeing the day-to-day operations and construction of the organization's first proper base. As Vice-Director, he would maintain a largely managerial role at the start; however, following events within the organization, he used what little power he had to move on to a role as a representative for the group, brokering deals with foreign governments and arranging contracts with private groups personally.
 
-As time went on, Kurotowa steadily began to grow distrustful of Conway and her vision for MAJESTY, especially following the hiccups and resulting fallout of MAJESTY's false flag operation on behalf of Turulia. The final straw for him came on November 24th, 1929, when Conway drugged him and subsequently sexually assaulted him while he was asleep. The event traumatized him greatly, leading him to take extended trips abroad while negotiating with foreign governments about his future plans
+As time went on, Kurotowa steadily began to grow distrustful of Conway and her vision for MAJESTY, especially following the hiccups and resulting fallout of MAJESTY's false flag operation on behalf of Turulia. The final straw for him came on November 24, 1929, when Conway drugged him and subsequently sexually assaulted him while he was asleep. The event traumatized him greatly, leading him to take extended trips abroad while negotiating with foreign governments about his future plans
 
 In August of 1930, he would return to MAJESTY's Rudanian base of operations for the last time to receive new orders directly from Conway, instructing him to find and recruit the people behind the recent political assassinations in Nichirin. Kurotowa, knowing such a plan was a certified death sentence, appealed to his close friend and confidant, Larry Foulke, regarding defection from the organization, asking him to also secure the well-being of the child Conway had conceived with him. He would arrive in Makinohara, Nichirin, in November of 1930, practically handing himself over to Nichirian authorities to broker a deal that secured the safety and future of him and those friendly to him within MAJESTY. It was thanks to the intel he provided that the Allied Forces would later be able to find and eliminate MAJESTY as a major threat.
 

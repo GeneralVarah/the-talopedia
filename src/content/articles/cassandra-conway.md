@@ -4,7 +4,7 @@ type: character
 nation: esu
 infobox:
   - { image: "/assets/old-media/media/cassandra-conway-1.jpg", caption: "" }
-  - { office: "Director of MAJESTY", term: "Incumbent | February 3rd, 1928 –" }
+  - { office: "Director of MAJESTY", term: "Incumbent | February 3, 1928 –" }
   - { label: "Vice Director", value: "Goro Kurotowa" }
   - { label: "Preceded by", value: "Office Established" }
   - { section: "ONI Chief of Ground Operations" }
@@ -17,18 +17,18 @@ infobox:
   - label: "Born"
     value:
       - "Cassandra"
-      - "April 20th, 1897"
+      - "April 20, 1897"
       - "Metro Regima, United States of Elysia"
   - label: "Died"
     value:
-      - "May 11th, 1933 (aged 36)"
+      - "May 11, 1933 (aged 36)"
       - "Rivet, Elysian State of Unity"
   - { label: "Alma Mater", value: "Emmerich Institute" }
 ---
 
 *This article contains out-of-character (OOC) information. Some details presented here are not publicly available in-character (IC).*
 
-**Cassandra Conway** (April 20th, 1897 - May 11th, 1933) was an [[elysian]]-born soldier and former espionage operative who served as the only director of the clandestine Private Military Contractor [[majesty]]. Before her split from the Unity State, Conway had worked as a spy and training instructor in the service of the Office of Naval Intelligence of the Unity State, as well as the Military Intelligence Service of the United States of Elysia. A militaristic Gestaltist, she has organized and funded the assassination of multiple foreign government officials, most notably the assassination of General Gyula of the Republic of Genosa, as well as the attempted assassination of Colonel George Elwood of the Unity State.
+**Cassandra Conway** (April 20, 1897 - May 11, 1933) was an [[elysian]]-born soldier and former espionage operative who served as the only director of the clandestine Private Military Contractor [[majesty]]. Before her split from the Unity State, Conway had worked as a spy and training instructor in the service of the Office of Naval Intelligence of the Unity State, as well as the Military Intelligence Service of the United States of Elysia. A militaristic Gestaltist, she has organized and funded the assassination of multiple foreign government officials, most notably the assassination of General Gyula of the Republic of Genosa, as well as the attempted assassination of Colonel George Elwood of the Unity State.
 
 Ultimately she and her organization came down following a joint assault by Elysian and Nichirian Special Forces. She was captured during the raid, leading to the remaining personnel of MAJESTY scattering in a panic or surrendering to the allied forces. She was convicted of terrorism and treason on multiple counts and was sentenced to death in a military court. She was executed via firing squad on the 11th of May, 1933.
 
