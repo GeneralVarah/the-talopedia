@@ -4,6 +4,7 @@ nativeTitle: "朝比奈 富花"
 type: character
 nation: nichirin
 infobox:
+  - { image: "https://lh3.googleusercontent.com/pw/AP1GczNGGqEUCM7W-U-GE0z2o2WQ8QozruC2PDUUGxPhQnH1XubSRUO0QQ16pm-_yDAjOR4-RM6Pj_lnz1jyfmcI8iBAp1CNrco-nS98Mvo20JQMhn0guVgRe1oPvPSbbG0VN6xQV-tkov24_jApDtd0ks7i=w2000", caption: "" }
   - { office: "Minister of Infrastructure and Transportation", term: "Incumbent | April 7, 1929 –" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - { label: "Preceded by", value: "Mitsuyo Tokuma" }
