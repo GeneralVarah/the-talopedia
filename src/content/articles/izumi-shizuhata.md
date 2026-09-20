@@ -4,6 +4,7 @@ nativeTitle: "泉 静畑"
 type: character
 nation: nichirin
 infobox:
+  - { image: "https://lh3.googleusercontent.com/pw/AP1GczOk5Z2dT6K46fN2XSB8Ktu-9Ro3aqKT9Kpi6Z1WrdqppMedQkUBph2kQVVBYb5Ot0S5k-3FHj1zS1-jdShItG8pSNa_npdbrAvlPox7uuPNzpRyZB8AuEIYMf--n6NZ3odi6bJOWgEokneyVl5d-hK9=w2000", caption: "" }
   - { office: "Minister of Finance", term: "Incumbent | July 7, 1928 –" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - { label: "Preceded by", value: "Shizue Kagiyama" }
