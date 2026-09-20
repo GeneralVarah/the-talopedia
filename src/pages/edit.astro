@@ -147,33 +147,29 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           <svg viewBox="0 0 16 16"><path d="M8 3.2v9.6M3.2 8h9.6"/></svg>
           Insert <span class="caret">▾</span>
         </button>
-        <div class="drop-menu ins-menu" id="ins-menu" hidden>
-          <div class="ins-sec">
-            <span class="ins-h">Table</span>
-            <div class="tbl-pick" id="tbl-pick"></div>
-            <p class="tbl-size"><span id="tbl-label">0 × 0</span></p>
+        <div class="drop-menu list ins-menu" id="ins-menu" hidden>
+          <div class="ins-item" data-ins="table">
+            <button type="button">Table<span class="ins-arrow">›</span></button>
+            <div class="ins-sub">
+              <div class="tbl-pick" id="tbl-pick"></div>
+              <p class="tbl-size"><span id="tbl-label">0 × 0</span></p>
+            </div>
           </div>
-          <div class="menu-sep"></div>
-          <div class="ins-sec">
-            <span class="ins-h">Date</span>
-            <div class="mp-row">
-              <span class="mp-lbl">Date</span>
-              <input id="dt-date" type="date" />
+          <div class="ins-item" data-ins="date">
+            <button type="button">Date<span class="ins-arrow">›</span></button>
+            <div class="ins-sub ins-sub-date">
+              <label class="ins-f">Date<input id="dt-date" type="date" /></label>
+              <label class="ins-f">Show
+                <span class="mp-seg" id="dt-mode">
+                  <button type="button" class="on" data-mode="">Plain</button>
+                  <button type="button" data-mode="ago">Elapsed</button>
+                  <button type="button" data-mode="age">Age</button>
+                </span>
+              </label>
+              <label class="ins-f" id="dt-born-row" hidden>Born<input id="dt-born" type="date" /></label>
+              <p class="mp-hint" id="dt-preview"></p>
+              <button id="dt-go" type="button" class="primary">Insert</button>
             </div>
-            <div class="mp-row">
-              <span class="mp-lbl">Add</span>
-              <span class="mp-seg" id="dt-mode">
-                <button type="button" class="on" data-mode="">Nothing</button>
-                <button type="button" data-mode="ago">Years ago</button>
-                <button type="button" data-mode="age">Age</button>
-              </span>
-            </div>
-            <div class="mp-row" id="dt-born-row" hidden>
-              <span class="mp-lbl">Born</span>
-              <input id="dt-born" type="date" />
-            </div>
-            <p class="mp-hint" id="dt-preview"></p>
-            <div class="mp-row"><button id="dt-go" type="button" class="primary">Insert date</button></div>
           </div>
         </div>
       </div>
@@ -2123,6 +2119,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         paintDate();
       };
     });
+    // A native date picker opens wherever its value points, and with none it opens on
+    // the real year. Avium is in 1934, which is where the writer means to be.
+    $('#dt-date').value = IC_NOW;
     $('#dt-date').oninput = paintDate;
     $('#dt-born').oninput = paintDate;
     $('#dt-go').onclick = () => {
@@ -3883,11 +3882,28 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     .mp-pane { display: block; }
     .mp-pane[hidden] { display: none; }
     #insert-menu { max-width: calc(100vw - 24px); }
-    .ins-menu { padding: 10px 12px; min-width: 268px; }
-  .ins-h { display: block; font: 700 12px/1 var(--body); color: var(--muted); margin-bottom: 7px; }
-  .ins-sec + .menu-sep { margin: 12px 0; }
-  .ins-sec .mp-row { margin-top: 7px; }
-  .ins-sec input[type="date"] { flex: 1; }
+      /* A list of things to insert; each opens its own panel beside it on hover, so
+       the menu is never every panel at once. */
+    .ins-menu { min-width: 150px; }
+    .ins-item { position: relative; }
+    .ins-item > button { display: flex; align-items: center; gap: 8px; }
+    .ins-arrow { margin-left: auto; color: var(--muted); }
+    .ins-item:hover > button, .ins-item:focus-within > button { background: var(--band); }
+    .ins-sub {
+      display: none; position: absolute; left: 100%; top: -5px; z-index: 31;
+      min-width: 232px; padding: 12px 14px;
+      background: var(--lift); border: 1px solid var(--rule); border-radius: 8px;
+      box-shadow: 0 10px 28px rgb(0 0 0 / .55);
+    }
+    .ins-item:hover > .ins-sub, .ins-item:focus-within > .ins-sub { display: block; }
+    /* A label above its control, which is what stops the rows looking like a form
+       printed by a machine. */
+    .ins-f { display: block; font: 700 11px/1 var(--body); color: var(--muted); margin-bottom: 12px; }
+    .ins-f > input, .ins-f > .mp-seg { display: flex; margin-top: 6px; width: 100%; }
+    .ins-f > input { box-sizing: border-box; }
+    .ins-sub .mp-seg button { flex: 1; white-space: nowrap; }
+    .ins-sub .mp-hint { margin: 0 0 12px; }
+    .ins-sub #dt-go { width: 100%; }
   .tbl-pick {
       display: grid; grid-template-columns: repeat(8, 20px); gap: 3px;
       padding: 12px 12px 6px; justify-content: center;
