@@ -4,6 +4,7 @@ nativeTitle: "小笠原 宗廣"
 type: character
 nation: nichirin
 infobox:
+  - { image: "https://lh3.googleusercontent.com/pw/AP1GczONVvaELeIR_C9xyE5B8IC9e3YF-3ChXWI45VKWWGpQJ3OHoQRsQDQFecH5MxWucHcZ6Ww2oLqL9MZftVWZdtH3vuqFS6qnT12xlnQzLwYCEYjcXpMfImfqoJU_l4p_sANs9Bye1BaIHtlTCizdLSWl=w2000", caption: "" }
   - { office: "Minister of Interior Affairs", term: "Incumbent | December 25, 1926 –" }
   - { label: "Shogun", value: "[[masashi-miyamoto]]" }
   - { label: "Preceded by", value: "Wakiko Fujima" }
