@@ -5,6 +5,7 @@ nativeTitle:
   - "вооружённая республика Гиатка"
 type: overview
 nation: giathka
+navbox: site
 infobox:
   - { image: "/assets/flags/giathka.png", caption: "Flag" }
   - { image: "/assets/old-media/emblems/giathka.jpg", caption: "Coat of Arms" }

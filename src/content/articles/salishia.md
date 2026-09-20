@@ -2,6 +2,7 @@
 title: "Salishia"
 type: overview
 nation: salishia
+navbox: site
 infobox:
   - { image: "/assets/flags/salishia.png", caption: "Flag" }
   - { label: "Motto", value: "\"Land of The Three\"" }

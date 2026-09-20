@@ -4,6 +4,7 @@ nativeTitle: "塞尼德王國"
 romaji: "Sàinídé Wángguó"
 type: overview
 nation: seignid
+navbox: site
 infobox:
   - { image: "/assets/flags/seignid.png", caption: "Flag" }
   - label: "Motto"

@@ -4,6 +4,7 @@ romaji: "Narodnaya Respublika Rudaniya"
 nativeTitle: "Народная Республика Рудания"
 type: overview
 nation: rudania
+navbox: site
 infobox:
   - { image: "/assets/flags/rudania.png", caption: "Flag" }
   - label: "Motto"

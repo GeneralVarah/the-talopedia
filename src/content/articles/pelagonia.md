@@ -8,7 +8,7 @@ infobox:
   - { label: "Land Area", value: "~46,850,000 km²" }
   - label: "Entities"
     value:
-      - "4 countries"
+      - "5 countries"
       - "16 dependencies"
   - { label: "Largest City", value: "Manbavi, :flag[arunya] [[arunya]]" }
   - { section: "Demographics" }
@@ -49,4 +49,4 @@ The Strayan Peninsula's interior is largely arid, with summer highs of 35°C to 
 
 ## Government
 
-Pelagonia's political boundaries are largely a product of the Scramble for Pelagonia in the late nineteenth century, during which Evrian powers partitioned the continent's coastline and extended administration into portions of its interior. The Verdanie and Arunya are the continent's two sovereign states. In March 1931, Elvesterian colonial dependencies including the Golden Coast in Pelagonia and North Auritania in Elysia reverted to devolved local rule following the dissolution of the [[mizuhara]] Pentapartite at the Fifth Pentapartite Conference. [[elvester]] retains administrative control over Noradia. Ten powers hold colonial dependencies across the continent: [[alemannia]] administers four, Arverne and [[nichirin]] three each, with single dependencies under [[turulia]], Vicily, Ponurvia, [[shivon]], [[skjarnland]], and [[karjania]].
+Pelagonia's political boundaries are largely a product of the Scramble for Pelagonia in the late nineteenth century, during which Evrian powers partitioned the continent's coastline and extended administration into portions of its interior. The Verdanie, Arunya and [[albinya]] are the continent's three sovereign states. In March 1931, Elvesterian colonial dependencies including the Golden Coast in Pelagonia and North Auritania in Elysia reverted to devolved local rule following the dissolution of the [[mizuhara]] Pentapartite at the Fifth Pentapartite Conference. [[elvester]] retains administrative control over Noradia. Ten powers hold colonial dependencies across the continent: [[alemannia]] administers four, Arverne and [[nichirin]] three each, with single dependencies under [[turulia]], Vicily, Ponurvia, [[shivon]], [[skjarnland]], and [[karjania]].
