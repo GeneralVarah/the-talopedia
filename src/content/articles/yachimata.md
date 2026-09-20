@@ -5,7 +5,7 @@ type: character
 nation: nichirin
 ooc: true
 infobox:
-  - { image: "https://lh3.googleusercontent.com/pw/AP1GczP_ooasDHaRNHaSxrNXVXJwPbHPMNBv7P_umgV0PXir31WdoBILnfxzQIn20cnfL7cNJMUZpXcyIMp3Ba_SOVRRKi-_RLdgYPAnGHgitZdDQsO23AeII35akMR9QbCQrzRz0E0yXfpPCddK0-yR9PvG=w2000", caption: "" }
+  - { image: "https://lh3.googleusercontent.com/pw/AP1GczPmWA2Rw7hiCf0rr-JO4DZPMXnZtnReV72Upr98MBazWNVZENwvRun4-NaBopy9d4PA8Jdz7gu41KbZZfKm9kkGB2DiYHvN2R31BFS49DUovDwCZSdqzGImHjYa0vSm5atHqGf-YYn24_1bmkmXWAvp=w2000", caption: "" }
   - { office: "Head of SEELE Operations In Evria", term: "Incumbent | November 11, 1922 –" }
   - { label: "Right Pillar", value: "[[gendo-takahashi]]" }
   - { label: "Preceded by", value: "*Position Established*" }
