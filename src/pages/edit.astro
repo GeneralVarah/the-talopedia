@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import { TEMPLATES } from '../lib/templates.mjs';
 import { ARTICLE_TYPES } from '../content.config';
 import { nations, url } from '../lib/registry.mjs';
+import { icNow } from '../lib/icclock.mjs';
 import fs from 'node:fs';
 import { parse as parseYaml } from 'yaml';
 
@@ -90,7 +91,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           <div class="mp-tabs">
             <button type="button" class="on" data-pane="images">Images</button>
             <button type="button" data-pane="icons">Icons</button>
-            <button type="button" data-pane="tables">Table</button>
           </div>
 
           <div class="mp-pane" id="pane-images">
@@ -139,9 +139,41 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             <div class="mp-body" id="mp-icons"></div>
           </div>
 
-          <div class="mp-pane" id="pane-tables" hidden>
+        </div>
+      </div>
+
+      <div class="drop">
+        <button id="ins" type="button" title="Insert">
+          <svg viewBox="0 0 16 16"><path d="M8 3.2v9.6M3.2 8h9.6"/></svg>
+          Insert <span class="caret">▾</span>
+        </button>
+        <div class="drop-menu ins-menu" id="ins-menu" hidden>
+          <div class="ins-sec">
+            <span class="ins-h">Table</span>
             <div class="tbl-pick" id="tbl-pick"></div>
             <p class="tbl-size"><span id="tbl-label">0 × 0</span></p>
+          </div>
+          <div class="menu-sep"></div>
+          <div class="ins-sec">
+            <span class="ins-h">Date</span>
+            <div class="mp-row">
+              <span class="mp-lbl">Date</span>
+              <input id="dt-date" type="date" />
+            </div>
+            <div class="mp-row">
+              <span class="mp-lbl">Add</span>
+              <span class="mp-seg" id="dt-mode">
+                <button type="button" class="on" data-mode="">Nothing</button>
+                <button type="button" data-mode="ago">Years ago</button>
+                <button type="button" data-mode="age">Age</button>
+              </span>
+            </div>
+            <div class="mp-row" id="dt-born-row" hidden>
+              <span class="mp-lbl">Born</span>
+              <input id="dt-born" type="date" />
+            </div>
+            <p class="mp-hint" id="dt-preview"></p>
+            <div class="mp-row"><button id="dt-go" type="button" class="primary">Insert date</button></div>
           </div>
         </div>
       </div>
@@ -312,7 +344,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     </div>
   </div>
 
-  <script is:inline define:vars={{ TEMPLATES, BASE: url('/'), DEV, REPO, FLAGS, NATION_NAMES, ARTICLES: existing }}>
+  <script is:inline define:vars={{ TEMPLATES, BASE: url('/'), DEV, REPO, FLAGS, NATION_NAMES, ARTICLES: existing,
+    IC_NOW: icNow().toISOString().slice(0, 10) }}>
     const $ = (s, r = document) => r.querySelector(s);
     const el = (t, c, txt) => { const n = document.createElement(t); if (c) n.className = c; if (txt != null) n.textContent = txt; return n; };
     const q = (s) => '"' + String(s ?? '').replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
@@ -364,9 +397,47 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 
     // Arrows and flags are shown as themselves, not as :up or :flag[nichirin].
     const ARROW = { up: '\u25B2', down: '\u25BC' };
+    const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'];
+    const longDate = (iso) => {
+      const [y, m, d] = iso.split('-').map(Number);
+      return `${MONTHS[m - 1]} ${d}, ${y}`;
+    };
+    /** Whole years from one date to another, the way an age is counted. */
+    function yearsBetween(fromIso, toIso) {
+      const [fy, fm, fd] = fromIso.split('-').map(Number);
+      const [ty, tm, td] = toIso.split('-').map(Number);
+      return ty - fy - (tm < fm || (tm === fm && td < fd) ? 1 : 0);
+    }
+    /**
+     * What :date[...] will say once published. The article stores the date and the
+     * kind of working-out; the number is recomputed on every build against the Avium
+     * clock, so an age never goes stale in the text.
+     */
+    function dateLabel(arg) {
+      const [iso, mode = ''] = String(arg).split('|');
+      const date = iso.trim();
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return arg;
+      const long = longDate(date);
+      const [kind, from] = mode.trim().split(':');
+      if (kind === 'ago') {
+        const n = yearsBetween(date, IC_NOW);
+        return `${long} (${n === 0 ? 'this year' : `${n} year${n === 1 ? '' : 's'} ago`})`;
+      }
+      if (kind === 'age') {
+        return `${long} (aged ${/^\d{4}-\d{2}-\d{2}$/.test(from || '')
+          ? yearsBetween(from, date) : yearsBetween(date, IC_NOW)})`;
+      }
+      return long;
+    }
+
     function tokenHtml(kind, arg) {
       if (kind === 'up' || kind === 'down') {
         return `<span class="tok arrow ${kind}" data-tok="${kind}" contenteditable="false">${ARROW[kind]}</span>`;
+      }
+      if (kind === 'date') {
+        return `<span class="tok date" data-tok="date" data-slug="${esc(arg)}" contenteditable="false">`
+          + `${esc(dateLabel(arg))}</span>`;
       }
       // :img carries its own path and an optional pixel width; :icon and :flag look
       // the subject up in the registry.
@@ -2026,6 +2097,41 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       pick.querySelectorAll('.tbl-cell').forEach((x) => x.classList.remove('on'));
     };
 
+    /* ---------- date ---------- */
+    let dtMode = '';
+    const dtArg = () => {
+      const d = $('#dt-date').value;
+      if (!d) return '';
+      const born = $('#dt-born').value;
+      if (dtMode === 'age' && born) return `${d}|age:${born}`;
+      return dtMode ? `${d}|${dtMode}` : d;
+    };
+    function paintDate() {
+      // Born only means something for an age, and only then as the other end of it.
+      $('#dt-born-row').hidden = dtMode !== 'age';
+      const arg = dtArg();
+      $('#dt-preview').textContent = arg ? dateLabel(arg) : 'Pick a date.';
+      $('#dt-preview').className = 'mp-hint' + (arg ? ' ok' : '');
+      $('#dt-go').disabled = !arg;
+    }
+    document.querySelectorAll('#dt-mode button').forEach((b) => {
+      b.onmousedown = (e) => e.preventDefault();
+      b.onclick = () => {
+        document.querySelectorAll('#dt-mode button').forEach((x) => x.classList.toggle('on', x === b));
+        dtMode = b.dataset.mode;
+        paintDate();
+      };
+    });
+    $('#dt-date').oninput = paintDate;
+    $('#dt-born').oninput = paintDate;
+    $('#dt-go').onclick = () => {
+      const arg = dtArg();
+      if (!arg) return;
+      if (!insertToken('date', arg)) return;
+      document.querySelectorAll('.drop-menu').forEach((m) => { m.hidden = true; });
+    };
+    paintDate();
+
     /* ---------- link popover ---------- */
     const pop = $('#link-pop');
     const lpText = $('#lp-text');
@@ -3256,8 +3362,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const mark = 'tok-' + Date.now();
       const html = tokenHtml(kind, slug).replace('<img ', `<img data-new="${mark}" `) + '\u00a0';
       if (!insertAtCaret(html)) {
-        flash('Put the cursor where the icon should go.', true);
-        return;
+        flash('Put the cursor where it should go.', true);
+        return false;                    // the caller leaves its menu open to retry
       }
       // execCommand leaves a trailing <br> after the inserted run; a table cell
       // would serialize that as a line break, so drop the one we just caused.
@@ -3269,9 +3375,10 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         img.removeAttribute('data-new');
       }
       sync();
+      return true;
     }
 
-    const PANES = ['images', 'icons', 'tables'];
+    const PANES = ['images', 'icons'];
     /** Open the Media panel on its image list, to fill whichever field was just focused. */
     function openMedia() {
       document.querySelectorAll('.drop-menu').forEach((m) => { m.hidden = m.id !== 'insert-menu'; });
@@ -3775,7 +3882,12 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     .mp-pane { display: block; }
     .mp-pane[hidden] { display: none; }
     #insert-menu { max-width: calc(100vw - 24px); }
-    .tbl-pick {
+    .ins-menu { padding: 10px 12px; min-width: 268px; }
+  .ins-h { display: block; font: 700 12px/1 var(--body); color: var(--muted); margin-bottom: 7px; }
+  .ins-sec + .menu-sep { margin: 12px 0; }
+  .ins-sec .mp-row { margin-top: 7px; }
+  .ins-sec input[type="date"] { flex: 1; }
+  .tbl-pick {
       display: grid; grid-template-columns: repeat(8, 20px); gap: 3px;
       padding: 12px 12px 6px; justify-content: center;
     }
