@@ -3167,6 +3167,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     let insertAs = 'image';
     let insertRatio = '';
 
+    /** How wide a picture dropped into a table cell starts out. */
+    const CELL_WIDTH = 96;
+
     function useImage(path) {
       // Whatever the panel was opened for wins, then a field still being typed in.
       if (pickTarget?.isConnected) {
@@ -3178,6 +3181,14 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       if (field) return fill(field, path);
       const near = activeText()?.closest?.('figure, tr[data-kind="image"]');
       if (near) return fill(near.querySelector('input.path'), path);
+      // A picture in a table cell is an inline mark, because a figure cannot live in
+      // a cell. It carries a width so it renders as a picture; an icon left at its
+      // natural size comes out one line tall, which is right for a flag and useless
+      // for a photograph.
+      if (activeText()?.closest?.('.ed-tbl')) {
+        insertToken('img', `${path}|${CELL_WIDTH}`);
+        return;
+      }
       // A grid the writer is already standing in gains another picture.
       const grid = activeText()?.closest?.('.blk-grid');
       if (insertAs === 'grid' && grid) {
