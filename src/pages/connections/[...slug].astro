@@ -31,11 +31,11 @@ const key = kind === 'portal' ? `portal:${entry.id}` : entry.id;
 const href = (s) => (s.startsWith('portal:') ? url(`/portal/${s.slice(7)}`) : url(`/${s}`));
 const label = (s) => (s.startsWith('portal:') ? `Portal: ${titleFor(s.slice(7))}` : titleFor(s));
 
-/** A row's flag, its kind, and whether the two pages point at one another. */
-const row = (s, mutual) => {
+/** A row is the page's flag, its name, and what kind of page it is. */
+const row = (s) => {
   const m = meta[s] || {};
-  const flag = m.nation ? nation(m.nation)?.flag : null;
-  return { slug: s, label: label(s), href: href(s), flag, type: m.type || '', mutual };
+  return { slug: s, label: label(s), href: href(s), type: m.type || '',
+           flag: m.nation ? nation(m.nation)?.flag : null };
 };
 const byNationThenName = (a, b) =>
   (a.flag || '~').localeCompare(b.flag || '~') || a.label.localeCompare(b.label);
@@ -43,28 +43,21 @@ const byNationThenName = (a, b) =>
 const outSet = g.out.get(key) || new Set();
 const inSet = g.in.get(key) || new Set();
 
-const into = [...inSet].map((s) => row(s, outSet.has(s))).sort(byNationThenName);
+const into = [...inSet].map(row).sort(byNationThenName);
 const outAll = [...outSet];
 // A link to a page nobody has written is a request, not a connection, so the two are
 // counted apart: the red ones are this page's share of the backlog.
 const live = outAll.filter((s) => s.startsWith('portal:') || exists(s))
-  .map((s) => row(s, inSet.has(s))).sort(byNationThenName);
+  .map(row).sort(byNationThenName);
 const wanted = outAll.filter((s) => !s.startsWith('portal:') && !exists(s)).sort();
-const mutual = live.filter((r) => r.mutual).length;
 ---
 
 <Base title={entry.data.title} slug={key} view="connections">
   <div class="article">
-    <p class="conn-sum">
-      {into.length === 0 && live.length === 0
-        ? 'Nothing links here and this page links nowhere. It stands on its own.'
-        : `${into.length} page${into.length === 1 ? '' : 's'} link${into.length === 1 ? 's' : ''} here, and this one links to ${live.length}.`}
-      {mutual > 0 && <span class="mutual-note">{` ${mutual} of them point both ways.`}</span>}
-    </p>
 
     <div class="conn">
       <section>
-        <h2>What links here <span class="count">{into.length}</span></h2>
+        <h2>Incoming <span class="count">{into.length}</span></h2>
         {into.length ? (
           <ul class="conn-list">
             {into.map((r) => (
@@ -72,7 +65,6 @@ const mutual = live.filter((r) => r.mutual).length;
                 {r.flag && <img class="ico" src={url(r.flag)} alt="" loading="lazy" />}
                 <a href={r.href}>{r.label}</a>
                 {r.type && <span class="kind">{r.type}</span>}
-                {r.mutual && <span class="both" title="These two link to each other">↔</span>}
               </li>
             ))}
           </ul>
@@ -83,7 +75,7 @@ const mutual = live.filter((r) => r.mutual).length;
       </section>
 
       <section>
-        <h2>Links from this page <span class="count">{live.length}</span></h2>
+        <h2>Outgoing <span class="count">{live.length}</span></h2>
         {live.length ? (
           <ul class="conn-list">
             {live.map((r) => (
@@ -91,7 +83,6 @@ const mutual = live.filter((r) => r.mutual).length;
                 {r.flag && <img class="ico" src={url(r.flag)} alt="" loading="lazy" />}
                 <a href={r.href}>{r.label}</a>
                 {r.type && <span class="kind">{r.type}</span>}
-                {r.mutual && <span class="both" title="These two link to each other">↔</span>}
               </li>
             ))}
           </ul>
@@ -103,7 +94,6 @@ const mutual = live.filter((r) => r.mutual).length;
         {wanted.length > 0 && (
           <>
             <h3>Wanted <span class="count">{wanted.length}</span></h3>
-            <p class="none wanted-note">Named here, but nobody has written them yet.</p>
             <ul class="conn-list">
               {wanted.map((s) => <li><a class="wl new" href={href(s)}>{label(s)}</a></li>)}
             </ul>
@@ -115,8 +105,6 @@ const mutual = live.filter((r) => r.mutual).length;
 </Base>
 
 <style>
-  .conn-sum { color: var(--muted); margin: 2px 0 20px; }
-  .mutual-note { color: var(--muted); }
   /* Two columns while there is room, so the two directions read side by side. */
   .conn { display: grid; gap: 4px 36px; grid-template-columns: 1fr; }
   @media (min-width: 760px) { .conn { grid-template-columns: 1fr 1fr; } }
@@ -132,7 +120,5 @@ const mutual = live.filter((r) => r.mutual).length;
   .conn-list li:hover { background: color-mix(in srgb, var(--band) 55%, transparent); }
   .conn-list .ico { flex: none; }
   .conn-list .kind { margin-left: auto; font-size: 11px; color: var(--muted); text-transform: lowercase; }
-  .conn-list .both { flex: none; color: var(--muted); font-size: 12px; }
   .conn .none { color: var(--muted); font-size: 13px; line-height: 1.55; }
-  .wanted-note { margin: 2px 0 6px; }
 </style>
