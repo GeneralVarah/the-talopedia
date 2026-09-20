@@ -1,0 +1,93 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { graph } from '../lib/links.mjs';
+import { titleFor, exists, nation, url } from '../lib/registry.mjs';
+
+const all = await getCollection('articles');
+const portals = await getCollection('portals');
+const pages = [
+  ...all.map((e) => [e.id, e]),
+  ...portals.map((e) => [`portal:${e.id}`, e]),
+];
+const g = graph(pages);
+const meta = Object.fromEntries([
+  ...all.map((e) => [e.id, { title: e.data.title, nation: e.data.nation }]),
+  ...portals.map((e) => [`portal:${e.id}`, { title: `Portal: ${e.data.title}`, nation: e.data.nation }]),
+]);
+
+/**
+ * Every subject some article names but nobody has written, with the pages asking for
+ * it. Ordered by how many are asking: the ones at the top are the holes the wiki
+ * keeps walking into.
+ */
+const wanted = [];
+for (const [target, askers] of g.in) {
+  if (target.startsWith('portal:') || exists(target)) continue;
+  const from = [...askers]
+    .map((s) => ({ key: s, title: meta[s]?.title || titleFor(s), nation: meta[s]?.nation }))
+    .sort((a, b) => a.title.localeCompare(b.title));
+  wanted.push({ slug: target, title: titleFor(target), from });
+}
+wanted.sort((a, b) => b.from.length - a.from.length || a.title.localeCompare(b.title));
+
+const href = (s) => (s.startsWith('portal:') ? url(`/portal/${s.slice(7)}`) : url(`/${s}`));
+const flagOf = (id) => (id ? nation(id)?.flag : null);
+const asked = wanted.reduce((n, w) => n + w.from.length, 0);
+---
+
+<Base title="Wanted articles" description="Subjects the Talopedia names but has not written yet.">
+  <div class="article">
+    <p class="lead">
+      {wanted.length} subject{wanted.length === 1 ? ' is' : 's are'} named somewhere in
+      the Talopedia but {wanted.length === 1 ? 'has' : 'have'} no article yet, between
+      them asked for {asked} time{asked === 1 ? '' : 's'}. The most-wanted are first.
+    </p>
+
+    <ul class="want-list">
+      {wanted.map((w) => (
+        <li>
+          <span class="want-n">{w.from.length}</span>
+          <span class="want-main">
+            <a class="wl new" href={href(w.slug)}>{w.title}</a>
+            <span class="want-from">
+              {w.from.map((f, i) => (
+                <>
+                  {i > 0 && <span class="sep"> · </span>}
+                  {flagOf(f.nation) && <img class="ico" src={url(flagOf(f.nation))} alt="" loading="lazy" />}
+                  <a href={href(f.key)}>{f.title}</a>
+                </>
+              ))}
+            </span>
+          </span>
+          <a class="want-write" href={url(`/edit?a=${encodeURIComponent(w.slug)}`)}>Write it</a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>
+
+<style>
+  .lead { color: var(--muted); margin: 2px 0 18px; }
+  .want-list { list-style: none; margin: 0; padding: 0; }
+  .want-list li {
+    display: flex; align-items: baseline; gap: 10px;
+    padding: 8px 4px; border-bottom: 1px solid var(--hair);
+  }
+  .want-list li:hover { background: color-mix(in srgb, var(--band) 55%, transparent); }
+  /* How many pages are asking, which is the whole reason for the ordering. */
+  .want-n {
+    flex: none; min-width: 26px; text-align: right;
+    font-weight: 700; font-variant-numeric: tabular-nums; color: var(--muted);
+  }
+  .want-main { flex: 1; min-width: 0; }
+  .want-main > a { font-size: 15px; }
+  .want-from { display: block; margin-top: 2px; font-size: 12px; color: var(--muted); line-height: 1.8; }
+  .want-from .ico { margin-right: 3px; }
+  .want-from a { color: var(--muted); }
+  .want-from a:hover { color: var(--link); }
+  .want-from .sep { opacity: .5; }
+  .want-write { flex: none; font-size: 12px; opacity: 0; }
+  .want-list li:hover .want-write { opacity: 1; }
+  @media (hover: none) { .want-write { opacity: 1; } }
+</style>

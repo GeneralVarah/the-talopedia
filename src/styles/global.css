@@ -75,6 +75,7 @@ body {
 .menu[hidden] { display: none; }
 .menu a { padding: 7px 12px; border-radius: 2px; color: var(--ink); font-size: 14px; }
 .menu a:hover { background: var(--band); text-decoration: none; }
+.menu .menu-sep { height: 1px; margin: 5px 6px; background: var(--rule); }
 .content { flex: 1; min-width: 0; max-width: 1020px; padding: 20px 40px 70px; }
 .content.wide { max-width: 100%; min-width: 0; padding: 0; }
 /* With no contents rail there is nothing to sit beside, so the article centres. */
