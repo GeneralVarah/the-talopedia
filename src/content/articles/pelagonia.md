@@ -21,7 +21,7 @@ infobox:
   - { label: "Per Capita", sub: true, value: "$9,802" }
 ---
 
-**Pelagonia** (/ˌpɛləˈɡoʊniə/, *pel-uh-GOH-nee-uh*) is [[avium]]'s largest and second-most populated continent. In general terms, it is bounded on the north by the Sahara Sea and the portions of the Erythra River system south of Lake Charmuthas, separating it from [[evria]], and on the west by the Sea of [[auritania]] and the Strait of Hollosend, separating it from [[elysia]]. To the south and east, it is bounded by the Panthalassan Ocean. Pelagonia contains two sovereign states, with the remainder of the continent divided among ten colonial powers and their dependencies, the legacy of sustained Evrian imperial expansion during the late nineteenth century known as the Scramble for Pelagonia.
+**Pelagonia** (/ˌpɛləˈɡoʊniə/, *pel-uh-GOH-nee-uh*) is [[avium]]'s largest and second-most populated continent. In general terms, it is bounded on the north by the Sahara Sea and the portions of the Erythra River system south of Lake Charmuthas, separating it from [[evria]], and on the west by the Sea of [[auritania]] and the Strait of Hollosend, separating it from [[elysia]]. To the south and east, it is bounded by the Panthalassan Ocean. Pelagonia contains three sovereign states, with the remainder of the continent divided among ten colonial powers and their dependencies, the legacy of sustained Evrian imperial expansion during the late nineteenth century known as the Scramble for Pelagonia.
 
 ## Etymology
 
