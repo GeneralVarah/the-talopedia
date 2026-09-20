@@ -1103,6 +1103,21 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       return grid;
     }
 
+/**
+ * A cell's text, wherever in the cell it ended up. Each cell holds an editable box,
+ * but the caret can land in the cell itself, and anything typed there sat outside the
+ * box where the serializer never looked: the rows showed on screen and saved blank.
+ */
+    function cellMd(c) {
+      let out = '';
+      for (const n of c.childNodes) {
+        if (n.nodeType === 3) { out += n.nodeValue; continue; }
+        if (n.nodeType !== 1) continue;
+        out += n.classList.contains('ce') ? htmlToMd(n, '<br>') : htmlToMd({ childNodes: [n] }, '<br>');
+      }
+      return out.trim();
+    }
+
     function tableEditor(rows) {
       const wrap = el('div', 'tbl-wrap');
       const table = el('table', 'ed-tbl');
@@ -1126,6 +1141,27 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         }
         document.execCommand('insertText', false, text);
       });
+      // Put stray text back inside the cell's box once the caret has gone, when
+      // moving a node can no longer drag the caret along with it.
+      table.addEventListener('focusout', () => {
+        let moved = false;
+        for (const c of table.querySelectorAll('th, td:not(.row-x)')) {
+          const box = c.querySelector('.ce');
+          if (!box) continue;
+          const before = [], after = [];
+          let seen = false;
+          for (const n of c.childNodes) {
+            if (n === box) { seen = true; continue; }
+            (seen ? after : before).push(n);
+          }
+          if (!before.length && !after.length) continue;
+          before.reverse().forEach((n) => box.prepend(n));
+          after.forEach((n) => box.append(n));
+          moved = true;
+        }
+        if (moved) sync();
+      });
+
       const tbody = el('tbody');
       table.append(tbody);
 
@@ -1341,7 +1377,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           kind,
           rows: [...b.querySelectorAll('tbody tr')].map((tr, r) =>
             [...tr.children].filter((c) => !c.classList.contains('row-x')).map((c) => {
-              const text = htmlToMd(c.querySelector('.ce'), '<br>').trim();
+              const text = cellMd(c);
               const head = c.tagName === 'TH', cs = c.colSpan || 1, rs = c.rowSpan || 1;
               // A plain cell stays a plain string, so a table with no spans and one
               // header row serializes as the markdown table it has always been.
