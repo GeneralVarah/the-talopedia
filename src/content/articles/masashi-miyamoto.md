@@ -37,9 +37,9 @@ infobox:
 
 ## Early Life and Education
 
-<figure class="float float-left" style="width:320px"><img src="/assets/old-media/media/masashi-miyamoto-2.jpg" alt="Masashi and Keiko in Shizuhata, c. 1906."><figcaption>Masashi and Keiko in Shizuhata, c. 1906.</figcaption></figure>
-
 Masashi Miyamoto was born on June 6, 1896, at [[shinkeisei]] Central Hospital in Mukōjima, Shinkeisei, the son of Shogun Masanori Miyamoto and his midaidokoro, Rie Takatsukasa. His sister, Keiko, was born in 1898, two years later. Despite his heritage, Masanori enrolled both children in ordinary schools in Shinkeisei rather than arranging private instruction, a decision that was unusual for a Shogunal household and whose reasoning Masanori never publicly disclosed.
+
+<figure class="float float-left" style="width:320px"><img src="/assets/old-media/media/masashi-miyamoto-2.jpg" alt="Masashi and Keiko in Shizuhata, c. 1906."><figcaption>Masashi and Keiko in Shizuhata, c. 1906.</figcaption></figure>
 
 Among his classmates, Masashi was largely isolated as his peers were aware of his lineage and kept their distance accordingly. Keiko, two years his junior and subject to the same circumstances, became his closest companion throughout childhood and early adolescence, a closeness shaped in part by their shared position.
 

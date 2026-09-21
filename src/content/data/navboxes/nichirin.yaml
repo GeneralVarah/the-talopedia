@@ -8,7 +8,7 @@ groups:
     rows:
       - label: "Antiquity"
         items:
-          - "proto-nichirian-chiefdoms"
+          - "proto-nichirian-chiefdoms|Proto-Nichirian Chiefdoms"
       - label: "Imperial Era"
         items:
           - "chukyo-confederation|Chūkyō Confederation"
@@ -138,13 +138,5 @@ groups:
           - "mako-murakumo"
       - label: "Civilians"
         items:
-          - "kyouko-katsuragi"
           - "mio-amemiya"
           - "nariyoshi-miyagi"
-      - label: "Deceased"
-        items:
-          - "hideki-otonashi"
-          - "kishibe-toda"
-          - "kiyonari-tsujimura"
-          - "hideaki-katsuragi"
-          - "yui-shinazugawa"
