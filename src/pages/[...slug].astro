@@ -34,7 +34,7 @@ const coords = found && { ...found, href };
   )}
   <article class="article" data-pagefind-body>
     {d.infobox.length > 0 && (
-      <Infobox title={d.title} nativeTitle={d.nativeTitle} romaji={d.romaji} rows={d.infobox} />
+      <Infobox title={d.sidebarTitle || d.title} nativeTitle={d.nativeTitle} romaji={d.romaji} rows={d.infobox} />
     )}
     <Fragment set:html={html} />
   </article>

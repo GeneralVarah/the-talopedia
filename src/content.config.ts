@@ -37,6 +37,9 @@ const articles = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/articles' }),
   schema: z.object({
     title: z.string(),
+    // The heading the sidebar carries, when the page wants a different one from the
+    // article's. Left out, the sidebar takes the article title.
+    sidebarTitle: z.string().optional(),
     nativeTitle: z.union([z.string(), z.array(z.string())]).optional(),   // one line per official language
     romaji: z.string().optional(),
     type: z.enum(ARTICLE_TYPES),

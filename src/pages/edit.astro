@@ -223,11 +223,12 @@ const ADMIN = REPO.split('/')[0];
         <label>Title <span class="req-star">*</span><input id="f-title" type="text" placeholder="Nichirin" /></label>
         <label id="crumb-field" hidden>Breadcrumb <span class="opt">navbox</span>
           <input id="f-crumb" type="text" placeholder="[[portal:nichirin|Portal:Nichirin]] • [[nichirin|Overview]]" /></label>
-        <label id="native-field">Native title <span class="opt">optional</span>
-          <textarea id="f-native" rows="1" placeholder="宮本幕府"
-            title="One line per official language"></textarea></label>
-        <label id="romaji-field">Romanization <span class="opt">optional</span>
-          <input id="f-romaji" type="text" placeholder="Miyamoto Bakufu" /></label>
+        {/* The sidebar heading is edited at the top of the sidebar itself. These carry
+            the same three values, so the markdown, the draft and the slug still have
+            one place to read them from. */}
+        <input id="f-boxtitle" type="hidden" />
+        <textarea id="f-native" hidden></textarea>
+        <input id="f-romaji" type="hidden" />
         <label id="url-field">Article URL <span class="opt">the file name</span>
           <input id="f-slug" type="text" placeholder="emeka-okafor" spellcheck="false"
             title="The address this page is served at, and the name of its file" /></label>
@@ -272,10 +273,14 @@ const ADMIN = REPO.split('/')[0];
       <div class="article">
         <aside class="infobox ib-edit">
           <table class="ib"><tbody id="ib">
+            {/* Edited where it is read. Blank takes the article's own title; the two
+                below are left out of the page entirely when they are empty. */}
             <tr><td class="ib-head" colspan="2">
-              <b id="ib-title">Untitled</b>
-              <span class="native" id="ib-native"></span>
-              <span class="romaji" id="ib-romaji"></span>
+              <b id="ib-title" contenteditable="true" spellcheck="false" data-ph="Article title"></b>
+              <span class="native" id="ib-native" contenteditable="true" spellcheck="false"
+                data-ph="Native title" title="Shift ↵ for another language"></span>
+              <span class="romaji" id="ib-romaji" contenteditable="true" spellcheck="false"
+                data-ph="Romanisation"></span>
             </td></tr>
           </tbody></table>
           <div class="ib-add"><button id="ib-first" type="button">+ Add a field</button></div>
@@ -1502,6 +1507,10 @@ const ADMIN = REPO.split('/')[0];
         const kept = portalBody.trim();
         return `---\n${fm.join('\n')}\n---\n${kept ? `\n${kept}\n` : ''}`;
       }
+      // Only when it differs; a sidebar heading that repeats the title is the default.
+      if (v('#f-boxtitle') && v('#f-boxtitle') !== v('#f-title')) {
+        fm.push(`sidebarTitle: ${q(v('#f-boxtitle'))}`);
+      }
       const natives = v('#f-native').split('\n').map((x) => x.trim()).filter(Boolean);
       if (natives.length === 1) fm.push(`nativeTitle: ${q(natives[0])}`);
       else if (natives.length) {
@@ -1766,11 +1775,19 @@ const ADMIN = REPO.split('/')[0];
     /* ---------- canvas mirrors the settings ---------- */
     function paintCanvas() {
       const t = $('#f-title').value.trim();
-      $('#ib-title').textContent = t || 'Untitled';
-      $('#ib-native').innerHTML = $('#f-native').value.trim()
-        .split('\n').map((n) => esc(n.trim())).join('<br>');
-      $('#ib-romaji').textContent = $('#f-romaji').value.trim();
-      if ($('#canvas-title').textContent !== t && document.activeElement !== $('#canvas-title')) {
+      // Never over the field somebody is typing in: these are edited in place now, and
+      // rewriting one under the caret throws the cursor back to the start.
+      const idle = (el) => document.activeElement !== el;
+      // A sidebar heading nobody has set shows the article's title, greyed, which is
+      // what the page will carry.
+      $('#ib-title').dataset.ph = t || 'Article title';
+      if (idle($('#ib-title'))) $('#ib-title').textContent = $('#f-boxtitle').value.trim();
+      if (idle($('#ib-native'))) {
+        $('#ib-native').innerHTML = $('#f-native').value.trim()
+          .split('\n').map((n) => esc(n.trim())).filter(Boolean).join('<br>');
+      }
+      if (idle($('#ib-romaji'))) $('#ib-romaji').textContent = $('#f-romaji').value.trim();
+      if ($('#canvas-title').textContent !== t && idle($('#canvas-title'))) {
         $('#canvas-title').textContent = t;
       }
       const nat = $('#f-nation');
@@ -1781,7 +1798,7 @@ const ADMIN = REPO.split('/')[0];
 
     /* ---------- draft survives a reload ---------- */
     const DRAFT = 'talopedia-draft';
-    const fields = ['#f-title', '#f-native', '#f-romaji', '#f-type', '#f-nation', '#f-icon',
+    const fields = ['#f-title', '#f-boxtitle', '#f-native', '#f-romaji', '#f-type', '#f-nation', '#f-icon',
       '#f-authors', '#f-coords', '#f-banner', '#f-welcome', '#f-crumb'];
     const snapshot = () => ({
       meta: Object.fromEntries(fields.map((f) => [f, $(f).value])),
@@ -1870,7 +1887,7 @@ const ADMIN = REPO.split('/')[0];
       for (const [id, on] of [
         ['#banner-field', portal], ['#welcome-field', portal], ['#crumb-field', nav],
         ['#type-field', art], ['#authors-field', art], ['#icon-field', art],
-        ['#native-field', art], ['#romaji-field', art], ['#nation-field', !nav],
+        ['#nation-field', !nav],
       ]) $(id).hidden = !on;
       // The byline says who may edit the page once it exists, so it stops being
       // editable once the page does. `authors` carries the byline when it is set and
@@ -2001,6 +2018,7 @@ const ADMIN = REPO.split('/')[0];
       $('#f-banner').value = data.banner || '';
       $('#f-welcome').value = data.welcome || '';
       $('#f-title').value = data.title || '';
+      $('#f-boxtitle').value = data.sidebarTitle || '';
       $('#f-native').value = [].concat(data.nativeTitle ?? []).join('\n');
       $('#f-romaji').value = data.romaji || '';
       $('#f-type').value = data.type || 'overview';
@@ -2301,6 +2319,37 @@ const ADMIN = REPO.split('/')[0];
       e.preventDefault();
       document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain'));
     });
+
+    // The sidebar heading, edited at the top of the sidebar. The hidden inputs behind
+    // these three are what the markdown, the draft and the slug are built from, so
+    // everything downstream still reads one place.
+    for (const [id, field, multi] of [
+      ['#ib-title', '#f-boxtitle', false],
+      ['#ib-native', '#f-native', true],
+      ['#ib-romaji', '#f-romaji', false],
+    ]) {
+      const el = $(id);
+      el.addEventListener('input', () => {
+        const text = el.innerText.replace(/ /g, ' ');
+        $(field).value = multi
+          ? text.split('\n').map((l) => l.trim()).filter(Boolean).join('\n')
+          : text.replace(/\s+/g, ' ').trim();
+        sync();
+      });
+      el.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') return;
+        // A native title carries one line per official language, so shift ↵ opens
+        // another. Every other line here is a single one, and ↵ moves on.
+        if (multi && e.shiftKey) return;
+        e.preventDefault();
+        if (!e.shiftKey) body.querySelector('.ce')?.focus();
+      });
+      el.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const t = (e.clipboardData || window.clipboardData).getData('text/plain');
+        document.execCommand('insertText', false, multi ? t : t.replace(/\s*\n+\s*/g, ' '));
+      });
+    }
 
     $('#f-type').onchange = () => {
       if (ib.querySelector('tr[data-kind]') && !confirm('Replace the sidebar with this type’s template?')) return;
@@ -2707,6 +2756,7 @@ const ADMIN = REPO.split('/')[0];
       pageKind = data.type ? 'article' : 'portal';
       portalBody = pageKind === 'portal' ? rest : '';
       $('#f-title').value = data.title || '';
+      $('#f-boxtitle').value = data.sidebarTitle || '';
       $('#f-native').value = [].concat(data.nativeTitle ?? []).join('\n');
       $('#f-romaji').value = data.romaji || '';
       $('#f-type').value = data.type || 'overview';
@@ -3909,7 +3959,15 @@ const ADMIN = REPO.split('/')[0];
     .ib-edit { background: var(--lift); position: relative; z-index: 2; }
     .ib-edit .ib-head { position: relative; }
     .ib-edit td, .ib-edit th { position: relative; }
-    .ib-edit .ib-head b { min-height: 1.2em; }
+    /* The sidebar heading is edited where it is read. Deliberately not .ce, which the
+       body reader looks for; the placeholder and the focus ring are the same idea. */
+    .ib-edit .ib-head [contenteditable] {
+      display: block; min-height: 1.2em; outline: none; border-radius: 2px;
+    }
+    .ib-edit .ib-head [contenteditable]:empty::before {
+      content: attr(data-ph); color: #6b7177; font-style: normal;
+    }
+    .ib-edit .ib-head [contenteditable]:focus { box-shadow: 0 0 0 2px rgb(100 133 209 / .35); }
     .ib-edit .ib-media img { max-width: 100%; margin-bottom: 4px; }
     .ib-edit .ib-pair td { width: 50%; vertical-align: top; }
     .ib-edit .ib-pair .pair-head { font-weight: 700; margin-bottom: 4px; }
