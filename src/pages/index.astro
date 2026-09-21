@@ -132,7 +132,8 @@ const headings = (rendered?.metadata?.headings ?? []).filter((h) => h.slug !== '
         let at = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 7);
         if (at <= now.getTime()) at += 86400000;
         const s = Math.floor((at - now.getTime()) / 1000);
-        slot.textContent = `next in ${Math.floor(s / 3600)}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}`;
+        // Padded throughout so the pill never changes width as the digits fall.
+        slot.textContent = `${pad(Math.floor(s / 3600))}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}`;
         slot.hidden = false;
       };
       tick();
