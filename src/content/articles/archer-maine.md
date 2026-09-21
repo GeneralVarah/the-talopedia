@@ -14,7 +14,7 @@ infobox:
   - label: "Born"
     value:
       - "Archer Sisu Aalto"
-      - "June 9, 1888 (Age 40)"
+      - ":date[1888-06-09|age]"
       - "Metro Regima, U.S.E"
   - label: "Parents"
     value:

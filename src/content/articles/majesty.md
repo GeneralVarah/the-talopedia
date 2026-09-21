@@ -19,7 +19,7 @@ infobox:
   - { label: "Headquarters", value: "Varies, currently Site Volch'ye Logovo, Vostokiya" }
   - { section: "Leadership" }
   - { label: "Director", value: "[[cassandra-conway]]" }
-  - { label: "Vice-Director", value: "Goro Kurotowa" }
+  - { label: "Vice-Director", value: "[[goro-kurotowa]]" }
   - { label: "Head of Ground Operations", value: "Farooq Ibn Raihan" }
   - { label: "Head of Naval Operations", value: "Nicholas. A. Andersen" }
   - { label: "Head of Air Operations", value: "Larry Foulke" }
@@ -45,6 +45,7 @@ infobox:
       - "Shivon (formerly)"
   - { label: "Revenue", value: "721,585,000 (1929)" }
 ---
+
 **Special Reconnaissance Service No.12 "Majesty",** often stylized simply as **MAJESTY**, was a former Elysian Office of Naval Intelligence branch specializing in espionage, sabotage and target elimination. Up until 1928, the organization operated under the oversight of the Supreme Protector, as well as the Minister of the Interior.
 
 During the [[hyperborea]] talks between [[elysia]] and [[nichirin]], MAJESTY hijacked multiple Elysian assets for their own personal use, as well as attempted to blackmail Nichirin for further information on Imperial Site H-041 “Malkuth”, however were given nothing by the Nichirian delegation.
