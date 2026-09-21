@@ -10,6 +10,11 @@ permissions: { contents: write, pull-requests: write, actions: write }
 concurrency:
   group: automerge-${{ github.event.pull_request.number }}
   cancel-in-progress: true
+env:
+  # The commit the event named. Every step works from this one rather than from
+  # whatever the branch points at now, so a push landing mid-run cannot slip past
+  # a gate that has already read something else.
+  SHA: ${{ github.event.pull_request.head.sha }}
 jobs:
   merge:
     runs-on: ubuntu-latest
@@ -26,7 +31,7 @@ jobs:
           PR_AUTHOR: ${{ github.event.pull_request.user.login }}
           ADMIN: ${{ github.repository_owner }}
           BASE: ${{ github.event.pull_request.base.ref }}
-          HEAD: FETCH_HEAD
+          HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
           git fetch --quiet origin "pull/${{ github.event.pull_request.number }}/head"
@@ -34,12 +39,13 @@ jobs:
           echo "$verdict" | tee -a "$GITHUB_STEP_SUMMARY"
           [ "$verdict" = merge ] && echo "go=1" >> "$GITHUB_OUTPUT" || true
 
-      # The pages the contributor wrote. The head rather than refs/pull/N/merge:
-      # GitHub works the merge ref out after the event fires, so on a freshly opened
-      # pull request it is often not there yet, and the run died on it three times.
+      # The pages the pull request writes, dropped into main's own tree. Never a
+      # checkout of the fork itself: this job holds a token that can write here, so
+      # building a fork's code in it is the pwn-request hole actions/checkout refuses
+      # by default. The gate has already established that the pull request touches
+      # nothing but content, so main's tree carrying its content is its tree.
       - if: steps.gate.outputs.go
-        uses: actions/checkout@v7
-        with: { ref: "refs/pull/${{ github.event.pull_request.number }}/head" }
+        run: git checkout "$SHA" -- src/content public/assets
       - if: steps.gate.outputs.go
         uses: actions/setup-node@v7
         with: { node-version: 22, cache: npm }
@@ -55,7 +61,7 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          gh pr merge "$PR" --repo "$REPO" --squash
+          gh pr merge "$PR" --repo "$REPO" --squash --match-head-commit "$SHA"
           # A merge made with the workflow's own token raises no push event, so the
           # site would never rebuild. workflow_dispatch is the documented exception.
           gh workflow run deploy.yml --repo "$REPO"
