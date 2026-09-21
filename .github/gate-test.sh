@@ -54,6 +54,14 @@ run merge SwiftorArrow      "adding one"
 start; printf x >> public/assets/flags/albinya.png; commit
 run wait  SwiftorArrow      "replacing one that exists"
 
+print "navboxes, which the editor also writes"
+start; print "# x" >> src/content/data/navboxes/skjarnland.yaml; commit
+run merge SwiftorArrow      "a nation's own navbox"
+run wait  that1sealguy      "another nation's navbox"
+start; print "# x" >> src/content/data/navboxes/site.yaml; commit
+run wait  SwiftorArrow      "the site navbox"
+run merge auroruse          "the site navbox, by the admin"
+
 print "everything that is not a page"
 start; print "# x" >> README.md; commit
 run wait  SwiftorArrow      "the readme"

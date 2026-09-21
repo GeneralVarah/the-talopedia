@@ -31,14 +31,15 @@ jobs:
           set -euo pipefail
           git fetch --quiet origin "pull/${{ github.event.pull_request.number }}/head"
           verdict=$(node .github/gate.mjs)
-          echo "$verdict" >> "$GITHUB_STEP_SUMMARY"
+          echo "$verdict" | tee -a "$GITHUB_STEP_SUMMARY"
           [ "$verdict" = merge ] && echo "go=1" >> "$GITHUB_OUTPUT" || true
 
-      # The pages as they would stand on main. Safe to build unread: the gate has
-      # established that nothing outside the content tree changed.
+      # The pages the contributor wrote. The head rather than refs/pull/N/merge:
+      # GitHub works the merge ref out after the event fires, so on a freshly opened
+      # pull request it is often not there yet, and the run died on it three times.
       - if: steps.gate.outputs.go
         uses: actions/checkout@v7
-        with: { ref: "refs/pull/${{ github.event.pull_request.number }}/merge" }
+        with: { ref: "refs/pull/${{ github.event.pull_request.number }}/head" }
       - if: steps.gate.outputs.go
         uses: actions/setup-node@v7
         with: { node-version: 22, cache: npm }

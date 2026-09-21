@@ -22,8 +22,9 @@ const existing = [
   ...fs.readdirSync('src/content/data/navboxes').filter((f) => f.endsWith('.yaml')).map((f) => {
     const id = f.replace(/\.yaml$/, '');
     const d = parseYaml(fs.readFileSync(`src/content/data/navboxes/${f}`, 'utf8')) || {};
-    // A navbox is credited to nobody, which is what keeps it out of the auto-merge.
-    return { slug: 'navbox:' + id, title: `Navbox: ${d.title || id}`, by: [] };
+    // A navbox belongs to the nation it is named after. The site navbox is everybody's
+    // and therefore nobody's, so it is the one that waits for a look.
+    return { slug: 'navbox:' + id, title: `Navbox: ${d.title || id}`, by: id === 'site' ? [] : [id] };
   }),
 ].sort((a, b) => a.title.localeCompare(b.title));
 const nationList = nations().map((n) => ({ id: n.id, name: n.name }));

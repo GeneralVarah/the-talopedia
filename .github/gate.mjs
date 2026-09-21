@@ -23,9 +23,12 @@ const show = (ref, path) => {
   try { return git('show', `${ref}:${path}`); } catch { return null; }
 };
 
-/** A page somebody owns, and an image, which nobody does. */
+/** Everything the editor writes: a page, a navbox, and an image. Nothing else is a
+    thing a contributor can produce, so nothing else merges on its own. */
 const PAGE = /^src\/content\/(articles|portals)\/[^/]+\.md$/;
+const NAVBOX = /^src\/content\/data\/navboxes\/([^/]+)\.yaml$/;
 const ASSET = /^public\/assets\/./;
+const writable = (p) => PAGE.test(p) || NAVBOX.test(p);
 
 /**
  * Who the site says wrote a page: `authors` when it is set and `nation` when it is
@@ -42,6 +45,17 @@ function byline(text) {
   if (list) return list[1].split(',').map(clean).filter(Boolean).sort();
   const one = fm.match(/^nation:[ \t]*(\S.*)$/m);
   return one ? [clean(one[1])] : [];
+}
+
+/**
+ * Who a file is credited to. A navbox is named after the nation whose navbox it is,
+ * so its credit is the file name; site.yaml is everybody's and therefore nobody's.
+ * Everything else carries its credit in its own frontmatter.
+ */
+function creditOf(ref, path) {
+  const nav = path.match(NAVBOX);
+  if (nav) return nav[1] === 'site' ? [] : [nav[1]];
+  return byline(show(ref, path));
 }
 
 const decline = (why) => { console.log(`wait ${why}`); process.exit(0); };
@@ -62,14 +76,14 @@ for (const line of git('diff', '--name-status', `${BASE}...${HEAD}`).trim().spli
   // A picture that is new belongs to nobody yet, so anyone may add one. Replacing or
   // deleting one is how another nation's flag would go missing, so that is reviewed.
   if (added && ASSET.test(to)) continue;
-  if (!PAGE.test(to) || !PAGE.test(from)) decline(`${to} is not a page.`);
+  if (!writable(to) || !writable(from)) decline(`${to} is not a page.`);
   if (admin) continue;
 
   // The page has to be this nation's alone, both as it stands and as it would stand.
   // One check covers taking someone else's page, handing your own away, and the
   // communal pages, which are never solely one nation's.
-  const was = added ? null : byline(show(BASE, from));
-  const now = deleted ? null : byline(show(HEAD, to));
+  const was = added ? null : creditOf(BASE, from);
+  const now = deleted ? null : creditOf(HEAD, to);
   if (was && (was.length !== 1 || was[0] !== nation)) decline(`${from} is credited to ${named(was)}.`);
   if (now && (now.length !== 1 || now[0] !== nation)) decline(`${to} would be credited to ${named(now)}.`);
 }
