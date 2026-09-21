@@ -11,6 +11,8 @@
  * wrote which half, and the byline does not claim to.
  */
 
+import { historyOf } from './revisions.mjs';
+
 /** Which GitHub account writes for each nation. A byline is not a username. */
 export const ACCOUNT_OF = {
   esu: 'that1sealguy',
@@ -26,7 +28,7 @@ export const ACCOUNT_OF = {
 
 /**
  * @param {Array} articles the article collection
- * @returns {Array<{id, articles, lines, account}>} one row per crediting nation
+ * @returns {Array<{id, articles, lines, edits, account}>} one row per crediting nation
  */
 export function contributors(articles) {
   const tally = new Map();
@@ -37,10 +39,15 @@ export function contributors(articles) {
     if (!credits.length) continue;
     // The article as it stands, which is the length a reader would recognise.
     const lines = (entry.body || '').trim().split('\n').length;
+    // Revisions since the site went live. The migration that brought the old documents
+    // over is not one of them, so a page nobody has touched since counts none.
+    const edits = (historyOf(entry.id) || []).length;
     for (const id of credits) {
-      const seen = tally.get(id) || { id, articles: 0, lines: 0, account: ACCOUNT_OF[id] || null };
+      const seen = tally.get(id)
+        || { id, articles: 0, lines: 0, edits: 0, account: ACCOUNT_OF[id] || null };
       seen.articles += 1;
       seen.lines += lines;
+      seen.edits += edits;
       tally.set(id, seen);
     }
   }
