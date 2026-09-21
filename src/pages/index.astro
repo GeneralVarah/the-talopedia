@@ -69,8 +69,14 @@ function splitHome(html = '') {
     if (/id="introduction"/.test(head)) { intro = rest; continue; }
     // The featured panel's contents are generated; whatever the front page has
     // under that heading is a leftover and is replaced.
-    const inner = /id="featured-article"/.test(head) ? featuredPanel : rest;
-    boxes.push(`<section class="hbox">${head}<div class="hbox-body">${inner}</div></section>`);
+    const isFeatured = /id="featured-article"/.test(head);
+    const inner = isFeatured ? featuredPanel : rest;
+    // How long this one has left. Empty until the script at the foot of the page
+    // fills it in, since a build cannot know when the reader is looking.
+    const bar = isFeatured
+      ? head.replace('</h2>', '<span class="feat-next" data-feat-next hidden></span></h2>')
+      : head;
+    boxes.push(`<section class="hbox">${bar}<div class="hbox-body">${inner}</div></section>`);
   }
   return { lede, intro, body: boxes.join('') };
 }
@@ -114,5 +120,23 @@ const headings = (rendered?.metadata?.headings ?? []).filter((h) => h.slug !== '
         requestAnimationFrame(step);
       }
     });
+
+    // The draw is keyed to the UTC date and the site rebuilds itself at 00:07 UTC, so
+    // that is when a different article appears. Kept in the reader's own clock rather
+    // than printed at build time, which would be stale by morning.
+    const slot = document.querySelector('[data-feat-next]');
+    if (slot) {
+      const pad = (n) => String(n).padStart(2, '0');
+      const tick = () => {
+        const now = new Date();
+        let at = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 7);
+        if (at <= now.getTime()) at += 86400000;
+        const s = Math.floor((at - now.getTime()) / 1000);
+        slot.textContent = `next in ${Math.floor(s / 3600)}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}`;
+        slot.hidden = false;
+      };
+      tick();
+      setInterval(tick, 1000);
+    }
   </script>
 </Base>
