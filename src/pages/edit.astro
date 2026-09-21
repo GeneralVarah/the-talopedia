@@ -467,7 +467,9 @@ const ADMIN = REPO.split('/')[0];
     function mdToHtml(md) {
       return esc(md)
         .replace(/&lt;br\s*\/?&gt;/g, '<br>')
-        .replace(/:(icon|flag|img)\[([^\]]+?)\]/g, (_, k, a) => tokenHtml(k, a.trim()))
+        // The same four the site reads. Leaving date out of this list left it sitting
+        // in the editor as the words ":date[1888-06-09|age]".
+        .replace(/:(icon|flag|img|date)\[([^\]]+?)\]/g, (_, k, a) => tokenHtml(k, a.trim()))
         .replace(/:(up|down)\b/g, (_, k) => tokenHtml(k))
         .replace(/\[\[([^\]|]+?)\|([^\]]+?)\]\]/g, (_, s, d) => `<a href="#" data-slug="${s}">${d}</a>`)
         .replace(/\[\[([^\]|]+?)\]\]/g, (_, s) => `<a href="#" data-slug="${s}">${displayOf(s)}</a>`)
@@ -795,7 +797,9 @@ const ADMIN = REPO.split('/')[0];
           swap.onmousedown = (e) => e.preventDefault();
           swap.onclick = choose;
           tools.append(swap);
-          box.append(img, empty, src, editable(esc(d.caption || ''), 'Caption', lineBreak), tools);
+          // mdToHtml, not esc: a caption is read back with htmlToMd like every other
+          // box here, so writing it as plain text turned an arrow into the words ":up".
+          box.append(img, empty, src, editable(mdToHtml(d.caption || ''), 'Caption', lineBreak), tools);
           return box;
         };
 
@@ -1129,7 +1133,7 @@ const ADMIN = REPO.split('/')[0];
       };
       src.oninput = () => { paint(); sync(); };
       paint();
-      const cap = editable(esc(d.caption || ''), 'Caption', lineBreak);
+      const cap = editable(mdToHtml(d.caption || ''), 'Caption', lineBreak);
       cap.classList.add('cap');
       // Change and remove sit together in the corner, out of the picture's way.
       const tools = el('div', 'fig-tools');
