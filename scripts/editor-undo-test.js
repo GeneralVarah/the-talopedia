@@ -107,6 +107,31 @@
     ok('link inserted', !!linked.querySelector('a[data-slug="brown-fox"]'), linked.innerHTML);
     ok('no glued spaces around the link', !linked.innerHTML.includes('&nbsp;') && !linked.textContent.includes('\u00a0'), linked.innerHTML);
 
+    // An empty table cell takes the caret where it is clicked. With no height it was
+    // no place for one, so the click, and the typing, went to the cell beside it.
+    focusEnd(paras()[0]);
+    document.querySelector('.tbl-cell[data-r="3"][data-c="2"]').click();
+    await sleep(100);
+    const cellBox = (r, c) => [...document.querySelectorAll('.ed-tbl tr')][r].querySelectorAll('td, th')[c].querySelector('.ce');
+    const blankCell = cellBox(1, 0);
+    ok('an empty cell is a line tall', blankCell.getBoundingClientRect().height > 10, blankCell.getBoundingClientRect().height);
+    blankCell.scrollIntoView({ block: 'center' });
+    const rc = blankCell.closest('td').getBoundingClientRect();
+    // Where a click in the middle of the cell puts the caret, then typing there. The
+    // hit test alone reports the right cell even when the bug is live; it is the
+    // typing that shows where the caret really was.
+    const hit = document.caretRangeFromPoint(rc.left + rc.width / 2, rc.top + rc.height / 2);
+    getSelection().removeAllRanges(); getSelection().addRange(hit);
+    document.execCommand('insertText', false, 'Club');
+    const rowText = [...blankCell.closest('tr').querySelectorAll('td:not(.row-x)')].map((c) => c.textContent);
+    ok('typing where it was clicked goes into it', rowText[0] === 'Club' && rowText[1] === '', rowText);
+    blankCell.textContent = '';
+    // What a cell holds once its last letter is deleted is a lone <br>: a blank cell.
+    blankCell.innerHTML = '<br>';
+    blankCell.dispatchEvent(new Event('input', { bubbles: true }));
+    const tableMd = $('#preview').textContent.split('\n').filter((l) => l.startsWith('|'));
+    ok('a cell emptied by deleting saves blank', tableMd.length > 0 && !tableMd.join('\n').includes('<br>'), tableMd);
+
     // A new page cannot be undone into the old one.
     $('#new').click();
     await sleep(50);

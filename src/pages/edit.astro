@@ -1246,7 +1246,10 @@ const ADMIN = REPO.split('/')[0];
         if (n.nodeType !== 1) continue;
         out += n.classList.contains('ce') ? htmlToMd(n, '<br>') : htmlToMd({ childNodes: [n] }, '<br>');
       }
-      return out.trim();
+      // A cell whose last letter is deleted is left holding one <br>, which is how the
+      // browser keeps an empty line open. That is a blank cell, and is saved as one.
+      out = out.trim();
+      return out === '<br>' ? '' : out;
     }
 
     function tableEditor(rows) {
@@ -4448,6 +4451,10 @@ const ADMIN = REPO.split('/')[0];
        wrapper scrolls, instead of the table squeezing and spilling its cells. */
     .ed-tbl { width: max-content; min-width: 100%; }
     .ed-tbl { border-collapse: collapse; font-size: 14px; }
+    /* An empty block with no height is no place for a caret, so a click in an empty
+       cell landed in the one beside it and the typing went there. One line tall, the
+       height a cell has once anything is in it. */
+    .ed-tbl .ce { min-height: 1lh; }
     .ed-tbl th, .ed-tbl td { border: 1px solid var(--hair); padding: 5px 9px; vertical-align: top; position: relative; min-width: 90px; }
     .ed-tbl th { background: var(--band); font-weight: 700; }
     .ed-tbl .row-x, .ed-tbl tr:first-child .row-x { border: 0; background: none; min-width: 0; padding: 0 2px; }
