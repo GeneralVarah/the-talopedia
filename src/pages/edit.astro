@@ -470,7 +470,7 @@ const ADMIN = REPO.split('/')[0];
         // The same four the site reads. Leaving date out of this list left it sitting
         // in the editor as the words ":date[1888-06-09|age]".
         .replace(/:(icon|flag|img|date)\[([^\]]+?)\]/g, (_, k, a) => tokenHtml(k, a.trim()))
-        .replace(/:(up|down)\b/g, (_, k) => tokenHtml(k))
+        .replace(/:(up|down)(?![A-Za-z])/g, (_, k) => tokenHtml(k))
         .replace(/\[\[([^\]|]+?)\|([^\]]+?)\]\]/g, (_, s, d) => `<a href="#" data-slug="${s}">${d}</a>`)
         .replace(/\[\[([^\]|]+?)\]\]/g, (_, s) => `<a href="#" data-slug="${s}">${displayOf(s)}</a>`)
         .replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g, '<a href="$2">$1</a>')
@@ -489,7 +489,13 @@ const ADMIN = REPO.split('/')[0];
         const tag = n.tagName.toLowerCase();
         if (tag === 'br') { out += br; continue; }
         const tok = n.dataset?.tok;
-        if (tok) { out += tok === 'up' || tok === 'down' ? `:${tok}` : `:${tok}[${n.dataset.slug}]`; continue; }
+        if (tok === 'up' || tok === 'down') {
+          // A digit straight after reads fine (:down1 is down one); a letter would read
+          // as part of the name, so it gets a space.
+          out += `:${tok}` + (/^[A-Za-z]/.test(n.nextSibling?.nodeValue || '') ? ' ' : '');
+          continue;
+        }
+        if (tok) { out += `:${tok}[${n.dataset.slug}]`; continue; }
         const inner = htmlToMd(n, br);
         if (tag === 'b' || tag === 'strong') out += inner.trim() ? `**${inner}**` : '';
         else if (tag === 'i' || tag === 'em') out += inner.trim() ? `*${inner}*` : '';
@@ -618,6 +624,7 @@ const ADMIN = REPO.split('/')[0];
         plainPaste = false;
         if (clean.replace(/<[^>]*>/g, '').trim()) {
           document.execCommand('insertHTML', false, clean);
+          unglue(d);
           return;
         }
         document.execCommand('insertText', false, text);
@@ -683,6 +690,37 @@ const ADMIN = REPO.split('/')[0];
       if (host) caret = sel.getRangeAt(0).cloneRange();
     });
 
+    /**
+     * Chrome keeps the spaces beside anything insertHTML puts in by turning them into
+     * no-break spaces. Beside a new link that glues the words either side of it into
+     * one run that cannot wrap, so the run drops to the next line with room left on
+     * this one. A no-break space with a character on both sides of it is only ever
+     * that, so it goes back to an ordinary space. One at the very end of a line stays:
+     * it is what keeps a trailing space visible while the writer is still typing.
+     */
+    function unglue(box) {
+      if (!box) return;
+      const sel = getSelection();
+      const keep = sel.rangeCount && [sel.anchorNode, sel.anchorOffset, sel.focusNode, sel.focusOffset];
+      const nodes = [];
+      const walk = document.createTreeWalker(box, NodeFilter.SHOW_TEXT);
+      while (walk.nextNode()) nodes.push(walk.currentNode);
+      const all = nodes.map((n) => n.nodeValue).join('');
+      let base = 0;
+      for (const n of nodes) {
+        const v = n.nodeValue;
+        let w = '';
+        for (let i = 0; i < v.length; i++) {
+          const g = base + i;
+          w += v[i] === '\u00a0' && /\S/.test(all[g - 1] || '') && /\S/.test(all[g + 1] || '') ? ' ' : v[i];
+        }
+        if (w !== v) n.nodeValue = w;
+        base += v.length;
+      }
+      // Same length, so the caret's offsets still point where they did.
+      if (keep) sel.setBaseAndExtent(...keep);
+    }
+
     /** Put the caret back and insert there, in a plain field or a table cell. */
     function insertAtCaret(html) {
       const where = activeText();
@@ -719,6 +757,7 @@ const ADMIN = REPO.split('/')[0];
           stray.reverse().forEach((n) => box.insertBefore(n, box.firstChild));
         }
       }
+      unglue(ceOf(sel.anchorNode) || where);
       caret = sel.rangeCount ? sel.getRangeAt(0).cloneRange() : caret;
       sync();
       return true;
@@ -1229,6 +1268,7 @@ const ADMIN = REPO.split('/')[0];
         if (cellEl && /[\t\n]/.test(text.trim())) { pasteGrid(cellEl, text); return; }
         if (html && /data-tok=|data-slug=/.test(html)) {
           document.execCommand('insertHTML', false, keepTokens(html));
+          unglue(ceOf(getSelection().anchorNode));
           return;
         }
         document.execCommand('insertText', false, text);
@@ -2415,6 +2455,7 @@ const ADMIN = REPO.split('/')[0];
         host?.focus();
         restoreRange();
         document.execCommand('insertHTML', false, html);
+        unglue(ceOf(getSelection().anchorNode) || host);
       }
       closeLink();
       sync();

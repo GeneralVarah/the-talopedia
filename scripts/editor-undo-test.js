@@ -91,6 +91,22 @@
     const cellNow = [...document.querySelectorAll('.ib-edit td .ce')][0].textContent;
     ok('undo reaches back into the sidebar, one step each', cellNow === cellWas && txt() === 'hello world ab', [cellNow, cellWas, txt()]);
 
+    // A link added mid-sentence leaves ordinary spaces either side, so the words
+    // around it still wrap one at a time.
+    focusEnd(paras()[0]);
+    paras()[0].textContent = '';
+    type('The quick brown fox jumps over the lazy dog.');
+    const tn = paras()[0].firstChild;
+    const at = tn.nodeValue.indexOf('brown');
+    const sr = document.createRange(); sr.setStart(tn, at); sr.setEnd(tn, at + 9);
+    getSelection().removeAllRanges(); getSelection().addRange(sr);
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true }));
+    $('#lp-target').value = 'brown-fox';
+    $('#lp-apply').click();
+    const linked = paras()[0];
+    ok('link inserted', !!linked.querySelector('a[data-slug="brown-fox"]'), linked.innerHTML);
+    ok('no glued spaces around the link', !linked.innerHTML.includes('&nbsp;') && !linked.textContent.includes('\u00a0'), linked.innerHTML);
+
     // A new page cannot be undone into the old one.
     $('#new').click();
     await sleep(50);
@@ -99,6 +115,19 @@
     type('fresh');
     undo(); undo(); undo();
     ok('undo stops at the new page', txt() === '' && !document.body.textContent.includes('hello world'), txt());
+
+    // An arrow straight before a digit (:down1) is an arrow, before and after an undo.
+    $('#file-q').value = 'nichirin national football';
+    $('#file-q').dispatchEvent(new Event('input'));
+    [...document.querySelectorAll('#file-list button')].find((b) => /Nichirin national football team/i.test(b.textContent)).click();
+    await sleep(800);
+    const rankCell = () => [...document.querySelectorAll('.ib-edit tr')].find((tr) => /Current \(1934\)/.test(tr.textContent))?.querySelector('td .ce');
+    ok('opened with the ranking arrow as an arrow', rankCell()?.querySelector('[data-tok="down"]') && !rankCell().textContent.includes(':down'), rankCell()?.innerHTML);
+    focusEnd(paras()[0]);
+    type(' zz');
+    undo();
+    ok('still an arrow after undo', rankCell()?.querySelector('[data-tok="down"]') && !rankCell().textContent.includes(':down'), rankCell()?.innerHTML);
+    ok('and saved as :down1', $('#preview').textContent.includes('3 (:down1)'), ($('#preview').textContent.match(/Current \(1934\).*/) || [''])[0]);
 
     // Date panel: Age asks for Born, and Died only if dead.
     document.querySelector('#dt-mode button[data-mode="age"]').click();

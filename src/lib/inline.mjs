@@ -37,7 +37,7 @@ export function link(slug, display) {
 }
 
 // Custom syntax shared by article bodies, infobox values, navboxes and tables.
-const CUSTOM = /\[\[([^\]|]+?)(?:\|([^\]]+?))?\]\]|:(icon|flag|img|date)\[([^\]]+?)\]|:(up|down)\b/g;
+const CUSTOM = /\[\[([^\]|]+?)(?:\|([^\]]+?))?\]\]|:(icon|flag|img|date)\[([^\]]+?)\]|:(up|down)(?![A-Za-z])/g;
 // Plus the two marks and the one link form the editor can produce, for strings
 // that never pass through the markdown pipeline (infobox values, navbox labels).
 const MARKS = /\*\*([^*]+)\*\*|\*([^*]+)\*|\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
