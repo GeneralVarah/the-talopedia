@@ -170,7 +170,7 @@ const ADMIN = REPO.split('/')[0];
           <div class="ins-item" data-ins="date">
             <button type="button">Date<span class="ins-arrow">›</span></button>
             <div class="ins-sub ins-sub-date">
-              <label class="ins-f">Date<input id="dt-date" type="date" /></label>
+              <label class="ins-f"><span id="dt-date-label">Date</span><input id="dt-date" type="date" /></label>
               <label class="ins-f">Show
                 <span class="mp-seg" id="dt-mode">
                   <button type="button" class="on" data-mode="">Plain</button>
@@ -178,7 +178,7 @@ const ADMIN = REPO.split('/')[0];
                   <button type="button" data-mode="age">Age</button>
                 </span>
               </label>
-              <label class="ins-f" id="dt-born-row" hidden>Born<input id="dt-born" type="date" /></label>
+              <label class="ins-f" id="dt-died-row" hidden>Died <span class="opt">optional</span><input id="dt-died" type="date" /></label>
               <p class="mp-hint" id="dt-preview"></p>
               <button id="dt-go" type="button" class="primary">Insert</button>
             </div>
@@ -482,7 +482,9 @@ const ADMIN = REPO.split('/')[0];
     function htmlToMd(node, br = ' ') {
       let out = '';
       for (const n of node.childNodes) {
-        if (n.nodeType === 3) { out += n.nodeValue; continue; }
+        // A no-break space is how a browser keeps a space visible at the end of a line
+        // or beside an arrow; none of them were typed as one, and none belong on the page.
+        if (n.nodeType === 3) { out += n.nodeValue.replace(/\u00a0/g, ' '); continue; }
         if (n.nodeType !== 1) continue;
         const tag = n.tagName.toLowerCase();
         if (tag === 'br') { out += br; continue; }
@@ -790,7 +792,7 @@ const ADMIN = REPO.split('/')[0];
             empty.hidden = !!src.value;
           };
           img.onerror = () => { img.hidden = true; };
-          src.oninput = () => { paint(); sync(); };
+          src.oninput = (e) => { paint(); sync(e); };
           paint();
           const tools = el('div', 'fig-tools');
           const swap = el('button', null, '⇄'); swap.type = 'button'; swap.title = 'Change this picture';
@@ -1131,7 +1133,7 @@ const ADMIN = REPO.split('/')[0];
           f.style.flex = (img.naturalWidth / img.naturalHeight).toFixed(3);
         }
       };
-      src.oninput = () => { paint(); sync(); };
+      src.oninput = (e) => { paint(); sync(e); };
       paint();
       const cap = editable(mdToHtml(d.caption || ''), 'Caption', lineBreak);
       cap.classList.add('cap');
@@ -1936,66 +1938,203 @@ const ADMIN = REPO.split('/')[0];
         : $('#f-nation').value ? `${$('#f-nation').selectedOptions[0].textContent}'s navbox`
         : 'site navbox';
     }
-    /* ---------- undo / redo ---------- */
-    // A snapshot stack rather than execCommand('undo'): adding or removing a
-    // block is not a text edit, so the browser's own history does not see it.
+    /* ---------- undo / redo ----------
+       Modelled on Google Docs. A snapshot stack rather than execCommand('undo'),
+       because adding or removing a block is not a text edit and the browser's own
+       history does not see it. Typing is gathered a word at a time; everything else
+       (a paste, bold, a new block, a moved row) is a step of its own; and undoing puts
+       the caret back where the change was, so the writer can see what went.
+
+       Each step keeps the whole page as it stood after it, and where the caret was
+       when it began and when it ended. The history belongs to one page: opening,
+       starting or duplicating another clears it, since undoing into the last page
+       is how one article's text ends up under another's name. */
+    const PAUSE = 1000;      // a stop this long in typing starts the next step
+    const DEPTH = 200;
     const past = [], future = [];
-    let quiet = false, lastPush = 0, runStart = 0;
+    let quiet = false;       // true while a remembered state is being put back
+    let run = null;          // the typing the newest step is still gathering
+    let settling = true;     // just opened, and nobody has touched it yet
 
     function paintHistory() {
       $('#undo').disabled = past.length < 2;
       $('#redo').disabled = !future.length;
     }
-    function remember() {
-      if (quiet) return;
-      const now = JSON.stringify(snapshot());
-      if (past.length && past[past.length - 1] === now) return;
-      // Typing coalesces into one step, but a run has a ceiling. Coalescing on the
-      // pause alone meant an uninterrupted stretch of typing became a single step, so
-      // one undo threw away everything back to the last time the writer stopped.
-      const t = Date.now();
-      if (past.length > 1 && t - lastPush < 600 && t - runStart < 1500) past.pop();
-      else runStart = t;
-      lastPush = t;
-      past.push(now);
-      if (past.length > 80) past.shift();
+    function resetHistory() {
+      past.length = 0;
       future.length = 0;
+      run = null;
+      settling = true;
       paintHistory();
     }
+
+    /** Typing and deleting gather into runs; anything else stands alone. */
+    function editKind(e) {
+      const t = e?.inputType || '';
+      if (t === 'insertText' || t === 'insertCompositionText') return 'type';
+      if (/^delete(Content|Word|SoftLine|HardLine)/.test(t)) return 'delete';
+      return 'other';
+    }
+
+    /** Where the caret is, in terms that survive the page being rebuilt: which
+        editable box, counted in page order, and how many characters into it. */
+    function caretMark() {
+      const sel = getSelection();
+      if (!sel.rangeCount) return null;
+      const n = sel.focusNode;
+      const box = (n?.nodeType === 1 ? n : n?.parentElement)?.closest('[contenteditable="true"]');
+      const i = box ? [...document.querySelectorAll('.ed-canvas [contenteditable="true"]')].indexOf(box) : -1;
+      if (i < 0) return null;
+      const r = document.createRange();
+      r.selectNodeContents(box);
+      r.setEnd(n, sel.focusOffset);
+      const before = r.toString();
+      return { i, at: before.length, prev: before.slice(-1) };
+    }
+    function placeCaret(mark) {
+      if (!mark) return null;
+      const box = document.querySelectorAll('.ed-canvas [contenteditable="true"]')[mark.i];
+      if (!box) return null;
+      const r = document.createRange();
+      const walk = document.createTreeWalker(box, NodeFilter.SHOW_TEXT);
+      let left = mark.at, node, placed = false;
+      while ((node = walk.nextNode())) {
+        if (left <= node.nodeValue.length) {
+          // Never inside an arrow, a flag or a date: after it.
+          const lock = node.parentElement.closest('[contenteditable="false"]');
+          if (lock) r.setStartAfter(lock); else r.setStart(node, left);
+          placed = true;
+          break;
+        }
+        left -= node.nodeValue.length;
+      }
+      if (!placed) {
+        // A space at the end of a line is trimmed from what is saved, so a step that
+        // began just after one comes back without it. Put it back, or the next word
+        // typed runs straight into the last.
+        const t = box.textContent;
+        if (t && mark.at === t.length + 1 && !/\s$/.test(t)) box.append('\u00a0');
+        r.selectNodeContents(box);
+        r.collapse(false);
+      }
+      r.collapse(true);
+      box.focus({ preventScroll: true });
+      const sel = getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+      return r;
+    }
+    /** Bring the caret into view, but only if it is out of sight. */
+    function reveal(r) {
+      if (!r) return;
+      let box = r.getBoundingClientRect();
+      if (!box.height) {
+        const n = r.startContainer;
+        box = (n.nodeType === 1 ? n : n.parentElement).getBoundingClientRect();
+      }
+      const top = Math.max(0, $('.ed-tools').getBoundingClientRect().bottom) + 16;
+      const bottom = innerHeight - 24;
+      if (box.top >= top && box.bottom <= bottom) return;
+      // A third of the way down rather than at an edge, so what surrounds it shows too.
+      window.scrollBy(0, box.top - (top + (bottom - top) / 3));
+    }
+
+    function remember(e) {
+      if (quiet) return;
+      const kind = editKind(e);
+      const mark = caretMark();
+      const state = JSON.stringify(snapshot());
+      const top = past[past.length - 1];
+      const changed = !top || top.state !== state;
+      const box = e?.target?.closest?.('[contenteditable="true"]') || e?.target || null;
+      if (changed && settling && past.length === 1) {
+        // A page that has just opened is still settling (link titles arriving, say)
+        // until somebody touches it. That is the page as opened, not an edit to undo.
+        top.state = state;
+      } else if (changed) {
+        const t = Date.now();
+        const joins = run && !run.closed && kind !== 'other' && kind === run.kind
+          && box === run.box && t - run.last < PAUSE;
+        if (joins) {
+          top.state = state;
+          top.end = mark;
+          run.last = t;
+        } else {
+          // Typing leaves the caret after what it typed; the step began before it.
+          const back = kind === 'type' ? (e.data?.length ?? 1) : 0;
+          const start = mark && { i: mark.i, at: Math.max(0, mark.at - back) };
+          past.push({ state, start, end: mark });
+          if (past.length > DEPTH) past.shift();
+          run = kind === 'other' ? null : { kind, box, last: t, closed: false };
+        }
+        future.length = 0;
+        paintHistory();
+      } else if (run && kind === run.kind && box === run.box) {
+        // Nothing saved changed (a space at the end of a line), but the step still
+        // ends where the caret now is, so a redo puts the space back too.
+        top.end = mark;
+      }
+      // A space ends the word before it, so the next letter starts a step of its own.
+      // Checked even when nothing saved changed: a space at the end of a line is
+      // trimmed from what is saved, so the page reads the same with it as without.
+      if (run && kind === 'type' && /\s/.test(mark?.prev || '')) run.closed = true;
+    }
+
+    // Putting the caret somewhere by hand ends the run, as it does in Google Docs:
+    // whatever is typed next is somewhere else, and is a step of its own.
+    addEventListener('pointerdown', () => { run = null; settling = false; }, true);
+    addEventListener('keydown', (e) => {
+      settling = false;
+      if (/^(Arrow|Home$|End$|Page)/.test(e.key)) run = null;
+    }, true);
+
     /**
-     * Put a remembered state back without the page moving under the writer. restore()
-     * rebuilds the body and the sidebar, which drops the scroll position to wherever
-     * the shorter document ends; put it back where it was.
+     * Put a remembered state back without the page jumping, then put the caret where
+     * the change was and scroll only if that is out of sight. restore() rebuilds the
+     * body and the sidebar, which drops the scroll position to wherever the shorter
+     * document ends, so the position is held across it first.
      */
-    function apply(state) {
+    function apply(state, mark) {
       const y = window.scrollY;
       quiet = true;
-      restore(state);
-      quiet = false;
+      // finally: a restore that throws must not leave the history deaf for the rest
+      // of the session, or the next undo would throw away everything since.
+      try { restore(JSON.parse(state)); } finally { quiet = false; }
       paintCanvas(); paintToc();
       $('#preview').textContent = toMarkdown();
+      run = null;
       paintHistory();
+      stash();
       window.scrollTo(0, y);
+      reveal(placeCaret(mark));
     }
-    function step(from, to) {
-      if (from.length < 2) return;
-      to.push(from.pop());
-      apply(JSON.parse(from[from.length - 1]));
-    }
-    $('#undo').onclick = () => step(past, future);
+    $('#undo').onclick = () => {
+      if (past.length < 2) return;
+      const undone = past.pop();
+      future.push(undone);
+      apply(past[past.length - 1].state, undone.start);
+    };
     $('#redo').onclick = () => {
       if (!future.length) return;
-      const next = future.pop();
-      past.push(next);
-      apply(JSON.parse(next));
+      const redone = future.pop();
+      past.push(redone);
+      apply(redone.state, redone.end);
     };
+    // Undo from the Edit menu or the right-click menu is the browser's own, whose
+    // history knows nothing of rebuilt blocks. Routed here wherever it can be.
+    addEventListener('beforeinput', (e) => {
+      if (e.inputType !== 'historyUndo' && e.inputType !== 'historyRedo') return;
+      if (!e.cancelable) return;
+      e.preventDefault();
+      $(e.inputType === 'historyUndo' ? '#undo' : '#redo').click();
+    }, true);
 
-    function sync() {
+    function sync(e) {
       paintSettings();
       paintCanvas();
       paintToc();
       $('#preview').textContent = toMarkdown();
-      remember();
+      remember(e);
       stash();
     }
 
@@ -2043,6 +2182,7 @@ const ADMIN = REPO.split('/')[0];
         .forEach((b) => body.append(block(b.kind, b)));
       // A portal has no body of its own, so it is not given an empty paragraph.
       if (!body.children.length && pageKind !== 'portal') body.append(block('para'));
+      resetHistory();
       sync();
       loadedBody = toMarkdown();
       flash(`Opened ${data.title}.`);
@@ -2142,13 +2282,18 @@ const ADMIN = REPO.split('/')[0];
     const dtArg = () => {
       const d = $('#dt-date').value;
       if (!d) return '';
-      const born = $('#dt-born').value;
-      if (dtMode === 'age' && born) return `${d}|age:${born}`;
+      if (dtMode === 'age') {
+        // For an age the date above is the birth. A death date, when there is one, is
+        // the date printed, with the age that was reached by then.
+        const died = $('#dt-died').value;
+        return died ? `${died}|age:${d}` : `${d}|age`;
+      }
       return dtMode ? `${d}|${dtMode}` : d;
     };
     function paintDate() {
-      // Born only means something for an age, and only then as the other end of it.
-      $('#dt-born-row').hidden = dtMode !== 'age';
+      const age = dtMode === 'age';
+      $('#dt-date-label').textContent = age ? 'Born' : 'Date';
+      $('#dt-died-row').hidden = !age;
       const arg = dtArg();
       $('#dt-preview').textContent = arg ? dateLabel(arg) : 'Pick a date.';
       $('#dt-preview').className = 'mp-hint' + (arg ? ' ok' : '');
@@ -2166,7 +2311,7 @@ const ADMIN = REPO.split('/')[0];
     // the real year. Avium is in 1934, which is where the writer means to be.
     $('#dt-date').value = IC_NOW;
     $('#dt-date').oninput = paintDate;
-    $('#dt-born').oninput = paintDate;
+    $('#dt-died').oninput = paintDate;
     $('#dt-go').onclick = () => {
       const arg = dtArg();
       if (!arg) return;
@@ -2307,14 +2452,15 @@ const ADMIN = REPO.split('/')[0];
       const k = e.key.toLowerCase();
       if (k === 'b' || k === 'i' || k === 'k') { e.preventDefault(); runCmd(k === 'k' ? 'link' : k === 'b' ? 'bold' : 'italic'); }
       if (k === 'z') { e.preventDefault(); (e.shiftKey ? $('#redo') : $('#undo')).click(); }
+      if (k === 'y') { e.preventDefault(); $('#redo').click(); }
       if (k === 's' && DEV) { e.preventDefault(); $('#save').click(); }
     });
 
     // The canvas title is the real title field; the settings box is the same value.
-    $('#canvas-title').addEventListener('input', () => {
+    $('#canvas-title').addEventListener('input', (e) => {
       $('#f-title').value = $('#canvas-title').textContent.trim();
       if (!slugTouched) setSlug(slugify($('#f-title').value));
-      sync();
+      sync(e);
     });
     $('#canvas-title').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); body.querySelector('.ce')?.focus(); }
@@ -2333,12 +2479,12 @@ const ADMIN = REPO.split('/')[0];
       ['#ib-romaji', '#f-romaji', false],
     ]) {
       const el = $(id);
-      el.addEventListener('input', () => {
-        const text = el.innerText.replace(/ /g, ' ');
+      el.addEventListener('input', (e) => {
+        const text = el.innerText.replace(/\u00a0/g, ' ');
         $(field).value = multi
           ? text.split('\n').map((l) => l.trim()).filter(Boolean).join('\n')
           : text.replace(/\s+/g, ' ').trim();
-        sync();
+        sync(e);
       });
       el.addEventListener('keydown', (e) => {
         if (e.key !== 'Enter') return;
@@ -2363,7 +2509,7 @@ const ADMIN = REPO.split('/')[0];
     /** Clear the desk and start a page of the given kind. */
     function blank(kind, slug = '') {
       pageKind = kind; navboxLead = ''; portalBody = ''; pageSlug = slug; loadedTitle = ''; loadedBody = '';
-      $('#settings').querySelectorAll('input[type=text], textarea').forEach((i) => i.value = '');
+      $('#settings').querySelectorAll('input[type=text], input[type=hidden], textarea').forEach((i) => i.value = '');
       $('#f-ooc').checked = false;
       $('#f-navbox-on').checked = true;
       $('#f-sidebar-on').checked = true;
@@ -2387,6 +2533,7 @@ const ADMIN = REPO.split('/')[0];
         }
       }
       paintSettings();
+      resetHistory();
       sync();
     }
 
@@ -2423,7 +2570,7 @@ const ADMIN = REPO.split('/')[0];
     ['#f-type', '#f-nation', '#f-navbox-on', '#f-sidebar-on'].forEach((id) => {
       $(id).addEventListener('change', paintSettings);
     });
-    $('#settings').addEventListener('input', () => { paintSettings(); sync(); });
+    $('#settings').addEventListener('input', (e) => { paintSettings(); sync(e); });
     $('#settings').addEventListener('change', sync);
 
     const saveAs = (blob, name) => {
@@ -2737,6 +2884,7 @@ const ADMIN = REPO.split('/')[0];
 
     /** Put a whole stored file back on screen. */
     function fromMarkdown(text) {
+      resetHistory();
       const src = String(text).replace(/\r\n/g, '\n');
       if (!src.startsWith('---')) {
         // No frontmatter means a navbox, which is YAML all the way down.
@@ -2793,6 +2941,7 @@ const ADMIN = REPO.split('/')[0];
           pageSlug = f.name.replace(/\.(md|markdown|ya?ml)$/i, '');
           loadedTitle = $('#f-title').value.trim();
           setSlug(pageSlug); slugTouched = true;
+          sync();
           flash(`Opened ${f.name}.`);
         } catch (err) {
           flash(`Could not read ${f.name}: ${err.message}`, true);
@@ -2918,6 +3067,8 @@ const ADMIN = REPO.split('/')[0];
       for (const im of c.images) {
         if (!staged.has(im.path)) staged.set(im.path, { file: im.file, url: URL.createObjectURL(im.file) });
       }
+      // Its own address, or Commit would file it under whatever page was open before.
+      setSlug(c.slug); slugTouched = true;
       paintAssets();
       sync();
       flash(`Opened ${c.title} from your changes.`);
@@ -3308,6 +3459,10 @@ const ADMIN = REPO.split('/')[0];
       setSlug('');
       slugTouched = false;          // the URL follows the title again until it is typed in
       $('#settings').hidden = false;
+      // The copy is a page of its own; undoing back past this would put the old
+      // page's address on it again.
+      resetHistory();
+      sync();
       $('#f-title').focus();
       flash(`Copy of ${from}. Give it a new title, and check the URL before saving.`);
     }
@@ -4075,7 +4230,7 @@ const ADMIN = REPO.split('/')[0];
       display: flex; flex-wrap: wrap; gap: 10px 28px;
       margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--rule);
     }
-    .ed-settings .opt { font-size: 11px; color: var(--muted); font-weight: 400; margin-left: 4px; }
+    .ed-settings .opt, .ins-f .opt { font-size: 11px; color: var(--muted); font-weight: 400; margin-left: 4px; }
     .req-star { color: #d88; margin-left: 2px; }
     /* ---- floating image ---- */
     /* The block deliberately contains nothing: the picture floats out of it, which is

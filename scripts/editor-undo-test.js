@@ -1,0 +1,120 @@
+// Drives the built editor headless: types, pauses, moves between boxes and pages,
+// undoes and redoes, and writes a pass/fail list into #undo-results. Run through
+// scripts/editor-undo-test.sh.
+(async () => {
+  const out = [];
+  const ok = (name, cond, got) => out.push(`${cond ? 'ok  ' : 'FAIL'} ${name}${cond ? '' : `  got ${JSON.stringify(got)}`}`);
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const $ = (s) => document.querySelector(s);
+  const paras = () => [...document.querySelectorAll('#body .ce')];
+  const txt = (i = 0) => paras()[i]?.textContent.replace(/\u00a0/g, ' ');
+  const click = (el) => el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+  const focusEnd = (el) => {
+    click(el);
+    el.focus();
+    const r = document.createRange(); r.selectNodeContents(el); r.collapse(false);
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+  };
+  const type = (text) => { for (const ch of text) document.execCommand('insertText', false, ch); };
+  const undo = () => $('#undo').click();
+  const redo = () => $('#redo').click();
+  const caret = () => {
+    const s = getSelection();
+    if (!s.rangeCount) return null;
+    const n = s.focusNode;
+    const box = (n.nodeType === 1 ? n : n.parentElement).closest('[contenteditable="true"]');
+    const r = document.createRange(); r.selectNodeContents(box); r.setEnd(n, s.focusOffset);
+    return { box, at: r.toString().length };
+  };
+  window.confirm = () => true;
+  try {
+    await sleep(1500);
+
+    // A word at a time.
+    focusEnd(paras()[0]);
+    type('hello world again');
+    ok('typed a sentence', txt() === 'hello world again', txt());
+    undo();
+    ok('undo takes the last word only', txt() === 'hello world ', txt());
+    const c1 = caret();
+    ok('caret lands where that word was', c1?.box === paras()[0] && c1?.at === 12, c1?.at);
+    undo();
+    ok('the next undo takes the word before, keeping its space', txt() === 'hello ', txt());
+    redo();
+    ok('redo puts it back', txt() === 'hello world ', txt());
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'y', ctrlKey: true, bubbles: true }));
+    ok('ctrl+y redoes', txt() === 'hello world again', txt());
+    const c2 = caret();
+    ok('redo leaves the caret at the end of what came back', c2?.at === 17, c2?.at);
+
+    // Typing straight after an undo keeps the state it undid to.
+    undo();
+    type('there');
+    ok('typing after undo keeps the space', txt() === 'hello world there', txt());
+    ok('and it is saved as an ordinary space', $('#preview').textContent.includes('hello world there') && !$('#preview').textContent.includes('\u00a0'), $('#preview').textContent.slice(-40));
+    undo();
+    ok('undo after that returns to the undone-to state', txt() === 'hello world ', txt());
+
+    // A pause ends a step, even mid-word.
+    focusEnd(paras()[0]);
+    type('ab'); await sleep(1300); type('cd');
+    undo();
+    ok('a pause splits a step', txt() === 'hello world ab', txt());
+
+    // Another box is another step, and undo goes there.
+    focusEnd(paras()[0]);
+    paras()[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+    await sleep(50);
+    const second = paras()[1];
+    ok('enter made a second paragraph', !!second, paras().length);
+    focusEnd(second);
+    type('second');
+    focusEnd(paras()[0]);
+    type('X');
+    undo();
+    ok('undo in the first box takes only X', txt(0) === 'hello world ab' && txt(1) === 'second', [txt(0), txt(1)]);
+    undo();
+    ok('then the second box', txt(1) === '', txt(1));
+    const c3 = caret();
+    ok('caret moved to the second box', c3?.box === paras()[1], c3 && paras().indexOf(c3.box));
+    undo();
+    ok('then the new paragraph itself', paras().length === 1, paras().length);
+
+    // A sidebar cell is a step of its own.
+    const cell = [...document.querySelectorAll('.ib-edit td .ce')][0];
+    const cellWas = cell.textContent;
+    focusEnd(cell);
+    type('Tokyo');
+    focusEnd(paras()[0]);
+    type('Y');
+    undo(); undo();
+    const cellNow = [...document.querySelectorAll('.ib-edit td .ce')][0].textContent;
+    ok('undo reaches back into the sidebar, one step each', cellNow === cellWas && txt() === 'hello world ab', [cellNow, cellWas, txt()]);
+
+    // A new page cannot be undone into the old one.
+    $('#new').click();
+    await sleep(50);
+    ok('new page: nothing to undo', $('#undo').disabled === true, $('#undo').disabled);
+    focusEnd(paras()[0]);
+    type('fresh');
+    undo(); undo(); undo();
+    ok('undo stops at the new page', txt() === '' && !document.body.textContent.includes('hello world'), txt());
+
+    // Date panel: Age asks for Born, and Died only if dead.
+    document.querySelector('#dt-mode button[data-mode="age"]').click();
+    ok('age relabels the date as Born', $('#dt-date-label').textContent === 'Born', $('#dt-date-label').textContent);
+    ok('died shows, marked optional', !$('#dt-died-row').hidden && /optional/.test($('#dt-died-row').textContent), $('#dt-died-row').hidden);
+    $('#dt-date').value = '1888-06-09'; $('#dt-date').dispatchEvent(new Event('input'));
+    ok('born only: age now', /^June 9, 1888 \(aged \d+\)$/.test($('#dt-preview').textContent), $('#dt-preview').textContent);
+    $('#dt-died').value = '1933-05-11'; $('#dt-died').dispatchEvent(new Event('input'));
+    ok('with died: that date, age at death', $('#dt-preview').textContent === 'May 11, 1933 (aged 44)', $('#dt-preview').textContent);
+    document.querySelector('#dt-mode button[data-mode=""]').click();
+    ok('plain puts the label back and hides died', $('#dt-date-label').textContent === 'Date' && $('#dt-died-row').hidden, $('#dt-date-label').textContent);
+  } catch (err) {
+    out.push('FAIL threw: ' + err.message);
+  }
+  const pre = document.createElement('pre');
+  pre.id = 'undo-results';
+  pre.textContent = out.join('\n');
+  document.body.append(pre);
+})();
