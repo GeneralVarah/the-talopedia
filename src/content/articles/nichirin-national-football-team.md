@@ -108,3 +108,34 @@ The Xing Empire, Nichirin's first international opponent, was its principal riva
 Nichirin's principal modern rival is Alemannia, a treaty ally under the Mizuhara Pentapartite; the Nichirian press calls the fixture the Dōmei-sen (同盟戦, "Alliance Match"). Each has won the World Cup in the other's country, Nichirin in Alemannia in 1932 and Alemannia in Nichirin in 1933, and Nichirin eliminated Alemannia as holders at the 1934 World Cup. At the club level, Nichirian sides beat Alemannian club [[arminia-berelstein]] in three different Club World Cup finals: 1929, 1930 and 1933.
 
 The rivalry with neighboring Rudania, a communist state, is primarily political. The teams last met at the 1932 World Cup, where Nichirin won their group-stage match 2-1. In 1933, Nichirin, as host, barred Rudania from the World Cup after it was revealed that Rudania was harboring [[majesty]], a former Elysian naval intelligence unit operating as a private military contractor; the exclusion was imposed by the Bakufu independently of the AFA. The NFA has since declined to host the fixture.
+
+## Current Squad
+
+<table>
+<tr><th>Pos.</th><th>Player</th><th>Date of birth (age)</th><th>Caps</th><th>Goals</th><th>Club</th></tr>
+<tr><td>Manager</td><td>Josué Alferinho</td><td>:date[1895-06-03|age]</td><td colspan="2">65 matches: 54 W, 5 D, 6 L</td><td></td></tr>
+<tr><th colspan="6">Starting eleven</th></tr>
+<tr><td>GK</td><td>Eisuke Sato</td><td>:date[1899-03-03|age]</td><td>143</td><td>0</td><td></td></tr>
+<tr><td>DF</td><td>Kōzō Fujise</td><td>:date[1908-04-17|age]</td><td>118</td><td>8</td><td></td></tr>
+<tr><td>DF</td><td>Gen Fija</td><td>:date[1910-08-09|age]</td><td>51</td><td>0</td><td></td></tr>
+<tr><td>DF</td><td>Genma Nishigawa</td><td>:date[1909-06-02|age]</td><td>75</td><td>0</td><td></td></tr>
+<tr><td>DF</td><td>Kazuyoshi Hiranuma</td><td>:date[1903-01-28|age]</td><td>46</td><td>3</td><td></td></tr>
+<tr><td>MF</td><td>Makoto Kishima</td><td>:date[1905-09-14|age]</td><td>129</td><td>19</td><td></td></tr>
+<tr><td>MF</td><td>Hiro Oshiro</td><td>:date[1913-07-21|age]</td><td>29</td><td>7</td><td></td></tr>
+<tr><td>MF</td><td>Rui Ōe</td><td>:date[1909-02-19|age]</td><td>78</td><td>31</td><td></td></tr>
+<tr><td>MF</td><td>Luca Higashiyama</td><td>:date[1908-05-30|age]</td><td>116</td><td>34</td><td></td></tr>
+<tr><td>MF</td><td>Shō Itoshi</td><td>:date[1908-08-23|age]</td><td>117</td><td>44</td><td></td></tr>
+<tr><td>FW</td><td>Ganzorig Erdene</td><td>:date[1909-03-26|age]</td><td>103</td><td>51</td><td></td></tr>
+<tr><th colspan="6">Substitutes</th></tr>
+<tr><td>GK</td><td>Akihisa Kubo</td><td>:date[1904-06-15|age]</td><td>0</td><td>0</td><td></td></tr>
+<tr><td>DF</td><td>Naoto Umenokōji</td><td>:date[1915-04-05|age]</td><td>2</td><td>0</td><td></td></tr>
+<tr><td>DF</td><td>Daigo Takanashi</td><td>:date[1899-07-08|age]</td><td>132</td><td>5</td><td></td></tr>
+<tr><td>DF</td><td>Aonuma Jingūji</td><td>:date[1896-01-12|age]</td><td>41</td><td>1</td><td></td></tr>
+<tr><td>DF</td><td>Takamasa Hida</td><td>:date[1908-09-03|age]</td><td>0</td><td>0</td><td></td></tr>
+<tr><td>MF</td><td>Ikki Dazai</td><td>:date[1906-05-16|age]</td><td>32</td><td>5</td><td></td></tr>
+<tr><td>MF</td><td>Kiyoshi Torigoe</td><td>:date[1902-03-30|age]</td><td>109</td><td>29</td><td></td></tr>
+<tr><td>MF</td><td>Takeru Mikado</td><td>:date[1897-02-04|age]</td><td>172</td><td>23</td><td></td></tr>
+<tr><td>MF</td><td>Daichi Komatsubara</td><td>:date[1912-06-27|age]</td><td>2</td><td>0</td><td></td></tr>
+<tr><td>MF</td><td>Gaku Ibusuki</td><td>:date[1914-08-11|age]</td><td>26</td><td>5</td><td></td></tr>
+<tr><td>FW</td><td>Hiromu Furuhashi</td><td>:date[1907-04-02|age]</td><td>26</td><td>9</td><td></td></tr>
+</table>
