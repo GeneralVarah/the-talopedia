@@ -1014,30 +1014,106 @@ const ADMIN = REPO.split('/')[0];
 
       if (kind in TEXT) {
         if (kind === 'list') {
+          // A list works as one does in Google Docs. Tab and Shift+Tab nest an item and
+          // bring it back; Shift+Enter is a new line inside the item; Enter splits the
+          // item at the caret, and on an empty item climbs out a level or, from the top,
+          // out of the list. Backspace at an item's start climbs out a level or joins the
+          // item above, and Delete at its end pulls the next one up.
           const ul = el('ul', 'ce-list');
-          const item = (html) => {
+          const levelOf = (li) => +li.dataset.level || 0;
+          const boxOf = (li) => li.querySelector('.ce');
+          /** No deeper than one below the item above, which is as far as markdown can
+              nest, and the first item always at the top. */
+          const tidy = () => {
+            let prev = -1;
+            for (const li of ul.children) {
+              const n = Math.min(levelOf(li), prev + 1, 5);
+              if (n > 0) li.dataset.level = n; else delete li.dataset.level;
+              prev = n;
+            }
+          };
+          const nest = (li, n) => { li.dataset.level = Math.max(0, n); tidy(); sync(); };
+          /** The item out of the list and into a paragraph of its own, the list split
+              around it: Enter on an empty item at the top level, or Backspace at the start
+              of the first item, whose bullet comes off. */
+          const unbullet = (li) => {
+            const rest = [...ul.children].slice([...ul.children].indexOf(li) + 1);
+            const para = block('para', { text: itemMd(boxOf(li)) });
+            b.after(para);
+            if (rest.length) {
+              para.after(block('list', { items: rest.map((x) => itemMd(boxOf(x))), levels: rest.map(levelOf) }));
+              rest.forEach((x) => x.remove());
+            }
+            li.remove();
+            if (!ul.children.length) b.remove();
+            landIn(para.querySelector('.ce'), false);
+            sync();
+          };
+          /** Two items made one: the second's text on the end of the first, caret at the join. */
+          const join = (a, c) => {
+            const into = boxOf(a), from = boxOf(c);
+            if (into.lastChild?.nodeName === 'BR') into.lastChild.remove();
+            into.focus({ preventScroll: true });
+            const at = document.createRange();
+            at.selectNodeContents(into);
+            at.collapse(false);
+            while (from.firstChild) into.append(from.firstChild);
+            c.remove();
+            putRange(at);
+            tidy();
+            sync();
+          };
+          const item = (html, level = 0) => {
             const li = el('li');
-            li.append(editable(html, 'List item', (d) => {
-              const next = item('');
+            if (level > 0) li.dataset.level = level;
+            const box = editable(html, 'List item', (d, e) => {
+              if (e?.shiftKey) { lineBreak(); return; }
+              if (!d.textContent.trim() && !d.querySelector('img')) {
+                if (levelOf(li) > 0) nest(li, levelOf(li) - 1); else unbullet(li);
+                return;
+              }
+              // What follows the caret goes down into a new item, as Enter splits a line.
+              const s = getSelection();
+              if (!s.isCollapsed) document.execCommand('delete');
+              const tail = document.createRange();
+              tail.selectNodeContents(d);
+              tail.setStart(s.focusNode, s.focusOffset);
+              const next = item('', levelOf(li));
+              boxOf(next).append(tail.extractContents());
               li.after(next);
-              next.querySelector('.ce').focus();
+              landIn(boxOf(next), false);
               sync();
-            }));
+            });
+            box.addEventListener('keydown', (e) => {
+              if (e.isComposing || e.ctrlKey || e.metaKey || e.altKey) return;
+              if (e.key === 'Tab') { e.preventDefault(); nest(li, levelOf(li) + (e.shiftKey ? -1 : 1)); return; }
+              if (!getSelection().isCollapsed) return;
+              if (e.key === 'Backspace' && caretEdges(box).atStart) {
+                e.preventDefault();
+                if (levelOf(li) > 0) nest(li, levelOf(li) - 1);
+                else if (li.previousElementSibling) join(li.previousElementSibling, li);
+                else unbullet(li);
+              } else if (e.key === 'Delete' && li.nextElementSibling && caretEdges(box).atEnd) {
+                e.preventDefault();
+                join(li, li.nextElementSibling);
+              }
+            });
+            li.append(box);
             // Its own remove button. The only one before this was the block's, out in
             // the gutter, so reaching for it took the whole list rather than the line.
-            const x = el('button', 'li-x', '\u2715');
+            const x = el('button', 'li-x', '✕');
             x.type = 'button';
             x.title = 'Remove this item';
             x.onmousedown = (e) => e.preventDefault();
             x.onclick = () => {
-              const last = ul.querySelectorAll('li').length <= 1;
-              if (last) b.remove(); else li.remove();
+              if (ul.children.length <= 1) b.remove(); else { li.remove(); tidy(); }
               sync();
             };
             li.append(x);
             return li;
           };
-          (data.items?.length ? data.items : ['']).forEach((i) => ul.append(item(mdToHtml(i))));
+          (data.items?.length ? data.items : ['']).forEach((i, n) => ul.append(item(mdToHtml(i), data.levels?.[n] || 0)));
+          tidy();
           b.append(ul);
         } else {
           const ph = kind === 'section' ? 'Section heading'
@@ -1256,6 +1332,127 @@ const ADMIN = REPO.split('/')[0];
       return out === '<br>' ? '' : out;
     }
 
+    /* ---------- the caret, between boxes ----------
+       Each paragraph, heading and list item is an editing box of its own, and a browser
+       will not carry the caret out of one box into the next. The arrow keys do it here,
+       so the body reads as one document, as in Google Docs: Up and Down at a box's first
+       or last line, Left and Right at its very start or end. A table steers itself and
+       hands over at its edges. */
+    function putRange(r) { const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+    /**
+     * Whether anything of the box lies before the caret, or after it. A line break or a
+     * picture counts as well as a letter; the one <br> a browser leaves at the end of a
+     * box to hold an empty last line open does not, because nothing shows for it.
+     */
+    function caretEdges(box) {
+      const s = getSelection();
+      const some = (r, tail) => {
+        const f = r.cloneContents();
+        if (tail && f.lastChild?.nodeName === 'BR') f.lastChild.remove();
+        return !!(f.textContent || f.querySelector('br, img'));
+      };
+      const before = document.createRange(), after = document.createRange();
+      before.selectNodeContents(box); before.setEnd(s.focusNode, s.focusOffset);
+      after.selectNodeContents(box); after.setStart(s.focusNode, s.focusOffset);
+      return { atStart: !some(before, false), atEnd: !some(after, true) };
+    }
+    /** Where the caret stands across the page, for keeping to a column line to line. */
+    function caretLeft(box) {
+      const r = getSelection().getRangeAt(0).getBoundingClientRect();
+      return r.left || r.width ? r.left : box.getBoundingClientRect().left + 1;
+    }
+    /** How far into the box the caret is, line breaks counted. One place in a page can
+        be written two ways (after a word, or after the element holding it), and this
+        reads both the same, which comparing them raw does not. */
+    function caretOffset(box) {
+      const s = getSelection();
+      const r = document.createRange();
+      r.selectNodeContents(box);
+      r.setEnd(s.focusNode, s.focusOffset);
+      return r.toString().length + r.cloneContents().querySelectorAll('br').length;
+    }
+    /** How far down the page the caret's line is, or null where the browser gives it no
+        box. Where it sits between elements, the line of the one beside it is used. */
+    function caretY() {
+      const r = getSelection().getRangeAt(0);
+      let rect = r.getClientRects()[0];
+      if (!rect && r.startContainer.nodeType === 1) {
+        const before = r.startContainer.childNodes[r.startOffset - 1];
+        const n = before || r.startContainer.childNodes[r.startOffset];
+        if (n) {
+          const around = document.createRange();
+          around.selectNode(n);
+          rect = [...around.getClientRects()].at(before ? -1 : 0);
+        }
+      }
+      return rect && rect.height ? rect.top + rect.height / 2 : null;
+    }
+    /**
+     * Up or down a line inside the box, as the arrow keys move; false when the caret is
+     * already on its first or last line. On a Mac, Up on the first line runs the caret to
+     * the start of it rather than refusing, so a move counts only if the line changed.
+     */
+    function lineWithin(box, back) {
+      const s = getSelection();
+      const was = s.getRangeAt(0).cloneRange(), from = caretOffset(box), y0 = caretY();
+      s.modify('move', back ? 'backward' : 'forward', 'line');
+      const y1 = caretY();
+      const changed = y0 != null && y1 != null ? Math.abs(y1 - y0) > 2 : caretOffset(box) !== from;
+      if (box.contains(s.focusNode) && changed) return true;
+      putRange(was);
+      return false;
+    }
+    /**
+     * The caret into a box: at its end or its start, or given a point across, as near to
+     * it as it gets on the box's last line or first. A box in a table means the table's
+     * bottom or top row, in the cell under that point.
+     */
+    function landIn(box, end, x = null) {
+      let target = box;
+      const table = box.closest('.ed-tbl');
+      if (table && x != null) {
+        const rows = table.tBodies[0].rows;
+        const cells = [...(end ? rows[rows.length - 1] : rows[0]).children];
+        const td = cells.find((c) => { const b = c.getBoundingClientRect(); return x >= b.left && x < b.right; }) || cells[0];
+        if (td) target = td.querySelector('.ce');
+      }
+      (table || target).focus({ preventScroll: true });
+      target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      if (x != null) {
+        const b = target.getBoundingClientRect();
+        const hit = document.caretRangeFromPoint?.(
+          Math.min(Math.max(x, b.left + 1), b.right - 1), end ? b.bottom - 3 : b.top + 3);
+        if (hit && target.contains(hit.startContainer)) { putRange(hit); return; }
+      }
+      const r = document.createRange();
+      r.selectNodeContents(target);
+      r.collapse(!end);
+      putRange(r);
+    }
+    body.addEventListener('keydown', (e) => {
+      const step = { ArrowUp: -1, ArrowDown: 1, ArrowLeft: -1, ArrowRight: 1 }[e.key];
+      if (!step || e.defaultPrevented || e.shiftKey || e.altKey || e.ctrlKey || e.metaKey || e.isComposing) return;
+      const box = e.target.closest?.('.ce');
+      if (!box || box.closest('.ed-tbl') || !getSelection().rangeCount) return;
+      const vertical = e.key === 'ArrowUp' || e.key === 'ArrowDown';
+      const x = vertical ? caretLeft(box) : null;
+      if (vertical) {
+        e.preventDefault();
+        if (lineWithin(box, step < 0)) return;
+      } else {
+        if (!getSelection().isCollapsed) return;
+        const edge = caretEdges(box);
+        if (step < 0 ? !edge.atStart : !edge.atEnd) return;
+        e.preventDefault();
+      }
+      const stops = [...body.querySelectorAll('.ce')];
+      const next = stops[stops.indexOf(box) + step];
+      if (next) landIn(next, step < 0, x);
+    });
+    /** A list item's text as saved: a line break inside it kept as <br>, and the one a
+        browser leaves at the end to hold an empty line open dropped. */
+    const itemMd = (box) => htmlToMd(box, '<br>').replace(/(\s*<br>\s*)+$/, '').trim();
+
     /**
      * A table, edited the way Google Docs edits one. Tab and Shift+Tab walk the cells,
      * and Tab past the last adds a row. The arrow keys move through a cell's text and
@@ -1307,7 +1504,6 @@ const ADMIN = REPO.split('/')[0];
       };
 
       /* ---------- the caret ---------- */
-      const put = (r) => { const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
       /**
        * The caret into a cell, at its end or its start. Given a point across, it lands as
        * near to it as it can on the cell's last line or first, which is where Up and Down
@@ -1321,44 +1517,12 @@ const ADMIN = REPO.split('/')[0];
           const b = box.getBoundingClientRect();
           const hit = document.caretRangeFromPoint?.(
             Math.min(Math.max(x, b.left + 1), b.right - 1), end ? b.bottom - 3 : b.top + 3);
-          if (hit && box.contains(hit.startContainer)) { put(hit); return; }
+          if (hit && box.contains(hit.startContainer)) { putRange(hit); return; }
         }
         const r = document.createRange();
         r.selectNodeContents(box);
         r.collapse(!end);
-        put(r);
-      };
-      /**
-       * Whether anything of the cell lies before the caret, or after it. A line break or a
-       * picture counts as well as a letter; the one <br> a browser leaves at the end of a
-       * cell to hold an empty last line open does not, because nothing shows for it.
-       */
-      const edges = (box) => {
-        const s = getSelection();
-        const some = (r, tail) => {
-          const f = r.cloneContents();
-          if (tail && f.lastChild?.nodeName === 'BR') f.lastChild.remove();
-          return !!(f.textContent || f.querySelector('br, img'));
-        };
-        const before = document.createRange(), after = document.createRange();
-        before.selectNodeContents(box); before.setEnd(s.focusNode, s.focusOffset);
-        after.selectNodeContents(box); after.setStart(s.focusNode, s.focusOffset);
-        return { atStart: !some(before, false), atEnd: !some(after, true) };
-      };
-      /** Up or down a line inside the cell, as the arrow keys move; false at its edge. */
-      const lineMove = (box, dir) => {
-        const s = getSelection();
-        const was = s.getRangeAt(0).cloneRange();
-        s.modify('move', dir, 'line');
-        const moved = !(s.focusNode === was.endContainer && s.focusOffset === was.endOffset);
-        if (moved && box.contains(s.focusNode)) return true;
-        put(was);
-        return false;
-      };
-      /** Where the caret stands across the page, for keeping to a column row to row. */
-      const caretX = (box) => {
-        const r = getSelection().getRangeAt(0).getBoundingClientRect();
-        return r.left || r.width ? r.left : box.getBoundingClientRect().left + 1;
+        putRange(r);
       };
       /** The cell a row up or down from this one, under the given point across. */
       const verticalFrom = (td, down, x) => {
@@ -1381,7 +1545,7 @@ const ADMIN = REPO.split('/')[0];
         const r = document.createRange();
         r.selectNodeContents(box);
         r.collapse(down);
-        put(r);
+        putRange(r);
         box.scrollIntoView({ block: 'nearest' });
       };
 
@@ -1488,7 +1652,7 @@ const ADMIN = REPO.split('/')[0];
         const box = (near && near.isConnected ? near : body.firstElementChild).querySelector('.ce');
         if (box) {
           box.closest('[contenteditable="true"]')?.focus({ preventScroll: true });
-          const r = document.createRange(); r.selectNodeContents(box); r.collapse(false); put(r);
+          const r = document.createRange(); r.selectNodeContents(box); r.collapse(false); putRange(r);
         }
       };
       /** Into the cell at a spot once the table has changed, or the nearest one left. */
@@ -1647,14 +1811,14 @@ const ADMIN = REPO.split('/')[0];
         if (e.key === 'Backspace' || e.key === 'Delete') {
           // At the edge of a cell there is nothing of this cell left to delete, and the
           // browser would start taking the table apart instead.
-          if (s.isCollapsed && edges(box)[e.key === 'Backspace' ? 'atStart' : 'atEnd']) e.preventDefault();
+          if (s.isCollapsed && caretEdges(box)[e.key === 'Backspace' ? 'atStart' : 'atEnd']) e.preventDefault();
           return;
         }
         if (!move || !bare) return;
 
         const vertical = move[0] !== 0;
         const back = move[0] < 0 || move[1] < 0;
-        const x = caretX(box);
+        const x = caretLeft(box);
         const beyond = () => {
           if (vertical) return verticalFrom(td, !back, x);
           const cells = order();
@@ -1677,13 +1841,13 @@ const ADMIN = REPO.split('/')[0];
 
         if (vertical) {
           e.preventDefault();
-          if (lineMove(box, back ? 'backward' : 'forward')) return;
+          if (lineWithin(box, back)) return;
           const next = beyond();
           if (next) enter(next, back, x); else leave(!back);
           return;
         }
         if (!s.isCollapsed) return;                   // the browser collapses a selection first
-        const at = edges(box);
+        const at = caretEdges(box);
         if (back ? !at.atStart : !at.atEnd) return;   // within the text: the browser's own move
         e.preventDefault();
         const next = beyond();
@@ -1843,12 +2007,16 @@ const ADMIN = REPO.split('/')[0];
                 ? text : { text, ...(cs > 1 && { colspan: cs }), ...(rs > 1 && { rowspan: rs }), head };
             })),
         };
-        if (kind === 'list') return {
-          kind,
-          // Every item, empty ones included: this is what undo restores, and dropping
-          // them here made the history disagree with what is on screen.
-          items: [...b.querySelectorAll('li .ce')].map((d) => htmlToMd(d).trim()),
-        };
+        if (kind === 'list') {
+          const lis = [...b.querySelectorAll('li')];
+          return {
+            kind,
+            // Every item, empty ones included: this is what undo restores, and dropping
+            // them here made the history disagree with what is on screen.
+            items: lis.map((li) => itemMd(li.querySelector('.ce'))),
+            levels: lis.map((li) => +li.dataset.level || 0),
+          };
+        }
         return { kind, text: htmlToMd(b.querySelector('.ce')).trim() };
       });
     }
@@ -2044,7 +2212,11 @@ const ADMIN = REPO.split('/')[0];
         if (b.kind === 'section') return '## ' + b.text;
         if (b.kind === 'subsection') return '### ' + b.text;
         if (b.kind === 'para') return b.text;
-        if (b.kind === 'list') return b.items.filter(Boolean).map((i) => '- ' + i).join('\n');
+        if (b.kind === 'list') {
+          // Two spaces deeper for each level, which markdown reads as the list below.
+          return b.items.map((t, i) => [t, b.levels?.[i] || 0]).filter(([t]) => t)
+            .map(([t, lv]) => '  '.repeat(lv) + '- ' + t).join('\n');
+        }
         if (b.kind === 'image') return b.src ? fig(b) : '';
         if (b.kind === 'float') {
           if (!b.src) return '';
@@ -2137,8 +2309,17 @@ const ADMIN = REPO.split('/')[0];
             rows: t.split('\n').filter((l) => !/^\|[\s|:-]+\|$/.test(l)).map((l) =>
               l.replace(/^\||\|$/g, '').split(/(?<!\\)\|/).map((s) => s.trim().replace(/\\\|/g, '|'))),
           });
-        } else if (t.split('\n').every((l) => l.startsWith('- '))) {
-          blocks.push({ kind: 'list', items: t.split('\n').map((l) => l.slice(2)) });
+        } else if (t.split('\n').every((l) => /^ *- /.test(l))) {
+          // An item two or four spaces deeper than the one above is one level below it.
+          const stack = [], items = [], levels = [];
+          for (const l of t.split('\n')) {
+            const ind = l.length - l.trimStart().length;
+            while (stack.length && stack[stack.length - 1] >= ind) stack.pop();
+            levels.push(stack.length);
+            stack.push(ind);
+            items.push(l.trimStart().slice(2));
+          }
+          blocks.push({ kind: 'list', items, levels });
         } else blocks.push({ kind: 'para', text: t.replace(/\n/g, ' ') });
       }
       return blocks;
@@ -4698,6 +4879,12 @@ const ADMIN = REPO.split('/')[0];
     .blk-subsection .ce { font: 700 17px/1.3 var(--body); }
     .ce-list { margin: 0; padding-left: 22px; }
     .ce-list li { margin: 3px 0; position: relative; padding-right: 26px; }
+    /* A nested item, as the page shows it: a step in, and the bullet changes. */
+    .ce-list li[data-level="1"] { margin-left: 24px; list-style-type: circle; }
+    .ce-list li[data-level="2"] { margin-left: 48px; list-style-type: square; }
+    .ce-list li[data-level="3"] { margin-left: 72px; }
+    .ce-list li[data-level="4"] { margin-left: 96px; list-style-type: circle; }
+    .ce-list li[data-level="5"] { margin-left: 120px; list-style-type: square; }
     .li-x {
       position: absolute; top: 0; right: 0; font: 11px/1 var(--body);
       color: var(--muted); background: var(--lift); border: 1px solid var(--rule);

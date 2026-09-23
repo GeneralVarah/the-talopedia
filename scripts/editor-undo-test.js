@@ -214,6 +214,67 @@
     choose(1, 0, 'Delete table');
     ok('delete table', !document.querySelector('.ed-tbl'), !!document.querySelector('.ed-tbl'));
 
+    // Lists, the Google Docs way.
+    const L = () => [...document.querySelectorAll('.ce-list')].at(-1);
+    const lis = () => [...L().children];
+    const liText = (i) => lis()[i].querySelector('.ce').textContent;
+    const liLvl = (i) => +lis()[i].dataset.level || 0;
+    const inLi = () => {
+      const n = getSelection().focusNode, e = n?.nodeType === 1 ? n : n?.parentElement, li = e?.closest('.ce-list li');
+      return li && L().contains(li) ? lis().indexOf(li) : -1;
+    };
+    const press = (k, extra = {}) => {
+      const ev = new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true, ...extra });
+      document.activeElement.dispatchEvent(ev);
+      return ev.defaultPrevented;
+    };
+    const caretAt = (i, end = true, offset = null) => {
+      const box = lis()[i].querySelector('.ce'); box.focus();
+      const r = document.createRange();
+      if (offset != null) r.setStart(box.firstChild, offset); else r.selectNodeContents(box);
+      r.collapse(offset != null ? true : !end);
+      getSelection().removeAllRanges(); getSelection().addRange(r);
+    };
+    const mdNow = () => $('#preview').textContent;
+    focusEnd(paras()[0]);
+    document.querySelector('[data-add="list"]').click();
+    await sleep(50);
+    type('one'); press('Enter'); type('two');
+    ok('Enter makes the next item', lis().length === 2 && liText(1) === 'two' && inLi() === 1, lis().map((li) => li.textContent));
+    press('Tab');
+    ok('Tab nests it', liLvl(1) === 1, liLvl(1));
+    ok('saved as a nested list', mdNow().includes('- one\n  - two'), (mdNow().match(/- one[\s\S]{0,20}/) || [''])[0]);
+    press('Tab', { shiftKey: true });
+    ok('Shift+Tab brings it back out', liLvl(1) === 0, liLvl(1));
+    caretAt(0); press('Tab');
+    ok('the first item cannot nest under nothing', liLvl(0) === 0, liLvl(0));
+    caretAt(1); press('Tab');
+    press('Enter', { shiftKey: true }); type('more');
+    ok('Shift+Enter is a new line in the same item', lis().length === 2 && !!lis()[1].querySelector('.ce br'), lis().map((li) => li.querySelector('.ce').innerHTML));
+    ok('saved as a line break inside the item', mdNow().includes('  - two<br>more'), (mdNow().match(/- two[\s\S]{0,20}/) || [''])[0]);
+    caretAt(0, true, 1); press('Enter');
+    ok('Enter mid-item splits it at the caret', liText(0) === 'o' && liText(1) === 'ne' && inLi() === 1, lis().map((li) => li.textContent));
+    caretAt(1, false); press('Backspace');
+    ok('Backspace at an item start joins it to the one above', lis().length === 2 && liText(0) === 'one', lis().map((li) => li.textContent));
+    caretAt(1, false); press('Backspace');
+    ok('Backspace at a nested item start brings it out a level', liLvl(1) === 0 && lis().length === 2, liLvl(1));
+    caretAt(1, true); press('Tab'); press('Enter');
+    ok('Enter at the end starts an empty item at the same level', lis().length === 3 && liLvl(2) === 1 && liText(2) === '', [lis().length, liLvl(2)]);
+    press('Enter');
+    ok('Enter on an empty nested item climbs out a level', lis().length === 3 && liLvl(2) === 0, [lis().length, liLvl(2)]);
+    press('Enter');
+    ok('and on an empty top-level item leaves the list', lis().length === 2 && document.activeElement.closest('[data-kind]')?.dataset.kind === 'para', [lis().length, document.activeElement.closest('[data-kind]')?.dataset.kind]);
+    caretAt(0, true); press('ArrowDown');
+    ok('Down goes to the next item', inLi() === 1, inLi());
+    press('ArrowUp');
+    ok('Up comes back', inLi() === 0, inLi());
+    caretAt(0, false); press('ArrowLeft');
+    ok('Left at the first item goes to the paragraph above', inLi() === -1 && document.activeElement.closest('[data-kind]')?.dataset.kind === 'para', document.activeElement.closest('[data-kind]')?.dataset.kind);
+    caretAt(1); press('Tab', { shiftKey: true }); press('Tab'); await sleep(1100); undo();
+    ok('undo takes a nesting back', liLvl(1) === 0, liLvl(1));
+    redo();
+    ok('and redo keeps it', liLvl(1) === 1, liLvl(1));
+
     // The medals sit in their own icons group, first after the arrows, and go in
     // without the white edge a flag gets.
     await new Promise((r) => setTimeout(r, 300));
