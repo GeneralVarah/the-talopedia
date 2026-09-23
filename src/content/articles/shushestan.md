@@ -5,7 +5,7 @@ romaji: "Ostān-e Shushestān"
 type: subdivision
 nation: varahmehr
 infobox:
-  - { image: "https://ibb.co/hRCMF21d", caption: "Flag of Shushestan" }
+  - { image: "https://i.ibb.co/QFXcvYjH/Shushestan-flag.png", caption: "Flag of Shushestan" }
   - { section: "Geography" }
   - { label: "Country", value: "[[varahmehr]]" }
   - { label: "Capital", value: "Shushabad" }
