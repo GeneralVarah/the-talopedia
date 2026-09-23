@@ -8,7 +8,7 @@ infobox:
   - { label: "Class", value: "Group 1" }
   - { label: "Location", value: "[[aulot-racecourse]]" }
   - { label: "Country", value: ":flag[karjania]  [[karjania]]" }
-  - { label: "Inaugurated", value: "1900" }
+  - { label: "Inaugurated", value: ":date[1900-05-27]" }
   - { label: "Race type", value: "Harness" }
   - { section: "Race information" }
   - { label: "Surface", value: "Dirt" }

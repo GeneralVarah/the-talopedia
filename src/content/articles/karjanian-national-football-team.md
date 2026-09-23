@@ -15,7 +15,7 @@ infobox:
   - { section: "First International" }
   - value:
       - ":flag[karjania] Karjania 3-5 Rudania :flag[rudania]"
-      - "(March 17, 1897)"
+      - "(March 17, 1887)"
   - { section: "Biggest Win" }
   - value:
       - ":img[/assets/flags/frederikka-islands.png] Frederikka Islands 0-18 Karjania :flag[karjania]"

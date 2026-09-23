@@ -22,7 +22,7 @@ infobox:
   - { label: "Most Races", value: ":flag[karjania]  Pohjantuuli (21)" }
 ---
 
-Åulot Racecourse is a horse racing venue in Åulot, in the North Routanmaa region of [[karjania]] opened in 1879, and known for hosting the Karjanmaa-Ajo, one of the most prestigious harness racing events in [[evria]]. It has a capacity for over 40,000 spectators, and stabling for over 300 horses.  It is used only for harness racing events.
+Åulot Racecourse is a horse racing venue in Åulot, in the North Routanmaa region of [[karjania]] opened in 1879, and known for hosting the [[karjanmaa-ajo]], one of the most prestigious harness racing events in [[evria]]. It has a capacity for over 40,000 spectators, and stabling for over 300 horses.  It is used only for harness racing events.
 
 ## History
 
