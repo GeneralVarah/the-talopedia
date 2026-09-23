@@ -594,11 +594,9 @@ const ADMIN = REPO.split('/')[0];
         while (table.tBodies[0].rows.length <= r0 + r) table._addRow();
         const tr = table.tBodies[0].rows[r0 + r];
         for (let c = 0; c < grid[r].length; c++) {
-          while ([...tr.children].filter((x) => !x.classList.contains('row-x')).length <= c0 + c) {
-            table._addCol();
-          }
+          while (tr.children.length <= c0 + c) table._addCol();
           const td = tr.children[c0 + c];
-          if (!td || td.classList.contains('row-x')) continue;
+          if (!td) continue;
           td.querySelector('.ce').innerHTML = mdToHtml(grid[r][c].trim());
         }
       }
@@ -1228,7 +1226,6 @@ const ADMIN = REPO.split('/')[0];
         grid[r] ??= [];
         let c = 0;
         for (const td of [...tr.children]) {
-          if (td.classList.contains('row-x')) continue;
           while (grid[r][c]) c++;
           for (let i = 0; i < (td.rowSpan || 1); i++) {
             grid[r + i] ??= [];
@@ -1258,23 +1255,447 @@ const ADMIN = REPO.split('/')[0];
       return out === '<br>' ? '' : out;
     }
 
+    /**
+     * A table, edited the way Google Docs edits one. Tab and Shift+Tab walk the cells,
+     * and Tab past the last adds a row. The arrow keys move through a cell's text and
+     * on into the next cell at its edge. Dragging across cells, or Shift with a click or
+     * an arrow key at a cell's edge, selects whole cells. Rows, columns, merging and the
+     * header band are on the right-click menu. The whole table is one editing host, so a
+     * selection can run across cells and copy as a grid; each cell's text lives in its
+     * .ce box, which is what is saved.
+     */
     function tableEditor(rows) {
       const wrap = el('div', 'tbl-wrap');
       const table = el('table', 'ed-tbl');
       table.contentEditable = 'true';
       table.spellcheck = false;
       table.addEventListener('input', sync);
-      table.addEventListener('keydown', (e) => {
-        // Enter adds a line inside the cell; these hold lists of names.
-        if (e.key === 'Enter') { e.preventDefault(); lineBreak(); }
+      const tbody = el('tbody');
+      table.append(tbody);
+
+      const cell = (tag, html, colspan = 1, rowspan = 1) => {
+        const c = el(tag);
+        if (colspan > 1) c.colSpan = colspan;
+        if (rowspan > 1) c.rowSpan = rowspan;
+        const inner = el('div', 'ce');
+        inner.innerHTML = html || '';
+        c.append(inner);
+        return c;
+      };
+      const boxOf = (td) => td.querySelector('.ce');
+
+      /* ---------- the grid ---------- */
+      const grid = () => tableGrid(tbody);
+      const width = () => grid().reduce((w, r) => Math.max(w, r.length), 0);
+      /** Where every cell sits: its first row and column and its last, in reading order. */
+      const spots = (g = grid()) => {
+        const m = new Map();
+        g.forEach((row, r) => row.forEach((td, c) => {
+          if (!td) return;
+          const s = m.get(td);
+          if (!s) m.set(td, { r, c, r2: r, c2: c });
+          else { s.r2 = Math.max(s.r2, r); s.c2 = Math.max(s.c2, c); }
+        }));
+        return m;
+      };
+      const order = () => [...spots().keys()];
+      const cellOf = (n) => {
+        const e = n?.nodeType === 1 ? n : n?.parentElement;
+        const td = e?.closest?.('td, th');
+        return td && tbody.contains(td) ? td : null;
+      };
+
+      /* ---------- the caret ---------- */
+      const put = (r) => { const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+      /**
+       * The caret into a cell, at its end or its start. Given a point across, it lands as
+       * near to it as it can on the cell's last line or first, which is where Up and Down
+       * leave it in running text.
+       */
+      const enter = (td, end, x = null) => {
+        const box = boxOf(td);
+        if (document.activeElement !== table) table.focus({ preventScroll: true });
+        td.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        if (x != null) {
+          const b = box.getBoundingClientRect();
+          const hit = document.caretRangeFromPoint?.(
+            Math.min(Math.max(x, b.left + 1), b.right - 1), end ? b.bottom - 3 : b.top + 3);
+          if (hit && box.contains(hit.startContainer)) { put(hit); return; }
+        }
+        const r = document.createRange();
+        r.selectNodeContents(box);
+        r.collapse(!end);
+        put(r);
+      };
+      /**
+       * Whether anything of the cell lies before the caret, or after it. A line break or a
+       * picture counts as well as a letter; the one <br> a browser leaves at the end of a
+       * cell to hold an empty last line open does not, because nothing shows for it.
+       */
+      const edges = (box) => {
+        const s = getSelection();
+        const some = (r, tail) => {
+          const f = r.cloneContents();
+          if (tail && f.lastChild?.nodeName === 'BR') f.lastChild.remove();
+          return !!(f.textContent || f.querySelector('br, img'));
+        };
+        const before = document.createRange(), after = document.createRange();
+        before.selectNodeContents(box); before.setEnd(s.focusNode, s.focusOffset);
+        after.selectNodeContents(box); after.setStart(s.focusNode, s.focusOffset);
+        return { atStart: !some(before, false), atEnd: !some(after, true) };
+      };
+      /** Up or down a line inside the cell, as the arrow keys move; false at its edge. */
+      const lineMove = (box, dir) => {
+        const s = getSelection();
+        const was = s.getRangeAt(0).cloneRange();
+        s.modify('move', dir, 'line');
+        const moved = !(s.focusNode === was.endContainer && s.focusOffset === was.endOffset);
+        if (moved && box.contains(s.focusNode)) return true;
+        put(was);
+        return false;
+      };
+      /** Where the caret stands across the page, for keeping to a column row to row. */
+      const caretX = (box) => {
+        const r = getSelection().getRangeAt(0).getBoundingClientRect();
+        return r.left || r.width ? r.left : box.getBoundingClientRect().left + 1;
+      };
+      /** The cell a row up or down from this one, under the given point across. */
+      const verticalFrom = (td, down, x) => {
+        const g = grid(), at = spots(g).get(td);
+        const row = g[down ? at.r2 + 1 : at.r - 1];
+        if (!row) return null;
+        const cells = [...new Set(row)].filter(Boolean);
+        return cells.find((c) => { const b = c.getBoundingClientRect(); return x >= b.left && x < b.right; })
+          || row[Math.min(at.c, row.length - 1)];
+      };
+      /** Out of the table, into the block above or below; one below is made if none. */
+      const leave = (down) => {
+        const blk = wrap.closest('[data-kind]');
+        let next = down ? blk.nextElementSibling : blk.previousElementSibling;
+        if (!next && down) { next = block('para'); blk.after(next); sync(); }
+        const boxes = next ? [...next.querySelectorAll('.ce')] : [];
+        const box = down ? boxes[0] : boxes.at(-1);
+        if (!box) return;
+        box.closest('[contenteditable="true"]')?.focus({ preventScroll: true });
+        const r = document.createRange();
+        r.selectNodeContents(box);
+        r.collapse(down);
+        put(r);
+        box.scrollIntoView({ block: 'nearest' });
+      };
+
+      /* ---------- whole cells selected ---------- */
+      let span = null;               // { a, b }: the cell it began in and the one it reaches
+      /** The rectangle between two cells, grown over any merged cell it would cut. */
+      const rect = (a, b, sp = spots()) => {
+        const p = sp.get(a), q = sp.get(b);
+        let r1 = Math.min(p.r, q.r), c1 = Math.min(p.c, q.c);
+        let r2 = Math.max(p.r2, q.r2), c2 = Math.max(p.c2, q.c2);
+        for (let grew = true; grew;) {
+          grew = false;
+          for (const s of sp.values()) {
+            if (s.r > r2 || s.r2 < r1 || s.c > c2 || s.c2 < c1) continue;
+            if (s.r < r1) { r1 = s.r; grew = true; }
+            if (s.r2 > r2) { r2 = s.r2; grew = true; }
+            if (s.c < c1) { c1 = s.c; grew = true; }
+            if (s.c2 > c2) { c2 = s.c2; grew = true; }
+          }
+        }
+        return { r1, c1, r2, c2 };
+      };
+      const inside = (box, sp = spots()) => [...sp]
+        .filter(([, s]) => s.r >= box.r1 && s.r2 <= box.r2 && s.c >= box.c1 && s.c2 <= box.c2)
+        .map(([td]) => td);
+      const picked = () => (span ? inside(rect(span.a, span.b)) : []);
+      const paint = () => {
+        const on = new Set(picked());
+        for (const td of tbody.querySelectorAll('td, th')) td.classList.toggle('cell-sel', on.has(td));
+        table.classList.toggle('cell-mode', on.size > 1);
+      };
+      const spanTo = (a, b) => { span = a && b && a !== b ? { a, b } : null; paint(); };
+      const drop = () => { if (span) spanTo(null); };
+
+      let pressed = null;
+      table.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        const td = cellOf(e.target);
+        if (!td) return;
+        // Shift-click reaches from where the caret is, as dragging does.
+        const from = span?.a || cellOf(getSelection().anchorNode);
+        if (e.shiftKey && from && from !== td) { e.preventDefault(); spanTo(from, td); return; }
+        drop();
+        pressed = td;
       });
+      table.addEventListener('mouseover', (e) => {
+        if (!pressed || !(e.buttons & 1)) return;
+        const td = cellOf(e.target);
+        if (td) spanTo(pressed, td);
+      });
+
+      /* ---------- rows and columns ---------- */
+      /** A new row at `at`: a cell per column, except where a merged cell runs across
+          the gap, which grows over the new row instead. */
+      const addRowAt = (at) => {
+        const g = grid(), w = width(), tr = el('tr'), grown = new Set();
+        for (let c = 0; c < w; c++) {
+          const above = g[at - 1]?.[c], below = g[at]?.[c];
+          if (above && above === below) {
+            if (!grown.has(above)) { above.rowSpan += 1; grown.add(above); }
+            continue;
+          }
+          tr.append(cell('td', ''));
+        }
+        tbody.insertBefore(tr, tbody.rows[at] || null);
+      };
+      /** A new column at `at`, the same way across. A row holds only the cells that
+          begin in it, so the new one goes before the first of those beyond the gap. */
+      const addColAt = (at) => {
+        const g = grid(), sp = spots(g), grown = new Set();
+        [...tbody.rows].forEach((tr, r) => {
+          const left = g[r]?.[at - 1], right = g[r]?.[at];
+          if (left && left === right) {
+            if (!grown.has(left)) { left.colSpan += 1; grown.add(left); }
+            return;
+          }
+          const fresh = cell((right || left)?.tagName === 'TH' ? 'th' : 'td', '');
+          tr.insertBefore(fresh, [...tr.children].find((td) => sp.get(td).c >= at) || null);
+        });
+      };
+      /** A row gone. A merged cell that begins in it moves down into the next row. */
+      const deleteRow = (r) => {
+        const g = grid(), sp = spots(g), tr = tbody.rows[r], next = tbody.rows[r + 1];
+        for (const td of new Set(g[r])) {
+          if (!td || td.rowSpan < 2) continue;
+          td.rowSpan -= 1;
+          const s = sp.get(td);
+          if (s.r === r && next) next.insertBefore(td, [...next.children].find((x) => sp.get(x).c > s.c) || null);
+        }
+        tr.remove();
+      };
+      const deleteCol = (c) => {
+        for (const td of new Set(grid().map((row) => row[c]))) {
+          if (!td) continue;
+          if (td.colSpan > 1) td.colSpan -= 1; else td.remove();
+        }
+      };
+      const deleteTable = () => {
+        const blk = wrap.closest('[data-kind]');
+        const near = blk.previousElementSibling || blk.nextElementSibling;
+        blk.remove();
+        if (!body.children.length) body.append(block('para'));
+        sync();
+        const box = (near && near.isConnected ? near : body.firstElementChild).querySelector('.ce');
+        if (box) {
+          box.closest('[contenteditable="true"]')?.focus({ preventScroll: true });
+          const r = document.createRange(); r.selectNodeContents(box); r.collapse(false); put(r);
+        }
+      };
+      /** Into the cell at a spot once the table has changed, or the nearest one left. */
+      const settle = (r, c) => {
+        const g = grid();
+        const row = g[Math.max(0, Math.min(r, g.length - 1))] || [];
+        const td = row[Math.max(0, Math.min(c, row.length - 1))];
+        if (td) enter(td, true);
+      };
+
+      /** Merged as the smallest rectangle covering the selection. Nothing written is
+          thrown away: what the other cells held is carried over, a line each. */
+      const merge = (box) => {
+        const g = grid(), keep = g[box.r1][box.c1], gone = new Set();
+        for (let r = box.r1; r <= box.r2; r++) {
+          for (let c = box.c1; c <= box.c2; c++) {
+            const td = g[r]?.[c];
+            if (td && td !== keep) gone.add(td);
+          }
+        }
+        const into = boxOf(keep);
+        const blank = (h) => !h || h === '<br>';
+        for (const td of gone) {
+          const html = boxOf(td)?.innerHTML.trim();
+          if (!blank(html)) into.innerHTML = blank(into.innerHTML.trim()) ? html : `${into.innerHTML}<br>${html}`;
+          td.remove();
+        }
+        keep.colSpan = box.c2 - box.c1 + 1;
+        keep.rowSpan = box.r2 - box.r1 + 1;
+      };
+      /** Each slot the merged cell covered gets a cell again, placed after the last cell
+          of its row's own before the gap: shrinking the merged cell shifts the rest left,
+          so the grid is read afresh for every one. */
+      const unmerge = (cells) => {
+        for (const keep of cells.filter((c) => c.colSpan > 1 || c.rowSpan > 1)) {
+          const at = spots().get(keep), cs = keep.colSpan, rs = keep.rowSpan;
+          const tag = keep.tagName.toLowerCase();
+          keep.colSpan = 1; keep.rowSpan = 1;
+          for (let r = at.r; r < at.r + rs; r++) {
+            const tr = tbody.rows[r];
+            if (!tr) continue;
+            for (let c = at.c; c < at.c + cs; c++) {
+              if (r === at.r && c === at.c) continue;
+              const own = [...new Set(grid()[r]?.slice(0, c) || [])]
+                .filter((x) => x && x.parentElement === tr).pop();
+              const fresh = cell(tag, '');
+              if (own) own.after(fresh); else tr.prepend(fresh);
+            }
+          }
+        }
+      };
+      /** A header band can run to several rows, as a two-level column header does. */
+      const setHead = (r1, r2, on) => {
+        for (let r = r1; r <= r2; r++) {
+          for (const td of [...tbody.rows[r].children]) {
+            if ((td.tagName === 'TH') === on) continue;
+            td.replaceWith(cell(on ? 'th' : 'td', boxOf(td)?.innerHTML || '', td.colSpan || 1, td.rowSpan || 1));
+          }
+        }
+      };
+
+      table.addEventListener('contextmenu', (e) => {
+        const td = cellOf(e.target);
+        if (!td) return;
+        e.preventDefault();
+        if (!picked().includes(td)) drop();
+        const cells = span ? picked() : [td];
+        const sp = spots();
+        const box = cells.reduce((b, c) => {
+          const s = sp.get(c);
+          return { r1: Math.min(b.r1, s.r), c1: Math.min(b.c1, s.c), r2: Math.max(b.r2, s.r2), c2: Math.max(b.c2, s.c2) };
+        }, { r1: Infinity, c1: Infinity, r2: -1, c2: -1 });
+        const nr = box.r2 - box.r1 + 1, nc = box.c2 - box.c1 + 1;
+        const head = cells.every((c) => c.tagName === 'TH');
+        const act = (fn) => () => { drop(); fn(); sync(); };
+        pointMenu([
+          { label: 'Insert row above', run: act(() => { addRowAt(box.r1); settle(box.r1, box.c1); }) },
+          { label: 'Insert row below', run: act(() => { addRowAt(box.r2 + 1); settle(box.r2 + 1, box.c1); }) },
+          { label: 'Insert column left', run: act(() => { addColAt(box.c1); settle(box.r1, box.c1); }) },
+          { label: 'Insert column right', run: act(() => { addColAt(box.c2 + 1); settle(box.r1, box.c2 + 1); }) },
+          '-',
+          { label: nr > 1 ? `Delete ${nr} rows` : 'Delete row', run: () => {
+            drop();
+            if (nr >= tbody.rows.length) { deleteTable(); return; }
+            for (let r = box.r2; r >= box.r1; r--) deleteRow(r);
+            sync(); settle(box.r1, box.c1);
+          } },
+          { label: nc > 1 ? `Delete ${nc} columns` : 'Delete column', run: () => {
+            drop();
+            if (nc >= width()) { deleteTable(); return; }
+            for (let c = box.c2; c >= box.c1; c--) deleteCol(c);
+            sync(); settle(box.r1, box.c1);
+          } },
+          { label: 'Delete table', run: () => { drop(); deleteTable(); } },
+          '-',
+          { label: 'Merge cells', off: cells.length < 2, run: act(() => { merge(box); settle(box.r1, box.c1); }) },
+          { label: 'Unmerge cells', off: !cells.some((c) => c.colSpan > 1 || c.rowSpan > 1),
+            run: act(() => { unmerge(cells); settle(box.r1, box.c1); }) },
+          { label: head ? (nr > 1 ? 'Make body rows' : 'Make body row') : (nr > 1 ? 'Make header rows' : 'Make header row'),
+            run: act(() => { setHead(box.r1, box.r2, !head); settle(box.r1, box.c1); }) },
+        ], e.clientX, e.clientY);
+      });
+
+      /* ---------- keys ---------- */
+      const MOVE = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
+      table.addEventListener('keydown', (e) => {
+        if (e.isComposing) return;
+        const s = getSelection();
+        const td = cellOf(s.focusNode);
+        if (!td || !s.rangeCount) return;
+        const box = boxOf(td);
+        const move = MOVE[e.key];
+        const bare = !e.ctrlKey && !e.metaKey && !e.altKey;
+
+        if (span && e.key === 'Tab') drop();          // Tab moves on from whole cells too
+        if (span) {
+          if (move && e.shiftKey && bare) {            // grow the selection a cell at a time
+            e.preventDefault();
+            const g = grid(), at = spots(g).get(span.b);
+            const r = move[0] < 0 ? at.r - 1 : move[0] > 0 ? at.r2 + 1 : at.r;
+            const c = move[1] < 0 ? at.c - 1 : move[1] > 0 ? at.c2 + 1 : at.c;
+            if (g[r]?.[c]) spanTo(span.a, g[r][c]);
+            return;
+          }
+          if (e.key === 'Backspace' || e.key === 'Delete' || (e.key.length === 1 && bare)) {
+            // Deleting empties every selected cell; typing does too, and starts in the
+            // first of them, as a spreadsheet does.
+            e.preventDefault();
+            const cells = picked();
+            cells.forEach((c) => { boxOf(c).innerHTML = ''; });
+            drop();
+            enter(cells[0], false);
+            if (e.key.length === 1) document.execCommand('insertText', false, e.key);
+            else sync();
+            return;
+          }
+          if (move || e.key === 'Escape') {
+            e.preventDefault();
+            const to = span.b;
+            drop();
+            enter(to, true);
+          }
+          return;
+        }
+
+        if (e.key === 'Enter') { e.preventDefault(); lineBreak(); return; }
+        if (e.key === 'Tab' && bare) {
+          e.preventDefault();
+          const cells = order();
+          const i = cells.indexOf(td) + (e.shiftKey ? -1 : 1);
+          if (i < 0) return;
+          if (i >= cells.length) { addRowAt(grid().length); sync(); }
+          enter(order()[i], true);
+          return;
+        }
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+          // At the edge of a cell there is nothing of this cell left to delete, and the
+          // browser would start taking the table apart instead.
+          if (s.isCollapsed && edges(box)[e.key === 'Backspace' ? 'atStart' : 'atEnd']) e.preventDefault();
+          return;
+        }
+        if (!move || !bare) return;
+
+        const vertical = move[0] !== 0;
+        const back = move[0] < 0 || move[1] < 0;
+        const x = caretX(box);
+        const beyond = () => {
+          if (vertical) return verticalFrom(td, !back, x);
+          const cells = order();
+          return cells[cells.indexOf(td) + (back ? -1 : 1)];
+        };
+
+        if (e.shiftKey) {
+          // Within the cell the selection grows as it always has; at its edge it takes
+          // whole cells.
+          const was = [s.anchorNode, s.anchorOffset, s.focusNode, s.focusOffset];
+          s.modify('extend', back ? 'backward' : 'forward', vertical ? 'line' : 'character');
+          const moved = !(s.focusNode === was[2] && s.focusOffset === was[3]);
+          e.preventDefault();
+          if (moved && box.contains(s.focusNode)) return;
+          s.setBaseAndExtent(...was);
+          const next = beyond();
+          if (next) spanTo(cellOf(s.anchorNode) || td, next);
+          return;
+        }
+
+        if (vertical) {
+          e.preventDefault();
+          if (lineMove(box, back ? 'backward' : 'forward')) return;
+          const next = beyond();
+          if (next) enter(next, back, x); else leave(!back);
+          return;
+        }
+        if (!s.isCollapsed) return;                   // the browser collapses a selection first
+        const at = edges(box);
+        if (back ? !at.atStart : !at.atEnd) return;   // within the text: the browser's own move
+        e.preventDefault();
+        const next = beyond();
+        if (next) enter(next, back); else leave(!back);
+      });
+
       table.addEventListener('paste', (e) => {
         const dt = e.clipboardData || window.clipboardData;
         const text = dt.getData('text/plain');
         const html = dt.getData('text/html');
-        const cellEl = getSelection().anchorNode?.parentElement?.closest('td, th');
+        const cellEl = span ? picked()[0] : cellOf(getSelection().anchorNode);
         e.preventDefault();
-        if (cellEl && /[\t\n]/.test(text.trim())) { pasteGrid(cellEl, text); return; }
+        if (cellEl && /[\t\n]/.test(text.trim())) { drop(); pasteGrid(cellEl, text); return; }
         if (html && /data-tok=|data-slug=/.test(html)) {
           document.execCommand('insertHTML', false, keepTokens(html));
           unglue(ceOf(getSelection().anchorNode));
@@ -1286,8 +1707,8 @@ const ADMIN = REPO.split('/')[0];
       // moving a node can no longer drag the caret along with it.
       table.addEventListener('focusout', () => {
         let moved = false;
-        for (const c of table.querySelectorAll('th, td:not(.row-x)')) {
-          const box = c.querySelector('.ce');
+        for (const c of table.querySelectorAll('th, td')) {
+          const box = boxOf(c);
           if (!box) continue;
           const before = [], after = [];
           let seen = false;
@@ -1303,186 +1724,81 @@ const ADMIN = REPO.split('/')[0];
         if (moved) sync();
       });
 
-      const tbody = el('tbody');
-      table.append(tbody);
-
-      const cell = (tag, html, colspan = 1, rowspan = 1) => {
-        const c = el(tag);
-        if (colspan > 1) c.colSpan = colspan;
-        if (rowspan > 1) c.rowSpan = rowspan;
-        // Not editable on its own: the table is the single editing host, so a
-        // selection can run across cells and copy as a grid.
-        const inner = el('div', 'ce');
-        inner.innerHTML = html || '';
-        c.append(inner);
-        return c;
-      };
-
       const addRow = (cells, headRow = false) => {
         const tr = el('tr');
         cells.forEach((v) => tr.append(cell(
           cellHead(v, headRow ? 0 : 1) ? 'th' : 'td',
           mdToHtml(cellText(v)), cellSpan(v, 'colspan'), cellSpan(v, 'rowspan'))));
-        const x = el('td', 'row-x');
-        const btn = el('button', null, '✕'); btn.type = 'button'; btn.title = 'Delete row';
-        btn.onmousedown = (e) => e.preventDefault();
-        btn.onclick = () => { tr.remove(); sync(); };
-        x.append(btn);
-        tr.append(x);
         tbody.append(tr);
-        return tr;
       };
-
       const seed = rows?.length ? rows : [['Column', 'Column'], ['', '']];
       seed.forEach((r, i) => addRow(r, i === 0));
+      table._addRow = () => addRowAt(grid().length);
+      table._addCol = () => addColAt(width());
 
-      // Column count is read off the grid, so a table carrying spans still grows right.
-      const width = () => tableGrid(tbody).reduce((w, r) => Math.max(w, r.length), 0);
-      const addCol = () => [...tbody.rows].forEach((r) => {
-        const head = r.firstElementChild?.tagName === 'TH';
-        r.insertBefore(cell(head ? 'th' : 'td', ''), r.lastElementChild);
-      });
-
-      table._addRow = () => addRow(new Array(width()).fill(''));
-      table._addCol = addCol;
-
-      /* ---------- merging ---------- */
-
-      /** The cells the writer has selected, or the one holding the caret. */
-      const picked = () => {
-        const sel = getSelection();
-        const all = [...tbody.querySelectorAll('td, th')].filter((c) => !c.classList.contains('row-x'));
-        const hit = sel.rangeCount && !sel.isCollapsed ? all.filter((c) => sel.containsNode(c, true)) : [];
-        if (hit.length) return hit;
-        const n = sel.anchorNode;
-        const one = (n?.nodeType === 1 ? n : n?.parentElement)?.closest?.('td, th');
-        return one && !one.classList.contains('row-x') ? [one] : [];
-      };
-
-      /** A selection is merged as the smallest rectangle covering everything in it. */
-      const mergeCells = () => {
-        const chosen = new Set(picked());
-        if (chosen.size < 2) { flash('Select the cells to merge first.', true); return; }
-        const grid = tableGrid(tbody);
-        let r1 = Infinity, c1 = Infinity, r2 = -1, c2 = -1;
-        grid.forEach((row, r) => row.forEach((td, c) => {
-          if (!chosen.has(td)) return;
-          r1 = Math.min(r1, r); c1 = Math.min(c1, c);
-          r2 = Math.max(r2, r); c2 = Math.max(c2, c);
-        }));
-        if (r2 < 0) return;
-        const keep = grid[r1][c1];
-        const gone = new Set();
-        for (let r = r1; r <= r2; r++) {
-          for (let c = c1; c <= c2; c++) {
-            const td = grid[r]?.[c];
-            if (td && td !== keep) gone.add(td);
-          }
+      // Whole cells copy as tab-separated rows, so a table goes straight into a
+      // spreadsheet; cutting them empties them.
+      const tdText = (c) => htmlToMd(boxOf(c), ' ').replace(/\s+/g, ' ').trim();
+      const asTsv = (cells) => {
+        const sp = spots(), rowsOf = new Map();
+        for (const c of cells) {
+          const r = sp.get(c).r;
+          if (!rowsOf.has(r)) rowsOf.set(r, []);
+          rowsOf.get(r).push(c);
         }
-        // Nothing written is thrown away: what the other cells held is carried over.
-        const box = keep.querySelector('.ce');
-        for (const td of gone) {
-          const html = td.querySelector('.ce')?.innerHTML.trim();
-          if (html) box.innerHTML = box.innerHTML.trim() ? `${box.innerHTML}<br>${html}` : html;
-          td.remove();
-        }
-        keep.colSpan = c2 - c1 + 1;
-        keep.rowSpan = r2 - r1 + 1;
-        sync();
+        return [...rowsOf.keys()].sort((a, b) => a - b).map((r) => rowsOf.get(r).map(tdText).join('\t')).join('\n');
       };
-
-      const splitCell = () => {
-        const chosen = picked().filter((c) => c.colSpan > 1 || c.rowSpan > 1);
-        if (!chosen.length) { flash('Put the cursor in a merged cell.', true); return; }
-        const grid = tableGrid(tbody);
-        for (const keep of chosen) {
-          let r1 = Infinity, c1 = Infinity;
-          grid.forEach((row, r) => row.forEach((td, c) => {
-            if (td !== keep) return;
-            r1 = Math.min(r1, r); c1 = Math.min(c1, c);
-          }));
-          const cs = keep.colSpan, rs = keep.rowSpan;
-          keep.colSpan = 1; keep.rowSpan = 1;
-          const tag = keep.tagName.toLowerCase();
-          for (let r = r1; r < r1 + rs; r++) {
-            const tr = tbody.rows[r];
-            if (!tr) continue;
-            // Walk the row's own cells to find where the new one belongs.
-            for (let c = c1; c < c1 + cs; c++) {
-              if (r === r1 && c === c1) continue;
-              const after = tableGrid(tbody)[r]?.slice(0, c).filter((x, i, a) => x && a.indexOf(x) === i).pop();
-              const fresh = cell(tag, '');
-              if (after && after.parentElement === tr) after.after(fresh);
-              else tr.insertBefore(fresh, tr.firstElementChild);
-            }
-          }
-        }
-        sync();
-      };
-
-      /** A header band can run to several rows, as a two-level column header does. */
-      const toggleHead = () => {
-        const chosen = picked();
-        if (!chosen.length) { flash('Put the cursor in the row first.', true); return; }
-        const rowsHit = [...new Set(chosen.map((c) => c.parentElement))];
-        const makeHead = rowsHit.some((tr) => tr.querySelector('td:not(.row-x)'));
-        for (const tr of rowsHit) {
-          for (const td of [...tr.children]) {
-            if (td.classList.contains('row-x')) continue;
-            const want = makeHead ? 'TH' : 'TD';
-            if (td.tagName === want) continue;
-            const fresh = cell(want.toLowerCase(), td.querySelector('.ce')?.innerHTML || '',
-              td.colSpan || 1, td.rowSpan || 1);
-            td.replaceWith(fresh);
-          }
-        }
-        sync();
-      };
-
-      // Selecting across cells and copying yields tab-separated text, so the
-      // table can go straight into a spreadsheet.
-      const asTsv = (sel) => {
-        const out = [];
-        for (const tr of tbody.rows) {
-          const cells = [...tr.children].filter((c) => !c.classList.contains('row-x'));
-          const hit = cells.filter((c) => sel.containsNode(c, true));
-          if (hit.length) out.push(hit.map((c) => tdText(c)).join('\t'));
-        }
-        return out.join('\n');
-      };
-      const tdText = (c) => htmlToMd(c.querySelector('.ce'), ' ').replace(/\s+/g, ' ').trim();
       const onCopy = (e) => {
         const sel = getSelection();
-        if (!sel.rangeCount || sel.isCollapsed) return;
-        const within = table.contains(sel.anchorNode) && table.contains(sel.focusNode);
-        if (!within) return;
-        const startCell = sel.anchorNode.parentElement?.closest('td, th');
-        const endCell = sel.focusNode.parentElement?.closest('td, th');
-        if (startCell && startCell === endCell) return;   // a normal in-cell copy
-        const tsv = asTsv(sel);
-        if (!tsv) return;
+        let cells = picked();
+        if (!cells.length) {
+          if (!sel.rangeCount || sel.isCollapsed) return;
+          if (!table.contains(sel.anchorNode) || !table.contains(sel.focusNode)) return;
+          if (cellOf(sel.anchorNode) === cellOf(sel.focusNode)) return;   // an ordinary copy within a cell
+          cells = order().filter((c) => sel.containsNode(c, true));
+        }
+        if (!cells.length) return;
         e.preventDefault();
-        e.clipboardData.setData('text/plain', tsv);
+        e.clipboardData.setData('text/plain', asTsv(cells));
+        if (e.type === 'cut') {
+          cells.forEach((c) => { boxOf(c).innerHTML = ''; });
+          drop();
+          sync();
+        }
       };
       table.addEventListener('copy', onCopy);
       table.addEventListener('cut', onCopy);
 
-      const bar = el('div', 'tbl-bar');
-      for (const [label, fn] of [
-        ['+ Row', () => { table._addRow(); sync(); }],
-        ['+ Column', () => { addCol(); sync(); }],
-        ['Merge', mergeCells],
-        ['Split', splitCell],
-        ['Header', toggleHead],
-      ]) {
-        const b = el('button', null, label); b.type = 'button';
-        b.onmousedown = (e) => e.preventDefault();
-        b.onclick = fn;
-        bar.append(b);
-      }
-      wrap.append(table, bar);
+      wrap.append(table);
       return wrap;
     }
+
+    /* ---------- a menu at the pointer, which is what right-click gives ---------- */
+    const pointMenu = (() => {
+      const m = el('div', 'drop-menu list point-menu');
+      m.hidden = true;
+      document.body.append(m);
+      const close = () => { m.hidden = true; };
+      addEventListener('mousedown', (e) => { if (!m.hidden && !m.contains(e.target)) close(); }, true);
+      addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); }, true);
+      addEventListener('scroll', (e) => { if (!m.contains(e.target)) close(); }, true);
+      addEventListener('blur', close);
+      return (items, x, y) => {
+        m.innerHTML = '';
+        for (const it of items) {
+          if (it === '-') { m.append(el('div', 'menu-sep')); continue; }
+          const b = el('button', null, it.label);
+          b.type = 'button';
+          b.disabled = !!it.off;
+          b.onmousedown = (e) => e.preventDefault();      // the caret stays in the table
+          b.onclick = () => { close(); it.run(); };
+          m.append(b);
+        }
+        m.hidden = false;
+        m.style.left = `${Math.max(8, Math.min(x, innerWidth - m.offsetWidth - 8))}px`;
+        m.style.top = `${Math.max(8, Math.min(y, innerHeight - m.offsetHeight - 8))}px`;
+      };
+    })();
 
 
     function readBody() {
@@ -1517,7 +1833,7 @@ const ADMIN = REPO.split('/')[0];
         if (kind === 'table') return {
           kind,
           rows: [...b.querySelectorAll('tbody tr')].map((tr, r) =>
-            [...tr.children].filter((c) => !c.classList.contains('row-x')).map((c) => {
+            [...tr.children].map((c) => {
               const text = cellMd(c);
               const head = c.tagName === 'TH', cs = c.colSpan || 1, rs = c.rowSpan || 1;
               // A plain cell stays a plain string, so a table with no spans and one
@@ -4497,23 +4813,16 @@ const ADMIN = REPO.split('/')[0];
     .ed-tbl .ce { min-height: 1lh; }
     .ed-tbl th, .ed-tbl td { border: 1px solid var(--hair); padding: 5px 9px; vertical-align: top; position: relative; min-width: 90px; }
     .ed-tbl th { background: var(--band); font-weight: 700; }
-    .ed-tbl .row-x, .ed-tbl tr:first-child .row-x { border: 0; background: none; min-width: 0; padding: 0 2px; }
-    .ed-tbl .row-x button, .col-x {
-      font-size: 10px; line-height: 1; color: var(--muted); background: none;
-      border: 0; cursor: pointer; padding: 3px 4px; opacity: 0;
-    }
-    .col-x { position: absolute; top: 1px; right: 1px; }
-    .ed-tbl tr:hover .row-x button, .ed-tbl th:hover .col-x { opacity: 1; }
-    .ed-tbl .row-x button:hover, .col-x:hover { color: var(--link-new); }
     .ed-tbl td[rowspan], .ed-tbl th[rowspan] { vertical-align: middle; }
     .ed-tbl th[colspan] { text-align: center; }
     .ed-tbl .ico.sized { display: block; margin: 2px 0 4px; }
-    .tbl-bar { display: flex; gap: 6px; margin-top: 6px; }
-    .tbl-bar button {
-      font: 12px var(--body); color: var(--muted); background: transparent;
-      border: 1px dashed var(--rule); border-radius: 3px; padding: 4px 11px; cursor: pointer;
-    }
-    .tbl-bar button:hover { color: var(--ink); border-style: solid; }
+    /* Whole cells selected, as a block, the way Google Docs shows it. The text highlight
+       and the caret underneath would only muddy it. */
+    .ed-tbl .cell-sel { background: color-mix(in srgb, var(--link) 24%, transparent); }
+    .ed-tbl.cell-mode, .ed-tbl.cell-mode * { caret-color: transparent; }
+    .ed-tbl.cell-mode ::selection { background: transparent; }
+    /* The right-click menu, opened where the pointer is rather than under a button. */
+    .point-menu { position: fixed; top: 0; left: 0; }
 
     /* ---- publish panel ---- */
     .pub-back {

@@ -132,6 +132,88 @@
     const tableMd = $('#preview').textContent.split('\n').filter((l) => l.startsWith('|'));
     ok('a cell emptied by deleting saves blank', tableMd.length > 0 && !tableMd.join('\n').includes('<br>'), tableMd);
 
+    // Tables, edited the way Google Docs edits them.
+    const T = () => document.querySelector('.ed-tbl');
+    const rowsT = () => [...T().tBodies[0].rows];
+    const cellT = (r, c) => rowsT()[r].querySelectorAll('td, th')[c];
+    const widthT = () => Math.max(...rowsT().map((tr) => [...tr.children].reduce((w, td) => w + (td.colSpan || 1), 0)));
+    const where = () => {
+      const n = getSelection().focusNode, e = n?.nodeType === 1 ? n : n?.parentElement, td = e?.closest('td, th');
+      return td && T()?.contains(td) ? `${rowsT().indexOf(td.parentElement)},${[...td.parentElement.children].indexOf(td)}` : 'out';
+    };
+    const key = (k, extra = {}) => {
+      const ev = new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true, ...extra });
+      (getSelection().focusNode?.parentElement || T()).dispatchEvent(ev);
+      return ev.defaultPrevented;
+    };
+    const into = (r, c, end = true) => {
+      T().focus();
+      const g = document.createRange(); g.selectNodeContents(cellT(r, c).querySelector('.ce')); g.collapse(!end);
+      getSelection().removeAllRanges(); getSelection().addRange(g);
+    };
+    const menu = (r, c) => {
+      const td = cellT(r, c), b = td.getBoundingClientRect();
+      td.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, clientX: b.left + 5, clientY: b.top + 5 }));
+      return [...document.querySelectorAll('.point-menu button')];
+    };
+    const choose = (r, c, label) => {
+      const b = menu(r, c).find((x) => x.textContent === label);
+      if (!b || b.disabled) return false;
+      b.click();
+      return true;
+    };
+    ok('no delete-row column and no button bar', !T().querySelector('.row-x, button') && !document.querySelector('.tbl-bar'), T().innerHTML.slice(0, 80));
+    into(1, 0); key('Tab');
+    ok('Tab goes to the next cell', where() === '1,1', where());
+    key('Tab');
+    ok('and on to the next row', where() === '2,0', where());
+    key('Tab', { shiftKey: true });
+    ok('Shift+Tab goes back', where() === '1,1', where());
+    const rowsBefore = rowsT().length;
+    into(rowsBefore - 1, 1); key('Tab');
+    ok('Tab from the last cell adds a row', rowsT().length === rowsBefore + 1 && where() === `${rowsBefore},0`, [rowsT().length, where()]);
+    into(1, 0); document.execCommand('insertText', false, 'ab');
+    into(1, 0, true); key('ArrowRight');
+    ok('Right at the end of a cell goes to the next', where() === '1,1', where());
+    into(1, 1, false); key('ArrowLeft');
+    ok('Left at the start of a cell goes back', where() === '1,0', where());
+    into(1, 0); key('ArrowDown');
+    ok('Down goes to the cell below', where() === '2,0', where());
+    key('ArrowUp');
+    ok('Up comes back', where() === '1,0', where());
+    into(0, 0); key('ArrowUp');
+    ok('Up from the top row leaves the table', where() === 'out', where());
+    into(rowsT().length - 1, 0); key('ArrowDown');
+    ok('Down from the bottom row leaves it too', where() === 'out' && !!T().closest('[data-kind]').nextElementSibling, where());
+    const cellsBefore = T().querySelectorAll('td, th').length;
+    into(1, 1, false);
+    ok('Backspace at the start of a cell leaves the table whole', key('Backspace') && T().querySelectorAll('td, th').length === cellsBefore, T().querySelectorAll('td, th').length);
+    const items = menu(1, 0).map((b) => b.textContent);
+    ok('right-click has the Google Docs items', ['Insert row above', 'Insert row below', 'Insert column left', 'Insert column right', 'Delete row', 'Delete column', 'Delete table', 'Merge cells', 'Unmerge cells'].every((x) => items.includes(x)), items);
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    const w0 = widthT(), r0 = rowsT().length;
+    choose(1, 0, 'Insert column right');
+    ok('insert column right', widthT() === w0 + 1 && where() === '1,1', [widthT(), where()]);
+    choose(1, 1, 'Delete column');
+    ok('delete column', widthT() === w0, widthT());
+    choose(1, 0, 'Insert row above');
+    ok('insert row above', rowsT().length === r0 + 1 && where() === '1,0', [rowsT().length, where()]);
+    choose(1, 0, 'Delete row');
+    ok('delete row', rowsT().length === r0 && cellT(1, 0).textContent === 'ab', [rowsT().length, cellT(1, 0).textContent]);
+    cellT(1, 0).dispatchEvent(new MouseEvent('mousedown', { bubbles: true, button: 0 }));
+    cellT(2, 1).dispatchEvent(new MouseEvent('mouseover', { bubbles: true, buttons: 1 }));
+    ok('dragging across cells selects them whole', T().querySelectorAll('.cell-sel').length === 4, T().querySelectorAll('.cell-sel').length);
+    ok('merge cells', choose(2, 1, 'Merge cells') && cellT(1, 0).colSpan === 2 && cellT(1, 0).rowSpan === 2, [cellT(1, 0).colSpan, cellT(1, 0).rowSpan]);
+    ok('saved as a merged cell', /rowspan="2"/.test($('#preview').textContent) && /colspan="2"/.test($('#preview').textContent), ($('#preview').textContent.match(/<td[^>]*span[^>]*>/) || [''])[0]);
+    ok('unmerge cells', choose(1, 0, 'Unmerge cells') && cellT(1, 0).colSpan === 1 && widthT() === w0 && rowsT().every((tr) => tr.children.length === w0), rowsT().map((tr) => tr.children.length));
+    into(1, 0, true); key('ArrowRight', { shiftKey: true });
+    ok('Shift+Right at a cell edge selects whole cells', T().querySelectorAll('.cell-sel').length === 2, T().querySelectorAll('.cell-sel').length);
+    key('x');
+    ok('typing over them empties them and starts in the first', cellT(1, 0).textContent === 'x' && cellT(1, 1).textContent === '' && !T().querySelector('.cell-sel'), [cellT(1, 0).textContent, cellT(1, 1).textContent]);
+    ok('make header row', choose(2, 0, 'Make header row') && [...rowsT()[2].children].every((td) => td.tagName === 'TH'), rowsT()[2].children[0].tagName);
+    choose(1, 0, 'Delete table');
+    ok('delete table', !document.querySelector('.ed-tbl'), !!document.querySelector('.ed-tbl'));
+
     // An imgbb page link is caught before it goes in; the picture's own link is not.
     const note = () => { $('#mp-link').dispatchEvent(new Event('input')); return $('#mp-link-note').textContent; };
     $('#mp-link').value = 'https://ibb.co/hRCMF21d';
