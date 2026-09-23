@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parse as parseYaml } from 'yaml';
+import { slugTitle } from './slug-title.mjs';
 
 const ROOT = path.resolve('src/content');
 const BASE = (process.env.BASE_PATH || '/').replace(/\/+$/, '');
@@ -69,11 +70,7 @@ export function titleFor(slug) {
   if (n) return n.name;
   // Best guess for a subject with no article yet. It stops being a guess the
   // moment someone writes the article, because the title then comes from the file.
-  const small = /^(of|the|and|in|on|at|to|a|an|for|from|by|de|von)$/;
-  return slug
-    .split('-')
-    .map((w, i) => (i > 0 && small.test(w) ? w : w.charAt(0).toUpperCase() + w.slice(1)))
-    .join(' ');
+  return slugTitle(slug);
 }
 
 export const exists = (slug) => articles().has(slug);

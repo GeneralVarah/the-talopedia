@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import { TEMPLATES } from '../lib/templates.mjs';
 import { ARTICLE_TYPES } from '../content.config';
 import { nations, url } from '../lib/registry.mjs';
+import slugTitleSource from '../lib/slug-title.mjs?raw';
 import { icNow } from '../lib/icclock.mjs';
 import { BUILT_FROM } from '../lib/revisions.mjs';
 import { ACCOUNT_OF } from '../lib/contributors.mjs';
@@ -358,6 +359,7 @@ const ADMIN = REPO.split('/')[0];
     </div>
   </div>
 
+  <script is:inline set:html={`window.slugTitle = (() => {\n${slugTitleSource.replace('export function', 'function')}\nreturn slugTitle;\n})();`} />
   <script is:inline define:vars={{ TEMPLATES, BASE: url('/'), DEV, REPO, FLAGS, NATION_NAMES, ARTICLES: existing,
     NATION_OF, ADMIN, BUILT_FROM, IC_NOW: icNow().toISOString().slice(0, 10) }}>
     const $ = (s, r = document) => r.querySelector(s);
@@ -389,30 +391,14 @@ const ADMIN = REPO.split('/')[0];
     let portalBody = '';
 
     /* ---------- names ---------- */
-    const SMALL = /^(of|the|and|in|on|at|to|a|an|for|from|by|de|von)$/;
-    // A filename cannot hold brackets, so a wartime flag is stored as shivon-tgw and
-    // read back as Shivon (TGW) rather than the "Shivon Tgw" that word-casing gives.
-    // Football clubs spell themselves in initials, and word-casing turns AFC into Afc.
-    // The list is only what the badges actually use.
-    const CAPS = new Set(['fc', 'jk', 'fk', 'sc', 'if', 'ff', 'ik', 'sk', 'ps', 'sv', 'is',
-      'bk', 'ac', 'js', 'cf', 'tk', 'tv', 'afc', 'ifk', 'cska', 'arf', 'htk', 'ud', 'bc', 'rc']);
-    const TAGS = { tgw: 'TGW', esu: 'E.S.U.', sar: 'SAR' };
-    const pretty = (s) => {
-      const parts = s.split('-');
-      const tail = TAGS[parts[parts.length - 1]] && parts.length > 1 ? parts.pop() : null;
-      const name = parts.map((w, i) =>
-        CAPS.has(w) ? w.toUpperCase()
-        : i > 0 && SMALL.test(w) ? w
-        : TAGS[w] || w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-      return tail ? `${name} (${TAGS[tail]})` : name;
-    };
+    // slugTitle is src/lib/slug-title.mjs, inlined above, so the site reads slugs the same way.
     let TITLES = {};
     const ICONS = { ...FLAGS };
     const titlesReady = fetch(`${BASE.replace(/\/$/, '')}/articles.json`)
       .then((r) => r.json())
       .then((l) => { for (const a of l) { TITLES[a.slug] = a.title; if (a.icon && !ICONS[a.slug]) ICONS[a.slug] = a.icon; } })
       .catch(() => {});
-    const displayOf = (slug) => TITLES[slug] || pretty(slug);
+    const displayOf = (slug) => TITLES[slug] || slugTitle(slug);
 
     // Arrows and flags are shown as themselves, not as :up or :flag[nichirin].
     const ARROW = { up: '\u25B2', down: '\u25BC' };

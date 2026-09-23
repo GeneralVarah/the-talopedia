@@ -325,6 +325,9 @@
     undo();
     ok('still an arrow after undo', rankCell()?.querySelector('[data-tok="down"]') && !rankCell().textContent.includes(':down'), rankCell()?.innerHTML);
     ok('and saved as :down1', $('#preview').textContent.includes('3 (:down1)'), ($('#preview').textContent.match(/Current \(1934\).*/) || [''])[0]);
+    const barcino = document.querySelector('a[data-slug="fc-barcino"]');
+    ok('a page nobody has written yet keeps its initials', barcino?.textContent === 'FC Barcino', barcino?.textContent);
+    ok('and its link is saved bare', $('#preview').textContent.includes('[[fc-barcino]]'), ($('#preview').textContent.match(/.*barcino.*/i) || [''])[0].slice(-80));
 
     // Asterisks typed by hand with the space inside would print on the page.
     focusEnd(paras()[0]);
