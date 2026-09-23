@@ -81,3 +81,10 @@ groups:
           - "jasmine-petrova"
           - "richard-dumier"
           - "robyn-tivruski"
+      - label: "Daedalus"
+        items:
+          - "futu|Avery Williams"
+          - "futur|Adamska Olenev"
+          - "future|Christopher Wechsler"
+          - "futu|Zhang Yan"
+          - "futu|Eric D'Angelo"

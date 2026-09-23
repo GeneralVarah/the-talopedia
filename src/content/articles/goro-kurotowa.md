@@ -28,7 +28,7 @@ infobox:
   - { label: "Aldrige Rōmaji", value: "Kurotowa Goro" }
 ---
 
-Goro Kurotowa (クロトワ五郎, born July 4, 1898) is an Elysian-born special forces and former espionage operative and mercenary commander. He served as an espionage operative for the USE’s Military Intelligence Service, the Unity State’s Office of Naval Intelligence, and later its Special Recon Service Branch No.12, also known as [[majesty]]. He was instrumental in the founding of MAJESTY as a separate entity from the Unity State, having made many deals with multiple foreign governments, and was the founder of the private military company Soldiers Without Borders. With a service record stretching across multiple decades, he remains a ghost story to the wider world, his existence and defection to the Miyamoto Shogunate being masked by his supposed death.
+Goro Kurotowa (クロトワ五郎, born July 4, 1898) is an Elysian-born special forces and former espionage operative and mercenary commander. He served as an espionage operative for the USE’s Military Intelligence Service, the Unity State’s Office of Naval Intelligence, and later its Special Recon Service Branch No.12, also known as [[majesty]]. He was instrumental in the founding of MAJESTY as a separate entity from the Unity State, having made many deals with multiple foreign governments, and was the founder of the private military company [[sold|Soldiers Without Borders]]. With a service record stretching across multiple decades, he remains a ghost story to the wider world, his existence and defection to the Miyamoto Shogunate being masked by his supposed death.
 
 ## Early Life
 
