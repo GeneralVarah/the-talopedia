@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import fs from 'node:fs';
 import path from 'node:path';
 import { parse } from 'yaml';
+import { BUILT_FROM } from '../../../lib/revisions.mjs';
 
 // Navboxes are plain YAML under src/content/data, not a content collection, so they
 // are read straight off disk. Same shape of reply as /raw/[slug].json: what the
@@ -25,6 +26,7 @@ export const GET: APIRoute = ({ params }) => {
   const d = parse(text) || {};
   return new Response(JSON.stringify({
     slug: 'navbox:' + params.slug,
+    commit: BUILT_FROM,
     data: { title: d.title ?? '', crumb: d.crumb ?? '' },
     groups: d.groups ?? [],
     lead,

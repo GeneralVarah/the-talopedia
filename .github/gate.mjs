@@ -74,15 +74,21 @@ for (const line of git('diff', '--name-status', `${BASE}...${HEAD}`).trim().spli
   const deleted = status.startsWith('D');
 
   // A picture that is new belongs to nobody yet, so anyone may add one. Replacing or
-  // deleting one is how another nation's flag would go missing, so that is reviewed.
-  if (added && ASSET.test(to)) continue;
+  // deleting one is how another nation's flag would go missing, so that is reviewed;
+  // and a branch from an old fork calls a picture added since "new", so main decides.
+  if (added && ASSET.test(to)) {
+    if (show(BASE, to) == null) continue;
+    decline(`${to} would replace a picture already on main.`);
+  }
   if (!writable(to) || !writable(from)) decline(`${to} is not a page.`);
   if (admin) continue;
 
   // The page has to be this nation's alone, both as it stands and as it would stand.
   // One check covers taking someone else's page, handing your own away, and the
-  // communal pages, which are never solely one nation's.
-  const was = added ? null : creditOf(BASE, from);
+  // communal pages, which are never solely one nation's. What it stands as is read
+  // off main whatever the diff calls it: a branch from an old fork reports a page
+  // made since as newly added, and would otherwise walk straight over it.
+  const was = creditOf(BASE, from);
   const now = deleted ? null : creditOf(HEAD, to);
   if (was && (was.length !== 1 || was[0] !== nation)) decline(`${from} is credited to ${named(was)}.`);
   if (now && (now.length !== 1 || now[0] !== nation)) decline(`${to} would be credited to ${named(now)}.`);

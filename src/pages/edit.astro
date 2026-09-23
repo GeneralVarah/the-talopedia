@@ -5,6 +5,7 @@ import { TEMPLATES } from '../lib/templates.mjs';
 import { ARTICLE_TYPES } from '../content.config';
 import { nations, url } from '../lib/registry.mjs';
 import { icNow } from '../lib/icclock.mjs';
+import { BUILT_FROM } from '../lib/revisions.mjs';
 import { ACCOUNT_OF } from '../lib/contributors.mjs';
 import fs from 'node:fs';
 import { parse as parseYaml } from 'yaml';
@@ -358,7 +359,7 @@ const ADMIN = REPO.split('/')[0];
   </div>
 
   <script is:inline define:vars={{ TEMPLATES, BASE: url('/'), DEV, REPO, FLAGS, NATION_NAMES, ARTICLES: existing,
-    NATION_OF, ADMIN, IC_NOW: icNow().toISOString().slice(0, 10) }}>
+    NATION_OF, ADMIN, BUILT_FROM, IC_NOW: icNow().toISOString().slice(0, 10) }}>
     const $ = (s, r = document) => r.querySelector(s);
     const el = (t, c, txt) => { const n = document.createElement(t); if (c) n.className = c; if (txt != null) n.textContent = txt; return n; };
     const q = (s) => '"' + String(s ?? '').replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
@@ -372,6 +373,11 @@ const ADMIN = REPO.split('/')[0];
     // the published site this is the only thing that knows a portal is filed under its
     // nation rather than under "Portal:Nichirin".
     let pageSlug = '';
+    // The commit of main the open page was read from. It goes out with every commit as
+    // a Based-on line, and the auto-merge merges against it: a writer whose copy is
+    // behind main then neither collides with what landed since nor quietly undoes it.
+    // Empty where it cannot be known (a file opened from disk), which merges the old way.
+    let loadedFrom = '';
     // The title and the text the open page had when it was loaded. Saving under the
     // same file name with a different title is how an article gets used as a template
     // and overwritten; the text is what tells a rename apart from a replacement.
@@ -1855,6 +1861,7 @@ const ADMIN = REPO.split('/')[0];
       navbox: $('#f-navbox-on').checked,
       sidebar: $('#f-sidebar-on').checked,
       slug: slugValue(),
+      from: loadedFrom,
       // What is being edited, and the two things it holds that are never on screen.
       // Without these an undo, or the reload after a save, turns a portal into an article.
       kind: pageKind,
@@ -1870,6 +1877,7 @@ const ADMIN = REPO.split('/')[0];
       $('#f-navbox-on').checked = d.navbox !== false;
       $('#f-sidebar-on').checked = d.sidebar !== false;
       if (d.slug) { setSlug(d.slug); slugTouched = true; }
+      if (d.from !== undefined) loadedFrom = d.from;
       pageKind = d.kind || 'article';
       portalBody = d.portalBody || '';
       navboxLead = d.navboxLead || '';
@@ -2198,6 +2206,7 @@ const ADMIN = REPO.split('/')[0];
       }
       const loaded = await r.json();
       const { data, body: md } = loaded;
+      loadedFrom = loaded.commit || '';
       navboxLead = loaded.lead || '';
       portalBody = pageKind === 'portal' ? (md || '') : '';
       $('#f-crumb').value = data.crumb || '';
@@ -2552,6 +2561,7 @@ const ADMIN = REPO.split('/')[0];
     };
     /** Clear the desk and start a page of the given kind. */
     function blank(kind, slug = '') {
+      loadedFrom = BUILT_FROM;           // a page not on main yet: any copy of main will do
       pageKind = kind; navboxLead = ''; portalBody = ''; pageSlug = slug; loadedTitle = ''; loadedBody = '';
       $('#settings').querySelectorAll('input[type=text], input[type=hidden], textarea').forEach((i) => i.value = '');
       $('#f-ooc').checked = false;
@@ -2739,13 +2749,16 @@ const ADMIN = REPO.split('/')[0];
             try { await gh(`/repos/${work}`); break; }
             catch { await new Promise((r) => setTimeout(r, 1500)); }
           }
-          // An old fork still sits where it was left, and branching from there would
-          // put every change since then into the pull request.
+          // An old fork still sits where it was left, so bring it level first.
           try {
             await gh(`/repos/${work}/merge-upstream`, {
               method: 'POST', body: JSON.stringify({ branch: base.default_branch }),
             });
-          } catch { /* a fresh fork is already level */ }
+          } catch {
+            // GitHub refuses whenever main has changed a workflow file, which this token
+            // may not touch, so a fork can sit days behind. The branch then starts from
+            // that old copy; the Based-on line on each commit is what lets it merge.
+          }
         }
 
         const main = base.default_branch;
@@ -2761,7 +2774,7 @@ const ADMIN = REPO.split('/')[0];
 
         pubSay('Committing the page…');
         await putFile(work, branch, targetPath(slug), b64text(markdown),
-          commitMsg(slug, $('#f-summary').value.trim()));
+          commitMsg(slug, $('#f-summary').value.trim(), loadedFrom));
 
         for (const [i, [path, item]] of used.entries()) {
           pubSay(`Committing image ${i + 1} of ${used.length}…`);
@@ -2784,7 +2797,7 @@ const ADMIN = REPO.split('/')[0];
         $('#pub-panel').hidden = true;
         // No trip to GitHub. A page of its own merges itself within a minute or two,
         // and the only thing the writer needs to know is which of those happened.
-        flash(sentWord([{ kind: pageKind, slug }], me.login));
+        flash(sentWord([{ kind: pageKind, slug, markdown, title: $('#f-title').value }], me.login));
       } catch (e) {
         pubSay(String(e.message || e), true);
       } finally {
@@ -2983,6 +2996,7 @@ const ADMIN = REPO.split('/')[0];
         try {
           fromMarkdown(await f.text());
           pageSlug = f.name.replace(/\.(md|markdown|ya?ml)$/i, '');
+          loadedFrom = '';               // a file from disk says nothing of which copy it was
           loadedTitle = $('#f-title').value.trim();
           setSlug(pageSlug); slugTouched = true;
           sync();
@@ -3026,7 +3040,8 @@ const ADMIN = REPO.split('/')[0];
  * editor made before this field existed says the same thing, which made the log
  * useless for review.
  */
-    const commitMsg = (slug, summary) => `${slug}: ${summary || 'edit from the wiki editor'}`;
+    const commitMsg = (slug, summary, from) => `${slug}: ${summary || 'edit from the wiki editor'}`
+      + (from ? `\n\nBased-on: ${from}` : '');
 
     /** How a page is named in the index: bare for an article, prefixed for the rest.
         Declared rather than assigned: it is called from further up the file. */
@@ -3043,10 +3058,23 @@ const ADMIN = REPO.split('/')[0];
       const mine = NATION_OF[login];
       for (const c of changes) {
         const held = ARTICLES.find((a) => a.slug === indexKey(c.kind, c.slug));
-        if (!held) continue;                 // nobody has written it yet, so it is theirs
-        if (!mine || held.by.length !== 1 || held.by[0] !== mine) return held;
+        // A page not on the site yet is the writer's when it credits their own nation,
+        // which is the same test the gate puts it to.
+        const by = held ? held.by : creditIn(c.markdown || '', c.kind, c.slug);
+        if (!mine || by.length !== 1 || by[0] !== mine) return { title: held?.title || c.title || c.slug, by };
       }
       return null;
+    }
+
+    /** Who a page's own text credits: the byline, as .github/gate.mjs reads it. */
+    function creditIn(md, kind, slug) {
+      if (kind === 'navbox') return slug === 'site' ? [] : [slug];
+      const head = md.startsWith('---') ? md.slice(3, md.indexOf('\n---', 3)) : '';
+      const clean = (x) => x.trim().replace(/^["']|["']$/g, '');
+      const list = head.match(/^authors:[ \t]*\[([^\]]*)\]/m);
+      if (list) return list[1].split(',').map(clean).filter(Boolean);
+      const one = head.match(/^nation:[ \t]*(\S.*)$/m);
+      return one ? [clean(one[1])] : [];
     }
 
     /** What to tell the writer once the pull request is open. */
@@ -3068,6 +3096,7 @@ const ADMIN = REPO.split('/')[0];
         title: $('#f-title').value || slug,
         summary: $('#f-summary').value.trim(),
         path: targetPath(slug),
+        from: loadedFrom,
         markdown,
         images: [...staged.entries()].filter(([p]) => markdown.includes(p))
           .map(([p, item]) => ({ path: p, file: item.file })),
@@ -3105,6 +3134,7 @@ const ADMIN = REPO.split('/')[0];
 
     /** Put a waiting change back on screen, exactly as it was set aside. */
     function loadChange(c) {
+      loadedFrom = c.from || '';
       pageKind = c.kind;
       pageSlug = c.slug;
       fromMarkdown(c.markdown);
@@ -3145,13 +3175,16 @@ const ADMIN = REPO.split('/')[0];
             try { await gh(`/repos/${work}`); break; }
             catch { await new Promise((r) => setTimeout(r, 1500)); }
           }
-          // An old fork still sits where it was left, and branching from there would
-          // put every change since then into the pull request.
+          // An old fork still sits where it was left, so bring it level first.
           try {
             await gh(`/repos/${work}/merge-upstream`, {
               method: 'POST', body: JSON.stringify({ branch: base.default_branch }),
             });
-          } catch { /* a fresh fork is already level */ }
+          } catch {
+            // GitHub refuses whenever main has changed a workflow file, which this token
+            // may not touch, so a fork can sit days behind. The branch then starts from
+            // that old copy; the Based-on line on each commit is what lets it merge.
+          }
         }
 
         const main = base.default_branch;
@@ -3166,7 +3199,7 @@ const ADMIN = REPO.split('/')[0];
         let done = 0;
         for (const c of list) {
           pubSay(`Committing ${++done} of ${list.length}: ${c.title}\u2026`);
-          await putFile(work, branch, c.path, b64text(c.markdown), commitMsg(c.slug, c.summary));
+          await putFile(work, branch, c.path, b64text(c.markdown), commitMsg(c.slug, c.summary, c.from));
           for (const im of c.images) {
             const bytes = new Uint8Array(await im.file.arrayBuffer());
             await putFile(work, branch, 'public' + im.path, b64(bytes),
@@ -3454,6 +3487,12 @@ const ADMIN = REPO.split('/')[0];
     function linkTrouble(u) {
       const host = hostOf(u);
       if (!host) return 'That is not a link.';
+      // imgbb and imgur give a page for the picture first, and that is the link people
+      // copy. The page is not an image, so the picture never shows.
+      if (host === 'ibb.co' || host === 'imgur.com') {
+        return `That is ${host}'s page for the picture, not the picture itself. Use the `
+          + `direct link, the one starting https://i.${host}/`;
+      }
       if (host === 'photos.google.com' || host.endsWith('goo.gl')) {
         return 'That is the share page rather than the picture. Open it, right-click the '
           + 'picture, Copy image address, and paste that.';
@@ -3498,6 +3537,7 @@ const ADMIN = REPO.split('/')[0];
       if (!pageSlug && !slugValue()) { flash('Nothing is open to copy.', true); return; }
       const from = pageSlug || slugValue();
       pageSlug = '';
+      loadedFrom = BUILT_FROM;           // the copy is a new page, not on main yet
       loadedTitle = '';
       loadedBody = '';
       setSlug('');

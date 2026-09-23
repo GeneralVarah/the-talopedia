@@ -132,6 +132,14 @@
     const tableMd = $('#preview').textContent.split('\n').filter((l) => l.startsWith('|'));
     ok('a cell emptied by deleting saves blank', tableMd.length > 0 && !tableMd.join('\n').includes('<br>'), tableMd);
 
+    // An imgbb page link is caught before it goes in; the picture's own link is not.
+    const note = () => { $('#mp-link').dispatchEvent(new Event('input')); return $('#mp-link-note').textContent; };
+    $('#mp-link').value = 'https://ibb.co/hRCMF21d';
+    ok('an imgbb page link is refused, pointing at the direct link', /page for the picture/.test(note()) && /i\.ibb\.co/.test(note()), note());
+    $('#mp-link').value = 'https://i.ibb.co/QFXcvYjH/Shushestan-flag.png';
+    ok("the picture's own link passes", !/page for the picture|not on the list/.test(note()), note());
+    $('#mp-link').value = '';
+
     // A new page cannot be undone into the old one.
     $('#new').click();
     await sleep(50);

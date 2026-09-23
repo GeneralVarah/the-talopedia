@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
+import { BUILT_FROM } from '../../lib/revisions.mjs';
 
 // Lets the editor reopen a published article instead of retyping it.
 export async function getStaticPaths() {
@@ -9,7 +10,7 @@ export async function getStaticPaths() {
 
 export const GET: APIRoute = ({ props }) => {
   const { e } = props as any;
-  return new Response(JSON.stringify({ slug: e.id, data: e.data, body: e.body ?? '' }), {
+  return new Response(JSON.stringify({ slug: e.id, data: e.data, body: e.body ?? '' , commit: BUILT_FROM }), {
     headers: { 'content-type': 'application/json' },
   });
 };

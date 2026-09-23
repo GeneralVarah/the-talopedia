@@ -17,7 +17,8 @@ cd "$WT"
 
 fail=0
 run() {   # run <expected first word> <author> <label>
-  got=$(PR_AUTHOR="$2" ADMIN=auroruse BASE=main HEAD=HEAD node .github/gate.mjs)
+  # The rule from this checkout, not from whatever commit the worktree stands on.
+  got=$(PR_AUTHOR="$2" ADMIN=auroruse BASE=main HEAD=HEAD node "$REPO/.github/gate.mjs")
   if [[ "${got%% *}" == "$1" ]]; then print -r -- "  ok    $3 -> $got"
   else print -r -- "  FAIL  $3 -> wanted $1, got: $got"; fail=1; fi
 }
@@ -61,6 +62,14 @@ run wait  that1sealguy      "another nation's navbox"
 start; print "# x" >> src/content/data/navboxes/site.yaml; commit
 run wait  SwiftorArrow      "the site navbox"
 run merge auroruse          "the site navbox, by the admin"
+
+print "a branch from an old fork"
+# A fork days behind main calls anything made since "new". Main still decides.
+stale() { git checkout -q --detach 4edb6e1; }
+stale; printf -- '---\ntitle: "Elias Gray"\ntype: character\nnation: karjania\n---\n\nx\n' > src/content/articles/elias-gray.md; commit
+run wait  zezelandnationstates-hash "karjania 'adds' an E.S.U. page made since"
+stale; mkdir -p public/assets/flags; printf x > public/assets/flags/albinya.png; commit
+run wait  SwiftorArrow      "'adds' a flag that is already on main"
 
 print "everything that is not a page"
 start; print "# x" >> README.md; commit

@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
+import { BUILT_FROM } from '../../../lib/revisions.mjs';
 
 // The portal counterpart of /raw/[slug].json, so the editor can reopen a portal
 // page the same way it reopens an article. Its own route because a portal and an
@@ -11,7 +12,7 @@ export async function getStaticPaths() {
 
 export const GET: APIRoute = ({ props }) => {
   const { e } = props as any;
-  return new Response(JSON.stringify({ slug: 'portal:' + e.id, data: e.data, body: e.body ?? '' }), {
+  return new Response(JSON.stringify({ slug: 'portal:' + e.id, data: e.data, body: e.body ?? '' , commit: BUILT_FROM }), {
     headers: { 'content-type': 'application/json' },
   });
 };
