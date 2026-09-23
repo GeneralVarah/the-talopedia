@@ -13,14 +13,14 @@ infobox:
   - { label: "Largest City", value: "Nourabad" }
   - { label: "Ostāndār", value: "Tahmine Shakibaii" }
   - { label: "Faction", value: "Peymān-dārān" }
-  - { label: "Area", value: "191,447 km²" }
+  - { label: "Area", value: "293,178 km²" }
   - { section: "Legislature" }
-  - { label: "Delegates (Majles-E Nāmāyandagān)", value: "8/57" }
-  - { label: "Senators (Shurā-Ye Āyan)", value: "2" }
+  - { label: "Delegates (Majles-e Nāmāyandagān)", value: "59 / 391" }
+  - { label: "Senators (Shurā-ye Āyan)", value: "2" }
   - { section: "Demographics" }
   - { label: "Population", value: "1929 Census" }
-  - { label: "Total", sub: true, value: "5,500,000" }
-  - { label: "Density", sub: true, value: "28.73 / km²" }
+  - { label: "Total", sub: true, value: "7,700,000" }
+  - { label: "Density", sub: true, value: "26.26 / km²" }
   - label: "Ethnic Groups"
     value:
       - "92% Mehrāni"
@@ -37,7 +37,8 @@ infobox:
   - { label: "Nahieh Nor", value: "Nourabad" }
   - { label: "Marzān", value: "Darband" }
 ---
-Nourestan (Mehrāni: نورستان, *Nūrestān*; lit. *Land of Light*), officially the Ostān-e Nūrestān (Province of Light), is the federal capital province of the [[varahmehr|Federal Republic of Varahmehr]]. Located in the northwestern interior of the federation, it is the administrative and institutional heart of the republic, housing the federal government, the Majles-e Mellī, the Dīvān-e Adl, and the Tālār-e Peymān - the Hall of the Compact, which contains the original Peymān-e Mellī. Its capital, Nourabad (نورآباد, lit. City of Light), serves as both the provincial and federal capital of **Varahmehr**, with a population of 1.785 million, making it the third most populous city in the federation. The ostān is divided into two shahrestān-hā: Nahieh Nor, encompassing the federal capital district, and Marzān, covering the northern territory bordering Dashtestan. Nourestan occupies a position in Varahmehr’s political and cultural life that no other ostān can claim or replicate. It is the oldest seat of organized governance in the federation, home to the merchant-scholar class known as the Nouri, whose legal traditions provided the constitutional framework that enabled the Federal Compact, and the site of the federation’s most significant institutional architecture. Its plateau geography, which creates the orographic conditions that make the interior of Varahmehr arid while the northern regions remain relatively temperate, has shaped both the ostān’s physical character and its political identity - elevated, measured, looking outward toward the northeastern coast and inward toward the federation it administers.
+
+**Nourestan** (Mehrāni: نورستان, *Nūrestān*; lit. *Land of Light*), officially the Ostān-e Nūrestān (Province of Light), is the federal capital province of the [[varahmehr|Federal Republic of Varahmehr]]. Located in the northwestern interior of the federation, it is the administrative and institutional heart of the republic, housing the federal government, the Majles-e Mellī, the Dīvān-e Adl, and the Tālār-e Peymān - the Hall of the Compact, which contains the original Peymān-e Mellī. Its capital, Nourabad (نورآباد, lit. City of Light), serves as both the provincial and federal capital of **Varahmehr**, with a population of 1.785 million, making it the third most populous city in the federation. The ostān is divided into two shahrestān-hā: Nahieh Nor, encompassing the federal capital district, and Marzān, covering the northern territory bordering Dashtestan. Nourestan occupies a position in Varahmehr’s political and cultural life that no other ostān can claim or replicate. It is the oldest seat of organized governance in the federation, home to the merchant-scholar class known as the Nouri, whose legal traditions provided the constitutional framework that enabled the Federal Compact, and the site of the federation’s most significant institutional architecture. Its plateau geography, which creates the orographic conditions that make the interior of Varahmehr arid while the northern regions remain relatively temperate, has shaped both the ostān’s physical character and its political identity - elevated, measured, looking outward toward the northeastern coast and inward toward the federation it administers.
 
 ## Etymology
 
@@ -50,7 +51,7 @@ The name Nūrestān derives from the Mehrāni nour (light) and the suffix -estā
 The earliest evidence of human settlement in what is now Nourestan dates to approximately 100,000 BCE, with tool-making sites identified in the plateau’s highland margins. The city of Mehrāvar (مهرآور, lit. *Bringer of Light*), founded approximately 3000 BCE, is the oldest continuously inhabited settlement in Varahmehr and one of the oldest in the broader region. Though modest in its present population of approximately 111,000, Mehrāvar carries a historical significance entirely disproportionate to its current size - its temples, administrative records, and commercial archives constitute the oldest continuous documentary record in the federation, and its citizens maintain a civic pride that expresses itself in careful preservation rather than expansion. The city’s gross regional domestic product of $3.1 billion reflects a community that has chosen depth over growth, sustaining itself through heritage tourism, scholarly pilgrimage, and the quiet prestige of being the place where Varahmehri civilization began.
 
 <div class="imgrid">
-<figure style="flex:1.37"><img src="/assets/old-media/media/nourestan-3.png" alt="Mural in the ruins of Mehrāvar, believed to date to the early Hasmenionian period"><figcaption>Mural in the ruins of Mehrāvar, believed to date to the early Hasmenionian period</figcaption></figure>
+<figure style="flex:1.370"><img src="/assets/old-media/media/nourestan-3.png" alt="Mural in the ruins of Mehrāvar, believed to date to the early Hasmenionian period"><figcaption>Mural in the ruins of Mehrāvar, believed to date to the early Hasmenionian period</figcaption></figure>
 </div>
 
 ### The Six Lands Period
@@ -65,7 +66,7 @@ Nourestan wanted federalization more than any other land - its legal tradition m
 
 Nourestan’s chief contribution to the founding negotiations was Mehrdad Nouri-Fard, whose three years of patient, relentless work brought the agreement into existence at moments when it appeared irretrievably lost. Nouri-Fard’s most significant recorded contribution came at the moment of Shushestan’s final condition - the demand for explicit and irrevocable equal protection for all citizens regardless of ethnicity, religion, or heritage. When the other delegations hesitated, it was Nouri-Fard who said, “If this condition cannot be met, then we deserve to be colonized.” The statement ended the hesitation. It is Article Three of the Federal Compact, and Chancellor Shariati keeps Nouri-Fard’s words framed in his office.
 
-The Federal Compact was signed on 3 March 1878 at a neutral site between Nourestan and Dashtestan - chosen precisely because it belonged to no single land and all of them simultaneously. Nourabad was subsequently designated the federal capital, fulfilling Nourestan’s long-held institutional ambition, a move the ostān’s leadership accepted with particular satisfaction, and one that pleased people who had always known this was the correct outcome and had simply been waiting for everyone else to arrive at the same conclusion.
+The Federal Compact was signed on March 3, 1878 at a neutral site between Nourestan and Dashtestan - chosen precisely because it belonged to no single land and all of them simultaneously. Nourabad was subsequently designated the federal capital, fulfilling Nourestan’s long-held institutional ambition, a move the ostān’s leadership accepted with particular satisfaction, and one that pleased people who had always known this was the correct outcome and had simply been waiting for everyone else to arrive at the same conclusion.
 
 ### Post-Compact Development
 
@@ -75,7 +76,7 @@ The 51 years of isolationism were, in some respects, the most comfortable period
 
 ## Government
 
-Nourestan sends 12 delegates to the Majles-e Nāmāyandagān, the second-largest delegation after Ahanestan. The ostān is governed by an elected Ostāndār serving a four-year term. Politically, Nourestan is the heartland of the Peymān-dārān faction - specifically its Compact Wing, whose constitutionalist instincts align naturally with the Nouri tradition of governance through institutional process and legal precision. Chancellor Shariati is the most prominent representative of this tradition, though his position as head of the federal executive means his ostān loyalties are subordinated to his federal responsibilities in ways that sometimes create tension with Nourestan’s provincial interests.
+Nourestan sends 59 delegates to the Majles-e Nāmāyandagān, the second-largest delegation after Ahanestan. The ostān is governed by an elected Ostāndār serving a four-year term. Politically, Nourestan is the heartland of the Peymān-dārān faction - specifically its Compact Wing, whose constitutionalist instincts align naturally with the Nouri tradition of governance through institutional process and legal precision. Chancellor Shariati is the most prominent representative of this tradition, though his position as head of the federal executive means his ostān loyalties are subordinated to his federal responsibilities in ways that sometimes create tension with Nourestan’s provincial interests.
 
 <div class="imgrid">
 <figure style="flex:1.364"><img src="/assets/old-media/media/nourestan-4.jpg" alt="Aerial photograph of Nourabad’s financial district, circa 1928"><figcaption>Aerial photograph of Nourabad’s financial district, circa 1928</figcaption></figure>
