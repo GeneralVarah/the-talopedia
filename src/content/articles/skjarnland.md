@@ -171,7 +171,7 @@ Exhausted by war, all sides signed the Treaty of Kjellberg in 1272. Danyria reco
 
 ## Military
 
-*Main article: *[[skjarnish-armed-forces]]
+*Main article:* [[skjarnish-armed-forces]]
 
 <figure class="float float-right" style="width:320px"><img src="https://i.imgur.com/DmyrKZG.jpeg" alt="Skjarnish Army infantry during military exercises, c. 1933"><figcaption>Skjarnish Army infantry during military exercises, c. 1933</figcaption></figure>
 
@@ -181,7 +181,7 @@ The history of the Skjarnish Armed Forces dates back to the formation of the Kin
 
 ## Government
 
-*Main article: *[[politics-and-government-of-skjarnland]]
+*Main article:* [[politics-and-government-of-skjarnland]]
 
 ### Constitutional Framework
 
@@ -210,7 +210,7 @@ Following the New Republic Act of 1934, the Skjarnish monarchy will dissolve and
 
 ### Administrative Subdivisions
 
-*Main articles: *[[counties-of-skjarnland]]*, *[[territories-of-skjarnland]]
+*Main articles:* [[counties-of-skjarnland]], [[territories-of-skjarnland]]
 
 Skjarnland is a unitary state divided into 35 counties, 715 municipalities, and 6 territories. Counties, also called regions (especially in the context of their governments) are the highest level of administrative subdivision and are responsible for healthcare and public transport. Municipalities are the lowest level of government subdivision and administer education (up to the end of high school), public water utilities and foster care. While parishes are technically lower than municipalities, with over 4,000 total in the country, this is an administrative division used by the Church of Skjarnland and not officially recognised by the government, although it plays an important role during censuses.
 
@@ -218,7 +218,7 @@ Municipal and regional elections occur in conjunction with general elections, an
 
 ## Economy
 
-*Main article: *[[economy-of-skjarnland]]
+*Main article:* [[economy-of-skjarnland]]
 
 Skjarnland is an industrialised high-income welfare capitalist state. With a GDP PPP of roughly $1.87 trillion, it is the 22nd largest economy in Avium and the 8th largest economy in Evria, accounting for 1.1% of global GDP. It has a GDP per capita of $78,746 (excluding oveseas territories, including Nordstjarneo, which has the world's highest GDP per capita at $155,000 when ranked among overseas territories), the 4th highest globally and the highest in Evria. Skjarnland is an export-oriented mixed economy, with most jobs concentrated in the secondary sector.
 

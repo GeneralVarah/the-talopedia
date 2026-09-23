@@ -486,6 +486,17 @@ const ADMIN = REPO.split('/')[0];
         .replace(/\*([^*]+)\*/g, '<i>$1</i>');
     }
 
+    /**
+     * Bold or italic marks around text, with any space at its edges put outside them.
+     * Markdown will not close ** after a space or open it before one, so a bold word
+     * that took its trailing space along printed on the page as **word **, asterisks
+     * and all. Marks around nothing but a comma or a space are dropped.
+     */
+    const emphasis = (m, s) => {
+      const [, lead, core, tail] = s.match(/^(\s*)([\s\S]*?)(\s*)$/);
+      return /[^\s\p{P}]/u.test(core) ? `${lead}${m}${core}${m}${tail}` : s;
+    };
+
     function htmlToMd(node, br = ' ') {
       let out = '';
       for (const n of node.childNodes) {
@@ -504,8 +515,8 @@ const ADMIN = REPO.split('/')[0];
         }
         if (tok) { out += `:${tok}[${n.dataset.slug}]`; continue; }
         const inner = htmlToMd(n, br);
-        if (tag === 'b' || tag === 'strong') out += inner.trim() ? `**${inner}**` : '';
-        else if (tag === 'i' || tag === 'em') out += inner.trim() ? `*${inner}*` : '';
+        if (tag === 'b' || tag === 'strong') out += emphasis('**', inner);
+        else if (tag === 'i' || tag === 'em') out += emphasis('*', inner);
         // Markdown has no superscript, so these stay as the HTML they are.
         else if (tag === 'sup' || tag === 'sub') out += inner.trim() ? `<${tag}>${inner}</${tag}>` : '';
         else if (tag === 'a') {

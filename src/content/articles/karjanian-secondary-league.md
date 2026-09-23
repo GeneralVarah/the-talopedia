@@ -18,7 +18,7 @@ infobox:
   - { label: "Most championships", value: "Surtuja JK (4)" }
 ---
 
-The Karjanian Secondary League (KSL) (Routan:*Karjanmaan Kakkosliiga) *is a professional football league in Karjania and the second highest level of the Karjanian Football pyramid. It is contested by 10 teams over 18 Matchdays, and the top two finishers are promoted to the [[karjanian-premier-league]], while the 10th placed team is relegated to the Karjanian Kolmonen. It was founded in 1909 and has been contested every year since, with the exception of years during [[great-war|Great War]].
+The Karjanian Secondary League (KSL) (Routan: *Karjanmaan Kakkosliiga*) is a professional football league in Karjania and the second highest level of the Karjanian Football pyramid. It is contested by 10 teams over 18 Matchdays, and the top two finishers are promoted to the [[karjanian-premier-league]], while the 10th placed team is relegated to the Karjanian Kolmonen. It was founded in 1909 and has been contested every year since, with the exception of years during [[great-war|Great War]].
 
 ## Structure
 

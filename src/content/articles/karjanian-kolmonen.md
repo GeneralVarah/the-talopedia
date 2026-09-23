@@ -17,7 +17,7 @@ infobox:
   - { label: "Most championships", value: "Leijonat Arkankeli (3)" }
 ---
 
-The Karjanian Kolmonen (KK) (Routan: *Karjanmaan Kolmonen*)**is a professional football league in **[[karjania]], the third and bottom tier of the Karjanian football pyramid, below the [[karjanian-secondary-league]] and the [[karjanian-premier-league]]. It was founded in 1921 following the Karjanian Civil War. The winner is promoted to the KSL. There are 16 teams competing for the title. Teams competing in the KK also play in the Karjanian Cup.
+The Karjanian Kolmonen (KK) (Routan: *Karjanmaan Kolmonen*) is a professional football league in [[karjania]], the third and bottom tier of the Karjanian football pyramid, below the [[karjanian-secondary-league]] and the [[karjanian-premier-league]]. It was founded in 1921 following the Karjanian Civil War. The winner is promoted to the KSL. There are 16 teams competing for the title. Teams competing in the KK also play in the Karjanian Cup.
 
 ## Structure
 

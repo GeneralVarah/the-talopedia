@@ -295,6 +295,15 @@
     ok("the picture's own link passes", !/page for the picture|not on the list/.test(note()), note());
     $('#mp-link').value = '';
 
+    // Bold that took its trailing space along is saved with the space outside the
+    // marks; **word ** does not close, and printed on the page as it stands.
+    focusEnd(paras()[0]);
+    paras()[0].innerHTML = 'nicknamed the <b>Crimson-Red Calamity </b>(x), <i>Main article: </i>y<i>, </i>z';
+    paras()[0].dispatchEvent(new Event('input', { bubbles: true }));
+    const saved = $('#preview').textContent;
+    ok('bold with a trailing space is saved so it closes', saved.includes('**Crimson-Red Calamity** (x)'), (saved.match(/nicknamed[^\n]*/) || [''])[0]);
+    ok('italic too, and marks around a lone comma dropped', saved.includes('*Main article:* y, z'), (saved.match(/nicknamed[^\n]*/) || [''])[0]);
+
     // A new page cannot be undone into the old one.
     $('#new').click();
     await sleep(50);
