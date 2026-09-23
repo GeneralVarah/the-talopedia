@@ -326,6 +326,11 @@
     ok('still an arrow after undo', rankCell()?.querySelector('[data-tok="down"]') && !rankCell().textContent.includes(':down'), rankCell()?.innerHTML);
     ok('and saved as :down1', $('#preview').textContent.includes('3 (:down1)'), ($('#preview').textContent.match(/Current \(1934\).*/) || [''])[0]);
 
+    // Asterisks typed by hand with the space inside would print on the page.
+    focusEnd(paras()[0]);
+    type(' **Calamity **then');
+    ok('bold typed with a space inside is written closed', $('#preview').textContent.includes(' **Calamity** then'), ($('#preview').textContent.match(/.*Calamity.*/) || [''])[0].slice(-60));
+
     // Date panel: Age asks for Born, and Died only if dead.
     document.querySelector('#dt-mode button[data-mode="age"]').click();
     ok('age relabels the date as Born', $('#dt-date-label').textContent === 'Born', $('#dt-date-label').textContent);

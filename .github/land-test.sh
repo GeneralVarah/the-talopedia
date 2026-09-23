@@ -86,6 +86,12 @@ check "a new one lands"             '[[ $RESULT == ready ]]'
 pr $X public/assets/flags/albinya.png $S/img; onto; land
 check "one already on main waits"   '[[ $RESULT == wait* ]]'
 
+print "bold that took a space along"
+git reset -q --hard
+git show $X:$P > $S/b; print "**Bold by the writer **and plain." >> $S/b
+pr $X $P $S/b; onto; land
+check "lands with the space outside" '[[ $RESULT == ready ]] && git show :$P | grep -qxF "**Bold by the writer** and plain."'
+
 cd "$REPO"
 git worktree remove --force "$WT"
 rm -rf $S

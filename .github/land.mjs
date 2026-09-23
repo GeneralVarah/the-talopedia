@@ -22,6 +22,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, writeFileSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
+import { fixEmphasis } from '../src/lib/emphasis.mjs';
 
 const ONTO = process.env.ONTO || 'HEAD';
 const { PR_HEAD } = process.env;
@@ -32,7 +33,11 @@ const blob = (ref, path) => {
   try { return git('rev-parse', '--verify', '-q', `${ref}:${path}`).trim() || null; } catch { return null; }
 };
 const done = (line) => { console.log(line); process.exit(0); };
-const put = (path, data) => { mkdirSync(dirname(path), { recursive: true }); writeFileSync(path, data); git('add', '--', path); };
+const put = (path, data) => {
+  // Bold that would print its asterisks is fixed on the way in, whatever sent it.
+  if (/^src\/content\/.*\.md$/.test(path)) data = fixEmphasis(data.toString('utf8'));
+  mkdirSync(dirname(path), { recursive: true }); writeFileSync(path, data); git('add', '--', path);
+};
 
 /** The commit of main the writer opened this file from, off the last commit that changed it. */
 function basedOn(path) {
