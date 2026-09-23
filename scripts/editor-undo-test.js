@@ -214,6 +214,18 @@
     choose(1, 0, 'Delete table');
     ok('delete table', !document.querySelector('.ed-tbl'), !!document.querySelector('.ed-tbl'));
 
+    // The medals sit in their own icons group, first after the arrows, and go in
+    // without the white edge a flag gets.
+    await new Promise((r) => setTimeout(r, 300));
+    const groups = [...document.querySelectorAll('#mp-icons .mp-group')].map((g) => g.textContent);
+    const medals = [...document.querySelectorAll('#mp-icons .mp-icon')].filter((b) => /\/assets\/icons\//.test(b.title));
+    ok('an icons group with the three medals, after the arrows', groups[0] === 'arrows' && groups[1] === 'icons' && medals.length === 3, [groups.slice(0, 3), medals.length]);
+    focusEnd(paras()[0]);
+    medals.find((b) => /gold-medal/.test(b.title)).click();
+    const medal = paras()[0].querySelector('img[data-slug*="gold-medal"]');
+    ok('a medal goes in as an icon, without the flag border', !!medal && medal.classList.contains('sym') && getComputedStyle(medal).borderTopWidth === '0px', medal && [medal.className, getComputedStyle(medal).borderTopWidth]);
+    ok('and is saved as :img', $('#preview').textContent.includes(':img[/assets/icons/gold-medal.webp]'), $('#preview').textContent.slice(-60));
+
     // An imgbb page link is caught before it goes in; the picture's own link is not.
     const note = () => { $('#mp-link').dispatchEvent(new Event('input')); return $('#mp-link-note').textContent; };
     $('#mp-link').value = 'https://ibb.co/hRCMF21d';

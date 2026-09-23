@@ -102,7 +102,10 @@ function custom(m, defer = false) {
         .split('|');
       const size = parseInt(w, 10);
       const style = size > 0 ? ` style="width:${size}px;height:auto"` : '';
-      return `<img class="ico${size > 0 ? ' sized' : ''}" src="${esc(asset(path.trim()))}"${style} alt="" loading="lazy">`;
+      // One from the icons folder is a symbol, a medal say, and goes without the hairline
+      // a flag needs to hold its edge against a white page.
+      const sym = path.trim().startsWith('/assets/icons/') ? ' sym' : '';
+      return `<img class="ico${size > 0 ? ' sized' : ''}${sym}" src="${esc(asset(path.trim()))}"${style} alt="" loading="lazy">`;
     }
     if (m[3] === 'date') return dateText(arg);
     return defer ? `<i data-ico="${esc(arg)}"></i>` : icon(arg);

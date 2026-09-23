@@ -463,9 +463,10 @@ const ADMIN = REPO.split('/')[0];
       const [path, w] = kind === 'img' ? arg.split('|') : [arg];
       const size = parseInt(w, 10);
       const src = srcFor(kind === 'img' ? path.trim() : ICONS[arg]);
+      const sym = kind === 'img' && path.trim().startsWith('/assets/icons/') ? ' sym' : '';
       const style = size > 0 ? ` style="width:${size}px;height:auto"` : '';
       return src
-        ? `<img class="tok ico${size > 0 ? ' sized' : ''}" data-tok="${kind}" data-slug="${esc(arg)}" src="${src}"${style} alt="" contenteditable="false">`
+        ? `<img class="tok ico${size > 0 ? ' sized' : ''}${sym}" data-tok="${kind}" data-slug="${esc(arg)}" src="${src}"${style} alt="" contenteditable="false">`
         : `<span class="tok missing" data-tok="${kind}" data-slug="${esc(arg)}" contenteditable="false">:${kind}[${arg}]</span>`;
     }
 
@@ -3722,9 +3723,10 @@ const ADMIN = REPO.split('/')[0];
       // article needs is here: former states, colonies and wartime variants are not
       // nations in the registry, so nothing in the registry could ever offer them.
       const held = new Set(icons.map((i) => i.src));
-      // Only the flags. Everything else that used to be offered here now lives in the
-      // archive, which is closed: a new picture comes from an image host instead.
-      const GROUP = { flags: 'flag' };
+      // The flags, and the icons folder (medals and the like). Everything else that used
+      // to be offered here now lives in the archive, which is closed: a new picture
+      // comes from an image host instead.
+      const GROUP = { flags: 'flag', icons: 'symbol' };
       for (const a of ASSETS) {
         if (!GROUP[a.group] || held.has(a.path)) continue;
         const stem = a.name.replace(/\.[^.]+$/, '');
@@ -3734,14 +3736,16 @@ const ADMIN = REPO.split('/')[0];
           ? stem.toUpperCase() : displayOf(stem);
         icons.push({ slug: a.path, src: a.path, kind: GROUP[a.group], label, loose: true });
       }
-      icons.sort((a, b) => a.kind.localeCompare(b.kind) || a.label.localeCompare(b.label));
+      // Symbols first, next to the arrows, then flags, then emblems.
+      const RANK = { symbol: 0, flag: 1, icon: 2 };
+      icons.sort((a, b) => RANK[a.kind] - RANK[b.kind] || a.label.localeCompare(b.label));
       const shown = icons.filter((i) => !iq || fold(i.label).includes(iq) || fold(i.slug).includes(iq));
       if (!shown.length && !arrows.length) { mpIcons.innerHTML = '<p class="mp-empty">Nothing matches.</p>'; }
       let kind = null;
       for (const i of shown) {
         if (i.kind !== kind) {
           kind = i.kind;
-          mpIcons.append(el('div', 'mp-group', kind === 'flag' ? 'flags' : 'emblems'));
+          mpIcons.append(el('div', 'mp-group', { symbol: 'icons', flag: 'flags', icon: 'emblems' }[kind]));
         }
         const b = el('button', 'mp-icon');
         b.type = 'button';
@@ -4504,6 +4508,7 @@ const ADMIN = REPO.split('/')[0];
     .tok.arrow.up { color: #00c22e; }
     .tok.arrow.down { color: #f00; }
     .tok.ico { height: 1em; width: auto; vertical-align: -.12em; box-sizing: border-box; border: 1px solid #fff; }
+    .tok.ico.sym { border: 0; }
     .tok.missing { font: 11px ui-monospace, monospace; color: var(--link-new); }
     input.path {
       display: block; width: 100%; margin: 4px 0; font: 11.5px/1.4 ui-monospace, monospace;
