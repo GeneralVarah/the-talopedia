@@ -85,7 +85,7 @@ As of November 29, 1934, after the match against [[cahaya-national-football-team
 
 ### Nicknames
 
-The national team is known as the Crimson Calamity. The name originated in the Great War, when Xing troops nicknamed the Nichirian defenders of Mizuhara in July 1915 "red oni" (赤鬼, *chì guǐ*), likening them to enraged oni after some units, bloodied and out of ammunition, resorted to hand to hand combat. Returning soldiers adopted the epithet, and veterans wearing red oni masks became a fixture at national team matches in the 1920s. At the 1924 World Cup, an Elvesterian wire correspondent, told that oni personify the misfortune driven out of homes at Setsubun, described the masked veterans in the stands as a "crimson calamity", and his reports applied the phrase to the team as it advanced to the final.
+The national team is known as the Crimson-Red Calamity. The name originated in the Great War, when Xing troops nicknamed the Nichirian defenders of Mizuhara in July 1915 "red oni" (赤鬼, *chì guǐ*), likening them to enraged oni after some units, bloodied and out of ammunition, resorted to hand to hand combat. Returning soldiers adopted the epithet, and veterans wearing red oni masks became a fixture at national team matches in the 1920s. At the 1924 World Cup, an Elvesterian wire correspondent, told that oni personify the misfortune driven out of homes at Setsubun, described the masked veterans in the stands as a "crimson-red calamity", and his reports applied the phrase to the team as it advanced to the final.
 
 ### Kit
 
