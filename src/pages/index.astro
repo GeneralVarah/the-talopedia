@@ -58,7 +58,7 @@ const featuredPanel = !pick ? '' : (() => {
 
 /**
  * The panels of five under the featured article: Trending Characters, picked by hand
- * on the front page, and New Articles, the pages most recently written. Each row is a
+ * on the front page, and Newest Articles, the pages most recently written. Each row is a
  * rank, a square picture, the title and one line under it, the same in both so the
  * two sit level beside each other.
  */
@@ -114,7 +114,7 @@ const newest = articles
   .filter((x) => x.at)
   .sort((a, b) => Date.parse(b.at) - Date.parse(a.at) || a.e.data.title.localeCompare(b.e.data.title))
   .slice(0, 5);
-const newPanel = tops(newest.map(({ e, at }) => ({ e, meta: `${origin(e)} \u00b7 ${day(at)}` })))
+const newestPanel = tops(newest.map(({ e, at }) => ({ e, meta: `${origin(e)} \u00b7 ${day(at)}` })))
   + `<p class="more"><a href="${url('/categories')}">All categories</a></p>`;
 
 /**
@@ -139,7 +139,7 @@ function splitHome(html = '') {
     const isFeatured = /id="featured-article"/.test(head);
     const inner = isFeatured ? featuredPanel
       : /id="trending-characters"/.test(head) ? trendingPanel(rest)
-      : /id="new-articles"/.test(head) ? newPanel
+      : /id="newest-articles"/.test(head) ? newestPanel
       : rest;
     // How long this one has left. Empty until the script at the foot of the page
     // fills it in, since a build cannot know when the reader is looking.
