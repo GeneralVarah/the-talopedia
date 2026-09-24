@@ -50,7 +50,7 @@ In 709 CE, descendants of the Hasmenionian people recaptured the city, restored 
 
 The first time the name “Eretz” was ever heard, was in the Hasmoneanite Bible, as read:
 
-“*And so I will give the Holy City, Eretz, your Zion, unto You. This will be the City of Worship, and you will be ever thankful…” 
+*“And so I will give the Holy City, Eretz, your Zion, unto You. This will be the City of Worship, and you will be ever thankful…”*
 
 ## History
 

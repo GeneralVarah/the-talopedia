@@ -28,7 +28,7 @@ infobox:
   - { section: "Demographics" }
   - { label: "Population", value: "1933 Census" }
   - { label: "Total", sub: true, value: "60,599,000" }
-  - { label: "Density", sub: true, value: "55.09 / km²" }
+  - { label: "Density", sub: true, value: "36.02 / km²" }
   - label: "Ethnic Groups"
     value:
       - "63% Mehrāni"
@@ -61,14 +61,15 @@ infobox:
   - { label: "Literacy Rate", value: "6.4%" }
   - { label: "HDI", value: "0.225" }
   - { section: "Miscellaneous Info" }
-  - { label: "Land Area", value: "954,850 km²" }
+  - { label: "Land Area", value: "1,682,533 km²" }
   - { label: "Driving Side", value: "Right" }
   - { label: "Alpha-2 Code", value: "VR" }
   - { label: "Alpha-3 Code", value: "VAR" }
 ---
+
 **Varahmehr** (Mehrāni: ورهمهر, *Varahmehr*; lit. *Warmth of the Sun*), officially the **Federal Republic of Varahmehr,** is a country located in Southeastern [[evria]], formally known as Nabataea. It is positioned on the Western coast of the Eastern Panthalassan Ocean. Varahmehr only borders the Alemannian colony of Divia to the north and west, as the territories to the south remain uninhabited due to the inhospitable environment of the Nabataean Desert. It comprises six semi-autonomous ostān-hā (provinces), each with distinct cultures and affiliations. The ostān-hā are further divided into thirteen shahrestān-hā, which are governed by an elected Shahrdār.
 
-Nourabad, the provincial capital of [[nourestan|Nourestan Province]], also serves as the federal capital. It has a population of 1.8 million people. It is the third most populous city, after Gandomabad with roughly 2.6 million and Kuhestan in industrial [[ahanestan]], which has 6.3 million residents. Other major cities include the port of Shushabad, the plains capital Sabzavar, the libertarian stronghold of Rāhgozar, and the academic center of Golestan.
+Nourabad, the provincial capital of [[nourestan]], also serves as the federal capital. It has a population of 1.8 million people. It is the fourth most populous city, after Gandomabad with roughly 2.6 million, Kuhestan in industrial [[ahanestan]], which has 6.3 million residents, and Golzar in the ham-peymān of Al-Sahrā, with a population of 7.4 million. Other major cities include the port of Shushabad, the plains capital Sabzavar, the libertarian stronghold of Rāhgozar, and the academic center of Golestan.
 
 The territory now constituting Varahmehr was, for most of recorded history, occupied by six distinct communities - Nourestan, Shushestan, Ahanestan, the Dashti plains, the refuge-settlement that would become Azadestan-e Kuchak, and the academies of Farzānestan - maintaining a fragile balance of mutual dependency through an annual diplomatic gathering called the Sofreh-ye Shesh (Table of Six). The modern federation was founded following the potential threat posed by the Ymirians, who acquired a colony near the territories. This culminated in a three-year negotiation, which concluded with the signing of the Federal Compact of Varahmehr.
 
@@ -138,14 +139,14 @@ Azadestan-e Kuchak sent a delegation of four people who arrived two weeks late, 
 
 Farzānestan proposed and drafted seven different versions of the Compact’s preamble before the other five lands told them that the seventh version would be accepted regardless of whether Farzānestan’s scholars considered it philosophically satisfactory. The eighth version - which they consider superior - exists as an academic document in Golestan’s central library and is occasionally cited in Constitutional Court proceedings, to the quiet satisfaction of Farzānestani lawyers everywhere.
 
-Shushestan’s final condition was the one that came closest to breaking the entire negotiation. They would not sign any document that did not contain explicit and irrevocable equal protection for all citizens regardless of ethnicity, religion, or heritage - not as a general aspiration but as an enforceable right with specific remedies. Nourestan’s Mehrdad Nouri-Fard, who had by this point spent three years nursing this agreement into existence, is recorded as having said: *“If this condition cannot be met, then we deserve to be colonized.”*It is Article Three of the Federal Compact, and it is the article that Shushestan’s Assembly delegation reads aloud every Ruz-e Peymān.
+Shushestan’s final condition was the one that came closest to breaking the entire negotiation. They would not sign any document that did not contain explicit and irrevocable equal protection for all citizens regardless of ethnicity, religion, or heritage - not as a general aspiration but as an enforceable right with specific remedies. Nourestan’s Mehrdad Nouri-Fard, who had by this point spent three years nursing this agreement into existence, is recorded as having said: *“If this condition cannot be met, then we deserve to be colonized.”* It is Article Three of the Federal Compact, and it is the article that Shushestan’s Assembly delegation reads aloud every Ruz-e Peymān.
 
 ### The Signing - Ruz-e Peymān
 
-The Federal Compact was signed on a morning on March 3rd, 1878, at a neutral site between Nourestan and Dashtestan - a location chosen precisely because it belonged to no single land and all of them simultaneously. Six representatives signed. Six seals were pressed into wax. The document was written in both Mehrāni and Dashti - the only two languages given equal status - with a Shushtari dedication in the margin that was not formally part of the text but that nobody proposed removing. The union of the Six Lands was not without issue, however. Shortly after the signing of the Federal Compact (also known as Peymān-e Mellī), many problems arose, such as the location of the capital, treasury distributions, the formation of the state’s institutions, and many other administrative burdens. This forced the newly founded nation into isolationism, preventing it from entering the Great War on any side.
+The Federal Compact was signed on a morning on March 3, 1878, at a neutral site between Nourestan and Dashtestan - a location chosen precisely because it belonged to no single land and all of them simultaneously. Six representatives signed. Six seals were pressed into wax. The document was written in both Mehrāni and Dashti - the only two languages given equal status - with a Shushtari dedication in the margin that was not formally part of the text but that nobody proposed removing. The union of the Six Lands was not without issue, however. Shortly after the signing of the Federal Compact (also known as Peymān-e Mellī), many problems arose, such as the location of the capital, treasury distributions, the formation of the state’s institutions, and many other administrative burdens. This forced the newly founded nation into isolationism, preventing it from entering the Great War on any side.
 
 <div class="imgrid">
-<figure style="flex:0.62"><img src="/assets/old-media/media/varahmehr-7.png" alt="Map of the shahrestān-hā of Varahmehr"><figcaption>Map of the shahrestān-hā of Varahmehr</figcaption></figure>
+<figure style="flex:0.620"><img src="/assets/old-media/media/varahmehr-7.png" alt="Map of the shahrestān-hā of Varahmehr"><figcaption>Map of the shahrestān-hā of Varahmehr</figcaption></figure>
 </div>
 
 ## Government
@@ -217,7 +218,7 @@ Shushestan is the commercial heart of Varahmehr. The port of Shushabad, operatin
 Dashtestan produces the bulk of Varahmehr’s grain, livestock, and timber. The Jashn-e Mehr harvest festival - whose nān-e mehr bread-sharing tradition has spread across the federation - reflects the cultural significance of agricultural production to Varahmehri identity. Dashtestan’s commodity, centered on Sabzavar’s grain exchange, set pricing benchmarks across the region.
 
 <div class="imgrid">
-<figure style="flex:1.88"><img src="/assets/old-media/media/varahmehr-10.png" alt="Farmlands surrounding Gandomabad, Dashtestan"><figcaption>Farmlands surrounding Gandomabad, Dashtestan</figcaption></figure>
+<figure style="flex:1.880"><img src="/assets/old-media/media/varahmehr-10.png" alt="Farmlands surrounding Gandomabad, Dashtestan"><figcaption>Farmlands surrounding Gandomabad, Dashtestan</figcaption></figure>
 </div>
 
 ## Geography
@@ -250,13 +251,13 @@ Varahmehr is constitutionally a secular state with strict separation between gov
 
 | Rank | City Name | Population | Subdivision |
 | --- | --- | --- | --- |
-| 1 | Kuhestan<br>کوهستان | 6,300,000 | Dabi-shā Avret |
-| 2 | Gandomabad<br>گندم آباد | 2,560,000 | Dashiristan |
-| 3 | Nourabad<br>نورآباد | 1,785,000 | Nahieh Nor |
-| 4 | Shushabad<br>شوش آباد | 1,720,000 | Mosaghat |
-| 5 | Āhanshahr<br>آهنشهر | 1,620,000 | Dabi-shā Avret |
-| 6 | Dashtvār<br>دشتوار | 1,570,000 | Ghlat |
-| 7 | Sabzavar<br>سبزوار | 1,452,000 | Kesht |
-| 8 | Āvanak<br>آوانک | 1,186,000 | Barkeh |
-| 9 | Dorudgar<br>درودگر | 847,000 | Ghehooh |
-| 10 | Qasr-e Tājir<br>قصر تاجیر | 730,000 | Barkeh |
+| 1 | Golzar<br>گلزار | 7,416,000 | Eleriyaz |
+| 2 | Kuhestan<br>کوهستان | 6,300,000 | Dabi-shā Avret |
+| 3 | Gandomabad<br>گندم آباد | 2,560,000 | Dashiristan |
+| 4 | Nourabad<br>نورآباد | 1,785,000 | Nahieh Nor |
+| 5 | Shushabad<br>شوش آباد | 1,720,000 | Mosaghat |
+| 6 | Āhanshahr<br>آهنشهر | 1,620,000 | Dabi-shā Avret |
+| 7 | Dashtvār<br>دشتوار | 1,570,000 | Ghlat |
+| 8 | Sabzavar<br>سبزوار | 1,452,000 | Kesht |
+| 9 | Āvanak<br>آوانک | 1,186,000 | Barkeh |
+| 10 | Dorudgar<br>درودگر | 847,000 | Ghehooh |

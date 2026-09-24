@@ -45,7 +45,15 @@ for (const h of headings) {
         </button>
         <nav class="menu" id="menu" hidden>
           <a href={url('/')}>Index</a>
+          <a href={url('/categories')}>Categories</a>
+          <a href={url('/contributors')}>Contributors</a>
+          <a href="https://github.com/auroruse/the-talopedia" rel="noopener">GitHub</a>
+          <div class="menu-sep"></div>
           <a href={url('/edit')}>Editor</a>
+          <a href={url('/manual-of-style')}>Manual of Style</a>
+          <a href={url('/wanted')}>Wanted Articles</a>
+          <div class="menu-sep"></div>
+          <a href={url('/random')}>Random Article</a>
         </nav>
       </div>
       <a class="brand" href={url('/')}><img src={url('/assets/talopedia-logo.png')} alt="The Talopedia" /></a>
@@ -59,10 +67,10 @@ for (const h of headings) {
       </form>
     </header>
 
-    <div class:list={['shell', toc.length === 0 && 'no-rail']}>
-      {toc.length > 0 && (
-      <aside class="rail">
-        {(
+    <div class:list={['shell', toc.length === 0 && !slug && 'no-rail']}>
+      {(toc.length > 0 || slug) && (
+      <aside class="rail" aria-hidden={toc.length ? undefined : 'true'}>
+        {toc.length > 0 && (
           <nav class="toc" id="toc">
             <div class="toc-head">
               <b>Contents</b>
@@ -100,6 +108,12 @@ for (const h of headings) {
                 </span>
                 <span class="tabs-r">
                   <a class="tab" href={url(`/edit?a=${encodeURIComponent(editSlug || slug)}`)}>{editLabel}</a>
+                  {view === 'history'
+                    ? <span class="tab on">History</span>
+                    : <a class="tab" href={url(`/history${pagePath}`)}>History</a>}
+                  {view === 'connections'
+                    ? <span class="tab on">Connections</span>
+                    : <a class="tab" href={url(`/connections${pagePath}`)}>Connections</a>}
                 </span>
               </nav>
             )}
@@ -121,76 +135,53 @@ for (const h of headings) {
     </div>
 
     <script>
-      import { search, href } from '../lib/search-client.js';
+      import { search, href, resultRow } from '../lib/search-client.js';
 
-      addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('search-form');
-        const input = document.getElementById('search-q');
-        const drop = document.getElementById('search-drop');
-        let seq = 0;
+      // A module runs once the page is parsed, so everything below is already there.
+      const form = document.getElementById('search-form');
+      const input = document.getElementById('search-q');
+      const drop = document.getElementById('search-drop');
+      let seq = 0;
 
-        const row = (h, kind) => {
-          const a = document.createElement('a');
-          a.className = 'sr sr-' + kind;
-          a.href = h.url;
-          const t = document.createElement('b');
-          t.textContent = h.title;
-          a.append(t);
-          if (kind === 'title' && h.type) {
-            const s = document.createElement('span');
-            s.className = 'sr-type';
-            s.textContent = h.type;
-            a.append(s);
-          }
-          if (h.excerpt) {
-            const e = document.createElement('span');
-            e.className = 'sr-ex';
-            e.innerHTML = h.excerpt;
-            a.append(e);
-          }
-          return a;
-        };
-
-        async function run() {
-          const q = input.value.trim();
-          const mine = ++seq;
-          if (!q) { drop.hidden = true; drop.replaceChildren(); return; }
-          const { titled, mentions, hasMore } = await search(q, 6);
-          if (mine !== seq) return;                       // a later keystroke won
-          drop.replaceChildren();
-          if (!titled.length && !mentions.length) {
-            const p = document.createElement('p');
-            p.className = 'sr-none';
-            p.textContent = `No articles match ${q}.`;
-            drop.append(p);
-          }
-          const group = (label, items, kind) => {
-            if (!items.length) return;
-            const h = document.createElement('p');
-            h.className = 'sr-head';
-            h.textContent = label;
-            drop.append(h, ...items.slice(0, 6).map((x) => row(x, kind)));
-          };
-          group('Articles', titled, 'title');
-          group('Mentions', mentions, 'mention');
-          if (titled.length > 6 || hasMore || mentions.length) {
-            const all = document.createElement('a');
-            all.className = 'sr-all';
-            all.href = href('/search') + '?q=' + encodeURIComponent(q);
-            all.textContent = `See all results for ${q}`;
-            drop.append(all);
-          }
-          drop.hidden = false;
+      async function run() {
+        const q = input.value.trim();
+        const mine = ++seq;
+        if (!q) { drop.hidden = true; drop.replaceChildren(); return; }
+        const { titled, mentions, hasMore } = await search(q, 6);
+        if (mine !== seq) return;                       // a later keystroke won
+        drop.replaceChildren();
+        if (!titled.length && !mentions.length) {
+          const p = document.createElement('p');
+          p.className = 'sr-none';
+          p.textContent = `No articles match ${q}.`;
+          drop.append(p);
         }
+        const group = (label, items, kind) => {
+          if (!items.length) return;
+          const h = document.createElement('p');
+          h.className = 'sr-head';
+          h.textContent = label;
+          drop.append(h, ...items.slice(0, 6).map((x) => resultRow(x, kind)));
+        };
+        group('Articles', titled, 'title');
+        group('Mentions', mentions, 'mention');
+        if (titled.length > 6 || hasMore || mentions.length) {
+          const all = document.createElement('a');
+          all.className = 'sr-all';
+          all.href = href('/search') + '?q=' + encodeURIComponent(q);
+          all.textContent = `See all results for ${q}`;
+          drop.append(all);
+        }
+        drop.hidden = false;
+      }
 
-        let t;
-        input.addEventListener('input', () => { clearTimeout(t); t = setTimeout(run, 120); });
-        input.addEventListener('focus', () => { if (input.value.trim()) run(); });
-        document.addEventListener('click', (e) => {
-          if (!form.contains(e.target)) drop.hidden = true;
-        });
-        input.addEventListener('keydown', (e) => { if (e.key === 'Escape') drop.hidden = true; });
+      let t;
+      input.addEventListener('input', () => { clearTimeout(t); t = setTimeout(run, 120); });
+      input.addEventListener('focus', () => { if (input.value.trim()) run(); });
+      document.addEventListener('click', (e) => {
+        if (!form.contains(e.target)) drop.hidden = true;
       });
+      input.addEventListener('keydown', (e) => { if (e.key === 'Escape') drop.hidden = true; });
     </script>
 
     <div id="lightbox" hidden>
@@ -232,8 +223,7 @@ for (const h of headings) {
         const measure = () =>
           document.documentElement.style.setProperty('--mast', `${Math.round(mast.getBoundingClientRect().height)}px`);
         measure();
-        addEventListener('resize', measure);
-        if (window.ResizeObserver) new ResizeObserver(measure).observe(mast);
+        new ResizeObserver(measure).observe(mast);
 
         const menu = document.getElementById('menu');
         const menuBtn = document.getElementById('menu-toggle');

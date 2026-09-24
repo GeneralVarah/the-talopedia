@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { contributors } from '../lib/contributors.mjs';
+import { nation, url } from '../lib/registry.mjs';
+
+const board = contributors(await getCollection('articles'));
+const top = board[0]?.articles ?? 1;
+---
+
+<Base title="Contributors" description="Who has written the Talopedia.">
+  <div class="article">
+    <table class="board">
+      <thead>
+        <tr><th class="rank"></th><th>Contributor</th><th class="num">Articles</th><th class="num">Lines</th><th class="num">Edits</th></tr>
+      </thead>
+      <tbody>
+        {board.map((c, i) => (
+          <tr>
+            <td class="rank">{i + 1}</td>
+            <td>
+              {nation(c.id)?.flag && <img class="ico" src={url(nation(c.id).flag)} alt="" loading="lazy" />}
+              <a href={url(`/portal/${c.id}`)}>{nation(c.id)?.name ?? c.id}</a>
+              {c.account && <>{' '}<a class="who" href={`https://github.com/${c.account}`} rel="noopener">({c.account})</a></>}
+              <span class="bar" style={`width:${Math.max(2, Math.round((c.articles / top) * 100))}%`}></span>
+            </td>
+            <td class="num">{c.articles}</td>
+            <td class="num">{c.lines.toLocaleString()}</td>
+            <td class="num">{c.edits.toLocaleString()}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</Base>
+<style>
+  .board { width: 100%; border-collapse: collapse; margin: 6px 0 18px; }
+  .board th, .board td { border-bottom: 1px solid var(--hair); padding: 8px 10px; text-align: left; }
+  .board thead th { font-size: 12px; color: var(--muted); font-weight: 700; border-bottom-color: var(--rule); }
+  .board .rank { width: 34px; color: var(--muted); text-align: right; padding-right: 14px; }
+  .board .num { width: 74px; text-align: right; font-variant-numeric: tabular-nums; }
+  /* The bar sits under the name rather than in a column of its own, so a long name
+     never squeezes it to nothing. */
+  .board .bar {
+    display: block; height: 3px; margin-top: 5px; border-radius: 2px;
+    background: var(--link); opacity: .55;
+  }
+  .board .ico { margin-right: 5px; vertical-align: -2px; }
+  .board .who { color: var(--muted); }
+</style>

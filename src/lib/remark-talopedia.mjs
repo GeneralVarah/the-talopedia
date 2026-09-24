@@ -1,6 +1,5 @@
 import { CUSTOM, custom } from './inline.mjs';
 
-const NAVBOX = /^:navbox\[([a-z0-9-]+)\]$/;
 
 /**
  * Turns [[wikilinks]], :icon[slug], :flag[slug], :up and :down into HTML.
@@ -11,14 +10,6 @@ export default function remarkTalopedia() {
 }
 
 function walk(node, parent, index) {
-  // A paragraph that is nothing but :navbox[id] becomes the navbox itself.
-  if (node.type === 'paragraph' && parent && node.children?.length === 1 && node.children[0].type === 'text') {
-    const m = node.children[0].value.trim().match(NAVBOX);
-    if (m) {
-      parent.children.splice(index, 1, { type: 'html', value: `<div data-nb="${m[1]}"></div>` });
-      return;
-    }
-  }
   if (node.type === 'text' && parent && CUSTOM.test(node.value)) {
     CUSTOM.lastIndex = 0;
     const parts = [];

@@ -29,6 +29,29 @@ function titleScore(title, q) {
   return new RegExp(`\\b${esc(n)}`).test(t) ? 60 : 0;
 }
 
+/** One result: its title, its kind when it is an article, and the excerpt. */
+export function resultRow(h, kind) {
+  const a = document.createElement('a');
+  a.className = 'sr sr-' + kind;
+  a.href = h.url;
+  const t = document.createElement('b');
+  t.textContent = h.title;
+  a.append(t);
+  if (kind === 'title' && h.type) {
+    const s = document.createElement('span');
+    s.className = 'sr-type';
+    s.textContent = h.type;
+    a.append(s);
+  }
+  if (h.excerpt) {
+    const e = document.createElement('span');
+    e.className = 'sr-ex';
+    e.innerHTML = h.excerpt;
+    a.append(e);
+  }
+  return a;
+}
+
 const tidy = (u) => (u.replace(/index\.html$/, '').replace(/\/$/, '') || '/');
 
 /**

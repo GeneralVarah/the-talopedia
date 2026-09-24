@@ -1,5 +1,5 @@
 ---
-title: "Ignis System"
+title: "Ignis system"
 type: celestial
 authors: [nichirin, alemannia]
 navbox: site
@@ -42,6 +42,7 @@ infobox:
   - { label: "Orbital Period", value: "~210 million years" }
   - { label: "Inclination to Galactic Plane", value: "~62°" }
 ---
+
 The **Ignis system** is a circumbinary system composed of the luminous star Ignis Prime and its gravitationally bound companion, the [stellar black hole](https://en.wikipedia.org/wiki/Stellar_black_hole) Umbra Magna. The pair form a close binary, orbiting the Ignian Barycenter, their common center of mass, every 44 days with a semimajor axis of approximately 0.245 astronomical units (AU).
 
 Ignis Prime, the system’s sole source of light and heat, is a late A-type [main-sequence](https://en.wikipedia.org/wiki/Main_sequence) star (A8V) with a mass of 1 M☉ and a luminosity of 1 L☉. Its surface temperature (7,500–7,800 K) gives it a white-blue hue in [[avium]]’s sky and a spectrum rich in ultraviolet radiation. Its companion, Umbra Magna, is a non-accreting [black hole](https://en.wikipedia.org/wiki/Black_hole) with a mass of roughly 4.1 M☉. Although invisible in visible light, its gravitational influence strongly influences the orbital dynamics of the system.

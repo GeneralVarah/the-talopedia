@@ -8,15 +8,15 @@ infobox:
   - { label: "Deputy", value: "John Krul" }
   - { section: "Personal Details" }
   - { label: "Nationality", value: "Shivonian" }
-  - { label: "Born", value: "December 14th, 1882 Eshkarot, Empirate of Shivon" }
+  - { label: "Born", value: "December 14, 1882 Eshkarot, Empirate of Shivon" }
   - { label: "Parents", value: "Heir Binkowicz (father)Buba Binkowicz (mother)" }
   - { label: "Alma Mater", value: "Shivonite Military Academy" }
 ---
-**Thomas Illyon Binkowicz** (born December 14th, 1882) is the current authoritarian ruler of [[shivon]]. Before taking power, he was a political revolutionary who helped turn the government into the ultra-Ordalist regime it is now. Before politics, he led a street gang called the Stukes, known for their leather jackets and violent behavior. These early years shaped how he thinks and how he uses fear and loyalty. Binkowicz is a strong nationalist and believes Shivon must stay strict, controlled, and unified under his rule.
+**Thomas Illyon Binkowicz** (born December 14, 1882) is the current authoritarian ruler of [[shivon]]. Before taking power, he was a political revolutionary who helped turn the government into the ultra-Ordalist regime it is now. Before politics, he led a street gang called the Stukes, known for their leather jackets and violent behavior. These early years shaped how he thinks and how he uses fear and loyalty. Binkowicz is a strong nationalist and believes Shivon must stay strict, controlled, and unified under his rule.
 
 ## Early Life
 
-Thomas Binkowicz was born on December 14th, 1882. His father was a mobster who operated through networks in Eshkarot, Davidica, Mohonon, and Rabba. Binkowicz rarely saw him, and when he did, his father was abusive and dismissive. The family lived in the Binkowicz Manor, where Thomas spent most of his childhood. At age 8, he was finally brought into his father’s underground headquarters and put to work as an alcohol dispenser, starting his life in the criminal world early.
+Thomas Binkowicz was born on December 14, 1882. His father was a mobster who operated through networks in Eshkarot, Davidica, Mohonon, and Rabba. Binkowicz rarely saw him, and when he did, his father was abusive and dismissive. The family lived in the Binkowicz Manor, where Thomas spent most of his childhood. At age 8, he was finally brought into his father’s underground headquarters and put to work as an alcohol dispenser, starting his life in the criminal world early.
 
 Binkowicz did not attend regular school. He was taught at home by his uncle, Nimrod, who focused on basic education and a harsh personal philosophy centered on the belief that the strong survive and the weak perish.
 

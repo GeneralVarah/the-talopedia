@@ -70,7 +70,6 @@ export function resolveHtml(html = '') {
       const base = url('/').replace(/\/$/, '');
       return `${head}${base && path.startsWith(base + '/') ? path : url(path)}"`;
     })
-    .replace(/<div data-nb="([^"]+)"><\/div>/g, (_, id) => renderNavbox(id))
     .replace(/<a data-wl="([^"]+)"(?: data-d="([^"]*)")?><\/a>/g,
       (_, slug, d) => link(unesc(slug), d === undefined ? undefined : unesc(d)))
     .replace(/<i data-ico="([^"]+)"><\/i>/g, (_, slug) => icon(unesc(slug)))

@@ -1,12 +1,15 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import { navbox, nations, url } from '../lib/registry.mjs';
-import { resolveHtml } from '../lib/navbox.mjs';
-import { asset } from '../lib/inline.mjs';
+import { navbox, nations, nation, url } from '../lib/registry.mjs';
+import { resolveHtml, renderNavbox } from '../lib/navbox.mjs';
+import { asset, icon, esc } from '../lib/inline.mjs';
+import { createdOf } from '../lib/revisions.mjs';
+import { categoryOf } from '../lib/categories.mjs';
+import { featured, overview, firstImage, linkFirstMention } from '../lib/featured.mjs';
 
 // The front page is an ordinary article, so it opens in the editor like any other.
-export const HOME = 'home';
+const HOME = 'home';
 
 const all = await getCollection('articles');
 const home = all.find((e) => e.id === HOME);
@@ -33,22 +36,84 @@ const stats = [
 ];
 
 /**
- * The featured article's own sidebar picture, floated beside its summary. Read off
- * whichever article the section links to first, so changing the feature changes the
- * picture and there is nothing to keep in step by hand.
+ * Today's featured article, written out in full: its own sidebar picture floated
+ * beside its overview. The front page carries the heading and nothing under it, so
+ * there is no copy of the text to go stale and nobody has to change it each morning.
  */
-function featured() {
-  const section = (home?.body ?? '').split(/^##\s+Featured Article\s*$/m)[1];
-  const slug = section?.match(/\[\[([^\]|#]+)/)?.[1];
-  const entry = slug && articles.find((a) => a.id === slug);
-  const row = entry?.data.infobox?.find((r) => r.image || r.images?.[0]?.src);
+const pick = featured(articles);
+const featuredPanel = !pick ? '' : (() => {
+  const title = (pick.data.title ?? pick.id).replace(/"/g, '&quot;');
+  const fig = `<figure class="float float-right feat-pic">`
+    + `<img src="${asset(firstImage(pick.data))}" alt="${title}"></figure>`;
+  const href = url('/' + pick.id);
+  const body = overview(resolveHtml(pick.rendered?.html));
+  const linked = linkFirstMention(body, pick.data.title ?? pick.id, href);
+  // A lede that never names its subject gets a plain link instead, so the panel is
+  // never a dead end.
+  return linked
+    ? `${fig}${linked}`
+    : `${fig}${body}<p class="more"><a href="${href}">Read all of ${title}</a></p>`;
+})();
+
+/**
+ * The panels of five under the featured article: Trending Characters, picked by hand
+ * on the front page, and Newest Articles, the pages most recently written. Each row is a
+ * rank, a square picture, the title and one line under it, the same in both so the
+ * two sit level beside each other.
+ */
+const byId = new Map(articles.map((e) => [e.id, e]));
+// A picture on Google's hosting is asked for at a size the tile can use, not 2000 wide.
+const thumb = (src) => asset(src).replace(/^(https:\/\/lh3\.googleusercontent\.com\/.+)=w\d+$/, '$1=w200');
+// A flag, emblem or logo is shown whole inside the tile; a photograph fills it.
+const WHOLE = /flag|emblem|logo|coat of arms|seal|crest|badge|insignia/i;
+function pictureOf(e) {
+  const row = (e.data.infobox || []).find((r) => r.image || r.images?.[0]?.src);
   const src = row?.image || row?.images?.[0]?.src;
-  if (!src) return '';
-  const alt = (entry.data.title ?? slug).replace(/"/g, '&quot;');
-  return `<figure class="float float-right" style="width:220px">`
-    + `<img src="${asset(src)}" alt="${alt}"></figure>`;
+  if (src) {
+    const caption = row.caption || row.images?.[0]?.caption || '';
+    return { src: thumb(src), whole: WHOLE.test(caption) || ['overview', 'subdivision'].includes(e.data.type) };
+  }
+  const flag = nation(e.data.nation)?.flag;
+  return flag ? { src: url(flag), whole: true } : null;
 }
-const featuredImg = featured();
+const origin = (e) => {
+  const n = nation(e.data.nation);
+  return n ? `${icon(e.data.nation)} ${esc(n.name)}` : esc(categoryOf(e.data.type).name);
+};
+/** @param {Array<{e, meta: string}>} rows each page and the line under its title */
+function tops(rows) {
+  if (!rows.length) return '<p>Nothing yet.</p>';
+  return '<ol class="tops">' + rows.map(({ e, meta }, i) => {
+    const href = url('/' + e.id);
+    const pic = pictureOf(e);
+    return `<li><span class="tops-n" aria-hidden="true">${i + 1}</span>`
+      + `<a class="tops-pic${pic?.whole ? ' whole' : ''}" href="${href}" tabindex="-1" aria-hidden="true">`
+      + (pic ? `<img src="${pic.src}" alt="" loading="lazy" decoding="async">` : '') + '</a>'
+      + `<span class="tops-text"><a href="${href}">${esc(e.data.title)}</a>`
+      + `<span class="tops-meta">${meta}</span></span></li>`;
+  }).join('') + '</ol>';
+}
+
+/** The list written under the heading, as pages; whatever follows it is the link out. */
+function trendingPanel(rest) {
+  const root = url('/');
+  const end = Math.max(rest.lastIndexOf('</ul>'), rest.lastIndexOf('</ol>'));
+  const list = end < 0 ? '' : rest.slice(0, end);
+  const picked = [...list.matchAll(/<li>[\s\S]*?<a\b[^>]*href="([^"]+)"/g)]
+    .map((m) => byId.get(decodeURI(m[1]).slice(root.length).replace(/\/$/, '')))
+    .filter(Boolean);
+  const after = end < 0 ? rest : rest.slice(end + 5);
+  return tops(picked.map((e) => ({ e, meta: origin(e) }))) + after.replace(/<p>/g, '<p class="more">');
+}
+
+const day = (iso) => new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+const newest = articles
+  .map((e) => ({ e, at: createdOf(e.id) }))
+  .filter((x) => x.at)
+  .sort((a, b) => Date.parse(b.at) - Date.parse(a.at) || a.e.data.title.localeCompare(b.e.data.title))
+  .slice(0, 5);
+const newestPanel = tops(newest.map(({ e, at }) => ({ e, meta: `${origin(e)} \u00b7 ${day(at)}` })))
+  + `<p class="more"><a href="${url('/categories')}">All categories</a></p>`;
 
 /**
  * Each `## Section` of the front page becomes its own panel, as on Wikipedia's main page.
@@ -59,15 +124,31 @@ function splitHome(html = '') {
   const lede = parts[0].startsWith('<h2') ? '' : parts.shift() ?? '';
   let intro = '';
   const boxes = [];
+  // Every panel after the featured article sits two to a row.
+  const pairs = [];
+  let pastFeatured = false;
   for (const chunk of parts) {
     const end = chunk.indexOf('</h2>') + 5;
     const head = chunk.slice(0, end);
     const rest = chunk.slice(end);
     if (/id="introduction"/.test(head)) { intro = rest; continue; }
-    const lead = /id="featured-article"/.test(head) ? featuredImg : '';
-    boxes.push(`<section class="hbox">${head}<div class="hbox-body">${lead}${rest}</div></section>`);
+    // The featured panel's contents are generated; whatever the front page has
+    // under that heading is a leftover and is replaced.
+    const isFeatured = /id="featured-article"/.test(head);
+    const inner = isFeatured ? featuredPanel
+      : /id="trending-characters"/.test(head) ? trendingPanel(rest)
+      : /id="newest-articles"/.test(head) ? newestPanel
+      : rest;
+    // How long this one has left. Empty until the script at the foot of the page
+    // fills it in, since a build cannot know when the reader is looking.
+    const bar = isFeatured
+      ? head.replace('</h2>', '<span class="feat-next" data-feat-next hidden></span></h2>')
+      : head;
+    (pastFeatured ? pairs : boxes).push(`<section class="hbox">${bar}<div class="hbox-body">${inner}</div></section>`);
+    if (isFeatured) pastFeatured = true;
   }
-  return { lede, intro, body: boxes.join('') };
+  const split = pairs.length ? `<div class="home-split">${pairs.join('')}</div>` : '';
+  return { lede, intro, body: boxes.join('') + split };
 }
 
 const { lede, intro, body } = splitHome(resolveHtml(home?.rendered?.html));
@@ -92,6 +173,8 @@ const headings = (rendered?.metadata?.headings ?? []).filter((h) => h.slug !== '
       ? <Fragment set:html={body} />
       : <p>The front page lives in <code>src/content/articles/home.md</code>.</p>}
   </div>
+  {/* At the foot, as on every article that carries one. */}
+  {home?.data.navbox && home.data.navbox !== 'none' && <Fragment set:html={renderNavbox(home.data.navbox, 'Navigation')} />}
   <script is:inline>
     // The figures settle in on load; static if the reader asked for less motion.
     addEventListener('DOMContentLoaded', () => {
@@ -109,5 +192,24 @@ const headings = (rendered?.metadata?.headings ?? []).filter((h) => h.slug !== '
         requestAnimationFrame(step);
       }
     });
+
+    // The draw is keyed to the UTC date and the site rebuilds itself at 00:07 UTC, so
+    // that is when a different article appears. Kept in the reader's own clock rather
+    // than printed at build time, which would be stale by morning.
+    const slot = document.querySelector('[data-feat-next]');
+    if (slot) {
+      const pad = (n) => String(n).padStart(2, '0');
+      const tick = () => {
+        const now = new Date();
+        let at = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 7);
+        if (at <= now.getTime()) at += 86400000;
+        const s = Math.floor((at - now.getTime()) / 1000);
+        // Padded throughout so the pill never changes width as the digits fall.
+        slot.textContent = `${pad(Math.floor(s / 3600))}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}`;
+        slot.hidden = false;
+      };
+      tick();
+      setInterval(tick, 1000);
+    }
   </script>
 </Base>

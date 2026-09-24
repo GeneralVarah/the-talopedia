@@ -1,7 +1,7 @@
 ---
 title: "Hephae"
 type: celestial
-authors: [alemannia]
+authors: [alemannia, nichirin]
 navbox: site
 ooc: true
 infobox:
@@ -51,6 +51,7 @@ infobox:
       - "2% calcium"
       - "1% magnesium"
 ---
+
 **Hephae** is the innermost and smallest planet in the [[ignis-system|Ignis system]], orbiting Ignis Prime and Umbra Magna at a distance of 0.3978 astronomical units every 91.64 sidereal days. Due to its proximity to its star, it experiences extreme temperatures and high orbital speeds, averaging about 97 kilometers per second. Despite its small size and lack of moons, Hephae has a barren and fascinating landscape, dominated by a huge, ancient impact basin that covers almost a tenth of the planet's surface. With a radius of only 2,869 kilometers, Hephae is about 45% the size of [[avium]] and exhibits many characteristics of a geologically dead terrestrial body. The planet has no significant atmosphere, leaving an exposed, crater-strewn surface subject to intense space weathering and extreme temperatures.
 
 ## Nomenclature

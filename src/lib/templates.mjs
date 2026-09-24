@@ -13,6 +13,8 @@ const I = (caption = '') => ({ image: '', caption });
 const P = () => ({ pair: [{ heading: '', items: [] }, { heading: '', items: [] }] });
 // An office held and the term served in it.
 const O = () => ({ office: '', term: '' });
+// A value with no label, spanning the row under its heading, as a scoreline.
+const V = () => ({ value: '' });
 
 export const TEMPLATES = {
   // ---- places ----
@@ -132,6 +134,48 @@ export const TEMPLATES = {
   ethnicity: [
     I(),
     L('Population'), L('Regions'), L('Languages'), L('Religion'), L('Related Groups'),
+  ],
+
+  // ---- sport ----
+  // Each is the sidebar of the article named, with its own details taken out.
+  // The Nichirin national football team.
+  'national-team': [
+    I(),
+    L('Nickname'), L('Association'), L('Confederation'), L('Manager'),
+    L('Most Caps'), L('Top Scorer'), L('Home Stadium'), L('AFA Code'),
+    I(),
+    S('AFA Ranking'), L('Current'), L('Highest'), L('Lowest'),
+    S('First International'), V(),
+    S('Biggest Win'), V(),
+    S('Biggest Defeat'), V(),
+    S('World Cup'), L('First Appearance'), L('Best Result'),
+  ],
+  // The Karjanian Secondary League; Nichirin has no league article yet.
+  league: [
+    I('Emblem'),
+    L('Founded'), L('Country'), L('Number of teams'), L('Level on pyramid'),
+    L('Promotion to'), L('Relegation to'),
+    L('Domestic Cup'), L('Domestic Super Cup'), L('International Cups'),
+    L('Reigning champion'), L('Most championships'),
+  ],
+  // The Karjanian Cup; Nichirin has no cup article yet.
+  cup: [
+    I('Logo'),
+    L('Founded'), L('Organizer'), L('Region(s)'), L('Teams'), L('Qualification for'),
+    L('Current Champions'), L('Most Championships'),
+  ],
+  // Arkankeli Racecourse; Nichirin has no racecourse article yet.
+  racecourse: [
+    I(),
+    L('Founded'), L('Capacity'), L('Event Type'), L('Location'), L('Country'),
+    L('Notable Races'),
+    S('Records'), L('Most Wins'), L('Most Races'),
+  ],
+  // The Thousand Lakes Derby; Nichirin has no horse race article yet.
+  'horse-race': [
+    I('Logo'),
+    L('Class'), L('Location'), L('Country'), L('Inaugurated'), L('Race type'),
+    S('Race information'), L('Surface'), L('Distance'), L('Track'), L('Purse'),
   ],
 
   // ---- everything else ----

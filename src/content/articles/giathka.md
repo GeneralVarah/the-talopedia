@@ -5,6 +5,7 @@ nativeTitle:
   - "вооружённая республика Гиатка"
 type: overview
 nation: giathka
+navbox: site
 infobox:
   - { image: "/assets/flags/giathka.png", caption: "Flag" }
   - { image: "/assets/old-media/emblems/giathka.jpg", caption: "Coat of Arms" }
@@ -37,7 +38,7 @@ infobox:
       - "Mikhail Dimitriev (Defence)"
       - "Alexis Ukhinov (Standardisation of facts)"
       - "Kadzar Jabenov (National Security)"
-  - { label: "Formation", value: "July 24th 1923" }
+  - { label: "Formation", value: ":date[1923-07-24|ago]" }
   - { section: "Demographics" }
   - { label: "Population", value: "1930 Census" }
   - { label: "Total", sub: true, value: "104,702,000" }
@@ -94,7 +95,7 @@ The Giathkan Armed Forces (Oružane snage Giathkana) serve as the military of th
 
 ## Government
 
-The Giathkan government is a unitary dictatorship founded on 11 July 1932. It is headed by the Supreme Leader, who holds absolute executive authority. The government is openly anti-democratic, believing democracy to be inherently weak.
+The Giathkan government is a unitary dictatorship founded on July 11, 1932. It is headed by the Supreme Leader, who holds absolute executive authority. The government is openly anti-democratic, believing democracy to be inherently weak.
 
 The legislative function is carried out by decree, with laws and regulations issued directly by the Supreme Leader. There is no representative legislature, and political parties are banned. A state-controlled judiciary operates under the Ministry of Justice, with courts structured hierarchically on local, prefectural, and national levels. While the judiciary handles civil, criminal, and administrative matters. Judges are career bureaucrats appointed by the central government, and judicial decisions are subject to review by executive authorities in politically sensitive cases. Before 1932, the Tsar was the head of state of Giathka. After extreme hyperinflation, and the Tsar's failure to fix it, a revolution overthrew the government, abolishing democracy and the monarchy.
 

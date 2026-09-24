@@ -3,5 +3,4 @@ dist
 .astro
 .DS_Store
 *.docx
-__pycache__/
 docx_cache/

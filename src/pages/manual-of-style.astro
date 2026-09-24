@@ -1,0 +1,110 @@
+---
+import Base from '../layouts/Base.astro';
+
+// The original manual spent a third of its length on Google Docs mechanics: font
+// sizes, line spacing, where the divider sits, which cell to leave empty, matching a
+// table's formatting to an exemplar. The stylesheet decides all of that now and the
+// editor offers no way to change it, so those sections are gone rather than rewritten.
+const sections = [
+  {
+    id: 'voice', title: 'Voice',
+    paras: [
+      'Articles are written in the third person. First-person pronouns (I, we, us, our) do not appear in article text, and neither do second-person ones (you, your).',
+      'The Talopedia has no opinions. Do not editorialise. A leader is not infamous, a policy is not controversial and a battle is not devastating unless the article attributes that description to someone named. Cut words that assume the reader agrees: clearly, obviously, naturally, of course, it is worth noting, interestingly. A fact that matters is shown to matter by the prose around it rather than announced.',
+      'Collective nouns are singular: the cabinet has decided, not the cabinet have decided. The same goes for army, government, company and committee.',
+    ],
+  },
+  {
+    id: 'naming', title: 'Naming and article titles',
+    paras: [
+      'A subject known by several names lists the notable equivalents at the very start, straight after the bolded name, with a transcription wherever the original script would be opaque:',
+    ],
+    example: '**Miyamoto Shogunate** (宮本幕府, Aldrige: *Miyamoto Bakufu*, *MEE-yah-moh-toh BAH-koo-foo*)',
+    after: [
+      'The title is the name most commonly used in Avium. Where two subjects share a title, disambiguate in parentheses with the broadest accurate category: Shimonosaki (city) and Shimonosaki (prefecture).',
+    ],
+  },
+  {
+    id: 'linking', title: 'Linking',
+    paras: [
+      'Link a subject the first time the body names it, and not again. The sidebar is a separate zone, so a subject linked in the body is still linked on its first appearance there.',
+      'Link what a reader would plausibly want to follow. Not every proper noun needs one.',
+      'Link out to Wikipedia only where the article there covers a direct real-world parallel, and do it sparingly.',
+    ],
+  },
+  {
+    id: 'italics', title: 'Italics',
+    paras: [
+      'Italicise non-English words that have not entered ordinary English, and scientific names. Loanwords that have naturalised stay upright: samurai, vice versa, Gestapo, carte blanche, status quo. When in doubt, no italics.',
+    ],
+  },
+  {
+    id: 'bold', title: 'Bold',
+    paras: [
+      'Bold belongs in three places: the subject where the article opens, the subject where a section opens, and the subject a bullet point introduces, with its alternative names. Never for emphasis mid-sentence.',
+    ],
+  },
+  {
+    id: 'abbreviations', title: 'Abbreviations',
+    paras: [
+      'Write an abbreviation out in full the first time, with the short form in parentheses after it: the Shogunate Armed Forces (SAF). Afterwards the short form alone is fine. Body and sidebar are independent, so each expands on its own first use.',
+    ],
+  },
+  {
+    id: 'dates', title: 'Dates and measurements',
+    paras: [
+      'Dates are the month, then the day, then the year in full: <b>June 6, 1896</b>. No ordinal on the day, and a comma before the year.',
+      'Anchor every date. Never write recently, currently, soon or now: they are wrong within a year and nobody comes back to fix them.',
+      'If you use any system of measurement other than metric, give the metric equivalent alongside it.',
+    ],
+  },
+  {
+    id: 'ooc', title: 'In character and out',
+    paras: [
+      'Articles are written from inside Avium, as a reference work produced there. Do not mention the setting as fiction, or refer to authors, episodes or narrative events as things outside it.',
+      'Where an article carries information not publicly known in character, tick <b>Contains out-of-character information</b> in page settings. The notice is added for you; do not write it into the text.',
+    ],
+  },
+  {
+    id: 'grammar', title: 'Grammar',
+    paras: [
+      'No contractions. A hyphen joins a compound modifier (six-year term); an en dash carries a range (1928–1930) and a pairing (the Nichirin–Guandong Treaty). Oxford commas are yours to choose, but choose once per article. Otherwise follow ordinary English.',
+    ],
+  },
+  {
+    id: 'starting', title: 'Starting an article',
+    paras: [
+      'Pick the article type in page settings and the editor lays out the sidebar that type uses. Fill in the rows that apply and leave the rest; empty rows are never written to the file, so an unused field costs nothing.',
+      'There are no font, size, colour or spacing controls anywhere, and there is nothing to match against another article. A section heading looks the way it does because it is a section heading.',
+    ],
+  },
+  {
+    id: 'fallbacks', title: 'Anything not covered here',
+    paras: [
+      'Check Wikipedia’s Manual of Style. If that does not settle it either, ask a roleplay admin.',
+    ],
+  },
+];
+---
+
+<Base title="Manual of Style" description="How articles on the Talopedia are written."
+  headings={sections.map((s) => ({ depth: 2, slug: s.id, text: s.title }))}>
+  <div class="article">
+    {sections.map((s) => (
+      <section class="mos">
+        <h2 id={s.id}>{s.title}</h2>
+        {s.paras.map((p) => <p set:html={p} />)}
+        {s.example && <p class="mos-eg" set:html={s.example.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\*(.+?)\*/g, '<i>$1</i>')} />}
+        {s.after?.map((p) => <p set:html={p} />)}
+      </section>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .mos h2 { margin-top: 26px; }
+  .mos-eg {
+    padding: 9px 12px; border-left: 3px solid var(--rule);
+    background: color-mix(in srgb, var(--band) 45%, transparent);
+  }
+</style>

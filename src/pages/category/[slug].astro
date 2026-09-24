@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { categories } from '../../lib/categories.mjs';
+import { url } from '../../lib/registry.mjs';
+
+export async function getStaticPaths() {
+  return categories(await getCollection('articles')).map((c) => ({ params: { slug: c.slug }, props: c }));
+}
+
+const { name, pages } = Astro.props;
+
+// Filed under the first letter, as Wikipedia does, with accents folded so Ōsaka is an O.
+const letterOf = (title) => {
+  const c = title.normalize('NFD').replace(/[̀-ͯ]/g, '').charAt(0).toUpperCase();
+  return /[0-9]/.test(c) ? '0–9' : c;
+};
+const groups = new Map();
+for (const p of pages) {
+  const l = letterOf(p.title);
+  if (!groups.has(l)) groups.set(l, []);
+  groups.get(l).push(p);
+}
+---
+<Base title={`Category:${name}`}>
+  <div class="article category">
+    <h2>Pages in category "{name}"<span class="cat-n">{pages.length}</span></h2>
+    <div class="cat-cols">
+      {[...groups].map(([letter, list]) => (
+        <div class="cat-group">
+          <h3>{letter}</h3>
+          <ul>{list.map((p) => <li><a href={url(`/${p.slug}`)}>{p.title}</a></li>)}</ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</Base>

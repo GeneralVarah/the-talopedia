@@ -12,17 +12,17 @@ infobox:
   - { label: "Ethnicity", value: "Mehrāni" }
   - label: "Born"
     value:
-      - "14 February, 1871 (age 58)"
+      - "February 14, 1871 (age 58)"
       - "Nourabad, Nourestan"
   - { label: "Religion", value: "[[mithraism]]" }
   - { label: "Children", value: "2 adult children" }
   - { label: "Alma Mater", value: "Dāneshgāh-e Nezāmi, Nourabad (Com. Law)" }
 ---
-**Nozar Shariati** (Mehrāni: نوذر شریعتی; born 14 February 1871, Nourabad) is a Varahmehri statesman and former commercial lawyer currently serving his second term as Vazir-e Azam of the [[varahmehr|Federal Republic of Varahmehr]]. He is the first Chancellor in the federation’s 51-year history to preside over the end of its isolationist period, following a vote in the Majles-e Mellī on 23 November 1929 that passed by an overwhelming majority. Regarded within the Peymān-dārān as a steady institutional hand rather than a transformative leader, Shariati has built his political reputation on procedural reliability, coalition management, and an unusually thorough grasp of the federation’s commercial and legal frameworks - qualities rooted in fifteen years of practice in Nourabad’s commercial courts before he entered politics. His critics, particularly within the Āzādi-khāhān, argue that his pace of reform reflects circumstance rather than vision. His supporters argue that in a republic as constitutionally complex as Varahmehr, consistency is not the absence of vision - it is a particular kind of it.
+**Nozar Shariati** (Mehrāni: نوذر شریعتی; born February 14, 1871, Nourabad) is a Varahmehri statesman and former commercial lawyer currently serving his second term as Vazir-e Azam of the [[varahmehr|Federal Republic of Varahmehr]]. He is the first Chancellor in the federation’s 51-year history to preside over the end of its isolationist period, following a vote in the Majles-e Mellī on November 23, 1929 that passed by an overwhelming majority. Regarded within the Peymān-dārān as a steady institutional hand rather than a transformative leader, Shariati has built his political reputation on procedural reliability, coalition management, and an unusually thorough grasp of the federation’s commercial and legal frameworks - qualities rooted in fifteen years of practice in Nourabad’s commercial courts before he entered politics. His critics, particularly within the Āzādi-khāhān, argue that his pace of reform reflects circumstance rather than vision. His supporters argue that in a republic as constitutionally complex as Varahmehr, consistency is not the absence of vision - it is a particular kind of it.
 
 ## Early Life
 
-Shariati was born on 14 February 1871 in Nourabad’s western administrative quarter, the second child of a Mehrāni civil servant employed in the federal administration’s records office. His father was among the thousands of ordinary functionaries who built the republic’s institutional apparatus in the turbulent decades following the 1878 signing of the Peymān-e Mellī - a period of administrative crisis in which disputes over treasure distribution, capital jurisdiction, and the formation of federal ministries occupied the Majles-e Mellī almost continuously. Growing up in the shadow of these institutional struggles gave Shariati an early understanding that republics are held together by procedure as much as by principle.
+Shariati was born on February 14, 1871 in Nourabad’s western administrative quarter, the second child of a Mehrāni civil servant employed in the federal administration’s records office. His father was among the thousands of ordinary functionaries who built the republic’s institutional apparatus in the turbulent decades following the 1878 signing of the Peymān-e Mellī - a period of administrative crisis in which disputes over treasure distribution, capital jurisdiction, and the formation of federal ministries occupied the Majles-e Mellī almost continuously. Growing up in the shadow of these institutional struggles gave Shariati an early understanding that republics are held together by procedure as much as by principle.
 
 His birth in mid-February placed him in the coldest weeks of Nourabad’s plateau winter - a season he has since described in passing as the one that teaches patience more thoroughly than any other. His childhood in Nahieh Nor was unremarkable by his own account, marked primarily by proximity to the documents and ledgers that filled his father’s working life.
 
@@ -40,7 +40,7 @@ Shariati’s first Chancellorship was characterized by institutional consolidati
 
 ## Second Term, 1929 –
 
-Shariati’s second term opened immediately with the most consequential vote of his career. On 23 November 1929, the Majles-e Mellī voted by an overwhelming majority to end the federation’s 51-year period of isolation. Shariati had linked the decision publicly to the oil discovery, framing foreign investment as an economic necessity rather than a political preference. The Āzādi-khāhān formally called for the vote to be canceled, arguing that diplomatic and concession authority would accumulate disproportionately in the executive. Their objection was overruled.
+Shariati’s second term opened immediately with the most consequential vote of his career. On November 23, 1929, the Majles-e Mellī voted by an overwhelming majority to end the federation’s 51-year period of isolation. Shariati had linked the decision publicly to the oil discovery, framing foreign investment as an economic necessity rather than a political preference. The Āzādi-khāhān formally called for the vote to be canceled, arguing that diplomatic and concession authority would accumulate disproportionately in the executive. Their objection was overruled.
 
 *"If this condition cannot be met, then we deserve to be colonized." — Mehrdad Nouri-Fard, 1875. A phrase that Shariati is known to keep framed in his office.*
 

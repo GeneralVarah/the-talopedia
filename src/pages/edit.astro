@@ -4,19 +4,29 @@ import { getCollection } from 'astro:content';
 import { TEMPLATES } from '../lib/templates.mjs';
 import { ARTICLE_TYPES } from '../content.config';
 import { nations, url } from '../lib/registry.mjs';
+import slugTitleSource from '../lib/slug-title.mjs?raw';
+import { icNow } from '../lib/icclock.mjs';
+import { BUILT_FROM } from '../lib/revisions.mjs';
+import { ACCOUNT_OF } from '../lib/contributors.mjs';
 import fs from 'node:fs';
 import { parse as parseYaml } from 'yaml';
 
+// The byline a page carries, which is who may edit it once it exists. Same reading as
+// .github/gate.mjs: `authors` when it is set, `nation` when it is not.
+const credit = (d) => (d.authors?.length ? d.authors : d.nation ? [d.nation] : []);
+
 const existing = [
-  ...(await getCollection('articles')).map((e) => ({ slug: e.id, title: e.data.title })),
+  ...(await getCollection('articles')).map((e) => ({ slug: e.id, title: e.data.title, by: credit(e.data) })),
   // A portal is edited like anything else; the prefix is what tells the two apart,
   // since a portal and its nation's article share a slug.
-  ...(await getCollection('portals')).map((e) => ({ slug: 'portal:' + e.id, title: e.data.title })),
+  ...(await getCollection('portals')).map((e) => ({ slug: 'portal:' + e.id, title: e.data.title, by: [e.data.nation] })),
   // Navboxes are YAML rather than a collection, so they are read straight off disk.
   ...fs.readdirSync('src/content/data/navboxes').filter((f) => f.endsWith('.yaml')).map((f) => {
     const id = f.replace(/\.yaml$/, '');
     const d = parseYaml(fs.readFileSync(`src/content/data/navboxes/${f}`, 'utf8')) || {};
-    return { slug: 'navbox:' + id, title: `Navbox: ${d.title || id}` };
+    // A navbox belongs to the nation it is named after. The site navbox is everybody's
+    // and therefore nobody's, so it is the one that waits for a look.
+    return { slug: 'navbox:' + id, title: `Navbox: ${d.title || id}`, by: id === 'site' ? [] : [id] };
   }),
 ].sort((a, b) => a.title.localeCompare(b.title));
 const nationList = nations().map((n) => ({ id: n.id, name: n.name }));
@@ -27,6 +37,11 @@ const DEV = import.meta.env.DEV;
 // Which repository a contributor's work goes to. The deploy workflow passes the one
 // it is building, so a rename carries; the fallback is only for local use.
 const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
+// Which nation a GitHub account writes for, so the editor can say whether a push will
+// merge itself or wait. The owner of the repository is exempt from the byline rule,
+// the same way .github/gate.mjs exempts them.
+const NATION_OF = Object.fromEntries(Object.entries(ACCOUNT_OF).map(([n, a]) => [a, n]));
+const ADMIN = REPO.split('/')[0];
 ---
 <Base title="Editor" chrome={false} wide>
   <div class="ed">
@@ -43,6 +58,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           <button id="new-navbox" type="button">New navbox</button>
           <div class="menu-sep"></div>
           <button id="open-file" type="button">Open a file…</button>
+          <button id="duplicate" type="button">Duplicate as a new page…</button>
           <input id="open-file-input" type="file" accept=".md,.markdown,.yaml,.yml" hidden />
           <div class="menu-sep"></div>
           <input id="file-q" type="search" placeholder="Search articles" autocomplete="off" />
@@ -89,7 +105,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           <div class="mp-tabs">
             <button type="button" class="on" data-pane="images">Images</button>
             <button type="button" data-pane="icons">Icons</button>
-            <button type="button" data-pane="tables">Table</button>
           </div>
 
           <div class="mp-pane" id="pane-images">
@@ -138,9 +153,37 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             <div class="mp-body" id="mp-icons"></div>
           </div>
 
-          <div class="mp-pane" id="pane-tables" hidden>
-            <div class="tbl-pick" id="tbl-pick"></div>
-            <p class="tbl-size"><span id="tbl-label">0 × 0</span></p>
+        </div>
+      </div>
+
+      <div class="drop">
+        <button id="ins" type="button" title="Insert">
+          <svg viewBox="0 0 16 16"><path d="M8 3.2v9.6M3.2 8h9.6"/></svg>
+          Insert <span class="caret">▾</span>
+        </button>
+        <div class="drop-menu list ins-menu" id="ins-menu" hidden>
+          <div class="ins-item" data-ins="table">
+            <button type="button">Table<span class="ins-arrow">›</span></button>
+            <div class="ins-sub">
+              <div class="tbl-pick" id="tbl-pick"></div>
+              <p class="tbl-size"><span id="tbl-label">0 × 0</span></p>
+            </div>
+          </div>
+          <div class="ins-item" data-ins="date">
+            <button type="button">Date<span class="ins-arrow">›</span></button>
+            <div class="ins-sub ins-sub-date">
+              <label class="ins-f"><span id="dt-date-label">Date</span><input id="dt-date" type="date" /></label>
+              <label class="ins-f">Show
+                <span class="mp-seg" id="dt-mode">
+                  <button type="button" class="on" data-mode="">Plain</button>
+                  <button type="button" data-mode="ago">Elapsed</button>
+                  <button type="button" data-mode="age">Age</button>
+                </span>
+              </label>
+              <label class="ins-f" id="dt-died-row" hidden>Died <span class="opt">optional</span><input id="dt-died" type="date" /></label>
+              <p class="mp-hint" id="dt-preview"></p>
+              <button id="dt-go" type="button" class="primary">Insert</button>
+            </div>
           </div>
         </div>
       </div>
@@ -159,6 +202,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             <button id="save" type="button" class="primary">Save</button>
           </Fragment>
         )}
+        <input id="f-summary" type="text" placeholder="What changed?" spellcheck="false"
+          title="A line describing this edit. It becomes the commit message and shows in the page's history." />
         <button id="cart-add" type="button" class="commit"
           title="Put this page with the others, to be pushed as one pull request">Commit</button>
         <button id="cart-open" type="button" title="Pages waiting to be pushed">
@@ -180,11 +225,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         <label>Title <span class="req-star">*</span><input id="f-title" type="text" placeholder="Nichirin" /></label>
         <label id="crumb-field" hidden>Breadcrumb <span class="opt">navbox</span>
           <input id="f-crumb" type="text" placeholder="[[portal:nichirin|Portal:Nichirin]] • [[nichirin|Overview]]" /></label>
-        <label id="native-field">Native title <span class="opt">optional</span>
-          <textarea id="f-native" rows="2" placeholder="宮本幕府"
-            title="One line per official language"></textarea></label>
-        <label id="romaji-field">Romanization <span class="opt">optional</span>
-          <input id="f-romaji" type="text" placeholder="Miyamoto Bakufu" /></label>
+        {/* The sidebar heading is edited at the top of the sidebar itself. These carry
+            the same three values, so the markdown, the draft and the slug still have
+            one place to read them from. */}
+        <input id="f-boxtitle" type="hidden" />
+        <textarea id="f-native" hidden></textarea>
+        <input id="f-romaji" type="hidden" />
+        <label id="url-field">Article URL <span class="opt">the file name</span>
+          <input id="f-slug" type="text" placeholder="emeka-okafor" spellcheck="false"
+            title="The address this page is served at, and the name of its file" /></label>
         <label id="type-field">Article type<select id="f-type">{ARTICLE_TYPES.map((t) => <option value={t}>{t}</option>)}</select></label>
         <label id="nation-field">Associated nation<select id="f-nation"><option value="">(none)</option>
           {nationList.map((n) => <option value={n.id}>{n.name}</option>)}</select></label>
@@ -203,6 +252,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       </div>
       <div class="set-toggles">
         <label class="check"><input id="f-ooc" type="checkbox" /> Contains out-of-character information</label>
+        <label class="check"><input id="f-sidebar-on" type="checkbox" checked /> Display sidebar
+          <span class="opt" id="sidebar-note"></span></label>
         <label class="check"><input id="f-navbox-on" type="checkbox" checked /> Display navbox
           <span class="opt" id="navbox-note"></span></label>
       </div>
@@ -224,10 +275,14 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       <div class="article">
         <aside class="infobox ib-edit">
           <table class="ib"><tbody id="ib">
+            {/* Edited where it is read. Blank takes the article's own title; the two
+                below are left out of the page entirely when they are empty. */}
             <tr><td class="ib-head" colspan="2">
-              <b id="ib-title">Untitled</b>
-              <span class="native" id="ib-native"></span>
-              <span class="romaji" id="ib-romaji"></span>
+              <b id="ib-title" contenteditable="true" spellcheck="false" data-ph="Article title"></b>
+              <span class="native" id="ib-native" contenteditable="true" spellcheck="false"
+                data-ph="Native title" title="Shift ↵ for another language"></span>
+              <span class="romaji" id="ib-romaji" contenteditable="true" spellcheck="false"
+                data-ph="Romanisation"></span>
             </td></tr>
           </tbody></table>
           <div class="ib-add"><button id="ib-first" type="button">+ Add a field</button></div>
@@ -304,7 +359,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     </div>
   </div>
 
-  <script is:inline define:vars={{ TEMPLATES, BASE: url('/'), DEV, REPO, FLAGS, NATION_NAMES, ARTICLES: existing }}>
+  <script is:inline set:html={`window.slugTitle = (() => {\n${slugTitleSource.replace('export function', 'function')}\nreturn slugTitle;\n})();`} />
+  <script is:inline define:vars={{ TEMPLATES, BASE: url('/'), DEV, REPO, FLAGS, NATION_NAMES, ARTICLES: existing,
+    NATION_OF, ADMIN, BUILT_FROM, IC_NOW: icNow().toISOString().slice(0, 10) }}>
     const $ = (s, r = document) => r.querySelector(s);
     const el = (t, c, txt) => { const n = document.createElement(t); if (c) n.className = c; if (txt != null) n.textContent = txt; return n; };
     const q = (s) => '"' + String(s ?? '').replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
@@ -318,6 +375,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     // the published site this is the only thing that knows a portal is filed under its
     // nation rather than under "Portal:Nichirin".
     let pageSlug = '';
+    // The commit of main the open page was read from. It goes out with every commit as
+    // a Based-on line, and the auto-merge merges against it: a writer whose copy is
+    // behind main then neither collides with what landed since nor quietly undoes it.
+    // Empty where it cannot be known (a file opened from disk), which merges the old way.
+    let loadedFrom = '';
+    // The title and the text the open page had when it was loaded. Saving under the
+    // same file name with a different title is how an article gets used as a template
+    // and overwritten; the text is what tells a rename apart from a replacement.
+    let loadedTitle = '', loadedBody = '';
     let navboxLead = '';
     // A portal's body is not editable here. Two nations have no overview article yet
     // and their portal still carries its own paragraph, so whatever was loaded is
@@ -325,45 +391,68 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     let portalBody = '';
 
     /* ---------- names ---------- */
-    const SMALL = /^(of|the|and|in|on|at|to|a|an|for|from|by|de|von)$/;
-    // A filename cannot hold brackets, so a wartime flag is stored as shivon-tgw and
-    // read back as Shivon (TGW) rather than the "Shivon Tgw" that word-casing gives.
-    // Football clubs spell themselves in initials, and word-casing turns AFC into Afc.
-    // The list is only what the badges actually use.
-    const CAPS = new Set(['fc', 'jk', 'fk', 'sc', 'if', 'ff', 'ik', 'sk', 'ps', 'sv', 'is',
-      'bk', 'ac', 'js', 'cf', 'tk', 'tv', 'afc', 'ifk', 'cska', 'arf', 'htk', 'ud', 'bc', 'rc']);
-    const TAGS = { tgw: 'TGW', esu: 'E.S.U.', sar: 'SAR' };
-    const pretty = (s) => {
-      const parts = s.split('-');
-      const tail = TAGS[parts[parts.length - 1]] && parts.length > 1 ? parts.pop() : null;
-      const name = parts.map((w, i) =>
-        CAPS.has(w) ? w.toUpperCase()
-        : i > 0 && SMALL.test(w) ? w
-        : TAGS[w] || w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-      return tail ? `${name} (${TAGS[tail]})` : name;
-    };
+    // slugTitle is src/lib/slug-title.mjs, inlined above, so the site reads slugs the same way.
     let TITLES = {};
     const ICONS = { ...FLAGS };
     const titlesReady = fetch(`${BASE.replace(/\/$/, '')}/articles.json`)
       .then((r) => r.json())
       .then((l) => { for (const a of l) { TITLES[a.slug] = a.title; if (a.icon && !ICONS[a.slug]) ICONS[a.slug] = a.icon; } })
       .catch(() => {});
-    const displayOf = (slug) => TITLES[slug] || pretty(slug);
+    const displayOf = (slug) => TITLES[slug] || slugTitle(slug);
 
     // Arrows and flags are shown as themselves, not as :up or :flag[nichirin].
     const ARROW = { up: '\u25B2', down: '\u25BC' };
+    const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'];
+    const longDate = (iso) => {
+      const [y, m, d] = iso.split('-').map(Number);
+      return `${MONTHS[m - 1]} ${d}, ${y}`;
+    };
+    /** Whole years from one date to another, the way an age is counted. */
+    function yearsBetween(fromIso, toIso) {
+      const [fy, fm, fd] = fromIso.split('-').map(Number);
+      const [ty, tm, td] = toIso.split('-').map(Number);
+      return ty - fy - (tm < fm || (tm === fm && td < fd) ? 1 : 0);
+    }
+    /**
+     * What :date[...] will say once published. The article stores the date and the
+     * kind of working-out; the number is recomputed on every build against the Avium
+     * clock, so an age never goes stale in the text.
+     */
+    function dateLabel(arg) {
+      const [iso, mode = ''] = String(arg).split('|');
+      const date = iso.trim();
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return arg;
+      const long = longDate(date);
+      const [kind, from] = mode.trim().split(':');
+      if (kind === 'ago') {
+        const n = yearsBetween(date, IC_NOW);
+        return `${long} (${n === 0 ? 'this year' : `${n} year${n === 1 ? '' : 's'} ago`})`;
+      }
+      if (kind === 'age') {
+        return `${long} (aged ${/^\d{4}-\d{2}-\d{2}$/.test(from || '')
+          ? yearsBetween(from, date) : yearsBetween(date, IC_NOW)})`;
+      }
+      return long;
+    }
+
     function tokenHtml(kind, arg) {
       if (kind === 'up' || kind === 'down') {
         return `<span class="tok arrow ${kind}" data-tok="${kind}" contenteditable="false">${ARROW[kind]}</span>`;
+      }
+      if (kind === 'date') {
+        return `<span class="tok date" data-tok="date" data-slug="${esc(arg)}" contenteditable="false">`
+          + `${esc(dateLabel(arg))}</span>`;
       }
       // :img carries its own path and an optional pixel width; :icon and :flag look
       // the subject up in the registry.
       const [path, w] = kind === 'img' ? arg.split('|') : [arg];
       const size = parseInt(w, 10);
       const src = srcFor(kind === 'img' ? path.trim() : ICONS[arg]);
+      const sym = kind === 'img' && path.trim().startsWith('/assets/icons/') ? ' sym' : '';
       const style = size > 0 ? ` style="width:${size}px;height:auto"` : '';
       return src
-        ? `<img class="tok ico${size > 0 ? ' sized' : ''}" data-tok="${kind}" data-slug="${esc(arg)}" src="${src}"${style} alt="" contenteditable="false">`
+        ? `<img class="tok ico${size > 0 ? ' sized' : ''}${sym}" data-tok="${kind}" data-slug="${esc(arg)}" src="${src}"${style} alt="" contenteditable="false">`
         : `<span class="tok missing" data-tok="${kind}" data-slug="${esc(arg)}" contenteditable="false">:${kind}[${arg}]</span>`;
     }
 
@@ -371,8 +460,10 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     function mdToHtml(md) {
       return esc(md)
         .replace(/&lt;br\s*\/?&gt;/g, '<br>')
-        .replace(/:(icon|flag|img)\[([^\]]+?)\]/g, (_, k, a) => tokenHtml(k, a.trim()))
-        .replace(/:(up|down)\b/g, (_, k) => tokenHtml(k))
+        // The same four the site reads. Leaving date out of this list left it sitting
+        // in the editor as the words ":date[1888-06-09|age]".
+        .replace(/:(icon|flag|img|date)\[([^\]]+?)\]/g, (_, k, a) => tokenHtml(k, a.trim()))
+        .replace(/:(up|down)(?![A-Za-z])/g, (_, k) => tokenHtml(k))
         .replace(/\[\[([^\]|]+?)\|([^\]]+?)\]\]/g, (_, s, d) => `<a href="#" data-slug="${s}">${d}</a>`)
         .replace(/\[\[([^\]|]+?)\]\]/g, (_, s) => `<a href="#" data-slug="${s}">${displayOf(s)}</a>`)
         .replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g, '<a href="$2">$1</a>')
@@ -381,18 +472,37 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         .replace(/\*([^*]+)\*/g, '<i>$1</i>');
     }
 
+    /**
+     * Bold or italic marks around text, with any space at its edges put outside them.
+     * Markdown will not close ** after a space or open it before one, so a bold word
+     * that took its trailing space along printed on the page as **word **, asterisks
+     * and all. Marks around nothing but a comma or a space are dropped.
+     */
+    const emphasis = (m, s) => {
+      const [, lead, core, tail] = s.match(/^(\s*)([\s\S]*?)(\s*)$/);
+      return /[^\s\p{P}]/u.test(core) ? `${lead}${m}${core}${m}${tail}` : s;
+    };
+
     function htmlToMd(node, br = ' ') {
       let out = '';
       for (const n of node.childNodes) {
-        if (n.nodeType === 3) { out += n.nodeValue; continue; }
+        // A no-break space is how a browser keeps a space visible at the end of a line
+        // or beside an arrow; none of them were typed as one, and none belong on the page.
+        if (n.nodeType === 3) { out += n.nodeValue.replace(/\u00a0/g, ' '); continue; }
         if (n.nodeType !== 1) continue;
         const tag = n.tagName.toLowerCase();
         if (tag === 'br') { out += br; continue; }
         const tok = n.dataset?.tok;
-        if (tok) { out += tok === 'up' || tok === 'down' ? `:${tok}` : `:${tok}[${n.dataset.slug}]`; continue; }
+        if (tok === 'up' || tok === 'down') {
+          // A digit straight after reads fine (:down1 is down one); a letter would read
+          // as part of the name, so it gets a space.
+          out += `:${tok}` + (/^[A-Za-z]/.test(n.nextSibling?.nodeValue || '') ? ' ' : '');
+          continue;
+        }
+        if (tok) { out += `:${tok}[${n.dataset.slug}]`; continue; }
         const inner = htmlToMd(n, br);
-        if (tag === 'b' || tag === 'strong') out += inner.trim() ? `**${inner}**` : '';
-        else if (tag === 'i' || tag === 'em') out += inner.trim() ? `*${inner}*` : '';
+        if (tag === 'b' || tag === 'strong') out += emphasis('**', inner);
+        else if (tag === 'i' || tag === 'em') out += emphasis('*', inner);
         // Markdown has no superscript, so these stay as the HTML they are.
         else if (tag === 'sup' || tag === 'sub') out += inner.trim() ? `<${tag}>${inner}</${tag}>` : '';
         else if (tag === 'a') {
@@ -405,10 +515,40 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       return out;
     }
 
+    /**
+     * Word processors mark emphasis with styles rather than tags, so a tag list alone
+     * reads a Google Docs paste as unformatted. These answer the same question the
+     * tags do, and Docs' own wrapper is the reason the negative cases are checked:
+     * every copied run arrives inside a <b style="font-weight:normal">.
+     */
+    function marksOf(n) {
+      const st = n.style || {};
+      const w = st.fontWeight;
+      const bold = w ? (w === 'bold' || w === 'bolder' || Number(w) >= 600)
+                     : (n.tagName === 'B' || n.tagName === 'STRONG');
+      const italic = st.fontStyle ? st.fontStyle === 'italic'
+                                  : (n.tagName === 'I' || n.tagName === 'EM');
+      const va = st.verticalAlign;
+      const sup = va === 'super' || n.tagName === 'SUP';
+      const sub = va === 'sub' || n.tagName === 'SUB';
+      return [bold && 'b', italic && 'i', sup && 'sup', sub && 'sub'].filter(Boolean);
+    }
+
+    /** A link's real target. Google rewrites every one it copies through a redirect. */
+    function hrefOf(n) {
+      const raw = n.getAttribute('href') || '';
+      const m = raw.match(/^https?:\/\/(?:www\.)?google\.[a-z.]+\/url\?(.*)$/i);
+      if (!m) return raw;
+      const q = new URLSearchParams(m[1]).get('q');
+      return q || raw;
+    }
+
     /** Strip a pasted fragment down to what this editor can represent. */
     function keepTokens(html) {
       const doc = new DOMParser().parseFromString(html, 'text/html');
-      const KEEP = new Set(['B', 'STRONG', 'I', 'EM', 'SUP', 'SUB', 'BR']);
+      // A block on the clipboard is a line here: the editor's own blocks are made by
+      // the writer, never by whatever the text was pasted out of.
+      const BLOCK = new Set(['P', 'DIV', 'LI', 'TR', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6']);
       const walk = (node) => {
         let out = '';
         for (const n of node.childNodes) {
@@ -417,17 +557,24 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           const tag = n.tagName;
           if (tag === 'IMG' && n.dataset.tok) {
             out += tokenHtml(n.dataset.tok, n.dataset.slug || n.getAttribute('src'));
-          } else if (tag === 'SPAN' && n.dataset.tok) {
-            out += tokenHtml(n.dataset.tok, n.dataset.slug || '');
-          } else if (tag === 'A' && n.dataset.slug) {
-            out += `<a href="#" data-slug="${esc(n.dataset.slug)}">${walk(n)}</a>`;
-          } else if (tag === 'BR') {
-            out += '<br>';
-          } else if (KEEP.has(tag)) {
-            out += `<${tag.toLowerCase()}>${walk(n)}</${tag.toLowerCase()}>`;
-          } else {
-            out += walk(n);
+            continue;
           }
+          if (tag === 'SPAN' && n.dataset.tok) {
+            out += tokenHtml(n.dataset.tok, n.dataset.slug || '');
+            continue;
+          }
+          if (tag === 'BR') { out += '<br>'; continue; }
+          if (tag === 'STYLE' || tag === 'SCRIPT' || tag === 'IMG') continue;
+
+          let inner = walk(n);
+          for (const mark of marksOf(n)) inner = inner.trim() ? `<${mark}>${inner}</${mark}>` : inner;
+          if (tag === 'A') {
+            const href = n.dataset.slug ? '#' : hrefOf(n);
+            const slug = n.dataset.slug ? ` data-slug="${esc(n.dataset.slug)}"` : '';
+            if (href && inner.trim()) inner = `<a href="${esc(href)}"${slug}>${inner}</a>`;
+          }
+          if (BLOCK.has(tag) && out && !out.endsWith('<br>') && inner.trim()) out += '<br>';
+          out += inner;
         }
         return out;
       };
@@ -445,11 +592,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         while (table.tBodies[0].rows.length <= r0 + r) table._addRow();
         const tr = table.tBodies[0].rows[r0 + r];
         for (let c = 0; c < grid[r].length; c++) {
-          while ([...tr.children].filter((x) => !x.classList.contains('row-x')).length <= c0 + c) {
-            table._addCol();
-          }
+          while (tr.children.length <= c0 + c) table._addCol();
           const td = tr.children[c0 + c];
-          if (!td || td.classList.contains('row-x')) continue;
+          if (!td) continue;
           td.querySelector('.ce').innerHTML = mdToHtml(grid[r][c].trim());
         }
       }
@@ -464,20 +609,18 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       if (ph) d.dataset.ph = ph;
       d.innerHTML = html || '';
       d.addEventListener('paste', (e) => {
-        const dt = e.clipboardData || window.clipboardData;
+        const dt = e.clipboardData;
         const text = dt.getData('text/plain');
         const html = dt.getData('text/html');
-        const cell = d.closest('td, th');
         e.preventDefault();
-        // A grid from Sheets fills the table rather than crushing into one cell.
-        if (cell && /[\t\n]/.test(text.trim()) && cell.closest('.ed-tbl')) {
-          pasteGrid(cell, text);
-          return;
-        }
-        // Flags, icons and links survive a copy between fields; everything else
-        // arrives as plain text, because the editor has no styling to paste into.
-        if (html && /data-tok=|data-slug=/.test(html)) {
-          document.execCommand('insertHTML', false, keepTokens(html));
+        // Bold, italics, superscript and links come across from wherever the text
+        // was copied. Everything else is dropped, because the stylesheet is the
+        // Manual of Style and there is nothing else to paste into.
+        const clean = plainPaste || !html ? '' : keepTokens(html);
+        plainPaste = false;
+        if (clean.replace(/<[^>]*>/g, '').trim()) {
+          document.execCommand('insertHTML', false, clean);
+          unglue(d);
           return;
         }
         document.execCommand('insertText', false, text);
@@ -489,6 +632,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       d.addEventListener('focusin', () => { focused = d; });
       return d;
     }
+
+    /**
+     * Set by the shortcut for pasting without formatting, and read by the next paste.
+     * The event itself does not say which shortcut opened it.
+     */
+    let plainPaste = false;
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === 'v' || e.key === 'V')) plainPaste = true;
+    }, true);
 
     let focused = null;      // last focused rich-text surface
     let lastPath = null;     // last focused image path field
@@ -534,6 +686,37 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       if (host) caret = sel.getRangeAt(0).cloneRange();
     });
 
+    /**
+     * Chrome keeps the spaces beside anything insertHTML puts in by turning them into
+     * no-break spaces. Beside a new link that glues the words either side of it into
+     * one run that cannot wrap, so the run drops to the next line with room left on
+     * this one. A no-break space with a character on both sides of it is only ever
+     * that, so it goes back to an ordinary space. One at the very end of a line stays:
+     * it is what keeps a trailing space visible while the writer is still typing.
+     */
+    function unglue(box) {
+      if (!box) return;
+      const sel = getSelection();
+      const keep = sel.rangeCount && [sel.anchorNode, sel.anchorOffset, sel.focusNode, sel.focusOffset];
+      const nodes = [];
+      const walk = document.createTreeWalker(box, NodeFilter.SHOW_TEXT);
+      while (walk.nextNode()) nodes.push(walk.currentNode);
+      const all = nodes.map((n) => n.nodeValue).join('');
+      let base = 0;
+      for (const n of nodes) {
+        const v = n.nodeValue;
+        let w = '';
+        for (let i = 0; i < v.length; i++) {
+          const g = base + i;
+          w += v[i] === '\u00a0' && /\S/.test(all[g - 1] || '') && /\S/.test(all[g + 1] || '') ? ' ' : v[i];
+        }
+        if (w !== v) n.nodeValue = w;
+        base += v.length;
+      }
+      // Same length, so the caret's offsets still point where they did.
+      if (keep) sel.setBaseAndExtent(...keep);
+    }
+
     /** Put the caret back and insert there, in a plain field or a table cell. */
     function insertAtCaret(html) {
       const where = activeText();
@@ -570,6 +753,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           stray.reverse().forEach((n) => box.insertBefore(n, box.firstChild));
         }
       }
+      unglue(ceOf(sel.anchorNode) || where);
       caret = sel.rangeCount ? sel.getRangeAt(0).cloneRange() : caret;
       sync();
       return true;
@@ -643,14 +827,16 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             empty.hidden = !!src.value;
           };
           img.onerror = () => { img.hidden = true; };
-          src.oninput = () => { paint(); sync(); };
+          src.oninput = (e) => { paint(); sync(e); };
           paint();
           const tools = el('div', 'fig-tools');
           const swap = el('button', null, '⇄'); swap.type = 'button'; swap.title = 'Change this picture';
           swap.onmousedown = (e) => e.preventDefault();
           swap.onclick = choose;
           tools.append(swap);
-          box.append(img, empty, src, editable(esc(d.caption || ''), 'Caption', lineBreak), tools);
+          // mdToHtml, not esc: a caption is read back with htmlToMd like every other
+          // box here, so writing it as plain text turned an arrow into the words ":up".
+          box.append(img, empty, src, editable(mdToHtml(d.caption || ''), 'Caption', lineBreak), tools);
           return box;
         };
 
@@ -819,30 +1005,106 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 
       if (kind in TEXT) {
         if (kind === 'list') {
+          // A list works as one does in Google Docs. Tab and Shift+Tab nest an item and
+          // bring it back; Shift+Enter is a new line inside the item; Enter splits the
+          // item at the caret, and on an empty item climbs out a level or, from the top,
+          // out of the list. Backspace at an item's start climbs out a level or joins the
+          // item above, and Delete at its end pulls the next one up.
           const ul = el('ul', 'ce-list');
-          const item = (html) => {
+          const levelOf = (li) => +li.dataset.level || 0;
+          const boxOf = (li) => li.querySelector('.ce');
+          /** No deeper than one below the item above, which is as far as markdown can
+              nest, and the first item always at the top. */
+          const tidy = () => {
+            let prev = -1;
+            for (const li of ul.children) {
+              const n = Math.min(levelOf(li), prev + 1, 5);
+              if (n > 0) li.dataset.level = n; else delete li.dataset.level;
+              prev = n;
+            }
+          };
+          const nest = (li, n) => { li.dataset.level = Math.max(0, n); tidy(); sync(); };
+          /** The item out of the list and into a paragraph of its own, the list split
+              around it: Enter on an empty item at the top level, or Backspace at the start
+              of the first item, whose bullet comes off. */
+          const unbullet = (li) => {
+            const rest = [...ul.children].slice([...ul.children].indexOf(li) + 1);
+            const para = block('para', { text: itemMd(boxOf(li)) });
+            b.after(para);
+            if (rest.length) {
+              para.after(block('list', { items: rest.map((x) => itemMd(boxOf(x))), levels: rest.map(levelOf) }));
+              rest.forEach((x) => x.remove());
+            }
+            li.remove();
+            if (!ul.children.length) b.remove();
+            landIn(para.querySelector('.ce'), false);
+            sync();
+          };
+          /** Two items made one: the second's text on the end of the first, caret at the join. */
+          const join = (a, c) => {
+            const into = boxOf(a), from = boxOf(c);
+            if (into.lastChild?.nodeName === 'BR') into.lastChild.remove();
+            into.focus({ preventScroll: true });
+            const at = document.createRange();
+            at.selectNodeContents(into);
+            at.collapse(false);
+            while (from.firstChild) into.append(from.firstChild);
+            c.remove();
+            putRange(at);
+            tidy();
+            sync();
+          };
+          const item = (html, level = 0) => {
             const li = el('li');
-            li.append(editable(html, 'List item', (d) => {
-              const next = item('');
+            if (level > 0) li.dataset.level = level;
+            const box = editable(html, 'List item', (d, e) => {
+              if (e?.shiftKey) { lineBreak(); return; }
+              if (!d.textContent.trim() && !d.querySelector('img')) {
+                if (levelOf(li) > 0) nest(li, levelOf(li) - 1); else unbullet(li);
+                return;
+              }
+              // What follows the caret goes down into a new item, as Enter splits a line.
+              const s = getSelection();
+              if (!s.isCollapsed) document.execCommand('delete');
+              const tail = document.createRange();
+              tail.selectNodeContents(d);
+              tail.setStart(s.focusNode, s.focusOffset);
+              const next = item('', levelOf(li));
+              boxOf(next).append(tail.extractContents());
               li.after(next);
-              next.querySelector('.ce').focus();
+              landIn(boxOf(next), false);
               sync();
-            }));
+            });
+            box.addEventListener('keydown', (e) => {
+              if (e.isComposing || e.ctrlKey || e.metaKey || e.altKey) return;
+              if (e.key === 'Tab') { e.preventDefault(); nest(li, levelOf(li) + (e.shiftKey ? -1 : 1)); return; }
+              if (!getSelection().isCollapsed) return;
+              if (e.key === 'Backspace' && caretEdges(box).atStart) {
+                e.preventDefault();
+                if (levelOf(li) > 0) nest(li, levelOf(li) - 1);
+                else if (li.previousElementSibling) join(li.previousElementSibling, li);
+                else unbullet(li);
+              } else if (e.key === 'Delete' && li.nextElementSibling && caretEdges(box).atEnd) {
+                e.preventDefault();
+                join(li, li.nextElementSibling);
+              }
+            });
+            li.append(box);
             // Its own remove button. The only one before this was the block's, out in
             // the gutter, so reaching for it took the whole list rather than the line.
-            const x = el('button', 'li-x', '\u2715');
+            const x = el('button', 'li-x', '✕');
             x.type = 'button';
             x.title = 'Remove this item';
             x.onmousedown = (e) => e.preventDefault();
             x.onclick = () => {
-              const last = ul.querySelectorAll('li').length <= 1;
-              if (last) b.remove(); else li.remove();
+              if (ul.children.length <= 1) b.remove(); else { li.remove(); tidy(); }
               sync();
             };
             li.append(x);
             return li;
           };
-          (data.items?.length ? data.items : ['']).forEach((i) => ul.append(item(mdToHtml(i))));
+          (data.items?.length ? data.items : ['']).forEach((i, n) => ul.append(item(mdToHtml(i), data.levels?.[n] || 0)));
+          tidy();
           b.append(ul);
         } else {
           const ph = kind === 'section' ? 'Section heading'
@@ -982,9 +1244,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
           f.style.flex = (img.naturalWidth / img.naturalHeight).toFixed(3);
         }
       };
-      src.oninput = () => { paint(); sync(); };
+      src.oninput = (e) => { paint(); sync(e); };
       paint();
-      const cap = editable(esc(d.caption || ''), 'Caption', lineBreak);
+      const cap = editable(mdToHtml(d.caption || ''), 'Caption', lineBreak);
       cap.classList.add('cap');
       // Change and remove sit together in the corner, out of the picture's way.
       const tools = el('div', 'fig-tools');
@@ -1032,7 +1294,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         grid[r] ??= [];
         let c = 0;
         for (const td of [...tr.children]) {
-          if (td.classList.contains('row-x')) continue;
           while (grid[r][c]) c++;
           for (let i = 0; i < (td.rowSpan || 1); i++) {
             grid[r + i] ??= [];
@@ -1044,29 +1305,160 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       return grid;
     }
 
+/**
+ * A cell's text, wherever in the cell it ended up. Each cell holds an editable box,
+ * but the caret can land in the cell itself, and anything typed there sat outside the
+ * box where the serializer never looked: the rows showed on screen and saved blank.
+ */
+    function cellMd(c) {
+      let out = '';
+      for (const n of c.childNodes) {
+        if (n.nodeType === 3) { out += n.nodeValue; continue; }
+        if (n.nodeType !== 1) continue;
+        out += n.classList.contains('ce') ? htmlToMd(n, '<br>') : htmlToMd({ childNodes: [n] }, '<br>');
+      }
+      // A cell whose last letter is deleted is left holding one <br>, which is how the
+      // browser keeps an empty line open. That is a blank cell, and is saved as one.
+      out = out.trim();
+      return out === '<br>' ? '' : out;
+    }
+
+    /* ---------- the caret, between boxes ----------
+       Each paragraph, heading and list item is an editing box of its own, and a browser
+       will not carry the caret out of one box into the next. The arrow keys do it here,
+       so the body reads as one document, as in Google Docs: Up and Down at a box's first
+       or last line, Left and Right at its very start or end. A table steers itself and
+       hands over at its edges. */
+    function putRange(r) { const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+    /**
+     * Whether anything of the box lies before the caret, or after it. A line break or a
+     * picture counts as well as a letter; the one <br> a browser leaves at the end of a
+     * box to hold an empty last line open does not, because nothing shows for it.
+     */
+    function caretEdges(box) {
+      const s = getSelection();
+      const some = (r, tail) => {
+        const f = r.cloneContents();
+        if (tail && f.lastChild?.nodeName === 'BR') f.lastChild.remove();
+        return !!(f.textContent || f.querySelector('br, img'));
+      };
+      const before = document.createRange(), after = document.createRange();
+      before.selectNodeContents(box); before.setEnd(s.focusNode, s.focusOffset);
+      after.selectNodeContents(box); after.setStart(s.focusNode, s.focusOffset);
+      return { atStart: !some(before, false), atEnd: !some(after, true) };
+    }
+    /** Where the caret stands across the page, for keeping to a column line to line. */
+    function caretLeft(box) {
+      const r = getSelection().getRangeAt(0).getBoundingClientRect();
+      return r.left || r.width ? r.left : box.getBoundingClientRect().left + 1;
+    }
+    /** How far into the box the caret is, line breaks counted. One place in a page can
+        be written two ways (after a word, or after the element holding it), and this
+        reads both the same, which comparing them raw does not. */
+    function caretOffset(box) {
+      const s = getSelection();
+      const r = document.createRange();
+      r.selectNodeContents(box);
+      r.setEnd(s.focusNode, s.focusOffset);
+      return r.toString().length + r.cloneContents().querySelectorAll('br').length;
+    }
+    /** How far down the page the caret's line is, or null where the browser gives it no
+        box. Where it sits between elements, the line of the one beside it is used. */
+    function caretY() {
+      const r = getSelection().getRangeAt(0);
+      let rect = r.getClientRects()[0];
+      if (!rect && r.startContainer.nodeType === 1) {
+        const before = r.startContainer.childNodes[r.startOffset - 1];
+        const n = before || r.startContainer.childNodes[r.startOffset];
+        if (n) {
+          const around = document.createRange();
+          around.selectNode(n);
+          rect = [...around.getClientRects()].at(before ? -1 : 0);
+        }
+      }
+      return rect && rect.height ? rect.top + rect.height / 2 : null;
+    }
+    /**
+     * Up or down a line inside the box, as the arrow keys move; false when the caret is
+     * already on its first or last line. On a Mac, Up on the first line runs the caret to
+     * the start of it rather than refusing, so a move counts only if the line changed.
+     */
+    function lineWithin(box, back) {
+      const s = getSelection();
+      const was = s.getRangeAt(0).cloneRange(), from = caretOffset(box), y0 = caretY();
+      s.modify('move', back ? 'backward' : 'forward', 'line');
+      const y1 = caretY();
+      const changed = y0 != null && y1 != null ? Math.abs(y1 - y0) > 2 : caretOffset(box) !== from;
+      if (box.contains(s.focusNode) && changed) return true;
+      putRange(was);
+      return false;
+    }
+    /**
+     * The caret into a box: at its end or its start, or given a point across, as near to
+     * it as it gets on the box's last line or first. A box in a table means the table's
+     * bottom or top row, in the cell under that point.
+     */
+    function landIn(box, end, x = null) {
+      let target = box;
+      const table = box.closest('.ed-tbl');
+      if (table && x != null) {
+        const rows = table.tBodies[0].rows;
+        const cells = [...(end ? rows[rows.length - 1] : rows[0]).children];
+        const td = cells.find((c) => { const b = c.getBoundingClientRect(); return x >= b.left && x < b.right; }) || cells[0];
+        if (td) target = td.querySelector('.ce');
+      }
+      (table || target).focus({ preventScroll: true });
+      target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      if (x != null) {
+        const b = target.getBoundingClientRect();
+        const hit = document.caretRangeFromPoint?.(
+          Math.min(Math.max(x, b.left + 1), b.right - 1), end ? b.bottom - 3 : b.top + 3);
+        if (hit && target.contains(hit.startContainer)) { putRange(hit); return; }
+      }
+      const r = document.createRange();
+      r.selectNodeContents(target);
+      r.collapse(!end);
+      putRange(r);
+    }
+    body.addEventListener('keydown', (e) => {
+      const step = { ArrowUp: -1, ArrowDown: 1, ArrowLeft: -1, ArrowRight: 1 }[e.key];
+      if (!step || e.defaultPrevented || e.shiftKey || e.altKey || e.ctrlKey || e.metaKey || e.isComposing) return;
+      const box = e.target.closest?.('.ce');
+      if (!box || box.closest('.ed-tbl') || !getSelection().rangeCount) return;
+      const vertical = e.key === 'ArrowUp' || e.key === 'ArrowDown';
+      const x = vertical ? caretLeft(box) : null;
+      if (vertical) {
+        e.preventDefault();
+        if (lineWithin(box, step < 0)) return;
+      } else {
+        if (!getSelection().isCollapsed) return;
+        const edge = caretEdges(box);
+        if (step < 0 ? !edge.atStart : !edge.atEnd) return;
+        e.preventDefault();
+      }
+      const stops = [...body.querySelectorAll('.ce')];
+      const next = stops[stops.indexOf(box) + step];
+      if (next) landIn(next, step < 0, x);
+    });
+    /** A list item's text as saved: a line break inside it kept as <br>, and the one a
+        browser leaves at the end to hold an empty line open dropped. */
+    const itemMd = (box) => htmlToMd(box, '<br>').replace(/(\s*<br>\s*)+$/, '').trim();
+
+    /**
+     * A table, edited the way Google Docs edits one. Tab and Shift+Tab walk the cells,
+     * and Tab past the last adds a row. The arrow keys move through a cell's text and
+     * on into the next cell at its edge. Dragging across cells, or Shift with a click or
+     * an arrow key at a cell's edge, selects whole cells. Rows, columns, merging and the
+     * header band are on the right-click menu. The whole table is one editing host, so a
+     * selection can run across cells and copy as a grid; each cell's text lives in its
+     * .ce box, which is what is saved.
+     */
     function tableEditor(rows) {
       const wrap = el('div', 'tbl-wrap');
       const table = el('table', 'ed-tbl');
       table.contentEditable = 'true';
       table.spellcheck = false;
       table.addEventListener('input', sync);
-      table.addEventListener('keydown', (e) => {
-        // Enter adds a line inside the cell; these hold lists of names.
-        if (e.key === 'Enter') { e.preventDefault(); lineBreak(); }
-      });
-      table.addEventListener('paste', (e) => {
-        const dt = e.clipboardData || window.clipboardData;
-        const text = dt.getData('text/plain');
-        const html = dt.getData('text/html');
-        const cellEl = getSelection().anchorNode?.parentElement?.closest('td, th');
-        e.preventDefault();
-        if (cellEl && /[\t\n]/.test(text.trim())) { pasteGrid(cellEl, text); return; }
-        if (html && /data-tok=|data-slug=/.test(html)) {
-          document.execCommand('insertHTML', false, keepTokens(html));
-          return;
-        }
-        document.execCommand('insertText', false, text);
-      });
       const tbody = el('tbody');
       table.append(tbody);
 
@@ -1074,179 +1466,495 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         const c = el(tag);
         if (colspan > 1) c.colSpan = colspan;
         if (rowspan > 1) c.rowSpan = rowspan;
-        // Not editable on its own: the table is the single editing host, so a
-        // selection can run across cells and copy as a grid.
         const inner = el('div', 'ce');
         inner.innerHTML = html || '';
         c.append(inner);
         return c;
       };
+      const boxOf = (td) => td.querySelector('.ce');
+
+      /* ---------- the grid ---------- */
+      const grid = () => tableGrid(tbody);
+      const width = () => grid().reduce((w, r) => Math.max(w, r.length), 0);
+      /** Where every cell sits: its first row and column and its last, in reading order. */
+      const spots = (g = grid()) => {
+        const m = new Map();
+        g.forEach((row, r) => row.forEach((td, c) => {
+          if (!td) return;
+          const s = m.get(td);
+          if (!s) m.set(td, { r, c, r2: r, c2: c });
+          else { s.r2 = Math.max(s.r2, r); s.c2 = Math.max(s.c2, c); }
+        }));
+        return m;
+      };
+      const order = () => [...spots().keys()];
+      const cellOf = (n) => {
+        const e = n?.nodeType === 1 ? n : n?.parentElement;
+        const td = e?.closest?.('td, th');
+        return td && tbody.contains(td) ? td : null;
+      };
+
+      /* ---------- the caret ---------- */
+      /**
+       * The caret into a cell, at its end or its start. Given a point across, it lands as
+       * near to it as it can on the cell's last line or first, which is where Up and Down
+       * leave it in running text.
+       */
+      const enter = (td, end, x = null) => {
+        const box = boxOf(td);
+        if (document.activeElement !== table) table.focus({ preventScroll: true });
+        td.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        if (x != null) {
+          const b = box.getBoundingClientRect();
+          const hit = document.caretRangeFromPoint?.(
+            Math.min(Math.max(x, b.left + 1), b.right - 1), end ? b.bottom - 3 : b.top + 3);
+          if (hit && box.contains(hit.startContainer)) { putRange(hit); return; }
+        }
+        const r = document.createRange();
+        r.selectNodeContents(box);
+        r.collapse(!end);
+        putRange(r);
+      };
+      /** The cell a row up or down from this one, under the given point across. */
+      const verticalFrom = (td, down, x) => {
+        const g = grid(), at = spots(g).get(td);
+        const row = g[down ? at.r2 + 1 : at.r - 1];
+        if (!row) return null;
+        const cells = [...new Set(row)].filter(Boolean);
+        return cells.find((c) => { const b = c.getBoundingClientRect(); return x >= b.left && x < b.right; })
+          || row[Math.min(at.c, row.length - 1)];
+      };
+      /** Out of the table, into the block above or below; one below is made if none. */
+      const leave = (down) => {
+        const blk = wrap.closest('[data-kind]');
+        let next = down ? blk.nextElementSibling : blk.previousElementSibling;
+        if (!next && down) { next = block('para'); blk.after(next); sync(); }
+        const boxes = next ? [...next.querySelectorAll('.ce')] : [];
+        const box = down ? boxes[0] : boxes.at(-1);
+        if (!box) return;
+        box.closest('[contenteditable="true"]')?.focus({ preventScroll: true });
+        const r = document.createRange();
+        r.selectNodeContents(box);
+        r.collapse(down);
+        putRange(r);
+        box.scrollIntoView({ block: 'nearest' });
+      };
+
+      /* ---------- whole cells selected ---------- */
+      let span = null;               // { a, b }: the cell it began in and the one it reaches
+      /** The rectangle between two cells, grown over any merged cell it would cut. */
+      const rect = (a, b, sp = spots()) => {
+        const p = sp.get(a), q = sp.get(b);
+        let r1 = Math.min(p.r, q.r), c1 = Math.min(p.c, q.c);
+        let r2 = Math.max(p.r2, q.r2), c2 = Math.max(p.c2, q.c2);
+        for (let grew = true; grew;) {
+          grew = false;
+          for (const s of sp.values()) {
+            if (s.r > r2 || s.r2 < r1 || s.c > c2 || s.c2 < c1) continue;
+            if (s.r < r1) { r1 = s.r; grew = true; }
+            if (s.r2 > r2) { r2 = s.r2; grew = true; }
+            if (s.c < c1) { c1 = s.c; grew = true; }
+            if (s.c2 > c2) { c2 = s.c2; grew = true; }
+          }
+        }
+        return { r1, c1, r2, c2 };
+      };
+      const inside = (box, sp = spots()) => [...sp]
+        .filter(([, s]) => s.r >= box.r1 && s.r2 <= box.r2 && s.c >= box.c1 && s.c2 <= box.c2)
+        .map(([td]) => td);
+      const picked = () => (span ? inside(rect(span.a, span.b)) : []);
+      const paint = () => {
+        const on = new Set(picked());
+        for (const td of tbody.querySelectorAll('td, th')) td.classList.toggle('cell-sel', on.has(td));
+        table.classList.toggle('cell-mode', on.size > 1);
+      };
+      const spanTo = (a, b) => { span = a && b && a !== b ? { a, b } : null; paint(); };
+      const drop = () => { if (span) spanTo(null); };
+
+      let pressed = null;
+      table.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        const td = cellOf(e.target);
+        if (!td) return;
+        // Shift-click reaches from where the caret is, as dragging does.
+        const from = span?.a || cellOf(getSelection().anchorNode);
+        if (e.shiftKey && from && from !== td) { e.preventDefault(); spanTo(from, td); return; }
+        drop();
+        pressed = td;
+      });
+      table.addEventListener('mouseover', (e) => {
+        if (!pressed || !(e.buttons & 1)) return;
+        const td = cellOf(e.target);
+        if (td) spanTo(pressed, td);
+      });
+
+      /* ---------- rows and columns ---------- */
+      /** A new row at `at`: a cell per column, except where a merged cell runs across
+          the gap, which grows over the new row instead. */
+      const addRowAt = (at) => {
+        const g = grid(), w = width(), tr = el('tr'), grown = new Set();
+        for (let c = 0; c < w; c++) {
+          const above = g[at - 1]?.[c], below = g[at]?.[c];
+          if (above && above === below) {
+            if (!grown.has(above)) { above.rowSpan += 1; grown.add(above); }
+            continue;
+          }
+          tr.append(cell('td', ''));
+        }
+        tbody.insertBefore(tr, tbody.rows[at] || null);
+      };
+      /** A new column at `at`, the same way across. A row holds only the cells that
+          begin in it, so the new one goes before the first of those beyond the gap. */
+      const addColAt = (at) => {
+        const g = grid(), sp = spots(g), grown = new Set();
+        [...tbody.rows].forEach((tr, r) => {
+          const left = g[r]?.[at - 1], right = g[r]?.[at];
+          if (left && left === right) {
+            if (!grown.has(left)) { left.colSpan += 1; grown.add(left); }
+            return;
+          }
+          const fresh = cell((right || left)?.tagName === 'TH' ? 'th' : 'td', '');
+          tr.insertBefore(fresh, [...tr.children].find((td) => sp.get(td).c >= at) || null);
+        });
+      };
+      /** A row gone. A merged cell that begins in it moves down into the next row. */
+      const deleteRow = (r) => {
+        const g = grid(), sp = spots(g), tr = tbody.rows[r], next = tbody.rows[r + 1];
+        for (const td of new Set(g[r])) {
+          if (!td || td.rowSpan < 2) continue;
+          td.rowSpan -= 1;
+          const s = sp.get(td);
+          if (s.r === r && next) next.insertBefore(td, [...next.children].find((x) => sp.get(x).c > s.c) || null);
+        }
+        tr.remove();
+      };
+      const deleteCol = (c) => {
+        for (const td of new Set(grid().map((row) => row[c]))) {
+          if (!td) continue;
+          if (td.colSpan > 1) td.colSpan -= 1; else td.remove();
+        }
+      };
+      const deleteTable = () => {
+        const blk = wrap.closest('[data-kind]');
+        const near = blk.previousElementSibling || blk.nextElementSibling;
+        blk.remove();
+        if (!body.children.length) body.append(block('para'));
+        sync();
+        const box = (near && near.isConnected ? near : body.firstElementChild).querySelector('.ce');
+        if (box) {
+          box.closest('[contenteditable="true"]')?.focus({ preventScroll: true });
+          const r = document.createRange(); r.selectNodeContents(box); r.collapse(false); putRange(r);
+        }
+      };
+      /** Into the cell at a spot once the table has changed, or the nearest one left. */
+      const settle = (r, c) => {
+        const g = grid();
+        const row = g[Math.max(0, Math.min(r, g.length - 1))] || [];
+        const td = row[Math.max(0, Math.min(c, row.length - 1))];
+        if (td) enter(td, true);
+      };
+
+      /** Merged as the smallest rectangle covering the selection. Nothing written is
+          thrown away: what the other cells held is carried over, a line each. */
+      const merge = (box) => {
+        const g = grid(), keep = g[box.r1][box.c1], gone = new Set();
+        for (let r = box.r1; r <= box.r2; r++) {
+          for (let c = box.c1; c <= box.c2; c++) {
+            const td = g[r]?.[c];
+            if (td && td !== keep) gone.add(td);
+          }
+        }
+        const into = boxOf(keep);
+        const blank = (h) => !h || h === '<br>';
+        for (const td of gone) {
+          const html = boxOf(td)?.innerHTML.trim();
+          if (!blank(html)) into.innerHTML = blank(into.innerHTML.trim()) ? html : `${into.innerHTML}<br>${html}`;
+          td.remove();
+        }
+        keep.colSpan = box.c2 - box.c1 + 1;
+        keep.rowSpan = box.r2 - box.r1 + 1;
+      };
+      /** Each slot the merged cell covered gets a cell again, placed after the last cell
+          of its row's own before the gap: shrinking the merged cell shifts the rest left,
+          so the grid is read afresh for every one. */
+      const unmerge = (cells) => {
+        for (const keep of cells.filter((c) => c.colSpan > 1 || c.rowSpan > 1)) {
+          const at = spots().get(keep), cs = keep.colSpan, rs = keep.rowSpan;
+          const tag = keep.tagName.toLowerCase();
+          keep.colSpan = 1; keep.rowSpan = 1;
+          for (let r = at.r; r < at.r + rs; r++) {
+            const tr = tbody.rows[r];
+            if (!tr) continue;
+            for (let c = at.c; c < at.c + cs; c++) {
+              if (r === at.r && c === at.c) continue;
+              const own = [...new Set(grid()[r]?.slice(0, c) || [])]
+                .filter((x) => x && x.parentElement === tr).pop();
+              const fresh = cell(tag, '');
+              if (own) own.after(fresh); else tr.prepend(fresh);
+            }
+          }
+        }
+      };
+      /** A header band can run to several rows, as a two-level column header does. */
+      const setHead = (r1, r2, on) => {
+        for (let r = r1; r <= r2; r++) {
+          for (const td of [...tbody.rows[r].children]) {
+            if ((td.tagName === 'TH') === on) continue;
+            td.replaceWith(cell(on ? 'th' : 'td', boxOf(td)?.innerHTML || '', td.colSpan || 1, td.rowSpan || 1));
+          }
+        }
+      };
+
+      table.addEventListener('contextmenu', (e) => {
+        const td = cellOf(e.target);
+        if (!td) return;
+        e.preventDefault();
+        if (!picked().includes(td)) drop();
+        const cells = span ? picked() : [td];
+        const sp = spots();
+        const box = cells.reduce((b, c) => {
+          const s = sp.get(c);
+          return { r1: Math.min(b.r1, s.r), c1: Math.min(b.c1, s.c), r2: Math.max(b.r2, s.r2), c2: Math.max(b.c2, s.c2) };
+        }, { r1: Infinity, c1: Infinity, r2: -1, c2: -1 });
+        const nr = box.r2 - box.r1 + 1, nc = box.c2 - box.c1 + 1;
+        const head = cells.every((c) => c.tagName === 'TH');
+        const act = (fn) => () => { drop(); fn(); sync(); };
+        pointMenu([
+          { label: 'Insert row above', run: act(() => { addRowAt(box.r1); settle(box.r1, box.c1); }) },
+          { label: 'Insert row below', run: act(() => { addRowAt(box.r2 + 1); settle(box.r2 + 1, box.c1); }) },
+          { label: 'Insert column left', run: act(() => { addColAt(box.c1); settle(box.r1, box.c1); }) },
+          { label: 'Insert column right', run: act(() => { addColAt(box.c2 + 1); settle(box.r1, box.c2 + 1); }) },
+          '-',
+          { label: nr > 1 ? `Delete ${nr} rows` : 'Delete row', run: () => {
+            drop();
+            if (nr >= tbody.rows.length) { deleteTable(); return; }
+            for (let r = box.r2; r >= box.r1; r--) deleteRow(r);
+            sync(); settle(box.r1, box.c1);
+          } },
+          { label: nc > 1 ? `Delete ${nc} columns` : 'Delete column', run: () => {
+            drop();
+            if (nc >= width()) { deleteTable(); return; }
+            for (let c = box.c2; c >= box.c1; c--) deleteCol(c);
+            sync(); settle(box.r1, box.c1);
+          } },
+          { label: 'Delete table', run: () => { drop(); deleteTable(); } },
+          '-',
+          { label: 'Merge cells', off: cells.length < 2, run: act(() => { merge(box); settle(box.r1, box.c1); }) },
+          { label: 'Unmerge cells', off: !cells.some((c) => c.colSpan > 1 || c.rowSpan > 1),
+            run: act(() => { unmerge(cells); settle(box.r1, box.c1); }) },
+          { label: head ? (nr > 1 ? 'Make body rows' : 'Make body row') : (nr > 1 ? 'Make header rows' : 'Make header row'),
+            run: act(() => { setHead(box.r1, box.r2, !head); settle(box.r1, box.c1); }) },
+        ], e.clientX, e.clientY);
+      });
+
+      /* ---------- keys ---------- */
+      const MOVE = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
+      table.addEventListener('keydown', (e) => {
+        if (e.isComposing) return;
+        const s = getSelection();
+        const td = cellOf(s.focusNode);
+        if (!td || !s.rangeCount) return;
+        const box = boxOf(td);
+        const move = MOVE[e.key];
+        const bare = !e.ctrlKey && !e.metaKey && !e.altKey;
+
+        if (span && e.key === 'Tab') drop();          // Tab moves on from whole cells too
+        if (span) {
+          if (move && e.shiftKey && bare) {            // grow the selection a cell at a time
+            e.preventDefault();
+            const g = grid(), at = spots(g).get(span.b);
+            const r = move[0] < 0 ? at.r - 1 : move[0] > 0 ? at.r2 + 1 : at.r;
+            const c = move[1] < 0 ? at.c - 1 : move[1] > 0 ? at.c2 + 1 : at.c;
+            if (g[r]?.[c]) spanTo(span.a, g[r][c]);
+            return;
+          }
+          if (e.key === 'Backspace' || e.key === 'Delete' || (e.key.length === 1 && bare)) {
+            // Deleting empties every selected cell; typing does too, and starts in the
+            // first of them, as a spreadsheet does.
+            e.preventDefault();
+            const cells = picked();
+            cells.forEach((c) => { boxOf(c).innerHTML = ''; });
+            drop();
+            enter(cells[0], false);
+            if (e.key.length === 1) document.execCommand('insertText', false, e.key);
+            else sync();
+            return;
+          }
+          if (move || e.key === 'Escape') {
+            e.preventDefault();
+            const to = span.b;
+            drop();
+            enter(to, true);
+          }
+          return;
+        }
+
+        if (e.key === 'Enter') { e.preventDefault(); lineBreak(); return; }
+        if (e.key === 'Tab' && bare) {
+          e.preventDefault();
+          const cells = order();
+          const i = cells.indexOf(td) + (e.shiftKey ? -1 : 1);
+          if (i < 0) return;
+          if (i >= cells.length) { addRowAt(grid().length); sync(); }
+          enter(order()[i], true);
+          return;
+        }
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+          // At the edge of a cell there is nothing of this cell left to delete, and the
+          // browser would start taking the table apart instead.
+          if (s.isCollapsed && caretEdges(box)[e.key === 'Backspace' ? 'atStart' : 'atEnd']) e.preventDefault();
+          return;
+        }
+        if (!move || !bare) return;
+
+        const vertical = move[0] !== 0;
+        const back = move[0] < 0 || move[1] < 0;
+        const x = caretLeft(box);
+        const beyond = () => {
+          if (vertical) return verticalFrom(td, !back, x);
+          const cells = order();
+          return cells[cells.indexOf(td) + (back ? -1 : 1)];
+        };
+
+        if (e.shiftKey) {
+          // Within the cell the selection grows as it always has; at its edge it takes
+          // whole cells.
+          const was = [s.anchorNode, s.anchorOffset, s.focusNode, s.focusOffset];
+          s.modify('extend', back ? 'backward' : 'forward', vertical ? 'line' : 'character');
+          const moved = !(s.focusNode === was[2] && s.focusOffset === was[3]);
+          e.preventDefault();
+          if (moved && box.contains(s.focusNode)) return;
+          s.setBaseAndExtent(...was);
+          const next = beyond();
+          if (next) spanTo(cellOf(s.anchorNode) || td, next);
+          return;
+        }
+
+        if (vertical) {
+          e.preventDefault();
+          if (lineWithin(box, back)) return;
+          const next = beyond();
+          if (next) enter(next, back, x); else leave(!back);
+          return;
+        }
+        if (!s.isCollapsed) return;                   // the browser collapses a selection first
+        const at = caretEdges(box);
+        if (back ? !at.atStart : !at.atEnd) return;   // within the text: the browser's own move
+        e.preventDefault();
+        const next = beyond();
+        if (next) enter(next, back); else leave(!back);
+      });
+
+      table.addEventListener('paste', (e) => {
+        const dt = e.clipboardData;
+        const text = dt.getData('text/plain');
+        const html = dt.getData('text/html');
+        const cellEl = span ? picked()[0] : cellOf(getSelection().anchorNode);
+        e.preventDefault();
+        if (cellEl && /[\t\n]/.test(text.trim())) { drop(); pasteGrid(cellEl, text); return; }
+        if (html && /data-tok=|data-slug=/.test(html)) {
+          document.execCommand('insertHTML', false, keepTokens(html));
+          unglue(ceOf(getSelection().anchorNode));
+          return;
+        }
+        document.execCommand('insertText', false, text);
+      });
+      // Put stray text back inside the cell's box once the caret has gone, when
+      // moving a node can no longer drag the caret along with it.
+      table.addEventListener('focusout', () => {
+        let moved = false;
+        for (const c of table.querySelectorAll('th, td')) {
+          const box = boxOf(c);
+          if (!box) continue;
+          const before = [], after = [];
+          let seen = false;
+          for (const n of c.childNodes) {
+            if (n === box) { seen = true; continue; }
+            (seen ? after : before).push(n);
+          }
+          if (!before.length && !after.length) continue;
+          before.reverse().forEach((n) => box.prepend(n));
+          after.forEach((n) => box.append(n));
+          moved = true;
+        }
+        if (moved) sync();
+      });
 
       const addRow = (cells, headRow = false) => {
         const tr = el('tr');
         cells.forEach((v) => tr.append(cell(
           cellHead(v, headRow ? 0 : 1) ? 'th' : 'td',
           mdToHtml(cellText(v)), cellSpan(v, 'colspan'), cellSpan(v, 'rowspan'))));
-        const x = el('td', 'row-x');
-        const btn = el('button', null, '✕'); btn.type = 'button'; btn.title = 'Delete row';
-        btn.onmousedown = (e) => e.preventDefault();
-        btn.onclick = () => { tr.remove(); sync(); };
-        x.append(btn);
-        tr.append(x);
         tbody.append(tr);
-        return tr;
       };
-
       const seed = rows?.length ? rows : [['Column', 'Column'], ['', '']];
       seed.forEach((r, i) => addRow(r, i === 0));
+      table._addRow = () => addRowAt(grid().length);
+      table._addCol = () => addColAt(width());
 
-      // Column count is read off the grid, so a table carrying spans still grows right.
-      const width = () => tableGrid(tbody).reduce((w, r) => Math.max(w, r.length), 0);
-      const addCol = () => [...tbody.rows].forEach((r) => {
-        const head = r.firstElementChild?.tagName === 'TH';
-        r.insertBefore(cell(head ? 'th' : 'td', ''), r.lastElementChild);
-      });
-
-      table._addRow = () => addRow(new Array(width()).fill(''));
-      table._addCol = addCol;
-
-      /* ---------- merging ---------- */
-
-      /** The cells the writer has selected, or the one holding the caret. */
-      const picked = () => {
-        const sel = getSelection();
-        const all = [...tbody.querySelectorAll('td, th')].filter((c) => !c.classList.contains('row-x'));
-        const hit = sel.rangeCount && !sel.isCollapsed ? all.filter((c) => sel.containsNode(c, true)) : [];
-        if (hit.length) return hit;
-        const n = sel.anchorNode;
-        const one = (n?.nodeType === 1 ? n : n?.parentElement)?.closest?.('td, th');
-        return one && !one.classList.contains('row-x') ? [one] : [];
-      };
-
-      /** A selection is merged as the smallest rectangle covering everything in it. */
-      const mergeCells = () => {
-        const chosen = new Set(picked());
-        if (chosen.size < 2) { flash('Select the cells to merge first.', true); return; }
-        const grid = tableGrid(tbody);
-        let r1 = Infinity, c1 = Infinity, r2 = -1, c2 = -1;
-        grid.forEach((row, r) => row.forEach((td, c) => {
-          if (!chosen.has(td)) return;
-          r1 = Math.min(r1, r); c1 = Math.min(c1, c);
-          r2 = Math.max(r2, r); c2 = Math.max(c2, c);
-        }));
-        if (r2 < 0) return;
-        const keep = grid[r1][c1];
-        const gone = new Set();
-        for (let r = r1; r <= r2; r++) {
-          for (let c = c1; c <= c2; c++) {
-            const td = grid[r]?.[c];
-            if (td && td !== keep) gone.add(td);
-          }
+      // Whole cells copy as tab-separated rows, so a table goes straight into a
+      // spreadsheet; cutting them empties them.
+      const tdText = (c) => htmlToMd(boxOf(c), ' ').replace(/\s+/g, ' ').trim();
+      const asTsv = (cells) => {
+        const sp = spots(), rowsOf = new Map();
+        for (const c of cells) {
+          const r = sp.get(c).r;
+          if (!rowsOf.has(r)) rowsOf.set(r, []);
+          rowsOf.get(r).push(c);
         }
-        // Nothing written is thrown away: what the other cells held is carried over.
-        const box = keep.querySelector('.ce');
-        for (const td of gone) {
-          const html = td.querySelector('.ce')?.innerHTML.trim();
-          if (html) box.innerHTML = box.innerHTML.trim() ? `${box.innerHTML}<br>${html}` : html;
-          td.remove();
-        }
-        keep.colSpan = c2 - c1 + 1;
-        keep.rowSpan = r2 - r1 + 1;
-        sync();
+        return [...rowsOf.keys()].sort((a, b) => a - b).map((r) => rowsOf.get(r).map(tdText).join('\t')).join('\n');
       };
-
-      const splitCell = () => {
-        const chosen = picked().filter((c) => c.colSpan > 1 || c.rowSpan > 1);
-        if (!chosen.length) { flash('Put the cursor in a merged cell.', true); return; }
-        const grid = tableGrid(tbody);
-        for (const keep of chosen) {
-          let r1 = Infinity, c1 = Infinity;
-          grid.forEach((row, r) => row.forEach((td, c) => {
-            if (td !== keep) return;
-            r1 = Math.min(r1, r); c1 = Math.min(c1, c);
-          }));
-          const cs = keep.colSpan, rs = keep.rowSpan;
-          keep.colSpan = 1; keep.rowSpan = 1;
-          const tag = keep.tagName.toLowerCase();
-          for (let r = r1; r < r1 + rs; r++) {
-            const tr = tbody.rows[r];
-            if (!tr) continue;
-            // Walk the row's own cells to find where the new one belongs.
-            for (let c = c1; c < c1 + cs; c++) {
-              if (r === r1 && c === c1) continue;
-              const after = tableGrid(tbody)[r]?.slice(0, c).filter((x, i, a) => x && a.indexOf(x) === i).pop();
-              const fresh = cell(tag, '');
-              if (after && after.parentElement === tr) after.after(fresh);
-              else tr.insertBefore(fresh, tr.firstElementChild);
-            }
-          }
-        }
-        sync();
-      };
-
-      /** A header band can run to several rows, as a two-level column header does. */
-      const toggleHead = () => {
-        const chosen = picked();
-        if (!chosen.length) { flash('Put the cursor in the row first.', true); return; }
-        const rowsHit = [...new Set(chosen.map((c) => c.parentElement))];
-        const makeHead = rowsHit.some((tr) => tr.querySelector('td:not(.row-x)'));
-        for (const tr of rowsHit) {
-          for (const td of [...tr.children]) {
-            if (td.classList.contains('row-x')) continue;
-            const want = makeHead ? 'TH' : 'TD';
-            if (td.tagName === want) continue;
-            const fresh = cell(want.toLowerCase(), td.querySelector('.ce')?.innerHTML || '',
-              td.colSpan || 1, td.rowSpan || 1);
-            td.replaceWith(fresh);
-          }
-        }
-        sync();
-      };
-
-      // Selecting across cells and copying yields tab-separated text, so the
-      // table can go straight into a spreadsheet.
-      const asTsv = (sel) => {
-        const out = [];
-        for (const tr of tbody.rows) {
-          const cells = [...tr.children].filter((c) => !c.classList.contains('row-x'));
-          const hit = cells.filter((c) => sel.containsNode(c, true));
-          if (hit.length) out.push(hit.map((c) => tdText(c)).join('\t'));
-        }
-        return out.join('\n');
-      };
-      const tdText = (c) => htmlToMd(c.querySelector('.ce'), ' ').replace(/\s+/g, ' ').trim();
       const onCopy = (e) => {
         const sel = getSelection();
-        if (!sel.rangeCount || sel.isCollapsed) return;
-        const within = table.contains(sel.anchorNode) && table.contains(sel.focusNode);
-        if (!within) return;
-        const startCell = sel.anchorNode.parentElement?.closest('td, th');
-        const endCell = sel.focusNode.parentElement?.closest('td, th');
-        if (startCell && startCell === endCell) return;   // a normal in-cell copy
-        const tsv = asTsv(sel);
-        if (!tsv) return;
+        let cells = picked();
+        if (!cells.length) {
+          if (!sel.rangeCount || sel.isCollapsed) return;
+          if (!table.contains(sel.anchorNode) || !table.contains(sel.focusNode)) return;
+          if (cellOf(sel.anchorNode) === cellOf(sel.focusNode)) return;   // an ordinary copy within a cell
+          cells = order().filter((c) => sel.containsNode(c, true));
+        }
+        if (!cells.length) return;
         e.preventDefault();
-        e.clipboardData.setData('text/plain', tsv);
+        e.clipboardData.setData('text/plain', asTsv(cells));
+        if (e.type === 'cut') {
+          cells.forEach((c) => { boxOf(c).innerHTML = ''; });
+          drop();
+          sync();
+        }
       };
       table.addEventListener('copy', onCopy);
       table.addEventListener('cut', onCopy);
 
-      const bar = el('div', 'tbl-bar');
-      for (const [label, fn] of [
-        ['+ Row', () => { table._addRow(); sync(); }],
-        ['+ Column', () => { addCol(); sync(); }],
-        ['Merge', mergeCells],
-        ['Split', splitCell],
-        ['Header', toggleHead],
-      ]) {
-        const b = el('button', null, label); b.type = 'button';
-        b.onmousedown = (e) => e.preventDefault();
-        b.onclick = fn;
-        bar.append(b);
-      }
-      wrap.append(table, bar);
+      wrap.append(table);
       return wrap;
     }
+
+    /* ---------- a menu at the pointer, which is what right-click gives ---------- */
+    const pointMenu = (() => {
+      const m = el('div', 'drop-menu list point-menu');
+      m.hidden = true;
+      document.body.append(m);
+      const close = () => { m.hidden = true; };
+      addEventListener('mousedown', (e) => { if (!m.hidden && !m.contains(e.target)) close(); }, true);
+      addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); }, true);
+      addEventListener('scroll', (e) => { if (!m.contains(e.target)) close(); }, true);
+      addEventListener('blur', close);
+      return (items, x, y) => {
+        m.innerHTML = '';
+        for (const it of items) {
+          if (it === '-') { m.append(el('div', 'menu-sep')); continue; }
+          const b = el('button', null, it.label);
+          b.type = 'button';
+          b.disabled = !!it.off;
+          b.onmousedown = (e) => e.preventDefault();      // the caret stays in the table
+          b.onclick = () => { close(); it.run(); };
+          m.append(b);
+        }
+        m.hidden = false;
+        m.style.left = `${Math.max(8, Math.min(x, innerWidth - m.offsetWidth - 8))}px`;
+        m.style.top = `${Math.max(8, Math.min(y, innerHeight - m.offsetHeight - 8))}px`;
+      };
+    })();
 
 
     function readBody() {
@@ -1281,8 +1989,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         if (kind === 'table') return {
           kind,
           rows: [...b.querySelectorAll('tbody tr')].map((tr, r) =>
-            [...tr.children].filter((c) => !c.classList.contains('row-x')).map((c) => {
-              const text = htmlToMd(c.querySelector('.ce'), '<br>').trim();
+            [...tr.children].map((c) => {
+              const text = cellMd(c);
               const head = c.tagName === 'TH', cs = c.colSpan || 1, rs = c.rowSpan || 1;
               // A plain cell stays a plain string, so a table with no spans and one
               // header row serializes as the markdown table it has always been.
@@ -1290,12 +1998,16 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
                 ? text : { text, ...(cs > 1 && { colspan: cs }), ...(rs > 1 && { rowspan: rs }), head };
             })),
         };
-        if (kind === 'list') return {
-          kind,
-          // Every item, empty ones included: this is what undo restores, and dropping
-          // them here made the history disagree with what is on screen.
-          items: [...b.querySelectorAll('li .ce')].map((d) => htmlToMd(d).trim()),
-        };
+        if (kind === 'list') {
+          const lis = [...b.querySelectorAll('li')];
+          return {
+            kind,
+            // Every item, empty ones included: this is what undo restores, and dropping
+            // them here made the history disagree with what is on screen.
+            items: lis.map((li) => itemMd(li.querySelector('.ce'))),
+            levels: lis.map((li) => +li.dataset.level || 0),
+          };
+        }
         return { kind, text: htmlToMd(b.querySelector('.ce')).trim() };
       });
     }
@@ -1325,6 +2037,10 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         if (v('#f-welcome')) fm.push(`welcome: ${q(v('#f-welcome'))}`);
         const kept = portalBody.trim();
         return `---\n${fm.join('\n')}\n---\n${kept ? `\n${kept}\n` : ''}`;
+      }
+      // Only when it differs; a sidebar heading that repeats the title is the default.
+      if (v('#f-boxtitle') && v('#f-boxtitle') !== v('#f-title')) {
+        fm.push(`sidebarTitle: ${q(v('#f-boxtitle'))}`);
       }
       const natives = v('#f-native').split('\n').map((x) => x.trim()).filter(Boolean);
       if (natives.length === 1) fm.push(`nativeTitle: ${q(natives[0])}`);
@@ -1357,7 +2073,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const rows = filled.filter((r, i) =>
         r.section == null || (filled[i + 1] && filled[i + 1].section == null));
 
-      if (rows.length) {
+      if (rows.length && $('#f-sidebar-on').checked) {
         fm.push('infobox:');
         for (const r of rows) {
           if (r.office != null) { fm.push(`  - { office: ${q(r.office)}, term: ${q(r.term)} }`); continue; }
@@ -1403,7 +2119,10 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         }
       }
 
-      return `---\n${fm.join('\n')}\n---\n\n${bodyMarkdown()}\n`;
+      // Bold or italic that took a space along shows as bold here but prints its
+      // asterisks on the page, so it is fixed in every copy written out.
+      const md = `---\n${fm.join('\n')}\n---\n\n${bodyMarkdown()}\n`;
+      return window.fixEmphasis ? window.fixEmphasis(md) : md;
     }
 
     /* ---------- navboxes ----------
@@ -1487,7 +2206,11 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         if (b.kind === 'section') return '## ' + b.text;
         if (b.kind === 'subsection') return '### ' + b.text;
         if (b.kind === 'para') return b.text;
-        if (b.kind === 'list') return b.items.filter(Boolean).map((i) => '- ' + i).join('\n');
+        if (b.kind === 'list') {
+          // Two spaces deeper for each level, which markdown reads as the list below.
+          return b.items.map((t, i) => [t, b.levels?.[i] || 0]).filter(([t]) => t)
+            .map(([t, lv]) => '  '.repeat(lv) + '- ' + t).join('\n');
+        }
         if (b.kind === 'image') return b.src ? fig(b) : '';
         if (b.kind === 'float') {
           if (!b.src) return '';
@@ -1580,8 +2303,17 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             rows: t.split('\n').filter((l) => !/^\|[\s|:-]+\|$/.test(l)).map((l) =>
               l.replace(/^\||\|$/g, '').split(/(?<!\\)\|/).map((s) => s.trim().replace(/\\\|/g, '|'))),
           });
-        } else if (t.split('\n').every((l) => l.startsWith('- '))) {
-          blocks.push({ kind: 'list', items: t.split('\n').map((l) => l.slice(2)) });
+        } else if (t.split('\n').every((l) => /^ *- /.test(l))) {
+          // An item two or four spaces deeper than the one above is one level below it.
+          const stack = [], items = [], levels = [];
+          for (const l of t.split('\n')) {
+            const ind = l.length - l.trimStart().length;
+            while (stack.length && stack[stack.length - 1] >= ind) stack.pop();
+            levels.push(stack.length);
+            stack.push(ind);
+            items.push(l.trimStart().slice(2));
+          }
+          blocks.push({ kind: 'list', items, levels });
         } else blocks.push({ kind: 'para', text: t.replace(/\n/g, ' ') });
       }
       return blocks;
@@ -1590,11 +2322,19 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     /* ---------- canvas mirrors the settings ---------- */
     function paintCanvas() {
       const t = $('#f-title').value.trim();
-      $('#ib-title').textContent = t || 'Untitled';
-      $('#ib-native').innerHTML = $('#f-native').value.trim()
-        .split('\n').map((n) => esc(n.trim())).join('<br>');
-      $('#ib-romaji').textContent = $('#f-romaji').value.trim();
-      if ($('#canvas-title').textContent !== t && document.activeElement !== $('#canvas-title')) {
+      // Never over the field somebody is typing in: these are edited in place now, and
+      // rewriting one under the caret throws the cursor back to the start.
+      const idle = (el) => document.activeElement !== el;
+      // A sidebar heading nobody has set shows the article's title, greyed, which is
+      // what the page will carry.
+      $('#ib-title').dataset.ph = t || 'Article title';
+      if (idle($('#ib-title'))) $('#ib-title').textContent = $('#f-boxtitle').value.trim();
+      if (idle($('#ib-native'))) {
+        $('#ib-native').innerHTML = $('#f-native').value.trim()
+          .split('\n').map((n) => esc(n.trim())).filter(Boolean).join('<br>');
+      }
+      if (idle($('#ib-romaji'))) $('#ib-romaji').textContent = $('#f-romaji').value.trim();
+      if ($('#canvas-title').textContent !== t && idle($('#canvas-title'))) {
         $('#canvas-title').textContent = t;
       }
       const nat = $('#f-nation');
@@ -1605,13 +2345,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 
     /* ---------- draft survives a reload ---------- */
     const DRAFT = 'talopedia-draft';
-    const fields = ['#f-title', '#f-native', '#f-romaji', '#f-type', '#f-nation', '#f-icon',
+    const fields = ['#f-title', '#f-boxtitle', '#f-native', '#f-romaji', '#f-type', '#f-nation', '#f-icon',
       '#f-authors', '#f-coords', '#f-banner', '#f-welcome', '#f-crumb'];
     const snapshot = () => ({
       meta: Object.fromEntries(fields.map((f) => [f, $(f).value])),
       ooc: $('#f-ooc').checked,
       navbox: $('#f-navbox-on').checked,
-      slug: DEV ? $('#slug').value : '',
+      sidebar: $('#f-sidebar-on').checked,
+      slug: slugValue(),
+      from: loadedFrom,
       // What is being edited, and the two things it holds that are never on screen.
       // Without these an undo, or the reload after a save, turns a portal into an article.
       kind: pageKind,
@@ -1625,7 +2367,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       for (const [f, v] of Object.entries(d.meta || {})) if ($(f)) $(f).value = v;
       $('#f-ooc').checked = !!d.ooc;
       $('#f-navbox-on').checked = d.navbox !== false;
-      if (DEV && d.slug) { $('#slug').value = d.slug; slugTouched = true; }
+      $('#f-sidebar-on').checked = d.sidebar !== false;
+      if (d.slug) { setSlug(d.slug); slugTouched = true; }
+      if (d.from !== undefined) loadedFrom = d.from;
       pageKind = d.kind || 'article';
       portalBody = d.portalBody || '';
       navboxLead = d.navboxLead || '';
@@ -1692,10 +2436,23 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       for (const [id, on] of [
         ['#banner-field', portal], ['#welcome-field', portal], ['#crumb-field', nav],
         ['#type-field', art], ['#authors-field', art], ['#icon-field', art],
-        ['#native-field', art], ['#romaji-field', art], ['#nation-field', !nav],
+        ['#nation-field', !nav],
       ]) $(id).hidden = !on;
+      // The byline says who may edit the page once it exists, so it stops being
+      // editable once the page does. `authors` carries the byline when it is set and
+      // `nation` carries it when it is not, so whichever one is holding it locks; a
+      // nation that is only choosing the navbox stays free. The dev server is the way
+      // back in, and a pull request that moves a byline is reviewed rather than merged.
+      const settled = !DEV && ARTICLES.some((a) => a.slug === indexKey(pageKind, slugValue()));
+      $('#f-authors').readOnly = settled;
+      $('#f-authors').title = settled ? 'Set when the page was created.' : '';
+      $('#f-nation').disabled = settled && !$('#f-authors').value.trim();
       $('#settings').querySelector('.set-toggles').hidden = !art;
-      document.querySelector('.ib-edit').hidden = !art;
+      // Not every article wants a sidebar. The rows stay in the editor while it is
+      // off, so turning it back on before saving brings them back untouched.
+      const sidebar = $('#f-sidebar-on').checked;
+      $('#sidebar-note').textContent = sidebar ? '' : 'none';
+      document.querySelector('.ib-edit').hidden = !art || !sidebar;
       // Only the types that sit somewhere on the map.
       const PLACED = ['overview', 'city', 'subdivision', 'continent', 'geography'];
       $('#coords-field').hidden = !art || !PLACED.includes(t);
@@ -1724,58 +2481,203 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         : $('#f-nation').value ? `${$('#f-nation').selectedOptions[0].textContent}'s navbox`
         : 'site navbox';
     }
-    /* ---------- undo / redo ---------- */
-    // A snapshot stack rather than execCommand('undo'): adding or removing a
-    // block is not a text edit, so the browser's own history does not see it.
+    /* ---------- undo / redo ----------
+       Modelled on Google Docs. A snapshot stack rather than execCommand('undo'),
+       because adding or removing a block is not a text edit and the browser's own
+       history does not see it. Typing is gathered a word at a time; everything else
+       (a paste, bold, a new block, a moved row) is a step of its own; and undoing puts
+       the caret back where the change was, so the writer can see what went.
+
+       Each step keeps the whole page as it stood after it, and where the caret was
+       when it began and when it ended. The history belongs to one page: opening,
+       starting or duplicating another clears it, since undoing into the last page
+       is how one article's text ends up under another's name. */
+    const PAUSE = 1000;      // a stop this long in typing starts the next step
+    const DEPTH = 200;
     const past = [], future = [];
-    let quiet = false, lastPush = 0;
+    let quiet = false;       // true while a remembered state is being put back
+    let run = null;          // the typing the newest step is still gathering
+    let settling = true;     // just opened, and nobody has touched it yet
 
     function paintHistory() {
       $('#undo').disabled = past.length < 2;
       $('#redo').disabled = !future.length;
     }
-    function remember() {
-      if (quiet) return;
-      const now = JSON.stringify(snapshot());
-      if (past.length && past[past.length - 1] === now) return;
-      // Typing coalesces into one step; a structural change always starts a new one.
-      const t = Date.now();
-      if (past.length > 1 && t - lastPush < 600) past.pop();
-      lastPush = t;
-      past.push(now);
-      if (past.length > 80) past.shift();
+    function resetHistory() {
+      past.length = 0;
       future.length = 0;
+      run = null;
+      settling = true;
       paintHistory();
     }
-    function step(from, to) {
-      if (from.length < 2) return;
-      to.push(from.pop());
+
+    /** Typing and deleting gather into runs; anything else stands alone. */
+    function editKind(e) {
+      const t = e?.inputType || '';
+      if (t === 'insertText' || t === 'insertCompositionText') return 'type';
+      if (/^delete(Content|Word|SoftLine|HardLine)/.test(t)) return 'delete';
+      return 'other';
+    }
+
+    /** Where the caret is, in terms that survive the page being rebuilt: which
+        editable box, counted in page order, and how many characters into it. */
+    function caretMark() {
+      const sel = getSelection();
+      if (!sel.rangeCount) return null;
+      const n = sel.focusNode;
+      const box = (n?.nodeType === 1 ? n : n?.parentElement)?.closest('[contenteditable="true"]');
+      const i = box ? [...document.querySelectorAll('.ed-canvas [contenteditable="true"]')].indexOf(box) : -1;
+      if (i < 0) return null;
+      const r = document.createRange();
+      r.selectNodeContents(box);
+      r.setEnd(n, sel.focusOffset);
+      const before = r.toString();
+      return { i, at: before.length, prev: before.slice(-1) };
+    }
+    function placeCaret(mark) {
+      if (!mark) return null;
+      const box = document.querySelectorAll('.ed-canvas [contenteditable="true"]')[mark.i];
+      if (!box) return null;
+      const r = document.createRange();
+      const walk = document.createTreeWalker(box, NodeFilter.SHOW_TEXT);
+      let left = mark.at, node, placed = false;
+      while ((node = walk.nextNode())) {
+        if (left <= node.nodeValue.length) {
+          // Never inside an arrow, a flag or a date: after it.
+          const lock = node.parentElement.closest('[contenteditable="false"]');
+          if (lock) r.setStartAfter(lock); else r.setStart(node, left);
+          placed = true;
+          break;
+        }
+        left -= node.nodeValue.length;
+      }
+      if (!placed) {
+        // A space at the end of a line is trimmed from what is saved, so a step that
+        // began just after one comes back without it. Put it back, or the next word
+        // typed runs straight into the last.
+        const t = box.textContent;
+        if (t && mark.at === t.length + 1 && !/\s$/.test(t)) box.append('\u00a0');
+        r.selectNodeContents(box);
+        r.collapse(false);
+      }
+      r.collapse(true);
+      box.focus({ preventScroll: true });
+      const sel = getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+      return r;
+    }
+    /** Bring the caret into view, but only if it is out of sight. */
+    function reveal(r) {
+      if (!r) return;
+      let box = r.getBoundingClientRect();
+      if (!box.height) {
+        const n = r.startContainer;
+        box = (n.nodeType === 1 ? n : n.parentElement).getBoundingClientRect();
+      }
+      const top = Math.max(0, $('.ed-tools').getBoundingClientRect().bottom) + 16;
+      const bottom = innerHeight - 24;
+      if (box.top >= top && box.bottom <= bottom) return;
+      // A third of the way down rather than at an edge, so what surrounds it shows too.
+      window.scrollBy(0, box.top - (top + (bottom - top) / 3));
+    }
+
+    function remember(e) {
+      if (quiet) return;
+      const kind = editKind(e);
+      const mark = caretMark();
+      const state = JSON.stringify(snapshot());
+      const top = past[past.length - 1];
+      const changed = !top || top.state !== state;
+      const box = e?.target?.closest?.('[contenteditable="true"]') || e?.target || null;
+      if (changed && settling && past.length === 1) {
+        // A page that has just opened is still settling (link titles arriving, say)
+        // until somebody touches it. That is the page as opened, not an edit to undo.
+        top.state = state;
+      } else if (changed) {
+        const t = Date.now();
+        const joins = run && !run.closed && kind !== 'other' && kind === run.kind
+          && box === run.box && t - run.last < PAUSE;
+        if (joins) {
+          top.state = state;
+          top.end = mark;
+          run.last = t;
+        } else {
+          // Typing leaves the caret after what it typed; the step began before it.
+          const back = kind === 'type' ? (e.data?.length ?? 1) : 0;
+          const start = mark && { i: mark.i, at: Math.max(0, mark.at - back) };
+          past.push({ state, start, end: mark });
+          if (past.length > DEPTH) past.shift();
+          run = kind === 'other' ? null : { kind, box, last: t, closed: false };
+        }
+        future.length = 0;
+        paintHistory();
+      } else if (run && kind === run.kind && box === run.box) {
+        // Nothing saved changed (a space at the end of a line), but the step still
+        // ends where the caret now is, so a redo puts the space back too.
+        top.end = mark;
+      }
+      // A space ends the word before it, so the next letter starts a step of its own.
+      // Checked even when nothing saved changed: a space at the end of a line is
+      // trimmed from what is saved, so the page reads the same with it as without.
+      if (run && kind === 'type' && /\s/.test(mark?.prev || '')) run.closed = true;
+    }
+
+    // Putting the caret somewhere by hand ends the run, as it does in Google Docs:
+    // whatever is typed next is somewhere else, and is a step of its own.
+    addEventListener('pointerdown', () => { run = null; settling = false; }, true);
+    addEventListener('keydown', (e) => {
+      settling = false;
+      if (/^(Arrow|Home$|End$|Page)/.test(e.key)) run = null;
+    }, true);
+
+    /**
+     * Put a remembered state back without the page jumping, then put the caret where
+     * the change was and scroll only if that is out of sight. restore() rebuilds the
+     * body and the sidebar, which drops the scroll position to wherever the shorter
+     * document ends, so the position is held across it first.
+     */
+    function apply(state, mark) {
+      const y = window.scrollY;
       quiet = true;
-      restore(JSON.parse(from[from.length - 1]));
-      quiet = false;
+      // finally: a restore that throws must not leave the history deaf for the rest
+      // of the session, or the next undo would throw away everything since.
+      try { restore(JSON.parse(state)); } finally { quiet = false; }
       paintCanvas(); paintToc();
       $('#preview').textContent = toMarkdown();
+      run = null;
       paintHistory();
+      stash();
+      window.scrollTo(0, y);
+      reveal(placeCaret(mark));
     }
-    $('#undo').onclick = () => step(past, future);
+    $('#undo').onclick = () => {
+      if (past.length < 2) return;
+      const undone = past.pop();
+      future.push(undone);
+      apply(past[past.length - 1].state, undone.start);
+    };
     $('#redo').onclick = () => {
       if (!future.length) return;
-      quiet = true;
-      const next = future.pop();
-      past.push(next);
-      restore(JSON.parse(next));
-      quiet = false;
-      paintCanvas(); paintToc();
-      $('#preview').textContent = toMarkdown();
-      paintHistory();
+      const redone = future.pop();
+      past.push(redone);
+      apply(redone.state, redone.end);
     };
+    // Undo from the Edit menu or the right-click menu is the browser's own, whose
+    // history knows nothing of rebuilt blocks. Routed here wherever it can be.
+    addEventListener('beforeinput', (e) => {
+      if (e.inputType !== 'historyUndo' && e.inputType !== 'historyRedo') return;
+      if (!e.cancelable) return;
+      e.preventDefault();
+      $(e.inputType === 'historyUndo' ? '#undo' : '#redo').click();
+    }, true);
 
-    function sync() {
+    function sync(e) {
       paintSettings();
       paintCanvas();
       paintToc();
       $('#preview').textContent = toMarkdown();
-      remember();
+      remember(e);
       stash();
     }
 
@@ -1796,12 +2698,14 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       }
       const loaded = await r.json();
       const { data, body: md } = loaded;
+      loadedFrom = loaded.commit || '';
       navboxLead = loaded.lead || '';
       portalBody = pageKind === 'portal' ? (md || '') : '';
       $('#f-crumb').value = data.crumb || '';
       $('#f-banner').value = data.banner || '';
       $('#f-welcome').value = data.welcome || '';
       $('#f-title').value = data.title || '';
+      $('#f-boxtitle').value = data.sidebarTitle || '';
       $('#f-native').value = [].concat(data.nativeTitle ?? []).join('\n');
       $('#f-romaji').value = data.romaji || '';
       $('#f-type').value = data.type || 'overview';
@@ -1809,10 +2713,12 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#f-icon').value = data.icon || '';
       $('#f-authors').value = (data.authors || []).join(', ');
       $('#f-navbox-on').checked = data.navbox !== 'none';
+      $('#f-sidebar-on').checked = !!(data.infobox || []).length;
       $('#f-coords').value = data.coords || '';
       $('#f-ooc').checked = !!data.ooc;
       pageSlug = bare;
-      if (DEV) { $('#slug').value = bare; slugTouched = true; }
+      loadedTitle = (data.title || '').trim();
+      setSlug(bare); slugTouched = true;
       setInfobox(data.infobox || []);
       paintSettings();
       body.innerHTML = '';
@@ -1820,7 +2726,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         .forEach((b) => body.append(block(b.kind, b)));
       // A portal has no body of its own, so it is not given an empty paragraph.
       if (!body.children.length && pageKind !== 'portal') body.append(block('para'));
+      resetHistory();
       sync();
+      loadedBody = toMarkdown();
       flash(`Opened ${data.title}.`);
     }
 
@@ -1870,7 +2778,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     });
     dropdown($('#more'), $('#more-menu'));
     dropdown($('#style'), $('#style-menu'));
-    dropdown($('#insert'), $('#insert-menu'));
+    dropdown($('#ins'), $('#ins-menu'));
     document.addEventListener('click', () => {
       document.querySelectorAll('.drop-menu').forEach((m) => m.hidden = true);
       pickTarget = null;      // the panel is shut; it is not aimed at anything now
@@ -1911,6 +2819,49 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#tbl-label').textContent = '0 \u00d7 0';
       pick.querySelectorAll('.tbl-cell').forEach((x) => x.classList.remove('on'));
     };
+
+    /* ---------- date ---------- */
+    let dtMode = '';
+    const dtArg = () => {
+      const d = $('#dt-date').value;
+      if (!d) return '';
+      if (dtMode === 'age') {
+        // For an age the date above is the birth. A death date, when there is one, is
+        // the date printed, with the age that was reached by then.
+        const died = $('#dt-died').value;
+        return died ? `${died}|age:${d}` : `${d}|age`;
+      }
+      return dtMode ? `${d}|${dtMode}` : d;
+    };
+    function paintDate() {
+      const age = dtMode === 'age';
+      $('#dt-date-label').textContent = age ? 'Born' : 'Date';
+      $('#dt-died-row').hidden = !age;
+      const arg = dtArg();
+      $('#dt-preview').textContent = arg ? dateLabel(arg) : 'Pick a date.';
+      $('#dt-preview').className = 'mp-hint' + (arg ? ' ok' : '');
+      $('#dt-go').disabled = !arg;
+    }
+    document.querySelectorAll('#dt-mode button').forEach((b) => {
+      b.onmousedown = (e) => e.preventDefault();
+      b.onclick = () => {
+        document.querySelectorAll('#dt-mode button').forEach((x) => x.classList.toggle('on', x === b));
+        dtMode = b.dataset.mode;
+        paintDate();
+      };
+    });
+    // A native date picker opens wherever its value points, and with none it opens on
+    // the real year. Avium is in 1934, which is where the writer means to be.
+    $('#dt-date').value = IC_NOW;
+    $('#dt-date').oninput = paintDate;
+    $('#dt-died').oninput = paintDate;
+    $('#dt-go').onclick = () => {
+      const arg = dtArg();
+      if (!arg) return;
+      if (!insertToken('date', arg)) return;
+      document.querySelectorAll('.drop-menu').forEach((m) => { m.hidden = true; });
+    };
+    paintDate();
 
     /* ---------- link popover ---------- */
     const pop = $('#link-pop');
@@ -1984,13 +2935,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       if (!list.children.length) list.innerHTML = '<p class="lp-empty">Type a title, a slug, or a URL.</p>';
     }
 
-    function restoreRange() {
-      if (!savedRange) return;
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(savedRange);
-    }
-
     function applyLink() {
       const target = lpTarget.value.trim();
       if (!target) { lpTarget.focus(); return; }
@@ -2005,8 +2949,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       } else {
         const host = activeText();
         host?.focus();
-        restoreRange();
+        if (savedRange) putRange(savedRange);
         document.execCommand('insertHTML', false, html);
+        unglue(ceOf(getSelection().anchorNode) || host);
       }
       closeLink();
       sync();
@@ -2044,22 +2989,54 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const k = e.key.toLowerCase();
       if (k === 'b' || k === 'i' || k === 'k') { e.preventDefault(); runCmd(k === 'k' ? 'link' : k === 'b' ? 'bold' : 'italic'); }
       if (k === 'z') { e.preventDefault(); (e.shiftKey ? $('#redo') : $('#undo')).click(); }
+      if (k === 'y') { e.preventDefault(); $('#redo').click(); }
       if (k === 's' && DEV) { e.preventDefault(); $('#save').click(); }
     });
 
     // The canvas title is the real title field; the settings box is the same value.
-    $('#canvas-title').addEventListener('input', () => {
+    $('#canvas-title').addEventListener('input', (e) => {
       $('#f-title').value = $('#canvas-title').textContent.trim();
-      if (!slugTouched && DEV) $('#slug').value = slugify($('#f-title').value);
-      sync();
+      if (!slugTouched) setSlug(slugify($('#f-title').value));
+      sync(e);
     });
     $('#canvas-title').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); body.querySelector('.ce')?.focus(); }
     });
     $('#canvas-title').addEventListener('paste', (e) => {
       e.preventDefault();
-      document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain'));
+      document.execCommand('insertText', false, e.clipboardData.getData('text/plain'));
     });
+
+    // The sidebar heading, edited at the top of the sidebar. The hidden inputs behind
+    // these three are what the markdown, the draft and the slug are built from, so
+    // everything downstream still reads one place.
+    for (const [id, field, multi] of [
+      ['#ib-title', '#f-boxtitle', false],
+      ['#ib-native', '#f-native', true],
+      ['#ib-romaji', '#f-romaji', false],
+    ]) {
+      const el = $(id);
+      el.addEventListener('input', (e) => {
+        const text = el.innerText.replace(/\u00a0/g, ' ');
+        $(field).value = multi
+          ? text.split('\n').map((l) => l.trim()).filter(Boolean).join('\n')
+          : text.replace(/\s+/g, ' ').trim();
+        sync(e);
+      });
+      el.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') return;
+        // A native title carries one line per official language, so shift ↵ opens
+        // another. Every other line here is a single one, and ↵ moves on.
+        if (multi && e.shiftKey) return;
+        e.preventDefault();
+        if (!e.shiftKey) body.querySelector('.ce')?.focus();
+      });
+      el.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const t = e.clipboardData.getData('text/plain');
+        document.execCommand('insertText', false, multi ? t : t.replace(/\s*\n+\s*/g, ' '));
+      });
+    }
 
     $('#f-type').onchange = () => {
       if (ib.querySelector('tr[data-kind]') && !confirm('Replace the sidebar with this type’s template?')) return;
@@ -2068,12 +3045,14 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     };
     /** Clear the desk and start a page of the given kind. */
     function blank(kind, slug = '') {
-      pageKind = kind; navboxLead = ''; portalBody = ''; pageSlug = slug;
-      $('#settings').querySelectorAll('input[type=text], textarea').forEach((i) => i.value = '');
+      loadedFrom = BUILT_FROM;           // a page not on main yet: any copy of main will do
+      pageKind = kind; navboxLead = ''; portalBody = ''; pageSlug = slug; loadedTitle = ''; loadedBody = '';
+      $('#settings').querySelectorAll('input[type=text], input[type=hidden], textarea').forEach((i) => i.value = '');
       $('#f-ooc').checked = false;
       $('#f-navbox-on').checked = true;
+      $('#f-sidebar-on').checked = true;
       $('#canvas-title').textContent = '';
-      if (DEV) { $('#slug').value = slug; slugTouched = !!slug; }
+      setSlug(slug); slugTouched = !!slug;
       try { sessionStorage.removeItem(DRAFT); } catch {}
       setInfobox(kind === 'article' ? (TEMPLATES[$('#f-type').value] || []) : []);
       body.innerHTML = '';
@@ -2092,6 +3071,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         }
       }
       paintSettings();
+      resetHistory();
       sync();
     }
 
@@ -2110,7 +3090,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const name = $('#f-nation').selectedOptions[0]?.textContent || id;
       if (!id) return;
       pageSlug = id;
-      $('#slug').value = id;
+      setSlug(id);
       if (!$('#f-title').value.trim()) {
         $('#f-title').value = pageKind === 'portal' ? `Portal:${name}` : `${name} Articles`;
       }
@@ -2125,10 +3105,10 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       if (id) location.href = `${BASE.replace(/\/$/, '')}/edit?a=navbox:${id}`;
     };
     $('#f-banner-pick').onclick = () => { $('#f-banner').focus(); openMedia(); };
-    ['#f-type', '#f-nation', '#f-navbox-on'].forEach((id) => {
+    ['#f-type', '#f-nation', '#f-navbox-on', '#f-sidebar-on'].forEach((id) => {
       $(id).addEventListener('change', paintSettings);
     });
-    $('#settings').addEventListener('input', () => { paintSettings(); sync(); });
+    $('#settings').addEventListener('input', (e) => { paintSettings(); sync(e); });
     $('#settings').addEventListener('change', sync);
 
     const saveAs = (blob, name) => {
@@ -2139,7 +3119,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       URL.revokeObjectURL(a.href);
     };
     async function downloadPage() {
-      const stem = slugify($('#slug')?.value || pageSlug || $('#f-title').value) || 'article';
+      const stem = slugify(slugValue() || pageSlug || $('#f-title').value) || 'article';
       const md = toMarkdown();
       const used = [...staged.entries()].filter(([p]) => md.includes(p));
       if (!used.length) { saveAs(new Blob([md], { type: 'text/markdown' }), `${stem}.md`); return; }
@@ -2221,87 +3201,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         method: 'PUT',
         body: JSON.stringify({ message, content: contentB64, branch, ...(sha && { sha }) }),
       });
-    }
-
-    async function publish() {
-      const slug = slugify($('#slug')?.value || pageSlug || $('#f-title').value);
-      if (!slug) { pubSay('Give the page a title first.', true); return; }
-      const markdown = toMarkdown();
-      const used = [...staged.entries()].filter(([p]) => markdown.includes(p));
-
-      $('#pub-go').disabled = true;
-      try {
-        pubSay('Checking the token…');
-        const me = await gh('/user');
-        const base = await gh(`/repos/${REPO}`);
-        const canPush = !!base.permissions?.push;
-        const mine = (base.owner?.login || '').toLowerCase() === (me.login || '').toLowerCase();
-
-        // Without write access the work goes to a fork of your own, which is how
-        // anyone contributes to a repository they are not a member of.
-        let work = REPO;
-        if (!canPush) {
-          if (mine) {
-            throw new Error(`This token cannot write to ${REPO}, which you own. `
-              + 'It needs the public_repo scope.');
-          }
-          pubSay(`Forking ${REPO}…`);
-          await gh(`/repos/${REPO}/forks`, { method: 'POST' });
-          work = `${me.login}/${base.name}`;
-          // A fork is made in the background, so wait for it to start answering.
-          for (let i = 0; i < 20; i++) {
-            try { await gh(`/repos/${work}`); break; }
-            catch { await new Promise((r) => setTimeout(r, 1500)); }
-          }
-          // An old fork still sits where it was left, and branching from there would
-          // put every change since then into the pull request.
-          try {
-            await gh(`/repos/${work}/merge-upstream`, {
-              method: 'POST', body: JSON.stringify({ branch: base.default_branch }),
-            });
-          } catch { /* a fresh fork is already level */ }
-        }
-
-        const main = base.default_branch;
-        // The branch starts from wherever the work is going, so a fork branches from
-        // its own tip rather than from a commit it may not have.
-        const tip = await gh(`/repos/${work}/git/ref/heads/${main}`);
-        const branch = `talopedia/${slug}-${Date.now().toString(36)}`;
-        pubSay('Making a branch…');
-        await gh(`/repos/${work}/git/refs`, {
-          method: 'POST',
-          body: JSON.stringify({ ref: `refs/heads/${branch}`, sha: tip.object.sha }),
-        });
-
-        pubSay('Committing the page…');
-        await putFile(work, branch, targetPath(slug), b64text(markdown), `${slug}: edit from the wiki editor`);
-
-        for (const [i, [path, item]] of used.entries()) {
-          pubSay(`Committing image ${i + 1} of ${used.length}…`);
-          const bytes = new Uint8Array(await item.file.arrayBuffer());
-          await putFile(work, branch, 'public' + path, b64(bytes), `${slug}: add ${path.split('/').pop()}`);
-        }
-
-        pubSay('Opening the pull request…');
-        const pr = await gh(`/repos/${REPO}/pulls`, {
-          method: 'POST',
-          body: JSON.stringify({
-            title: `${$('#f-title').value || slug}`,
-            head: canPush ? branch : `${me.login}:${branch}`,
-            base: main,
-            body: `Written in the wiki editor by @${me.login}.\n\n`
-              + `Page: \`${targetPath(slug)}\`${used.length ? `\nImages: ${used.length}` : ''}`,
-          }),
-        });
-        pubSay('');
-        $('#pub-panel').hidden = true;
-        flash(`Opened pull request #${pr.number}.`);
-        window.open(pr.html_url, '_blank', 'noopener');
-      } catch (e) {
-        pubSay(String(e.message || e), true);
-      } finally {
-        $('#pub-go').disabled = false;
-      }
     }
 
     /* ---------- reading a file back in ----------
@@ -2440,6 +3339,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 
     /** Put a whole stored file back on screen. */
     function fromMarkdown(text) {
+      resetHistory();
       const src = String(text).replace(/\r\n/g, '\n');
       if (!src.startsWith('---')) {
         // No frontmatter means a navbox, which is YAML all the way down.
@@ -2452,7 +3352,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         setInfobox([]);
         body.innerHTML = '';
         navboxBlocks(readGroups(lines)).forEach((b) => body.append(block(b.kind, b)));
-        paintSettings(); sync();
+        sync();
         return;
       }
       const end = src.indexOf('\n---', 3);
@@ -2463,6 +3363,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       pageKind = data.type ? 'article' : 'portal';
       portalBody = pageKind === 'portal' ? rest : '';
       $('#f-title').value = data.title || '';
+      $('#f-boxtitle').value = data.sidebarTitle || '';
       $('#f-native').value = [].concat(data.nativeTitle ?? []).join('\n');
       $('#f-romaji').value = data.romaji || '';
       $('#f-type').value = data.type || 'overview';
@@ -2473,17 +3374,19 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#f-crumb').value = '';
       $('#f-authors').value = [].concat(data.authors ?? []).join(', ');
       $('#f-navbox-on').checked = data.navbox !== 'none';
+      $('#f-sidebar-on').checked = !!rows.length;
       $('#f-coords').value = data.coords || '';
       $('#f-ooc').checked = data.ooc === true || data.ooc === 'true';
       setInfobox(rows);
       body.innerHTML = '';
       if (pageKind !== 'portal') parseBody(rest).forEach((b) => body.append(block(b.kind, b)));
       if (!body.children.length && pageKind === 'article') body.append(block('para'));
-      paintSettings(); sync();
+      sync();
     }
 
     if ($('#open-file')) {
       $('#open-file').onclick = () => $('#open-file-input').click();
+      $('#duplicate').onclick = duplicate;
       $('#open-file-input').onchange = async (e) => {
         const f = e.target.files[0];
         e.target.value = '';
@@ -2491,7 +3394,10 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         try {
           fromMarkdown(await f.text());
           pageSlug = f.name.replace(/\.(md|markdown|ya?ml)$/i, '');
-          if (DEV) { $('#slug').value = pageSlug; slugTouched = true; }
+          loadedFrom = '';               // a file from disk says nothing of which copy it was
+          loadedTitle = $('#f-title').value.trim();
+          setSlug(pageSlug); slugTouched = true;
+          sync();
           flash(`Opened ${f.name}.`);
         } catch (err) {
           flash(`Could not read ${f.name}: ${err.message}`, true);
@@ -2527,8 +3433,58 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     };
 
     /** This page as a change: the file it writes, and the pictures it brings with it. */
+/**
+ * The line that goes into the commit and so into the page's history. Every commit the
+ * editor made before this field existed says the same thing, which made the log
+ * useless for review.
+ */
+    const commitMsg = (slug, summary, from) => `${slug}: ${summary || 'edit from the wiki editor'}`
+      + (from ? `\n\nBased-on: ${from}` : '');
+
+    /** How a page is named in the index: bare for an article, prefixed for the rest.
+        Declared rather than assigned: it is called from further up the file. */
+    function indexKey(kind, slug) { return kind === 'article' ? slug : `${kind}:${slug}`; }
+
+    /**
+     * The first page in a push that the workflow will not merge on its own, if there
+     * is one, so the writer is told what actually happens rather than a hopeful guess.
+     * The rule lives in .github/gate.mjs; this is the sentence of it that decides the
+     * ordinary case, which is that a nation is editing a page credited to it alone.
+     */
+    function heldBack(changes, login) {
+      if (login === ADMIN) return null;
+      const mine = NATION_OF[login];
+      for (const c of changes) {
+        const held = ARTICLES.find((a) => a.slug === indexKey(c.kind, c.slug));
+        // A page not on the site yet is the writer's when it credits their own nation,
+        // which is the same test the gate puts it to.
+        const by = held ? held.by : creditIn(c.markdown || '', c.kind, c.slug);
+        if (!mine || by.length !== 1 || by[0] !== mine) return { title: held?.title || c.title || c.slug, by };
+      }
+      return null;
+    }
+
+    /** Who a page's own text credits: the byline, as .github/gate.mjs reads it. */
+    function creditIn(md, kind, slug) {
+      if (kind === 'navbox') return slug === 'site' ? [] : [slug];
+      const head = md.startsWith('---') ? md.slice(3, md.indexOf('\n---', 3)) : '';
+      const clean = (x) => x.trim().replace(/^["']|["']$/g, '');
+      const list = head.match(/^authors:[ \t]*\[([^\]]*)\]/m);
+      if (list) return list[1].split(',').map(clean).filter(Boolean);
+      const one = head.match(/^nation:[ \t]*(\S.*)$/m);
+      return one ? [clean(one[1])] : [];
+    }
+
+    /** What to tell the writer once the pull request is open. */
+    function sentWord(changes, login) {
+      const held = heldBack(changes, login);
+      if (!held) return 'Your edit is on its way.';
+      const who = held.by.map((n) => NATION_NAMES[n] || n).join(' and ');
+      return `Sent. ${held.title} is credited to ${who || 'nobody'}, so it waits for a look.`;
+    }
+
     function currentChange() {
-      const slug = slugify($('#slug')?.value || pageSlug || $('#f-title').value);
+      const slug = slugify(slugValue() || pageSlug || $('#f-title').value);
       if (!slug) return null;
       const markdown = toMarkdown();
       return {
@@ -2536,7 +3492,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         kind: pageKind,
         slug,
         title: $('#f-title').value || slug,
+        summary: $('#f-summary').value.trim(),
         path: targetPath(slug),
+        from: loadedFrom,
         markdown,
         images: [...staged.entries()].filter(([p]) => markdown.includes(p))
           .map(([p, item]) => ({ path: p, file: item.file })),
@@ -2574,12 +3532,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 
     /** Put a waiting change back on screen, exactly as it was set aside. */
     function loadChange(c) {
+      loadedFrom = c.from || '';
       pageKind = c.kind;
       pageSlug = c.slug;
       fromMarkdown(c.markdown);
       for (const im of c.images) {
         if (!staged.has(im.path)) staged.set(im.path, { file: im.file, url: URL.createObjectURL(im.file) });
       }
+      // Its own address, or Commit would file it under whatever page was open before.
+      setSlug(c.slug); slugTouched = true;
       paintAssets();
       sync();
       flash(`Opened ${c.title} from your changes.`);
@@ -2612,13 +3573,16 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
             try { await gh(`/repos/${work}`); break; }
             catch { await new Promise((r) => setTimeout(r, 1500)); }
           }
-          // An old fork still sits where it was left, and branching from there would
-          // put every change since then into the pull request.
+          // An old fork still sits where it was left, so bring it level first.
           try {
             await gh(`/repos/${work}/merge-upstream`, {
               method: 'POST', body: JSON.stringify({ branch: base.default_branch }),
             });
-          } catch { /* a fresh fork is already level */ }
+          } catch {
+            // GitHub refuses whenever main has changed a workflow file, which this token
+            // may not touch, so a fork can sit days behind. The branch then starts from
+            // that old copy; the Based-on line on each commit is what lets it merge.
+          }
         }
 
         const main = base.default_branch;
@@ -2633,7 +3597,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         let done = 0;
         for (const c of list) {
           pubSay(`Committing ${++done} of ${list.length}: ${c.title}\u2026`);
-          await putFile(work, branch, c.path, b64text(c.markdown), `${c.slug}: edit from the wiki editor`);
+          await putFile(work, branch, c.path, b64text(c.markdown), commitMsg(c.slug, c.summary, c.from));
           for (const im of c.images) {
             const bytes = new Uint8Array(await im.file.arrayBuffer());
             await putFile(work, branch, 'public' + im.path, b64(bytes),
@@ -2643,7 +3607,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
 
         pubSay('Opening the pull request\u2026');
         const lines = list.map((c) => `- \`${c.path}\``).join('\n');
-        const pr = await gh(`/repos/${REPO}/pulls`, {
+        await gh(`/repos/${REPO}/pulls`, {
           method: 'POST',
           body: JSON.stringify({
             title: list.length === 1 ? list[0].title : `${list.length} pages from the wiki editor`,
@@ -2657,8 +3621,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         await paintCart();
         pubSay('');
         $('#pub-panel').hidden = true;
-        flash(`Opened pull request #${pr.number} with ${list.length} page${list.length === 1 ? '' : 's'}.`);
-        window.open(pr.html_url, '_blank', 'noopener');
+        flash(sentWord(list, me.login));
       } catch (e) {
         pubSay(String(e.message || e), true);
       } finally {
@@ -2671,7 +3634,17 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       $('#cart-add').onclick = async () => {
         const c = currentChange();
         if (!c) { flash('Give the page a title first.', true); return; }
+        const held = occupiedBy(c.slug);
+        if (held) { refuseReplace(c.slug, held); return; }
+        if (overwrites(c.slug)) {
+          // Same file, different subject, and the text has gone too. That is a new
+          // page wearing an old file name, and it is refused rather than queried.
+          if (keptFraction() < 0.35) { refuseReplace(c.slug, loadedTitle); return; }
+          if (!confirm(`${c.slug} is "${loadedTitle}". Saving renames it to "${c.title}".\n\n`
+              + 'To keep both, cancel and use File \u25b8 Duplicate as a new page.')) return;
+        }
         await cart.put(c);
+        $('#f-summary').value = '';       // the next edit gets its own line
         await paintCart();
         flash(`${c.title} is waiting with ${(await cart.all()).length - 1} other change(s).`
           .replace(' with 0 other change(s)', ', on its own so far'));
@@ -2707,13 +3680,23 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     const slugify = (s) => s.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     let slugTouched = false;
 
+    $('#f-slug').oninput = () => { slugTouched = true; showUrl($('#f-slug').value); };
     if (DEV) {
       const slugBox = $('#slug');
-      slugBox.oninput = () => { slugTouched = true; };
+      // Typing in either box is the same act, and both show the same name.
+      slugBox.oninput = () => { slugTouched = true; $('#f-slug').value = slugBox.value; };
+      $('#f-slug').addEventListener('input', () => { slugBox.value = $('#f-slug').value; });
       $('#save').onclick = async () => {
-        const slug = slugify(slugBox.value || $('#f-title').value);
+        const slug = slugify(slugValue() || $('#f-title').value);
         if (!slug) { flash('Give the article a title first.', true); return; }
-        slugBox.value = slug;
+        const held = occupiedBy(slug);
+        if (held) { refuseReplace(slug, held); return; }
+        if (overwrites(slug)) {
+          if (keptFraction() < 0.35) { refuseReplace(slug, loadedTitle); return; }
+          if (!confirm(`${slug} is "${loadedTitle}". Saving renames it to "${$('#f-title').value.trim()}".\n\n`
+              + 'To keep both, cancel and use File \u25b8 Duplicate as a new page.')) return;
+        }
+        setSlug(slug);
         try {
           const r = await fetch(`${BASE.replace(/\/$/, '')}/__save`, {
             method: 'POST',
@@ -2737,35 +3720,26 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     const slugFile = (n) => n.toLowerCase().replace(/[^a-z0-9.]+/g, '-').replace(/^-|-$/g, '');
     const ALLOWED = /\.(png|jpe?g|webp|gif|avif)$/i;
 
-    /** Dev writes the file to disk; everywhere else it rides along in the zip. */
+    /** Writes an upload to disk. Only the dev server offers uploads, so only it calls this. */
     async function takeImage(file, chosen) {
       if (!ALLOWED.test(file.name)) { flash(`${file.name} is not an allowed image type.`, true); return null; }
-      // Every upload is named by hand; that name, kebab-cased, is the filename
-      // the article and the zip export both carry.
+      // Every upload is named by hand; that name, kebab-cased, is the filename the article carries.
       const ext = (file.name.match(/\.[^.]+$/) || [''])[0].toLowerCase();
       const name = chosen ? slugFile(chosen).replace(/\.[^.]*$/, '') + ext : slugFile(file.name);
-      if (DEV) {
-        const data = await new Promise((res) => {
-          const fr = new FileReader();
-          fr.onload = () => res(String(fr.result).split(',')[1]);
-          fr.readAsDataURL(file);
-        });
-        const r = await fetch(`${BASE.replace(/\/$/, '')}/__upload`, {
-          method: 'POST', headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ name, data }),
-        });
-        const out = await r.json();
-        if (!r.ok) { flash(out.error || 'Upload failed.', true); return null; }
-        flash(`Uploaded ${out.path}`);
-        loadAssets(true);
-        return out.path;
-      }
-      let path = `/assets/media/${name}`;
-      for (let n = 2; staged.has(path); n++) path = `/assets/media/${name.replace(/(\.[^.]+)$/, `-${n}$1`)}`;
-      staged.set(path, { file, url: URL.createObjectURL(file) });
-      flash(`${name} will be included in the download.`);
-      paintAssets();
-      return path;
+      const data = await new Promise((res) => {
+        const fr = new FileReader();
+        fr.onload = () => res(String(fr.result).split(',')[1]);
+        fr.readAsDataURL(file);
+      });
+      const r = await fetch(`${BASE.replace(/\/$/, '')}/__upload`, {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ name, data }),
+      });
+      const out = await r.json();
+      if (!r.ok) { flash(out.error || 'Upload failed.', true); return null; }
+      flash(`Uploaded ${out.path}`);
+      loadAssets(true);
+      return out.path;
     }
 
     /** A staged file has no server path yet, so previews come from the blob. */
@@ -2821,26 +3795,26 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       // article needs is here: former states, colonies and wartime variants are not
       // nations in the registry, so nothing in the registry could ever offer them.
       const held = new Set(icons.map((i) => i.src));
-      // Only the flags. Everything else that used to be offered here now lives in the
-      // archive, which is closed: a new picture comes from an image host instead.
-      const GROUP = { flags: 'flag' };
+      // The flags, and the icons folder (medals and the like). Everything else that used
+      // to be offered here now lives in the archive, which is closed: a new picture
+      // comes from an image host instead.
+      const GROUP = { flags: 'flag', icons: 'symbol' };
       for (const a of ASSETS) {
         if (!GROUP[a.group] || held.has(a.path)) continue;
         const stem = a.name.replace(/\.[^.]+$/, '');
-        // A badge whose club is not in the football presets keeps its three-letter
-        // code as its name, and a code reads as a code rather than as a word.
-        const label = a.group === 'badges' && /^[a-z]{3}$/.test(stem)
-          ? stem.toUpperCase() : displayOf(stem);
+        const label = displayOf(stem);
         icons.push({ slug: a.path, src: a.path, kind: GROUP[a.group], label, loose: true });
       }
-      icons.sort((a, b) => a.kind.localeCompare(b.kind) || a.label.localeCompare(b.label));
+      // Symbols first, next to the arrows, then flags, then emblems.
+      const RANK = { symbol: 0, flag: 1, icon: 2 };
+      icons.sort((a, b) => RANK[a.kind] - RANK[b.kind] || a.label.localeCompare(b.label));
       const shown = icons.filter((i) => !iq || fold(i.label).includes(iq) || fold(i.slug).includes(iq));
       if (!shown.length && !arrows.length) { mpIcons.innerHTML = '<p class="mp-empty">Nothing matches.</p>'; }
       let kind = null;
       for (const i of shown) {
         if (i.kind !== kind) {
           kind = i.kind;
-          mpIcons.append(el('div', 'mp-group', kind === 'flag' ? 'flags' : 'emblems'));
+          mpIcons.append(el('div', 'mp-group', { symbol: 'icons', flag: 'flags', icon: 'emblems' }[kind]));
         }
         const b = el('button', 'mp-icon');
         b.type = 'button';
@@ -2902,6 +3876,12 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     function linkTrouble(u) {
       const host = hostOf(u);
       if (!host) return 'That is not a link.';
+      // imgbb and imgur give a page for the picture first, and that is the link people
+      // copy. The page is not an image, so the picture never shows.
+      if (host === 'ibb.co' || host === 'imgur.com') {
+        return `That is ${host}'s page for the picture, not the picture itself. Use the `
+          + `direct link, the one starting https://i.${host}/`;
+      }
       if (host === 'photos.google.com' || host.endsWith('goo.gl')) {
         return 'That is the share page rather than the picture. Open it, right-click the '
           + 'picture, Copy image address, and paste that.';
@@ -2935,6 +3915,100 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         : host.includes('google') ? 'Google Drive \u2713  the file must be shared with anyone who has the link'
         : `${host} \u2713`);
       note.className = 'mp-hint ' + (bad ? 'bad' : 'ok');
+    }
+
+    /**
+     * Cut this page loose from the file it was opened from, so what follows is saved
+     * as a new one. Using an article as a template and saving it back over the
+     * original is the accident this exists to prevent.
+     */
+    function duplicate() {
+      if (!pageSlug && !slugValue()) { flash('Nothing is open to copy.', true); return; }
+      const from = pageSlug || slugValue();
+      pageSlug = '';
+      loadedFrom = BUILT_FROM;           // the copy is a new page, not on main yet
+      loadedTitle = '';
+      loadedBody = '';
+      setSlug('');
+      slugTouched = false;          // the URL follows the title again until it is typed in
+      $('#settings').hidden = false;
+      // The copy is a page of its own; undoing back past this would put the old
+      // page's address on it again.
+      resetHistory();
+      sync();
+      $('#f-title').focus();
+      flash(`Copy of ${from}. Give it a new title, and check the URL before saving.`);
+    }
+
+    /**
+     * The subject already living at this file name, when that file is not the one this
+     * page was opened from. Writing there replaces one subject with another, which is
+     * how three articles were lost in a day: everything changed except the file name.
+     *
+     * Read from the live index rather than from what was loaded, so a name typed by
+     * hand, restored from a draft, or left behind by a copy is caught the same way.
+     * A matching title is the same subject arriving by another route, and is allowed.
+     */
+    function occupiedBy(slug) {
+      if (!slug || (pageSlug && slug === pageSlug)) return null;
+      const key = pageKind === 'article' ? slug : `${pageKind}:${slug}`;
+      const held = ARTICLES.find((a) => a.slug === key);
+      if (!held) return null;
+      return held.title === $('#f-title').value.trim() ? null : held.title;
+    }
+
+    /**
+     * How much of the page that was opened is still on screen, by distinct words. A
+     * rename keeps the article and changes the name; using one as a template keeps
+     * the name of the file and changes everything else. This is what separates them.
+     */
+    function keptFraction() {
+      if (!loadedBody) return 1;
+      const words = (t) => new Set(t.toLowerCase().split(/[^a-z0-9\u00c0-\uffff]+/).filter((w) => w.length > 3));
+      const was = words(loadedBody);
+      if (was.size < 20) return 1;             // too little to judge; fall back to the prompt
+      const now = words(toMarkdown());
+      let hit = 0;
+      for (const w of was) if (now.has(w)) hit++;
+      return hit / was.size;
+    }
+
+    /** Refuse the write and put the writer in the field they have to change. */
+    function refuseReplace(slug, held) {
+      flash(`${slug} already holds \u201c${held}\u201d. Change the Article URL, `
+        + 'or open that page if you meant to edit it.', true);
+      $('#settings').hidden = false;
+      $('#f-slug').focus();
+      $('#f-slug').select();
+    }
+
+    /**
+     * True when saving now would write over the page this one was opened from, under a
+     * title that is no longer that page's.
+     */
+    function overwrites(slug) {
+      if (!pageSlug || slug !== pageSlug || !loadedTitle) return false;
+      return $('#f-title').value.trim() !== loadedTitle;
+    }
+
+    /** The file name this page is saved under, wherever it was typed. Declared
+        rather than assigned: it is called from further up the file than it sits. */
+    function slugValue() { return $('#f-slug').value || $('#slug')?.value || ''; }
+    function setSlug(v) {
+      $('#f-slug').value = v;
+      if ($('#slug')) $('#slug').value = v;
+      showUrl(v);
+    }
+
+    /**
+     * Keep the address bar naming the page that would be written. A new page made by
+     * copying an old one used to leave the old one's address on screen, which reads
+     * like the original is still open and about to be written over.
+     */
+    function showUrl(slug) {
+      const prefix = pageKind === 'article' ? '' : `${pageKind}:`;
+      const q = slug ? `?a=${encodeURIComponent(prefix + slug)}` : '';
+      history.replaceState(null, '', location.pathname + q);
     }
 
     // The picture the Media panel was opened for. Working this out from whatever has
@@ -2979,6 +4053,9 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     let insertAs = 'image';
     let insertRatio = '';
 
+    /** How wide a picture dropped into a table cell starts out. */
+    const CELL_WIDTH = 96;
+
     function useImage(path) {
       // Whatever the panel was opened for wins, then a field still being typed in.
       if (pickTarget?.isConnected) {
@@ -2990,6 +4067,14 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       if (field) return fill(field, path);
       const near = activeText()?.closest?.('figure, tr[data-kind="image"]');
       if (near) return fill(near.querySelector('input.path'), path);
+      // A picture in a table cell is an inline mark, because a figure cannot live in
+      // a cell. It carries a width so it renders as a picture; an icon left at its
+      // natural size comes out one line tall, which is right for a flag and useless
+      // for a photograph.
+      if (activeText()?.closest?.('.ed-tbl')) {
+        insertToken('img', `${path}|${CELL_WIDTH}`);
+        return;
+      }
       // A grid the writer is already standing in gains another picture.
       const grid = activeText()?.closest?.('.blk-grid');
       if (insertAs === 'grid' && grid) {
@@ -3009,8 +4094,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       const mark = 'tok-' + Date.now();
       const html = tokenHtml(kind, slug).replace('<img ', `<img data-new="${mark}" `) + '\u00a0';
       if (!insertAtCaret(html)) {
-        flash('Put the cursor where the icon should go.', true);
-        return;
+        flash('Put the cursor where it should go.', true);
+        return false;                    // the caller leaves its menu open to retry
       }
       // execCommand leaves a trailing <br> after the inserted run; a table cell
       // would serialize that as a line break, so drop the one we just caused.
@@ -3022,9 +4107,10 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
         img.removeAttribute('data-new');
       }
       sync();
+      return true;
     }
 
-    const PANES = ['images', 'icons', 'tables'];
+    const PANES = ['images', 'icons'];
     /** Open the Media panel on its image list, to fill whichever field was just focused. */
     function openMedia() {
       document.querySelectorAll('.drop-menu').forEach((m) => { m.hidden = m.id !== 'insert-menu'; });
@@ -3078,7 +4164,11 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     }
     $('#mp-iq').oninput = paintAssets;
     // The menu stays open while you browse it, unlike a one-shot command.
+    // A click anywhere shuts every menu. These two are panels to work in rather than
+    // lists to pick from, so a click inside one must not reach that handler; each
+    // closes itself once it has done the thing it was opened for.
     $('#insert-menu').addEventListener('click', (e) => e.stopPropagation());
+    $('#ins-menu').addEventListener('click', (e) => e.stopPropagation());
     // Nothing in the panel may take focus, or the caret in the article is lost
     // before the chosen image or icon can be inserted at it.
     $('#insert-menu').addEventListener('mousedown', (e) => {
@@ -3243,6 +4333,12 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     loadAssets();
   </script>
 
+  <script>
+    // The page above is inline and cannot import; the fix is shared with the auto-merge.
+    import { fixEmphasis } from '../lib/emphasis.mjs';
+    window.fixEmphasis = fixEmphasis;
+  </script>
+
   <style is:inline>
     .ed { padding-bottom: 60px; min-width: 0; }
 
@@ -3272,6 +4368,8 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 0 8px;
     }
     .ed-tools select { max-width: 190px; cursor: pointer; }
+    #f-summary { width: 190px; }
+    @media (max-width: 1100px) { #f-summary { width: 120px; } }
     .ed-tools select:focus, .ed-tools input:focus { outline: none; border-color: var(--link); }
     /* Must out-specify the toolbar's own button rule above, hence button.primary. */
     .ed-tools button.primary {
@@ -3395,16 +4493,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       font: 10px var(--body); text-transform: uppercase; letter-spacing: .07em;
       color: var(--muted); padding: 10px 2px 5px;
     }
-    .mp-thumb {
-      display: flex; flex-direction: column; gap: 4px; padding: 4px; height: auto;
-      /* A grid item defaults to min-width:auto, so a 1600px image widens its
-         column and the third one falls off the panel. */
-      min-width: 0;
-      background: none; border: 1px solid transparent; border-radius: 6px; cursor: pointer;
-    }
-    .mp-thumb img { width: 100%; min-width: 0; height: 54px; object-fit: contain; border-radius: 3px; background: var(--paper); }
-    .mp-thumb span { font-size: 10.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
-    .mp-thumb:hover { border-color: var(--rule); background: var(--band); }
     .mp-icon {
       display: flex; align-items: center; gap: 9px; width: 100%; padding: 5px 6px; height: auto;
       background: none; border: 0; border-radius: 6px; cursor: pointer; text-align: left;
@@ -3414,13 +4502,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     .mp-icon span { font-size: 12.5px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .mp-icon:hover { background: var(--band); }
     .mp-empty { font-size: 12px; color: var(--muted); padding: 10px 2px; margin: 0; }
-    .mp-foot { padding: 8px; border-top: 1px solid var(--rule); }
-    .mp-foot button {
-      width: 100%; height: 30px; font: 12.5px var(--body); color: var(--ink);
-      background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; cursor: pointer;
-      justify-content: center;
-    }
-    .mp-foot button:hover { background: var(--band); }
     .ed-canvas.drop { outline: 2px dashed var(--link); outline-offset: -10px; border-radius: 10px; }
 
     /* ---- settings strip ---- */
@@ -3451,7 +4532,14 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       outline: none; border-color: var(--link);
     }
     .ed-settings input::placeholder, .ed-settings textarea::placeholder { color: #5c656e; }
-    .ed-settings textarea { resize: vertical; line-height: 1.45; min-height: 34px; }
+    /* A byline that is settled. Readable, plainly not typeable. The attribute rather
+       than :read-only, which also matches every checkbox. */
+    .ed-settings input[readonly], .ed-settings select:disabled {
+      color: var(--muted); background: var(--band); cursor: default;
+    }
+    /* One row that matches an input exactly, and still pulls open for a second
+       official language. The taller line box was what made it stand proud. */
+    .ed-settings textarea { resize: vertical; line-height: normal; min-height: 0; }
     .ed-settings .check {
       display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 400;
       color: var(--ink); cursor: pointer;
@@ -3478,6 +4566,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     .tok.arrow.up { color: #00c22e; }
     .tok.arrow.down { color: #f00; }
     .tok.ico { height: 1em; width: auto; vertical-align: -.12em; box-sizing: border-box; border: 1px solid #fff; }
+    .tok.ico.sym { border: 0; }
     .tok.missing { font: 11px ui-monospace, monospace; color: var(--link-new); }
     input.path {
       display: block; width: 100%; margin: 4px 0; font: 11.5px/1.4 ui-monospace, monospace;
@@ -3492,7 +4581,15 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     .ib-edit { background: var(--lift); position: relative; z-index: 2; }
     .ib-edit .ib-head { position: relative; }
     .ib-edit td, .ib-edit th { position: relative; }
-    .ib-edit .ib-head b { min-height: 1.2em; }
+    /* The sidebar heading is edited where it is read. Deliberately not .ce, which the
+       body reader looks for; the placeholder and the focus ring are the same idea. */
+    .ib-edit .ib-head [contenteditable] {
+      display: block; min-height: 1.2em; outline: none; border-radius: 2px;
+    }
+    .ib-edit .ib-head [contenteditable]:empty::before {
+      content: attr(data-ph); color: #6b7177; font-style: normal;
+    }
+    .ib-edit .ib-head [contenteditable]:focus { box-shadow: 0 0 0 2px rgb(100 133 209 / .35); }
     .ib-edit .ib-media img { max-width: 100%; margin-bottom: 4px; }
     .ib-edit .ib-pair td { width: 50%; vertical-align: top; }
     .ib-edit .ib-pair .pair-head { font-weight: 700; margin-bottom: 4px; }
@@ -3524,7 +4621,29 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     .mp-pane { display: block; }
     .mp-pane[hidden] { display: none; }
     #insert-menu { max-width: calc(100vw - 24px); }
-    .tbl-pick {
+      /* A list of things to insert; each opens its own panel beside it on hover, so
+       the menu is never every panel at once. */
+    .ins-menu { min-width: 150px; }
+    .ins-item { position: relative; }
+    .ins-item > button { display: flex; align-items: center; gap: 8px; }
+    .ins-arrow { margin-left: auto; color: var(--muted); }
+    .ins-item:hover > button, .ins-item:focus-within > button { background: var(--band); }
+    .ins-sub {
+      display: none; position: absolute; left: 100%; top: -5px; z-index: 31;
+      min-width: 232px; padding: 12px 14px;
+      background: var(--lift); border: 1px solid var(--rule); border-radius: 8px;
+      box-shadow: 0 10px 28px rgb(0 0 0 / .55);
+    }
+    .ins-item:hover > .ins-sub, .ins-item:focus-within > .ins-sub { display: block; }
+    /* A label above its control, which is what stops the rows looking like a form
+       printed by a machine. */
+    .ins-f { display: block; font: 700 11px/1 var(--body); color: var(--muted); margin-bottom: 12px; }
+    .ins-f > input, .ins-f > .mp-seg { display: flex; margin-top: 6px; width: 100%; }
+    .ins-f > input { box-sizing: border-box; }
+    .ins-sub .mp-seg button { flex: 1; white-space: nowrap; }
+    .ins-sub .mp-hint { margin: 0 0 12px; }
+    .ins-sub #dt-go { width: 100%; }
+  .tbl-pick {
       display: grid; grid-template-columns: repeat(8, 20px); gap: 3px;
       padding: 12px 12px 6px; justify-content: center;
     }
@@ -3574,7 +4693,7 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       display: flex; flex-wrap: wrap; gap: 10px 28px;
       margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--rule);
     }
-    .ed-settings .opt { font-size: 11px; color: var(--muted); font-weight: 400; margin-left: 4px; }
+    .ed-settings .opt, .ins-f .opt { font-size: 11px; color: var(--muted); font-weight: 400; margin-left: 4px; }
     .req-star { color: #d88; margin-left: 2px; }
     /* ---- floating image ---- */
     /* The block deliberately contains nothing: the picture floats out of it, which is
@@ -3637,6 +4756,12 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     .blk-subsection .ce { font: 700 17px/1.3 var(--body); }
     .ce-list { margin: 0; padding-left: 22px; }
     .ce-list li { margin: 3px 0; position: relative; padding-right: 26px; }
+    /* A nested item, as the page shows it: a step in, and the bullet changes. */
+    .ce-list li[data-level="1"] { margin-left: 24px; list-style-type: circle; }
+    .ce-list li[data-level="2"] { margin-left: 48px; list-style-type: square; }
+    .ce-list li[data-level="3"] { margin-left: 72px; }
+    .ce-list li[data-level="4"] { margin-left: 96px; list-style-type: circle; }
+    .ce-list li[data-level="5"] { margin-left: 120px; list-style-type: square; }
     .li-x {
       position: absolute; top: 0; right: 0; font: 11px/1 var(--body);
       color: var(--muted); background: var(--lift); border: 1px solid var(--rule);
@@ -3751,25 +4876,22 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
        wrapper scrolls, instead of the table squeezing and spilling its cells. */
     .ed-tbl { width: max-content; min-width: 100%; }
     .ed-tbl { border-collapse: collapse; font-size: 14px; }
+    /* An empty block with no height is no place for a caret, so a click in an empty
+       cell landed in the one beside it and the typing went there. One line tall, the
+       height a cell has once anything is in it. */
+    .ed-tbl .ce { min-height: 1lh; }
     .ed-tbl th, .ed-tbl td { border: 1px solid var(--hair); padding: 5px 9px; vertical-align: top; position: relative; min-width: 90px; }
     .ed-tbl th { background: var(--band); font-weight: 700; }
-    .ed-tbl .row-x, .ed-tbl tr:first-child .row-x { border: 0; background: none; min-width: 0; padding: 0 2px; }
-    .ed-tbl .row-x button, .col-x {
-      font-size: 10px; line-height: 1; color: var(--muted); background: none;
-      border: 0; cursor: pointer; padding: 3px 4px; opacity: 0;
-    }
-    .col-x { position: absolute; top: 1px; right: 1px; }
-    .ed-tbl tr:hover .row-x button, .ed-tbl th:hover .col-x { opacity: 1; }
-    .ed-tbl .row-x button:hover, .col-x:hover { color: var(--link-new); }
     .ed-tbl td[rowspan], .ed-tbl th[rowspan] { vertical-align: middle; }
     .ed-tbl th[colspan] { text-align: center; }
     .ed-tbl .ico.sized { display: block; margin: 2px 0 4px; }
-    .tbl-bar { display: flex; gap: 6px; margin-top: 6px; }
-    .tbl-bar button {
-      font: 12px var(--body); color: var(--muted); background: transparent;
-      border: 1px dashed var(--rule); border-radius: 3px; padding: 4px 11px; cursor: pointer;
-    }
-    .tbl-bar button:hover { color: var(--ink); border-style: solid; }
+    /* Whole cells selected, as a block, the way Google Docs shows it. The text highlight
+       and the caret underneath would only muddy it. */
+    .ed-tbl .cell-sel { background: color-mix(in srgb, var(--link) 24%, transparent); }
+    .ed-tbl.cell-mode, .ed-tbl.cell-mode * { caret-color: transparent; }
+    .ed-tbl.cell-mode ::selection { background: transparent; }
+    /* The right-click menu, opened where the pointer is rather than under a button. */
+    .point-menu { position: fixed; top: 0; left: 0; }
 
     /* ---- publish panel ---- */
     .pub-back {
@@ -3795,11 +4917,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
     .pub-steps ul { margin: 4px 0; padding-left: 18px; }
     .pub-steps b { color: var(--ink); font-weight: 600; }
     .pub-steps code { font: 12px ui-monospace, monospace; color: var(--ink); }
-    .pub-warn { display: block; margin-top: 3px; color: #d0a05a; }
-    .pub-what {
-      font: 12.5px var(--body); color: var(--ink); margin: 10px 0 0;
-      padding: 7px 10px; background: var(--band); border-radius: 5px;
-    }
     .cart-list { margin: 12px 0 4px; max-height: 260px; overflow-y: auto; }
     .cart-row {
       display: flex; align-items: center; gap: 9px; padding: 8px 10px; margin-bottom: 6px;
@@ -3937,7 +5054,6 @@ const REPO = process.env.GITHUB_REPO || 'auroruse/the-talopedia';
       .ed-tools button { height: 36px; min-width: 36px; }
       .ed-tools select, .ed-tools input { height: 36px; }
       .ctl button { min-width: 30px; min-height: 30px; padding: 5px 8px; }
-      .mp-thumb img { height: 64px; }
       .mp-icon { padding: 9px 6px; }
       .drop-menu.list button, .ctl-menu button { height: 38px; }
       .ib-add button { padding: 10px 4px; }

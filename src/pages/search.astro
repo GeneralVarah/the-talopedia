@@ -7,7 +7,7 @@ import Base from '../layouts/Base.astro';
 </Base>
 
 <script>
-  import { search } from '../lib/search-client.js';
+  import { search, resultRow } from '../lib/search-client.js';
 
   const q = new URLSearchParams(location.search).get('q') || '';
   const list = document.getElementById('sr-list');
@@ -35,27 +35,7 @@ import Base from '../layouts/Base.astro';
         n.textContent = items.length;
         h.append(n);
         list.append(h);
-        for (const it of items) {
-          const a = document.createElement('a');
-          a.className = 'sr sr-' + kind;
-          a.href = it.url;
-          const t = document.createElement('b');
-          t.textContent = it.title;
-          a.append(t);
-          if (kind === 'title' && it.type) {
-            const s = document.createElement('span');
-            s.className = 'sr-type';
-            s.textContent = it.type;
-            a.append(s);
-          }
-          if (it.excerpt) {
-            const e = document.createElement('span');
-            e.className = 'sr-ex';
-            e.innerHTML = it.excerpt;
-            a.append(e);
-          }
-          list.append(a);
-        }
+        list.append(...items.map((it) => resultRow(it, kind)));
       };
       group('Articles', titled, 'title');
       group('Mentions', mentions, 'mention');

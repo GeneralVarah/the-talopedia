@@ -9,7 +9,7 @@ infobox:
   - label: "Entities"
     value:
       - "4 countries"
-      - "16 dependencies"
+      - "17 dependencies"
   - { label: "Largest City", value: "Manbavi, :flag[arunya] [[arunya]]" }
   - { section: "Demographics" }
   - { label: "Population", value: "1926 Census" }
@@ -21,7 +21,7 @@ infobox:
   - { label: "Per Capita", sub: true, value: "$9,802" }
 ---
 
-**Pelagonia** (/ˌpɛləˈɡoʊniə/, *pel-uh-GOH-nee-uh*) is [[avium]]'s largest and second-most populated continent. In general terms, it is bounded on the north by the Sahara Sea and the portions of the Erythra River system south of Lake Charmuthas, separating it from [[evria]], and on the west by the Sea of [[auritania]] and the Strait of Hollosend, separating it from [[elysia]]. To the south and east, it is bounded by the Panthalassan Ocean. Pelagonia contains two sovereign states, with the remainder of the continent divided among ten colonial powers and their dependencies, the legacy of sustained Evrian imperial expansion during the late nineteenth century known as the Scramble for Pelagonia.
+**Pelagonia** (/ˌpɛləˈɡoʊniə/, *pel-uh-GOH-nee-uh*) is [[avium]]'s largest and second-most populated continent. In general terms, it is bounded on the north by the Sahara Sea and the portions of the Erythra River system south of Lake Charmuthas, separating it from [[evria]], and on the west by the Sea of [[auritania]] and the Strait of Hollosend, separating it from [[elysia]]. To the south and east, it is bounded by the Panthalassan Ocean. Pelagonia contains four sovereign states, with the remainder of the continent divided among seven colonial powers and their dependencies, the legacy of sustained Evrian imperial expansion during the late nineteenth century known as the Scramble for Pelagonia.
 
 ## Etymology
 
@@ -34,7 +34,7 @@ The name ‘Pelagonia’ derives from the Rumaic *pelagus*, itself borrowed from
 Pelagonia is divisible into four connected landmasses, separated from each other by active plate boundaries responsible for the continent's extensive rift lake systems. Its western face opens onto the Sea of Auritania, with the landmass tapering from the [East Auritanian Plateau](https://en.wikipedia.org/wiki/Brazilian_Highlands) into a windswept, narrow strip of subtropical plains above the [Argenteum river system](https://en.wikipedia.org/wiki/R%C3%ADo_de_la_Plata), its southern coast dominated by the [Riesengrat Cordillera](https://en.wikipedia.org/wiki/Andes). Aphirica, a predominantly low-lying tropical region, faces the Sahara Sea, rising inland onto a broad sedimentary plateau known as Central Pelagonia, extending southward through savanna into the [Ocre](https://en.wikipedia.org/wiki/Kalahari_Desert) and [Brumes](https://en.wikipedia.org/wiki/Namib) desert systems and terminating at the Strayan Sea. To the northeast, the densely populated [Five Indies](https://en.wikipedia.org/wiki/Indian_subcontinent) face eastward toward the Panthlassan Ocean, its interior dominated by the [Daksina](https://en.wikipedia.org/wiki/Deccan_Plateau) and [Tobotean](https://en.wikipedia.org/wiki/Tibetan_Plateau) Plateaus, the latter of which is the highest and most extensive elevated terrain on Avium, bounded to the west by the [Parvateshwaras](https://en.wikipedia.org/wiki/Himalayas) and [Mount Sagarmatha](https://en.wikipedia.org/wiki/Mount_Everest), Avium’s highest mountain above sea level. Further southward, the Strayan Peninsula is the oldest and most geologically stable body on the continent as well as the largest peninsula in Avium, with a largely arid flat interior ringed by a fertile coastal margin.
 
 <div class="imgrid">
-<figure style="flex:2.0"><img src="/assets/old-media/media/pelagonia-2.jpg" alt="East Auritanian Plateau"><figcaption>East Auritanian Plateau</figcaption></figure>
+<figure style="flex:2.000"><img src="/assets/old-media/media/pelagonia-2.jpg" alt="East Auritanian Plateau"><figcaption>East Auritanian Plateau</figcaption></figure>
 </div>
 
 ### Climate
@@ -49,4 +49,4 @@ The Strayan Peninsula's interior is largely arid, with summer highs of 35°C to 
 
 ## Government
 
-Pelagonia's political boundaries are largely a product of the Scramble for Pelagonia in the late nineteenth century, during which Evrian powers partitioned the continent's coastline and extended administration into portions of its interior. The Verdanie and Arunya are the continent's two sovereign states. In March 1931, Elvesterian colonial dependencies including the Golden Coast in Pelagonia and North Auritania in Elysia reverted to devolved local rule following the dissolution of the [[mizuhara]] Pentapartite at the Fifth Pentapartite Conference. [[elvester]] retains administrative control over Noradia. Ten powers hold colonial dependencies across the continent: [[alemannia]] administers four, Arverne and [[nichirin]] three each, with single dependencies under [[turulia]], Vicily, Ponurvia, [[shivon]], [[skjarnland]], and [[karjania]].
+Pelagonia's political boundaries are largely a product of the Scramble for Pelagonia in the late nineteenth century, during which Evrian powers partitioned the continent's coastline and extended administration into portions of its interior. The Verdanie, Arunya and [[albinya]] are the continent's three sovereign states. In March 1931, Elvesterian colonial dependencies including the Golden Coast in Pelagonia and North Auritania in Elysia reverted to devolved local rule following the dissolution of the [[mizuhara]] Pentapartite at the Fifth Pentapartite Conference. [[elvester]] retains administrative control over Noradia. Ten powers hold colonial dependencies across the continent: [[alemannia]] administers four, Arverne and [[nichirin]] three each, with single dependencies under [[turulia]], Vicily, Ponurvia, [[shivon]], [[skjarnland]], and [[karjania]].

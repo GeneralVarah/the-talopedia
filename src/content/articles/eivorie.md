@@ -3,6 +3,7 @@ title: "Eivorie"
 nativeTitle: "Mǣnefæsting Elpendbāna"
 type: overview
 nation: eivorie
+navbox: site
 infobox:
   - { image: "/assets/old-media/media/eivorie-1.png", caption: "National Flag" }
   - { image: "/assets/old-media/media/eivorie-2.png", caption: "State Flag" }

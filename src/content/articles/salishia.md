@@ -2,6 +2,7 @@
 title: "Salishia"
 type: overview
 nation: salishia
+navbox: site
 infobox:
   - { image: "/assets/flags/salishia.png", caption: "Flag" }
   - { label: "Motto", value: "\"Land of The Three\"" }
@@ -13,7 +14,7 @@ infobox:
   - { label: "President", sub: true, value: "Thomas Vance" }
   - { label: "Senior Advisors", sub: true, value: "Benjamin Wilkins" }
   - { label: "Legislature", value: "Rule by Law" }
-  - { label: "Formation", value: "August 14th, 1822" }
+  - { label: "Formation", value: ":date[1822-08-14|ago]" }
   - { section: "Demographics" }
   - { label: "Population", value: "1930 Census" }
   - label: "Ethnic Groups"

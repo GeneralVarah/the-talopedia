@@ -1,14 +1,11 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { NAMES } from './lib/categories.mjs';
 
-// Grouped the way the wiki actually divides: a place, a body, a people, a page.
-// "geography" used to carry three unrelated shapes at once - planets, provinces and
-// continents all wanted different infoboxes - so each of them is its own type now.
-export const ARTICLE_TYPES = [
-  'overview', 'city', 'subdivision', 'continent', 'geography', 'celestial',
-  'character', 'military', 'organization', 'company',
-  'ideology', 'religion', 'ethnicity', 'event', 'list',
-] as const;
+// Every type is a category, so the category names are the one list of types, in the
+// order the editor offers them. "geography" used to carry planets, provinces and
+// continents at once; they all wanted different infoboxes, so each is its own type now.
+export const ARTICLE_TYPES = Object.keys(NAMES) as [string, ...string[]];
 
 const row = z.object({
   section: z.string().optional(),                       // a heading band inside the infobox
@@ -37,6 +34,9 @@ const articles = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/articles' }),
   schema: z.object({
     title: z.string(),
+    // The heading the sidebar carries, when the page wants a different one from the
+    // article's. Left out, the sidebar takes the article title.
+    sidebarTitle: z.string().optional(),
     nativeTitle: z.union([z.string(), z.array(z.string())]).optional(),   // one line per official language
     romaji: z.string().optional(),
     type: z.enum(ARTICLE_TYPES),

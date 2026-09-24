@@ -18,7 +18,7 @@ infobox:
       - "[[elias-gray]] (Foreign Affairs)"
       - "Arianne Malloran (Defense)"
   - { label: "Legislature", value: "Parliament, via the Party Congress and Party Politburo" }
-  - { label: "Formation", value: "25 July, 1922" }
+  - { label: "Formation", value: ":date[1922-07-25|ago]" }
   - { section: "Demographics" }
   - { label: "Population", value: "1928 Census" }
   - { label: "Total", sub: true, value: "151,167,000" }

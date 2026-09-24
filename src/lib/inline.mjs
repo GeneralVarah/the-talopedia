@@ -1,4 +1,5 @@
-import { titleFor, iconFor, exists, url } from './registry.mjs';
+import { titleFor, iconFor, exists, url, hrefOf } from './registry.mjs';
+import { icNow, longDate, yearsBetween } from './icclock.mjs';
 
 const esc = (s) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -23,23 +24,48 @@ export function icon(slug) {
 }
 
 export function link(slug, display) {
-  // [[#section-id|Text]] jumps within the page and is never a red link.
-  if (slug.startsWith('#')) {
-    return `<a class="wl anchor" href="${slug}">${esc(display || slug.slice(1))}</a>`;
-  }
-  const portal = slug.startsWith('portal:');
-  const bare = portal ? slug.slice(7) : slug;
-  const href = url(portal ? `/portal/${bare}` : `/${bare}`);
+  const href = hrefOf(slug);
   const text = esc(display || titleFor(slug));
   const missing = !exists(slug) ? ' new' : '';
   return `<a class="wl${missing}" href="${href}">${text}</a>`;
 }
 
 // Custom syntax shared by article bodies, infobox values, navboxes and tables.
-const CUSTOM = /\[\[([^\]|]+?)(?:\|([^\]]+?))?\]\]|:(icon|flag|img)\[([^\]]+?)\]|:(up|down)\b/g;
+const CUSTOM = /\[\[([^\]|]+?)(?:\|([^\]]+?))?\]\]|:(icon|flag|img|date)\[([^\]]+?)\]|:(up|down)(?![A-Za-z])/g;
 // Plus the two marks and the one link form the editor can produce, for strings
 // that never pass through the markdown pipeline (infobox values, navbox labels).
 const MARKS = /\*\*([^*]+)\*\*|\*([^*]+)\*|\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
+
+/**
+ * A date, written the one way the manual allows, and optionally what it works out to
+ * now. The working-out is done at build time against the Avium clock rather than
+ * written into the article, so "aged 38" is still right a year from now.
+ *
+ *   :date[1896-06-06]                 June 6, 1896
+ *   :date[1914-07-28|ago]             July 28, 1914 (20 years ago)
+ *   :date[1896-06-06|age]             June 6, 1896 (aged 38)
+ *   :date[1933-05-11|age:1897-04-20]  May 11, 1933 (aged 36)
+ */
+function dateText(arg) {
+  const [iso, mode = ''] = arg.replace(/%7C/gi, '|').split('|');
+  const date = iso.trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return esc(arg);
+  const long = longDate(date);
+  const [kind, from] = mode.trim().split(':');
+  if (kind === 'ago') {
+    const n = yearsBetween(date, icNow());
+    return `${long} (${n === 0 ? 'this year' : `${n} year${n === 1 ? '' : 's'} ago`})`;
+  }
+  if (kind === 'age') {
+    // A death date is given the birth date and counts to it; a birth date on its own
+    // counts to now, which is how old the person is today.
+    const n = /^\d{4}-\d{2}-\d{2}$/.test(from || '')
+      ? yearsBetween(from, new Date(date))
+      : yearsBetween(date, icNow());
+    return `${long} (aged ${n})`;
+  }
+  return long;
+}
 
 /**
  * `defer` emits a placeholder instead of the finished HTML. Astro caches each
@@ -70,8 +96,12 @@ function custom(m, defer = false) {
         .split('|');
       const size = parseInt(w, 10);
       const style = size > 0 ? ` style="width:${size}px;height:auto"` : '';
-      return `<img class="ico${size > 0 ? ' sized' : ''}" src="${esc(asset(path.trim()))}"${style} alt="" loading="lazy">`;
+      // One from the icons folder is a symbol, a medal say, and goes without the hairline
+      // a flag needs to hold its edge against a white page.
+      const sym = path.trim().startsWith('/assets/icons/') ? ' sym' : '';
+      return `<img class="ico${size > 0 ? ' sized' : ''}${sym}" src="${esc(asset(path.trim()))}"${style} alt="" loading="lazy">`;
     }
+    if (m[3] === 'date') return dateText(arg);
     return defer ? `<i data-ico="${esc(arg)}"></i>` : icon(arg);
   }
   if (m[5]) return ARROW[m[5]];
@@ -82,8 +112,6 @@ export const unesc = (s) =>
   s.replace(/&quot;/g, '"').replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&amp;/g, '&');
 
 /** Render a frontmatter/YAML string: custom syntax plus bold, italic and external links. */
-const SUPSUB = /<(sup|sub)>([\s\S]*?)<\/\1>/g;
-
 export function renderInline(str) {
   if (str == null) return '';
   const both = new RegExp(`${CUSTOM.source}|${MARKS.source}`, 'g');
