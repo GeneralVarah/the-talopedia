@@ -7,6 +7,7 @@ import { glob } from 'astro/loaders';
 export const ARTICLE_TYPES = [
   'overview', 'city', 'subdivision', 'continent', 'geography', 'celestial',
   'character', 'military', 'organization', 'company',
+  'national-team', 'league', 'cup', 'racecourse', 'horse-race',
   'ideology', 'religion', 'ethnicity', 'event', 'list',
 ] as const;
 

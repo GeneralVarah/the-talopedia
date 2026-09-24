@@ -1,7 +1,7 @@
 ---
 title: "Karjanian Cup"
 nativeTitle: "Karjanmaan Cup"
-type: organization
+type: cup
 nation: karjania
 infobox:
   - { image: "https://files.catbox.moe/h50avg.png", caption: "Logo" }

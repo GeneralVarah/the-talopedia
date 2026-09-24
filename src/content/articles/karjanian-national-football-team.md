@@ -1,7 +1,7 @@
 ---
 title: "Karjanian national football team"
 nativeTitle: "Karjanmaan Jalkapallomaajoukkue"
-type: organization
+type: national-team
 nation: karjania
 infobox:
   - { image: "https://i.ibb.co/DgzhDMbh/Untitled468-20260607105226.png", caption: "Emblem" }

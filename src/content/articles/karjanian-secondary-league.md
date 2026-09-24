@@ -1,7 +1,7 @@
 ---
 title: "Karjanian Secondary League"
 nativeTitle: "Karjanmaan Kakkosliiga"
-type: organization
+type: league
 nation: karjania
 infobox:
   - { image: "https://files.catbox.moe/ml2tf3.png", caption: "Emblem" }

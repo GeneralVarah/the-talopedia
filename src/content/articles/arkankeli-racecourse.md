@@ -1,7 +1,7 @@
 ---
 title: "Arkankeli Racecourse"
 nativeTitle: "Arkankelin Kilparata"
-type: organization
+type: racecourse
 nation: karjania
 coords: "15.88°N 21.60°E"
 infobox:

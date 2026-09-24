@@ -344,6 +344,15 @@
     ok('with died: that date, age at death', $('#dt-preview').textContent === 'May 11, 1933 (aged 44)', $('#dt-preview').textContent);
     document.querySelector('#dt-mode button[data-mode=""]').click();
     ok('plain puts the label back and hides died', $('#dt-date-label').textContent === 'Date' && $('#dt-died-row').hidden, $('#dt-date-label').textContent);
+
+    // A type split out of Organizations brings its own sidebar.
+    $('#f-type').value = 'national-team';
+    $('#f-type').dispatchEvent(new Event('change'));
+    const rows = [...document.querySelectorAll('.ib-edit tr[data-kind]')];
+    const labels = rows.map((tr) => tr.dataset.kind === 'section' ? `§${tr.querySelector('.ce')?.textContent.trim()}` : tr.dataset.kind === 'full' ? '[value]'
+      : tr.dataset.kind === 'row' ? tr.querySelector('.ce')?.textContent.trim() : `[${tr.dataset.kind}]`);
+    ok('national team sidebar comes from the Nichirin team', labels.includes('AFA Code') && labels.includes('§Biggest Win')
+      && labels[labels.indexOf('§Biggest Win') + 1] === '[value]', labels.join(' | '));
   } catch (err) {
     out.push('FAIL threw: ' + err.message);
   }

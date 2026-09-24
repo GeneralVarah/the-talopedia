@@ -1,7 +1,7 @@
 ---
 title: "Karjanian Premier League"
 nativeTitle: "Karjanmaan Valioliiga"
-type: organization
+type: league
 nation: karjania
 infobox:
   - { image: "https://files.catbox.moe/xu3idp.png", caption: "Emblem" }

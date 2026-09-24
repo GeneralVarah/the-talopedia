@@ -1,7 +1,7 @@
 ---
 title: "Karjanian Kolmonen"
 nativeTitle: "Karjanmaan Kolmonen"
-type: organization
+type: league
 nation: karjania
 infobox:
   - { image: "https://files.catbox.moe/2nseox.png", caption: "Emblem" }

@@ -2,7 +2,7 @@
 title: "Nichirin national football team"
 nativeTitle: "全日輪蹴球代表"
 romaji: "Zen-Nichirin Shūkyū Daihyō"
-type: organization
+type: national-team
 nation: nichirin
 authors: [nichirin]
 infobox:
