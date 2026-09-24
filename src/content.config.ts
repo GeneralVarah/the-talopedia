@@ -1,15 +1,11 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { NAMES } from './lib/categories.mjs';
 
-// Grouped the way the wiki actually divides: a place, a body, a people, a page.
-// "geography" used to carry three unrelated shapes at once - planets, provinces and
-// continents all wanted different infoboxes - so each of them is its own type now.
-export const ARTICLE_TYPES = [
-  'overview', 'city', 'subdivision', 'continent', 'geography', 'celestial',
-  'character', 'military', 'organization', 'company',
-  'national-team', 'league', 'cup', 'racecourse', 'horse-race',
-  'ideology', 'religion', 'ethnicity', 'event', 'list',
-] as const;
+// Every type is a category, so the category names are the one list of types, in the
+// order the editor offers them. "geography" used to carry planets, provinces and
+// continents at once; they all wanted different infoboxes, so each is its own type now.
+export const ARTICLE_TYPES = Object.keys(NAMES) as [string, ...string[]];
 
 const row = z.object({
   section: z.string().optional(),                       // a heading band inside the infobox

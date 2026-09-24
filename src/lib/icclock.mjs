@@ -18,7 +18,6 @@ const EPOCHS = [
 
 const DAY = 86400000;
 const YEAR = 365.2425 * DAY;
-const icMs = (d) => Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10));
 
 /** The in-universe instant for a real one. */
 export function icNow(at = new Date()) {
@@ -28,17 +27,13 @@ export function icNow(at = new Date()) {
     if (t >= Date.parse(EPOCHS[i].ooc)) { ep = EPOCHS[i]; break; }
   }
   const rate = YEAR / (ep.daysPerYear * DAY);
-  return new Date(icMs(ep.ic) + (t - Date.parse(ep.ooc)) * rate);
+  return new Date(Date.parse(ep.ic) + (t - Date.parse(ep.ooc)) * rate);
 }
 
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'];
+const LONG = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeZone: 'UTC' });
 
 /** "June 6, 1896", the one date format the manual allows. */
-export function longDate(iso) {
-  const [y, m, d] = iso.split('-').map(Number);
-  return `${MONTHS[m - 1]} ${d}, ${y}`;
-}
+export const longDate = (iso) => LONG.format(new Date(iso));
 
 /** Whole years between two dates, the way an age is counted. */
 export function yearsBetween(fromIso, toDate) {

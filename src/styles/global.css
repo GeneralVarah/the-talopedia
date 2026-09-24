@@ -136,10 +136,6 @@ a.ext::after {
 }
 
 /* ---- headings ---- */
-h1.page-title {
-  font: 400 34px/1.2 var(--display); margin: 0 0 2px;
-}
-.page-sub { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
 .article h2 {
   font: 400 24px/1.3 var(--display);
   margin: 28px 0 0; padding-bottom: 5px; border-bottom: 1px solid var(--rule);
@@ -272,7 +268,6 @@ pre.source {
 .article table:not(.ib):not(.nb) th[colspan] { text-align: center; }
 /* An :img given a width is a picture in its own right, not a mark beside the text. */
 .article .ico.sized { display: block; margin: 2px 0 6px; vertical-align: top; }
-.table-wrap { overflow-x: auto; }
 /* A figure the text wraps around. Width is set per image, in pixels. */
 .article figure.float { margin: 4px 0 14px; max-width: 100%; }
 .article figure.float img { width: 100%; height: auto; display: block; }
@@ -352,10 +347,6 @@ figcaption:empty { display: none; }
 .portal-welcome { font: 400 24px/1.3 var(--display); text-align: center; margin: 18px 0; }
 .portal-lede { border: 1px solid var(--rule); background: var(--lift); padding: 16px 20px; }
 
-/* ---- index ---- */
-.grid-list { columns: 3; column-gap: 28px; font-size: 14px; }
-.grid-list li { break-inside: avoid; }
-
 @media (max-width: 1000px) {
   .shell { flex-direction: column; align-items: stretch; }
   .rail {
@@ -381,7 +372,6 @@ figcaption:empty { display: none; }
   .imgrid figure + figure { margin-top: 14px; }
   /* Too narrow to wrap text beside a picture. */
   .article figure.float { float: none; width: auto !important; margin: 16px 0; }
-  .grid-list { columns: 1; }
   .navbox th.grp, .navbox th.row { width: auto; }
 }
 
@@ -399,7 +389,6 @@ figcaption:empty { display: none; }
 #search-q:focus { outline: none; }
 #search-q::placeholder { color: var(--muted); opacity: 1; }
 #search-q::-webkit-search-cancel-button { filter: invert(.6); }
-.search-off { font-size: 12px; color: var(--muted); margin: 0; }
 
 /* ---- front page panels ---- */
 .hbox { border: 1px solid var(--rule); margin: 0 0 18px; background: var(--paper); }

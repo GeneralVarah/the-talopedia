@@ -119,9 +119,6 @@ function coordTable() {
       name,
       kind: c[col.KIND],
       type: c[col.TYPE],
-      nation: c[col.NATION],
-      lat: Number(c[col.LATITUDE]),
-      lon: Number(c[col.LONGITUDE]),
       position: c[col.POSITION],
     };
     // A nation label outranks a city of the same name, which is how "Nichirin"

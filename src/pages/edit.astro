@@ -609,16 +609,10 @@ const ADMIN = REPO.split('/')[0];
       if (ph) d.dataset.ph = ph;
       d.innerHTML = html || '';
       d.addEventListener('paste', (e) => {
-        const dt = e.clipboardData || window.clipboardData;
+        const dt = e.clipboardData;
         const text = dt.getData('text/plain');
         const html = dt.getData('text/html');
-        const cell = d.closest('td, th');
         e.preventDefault();
-        // A grid from Sheets fills the table rather than crushing into one cell.
-        if (cell && /[\t\n]/.test(text.trim()) && cell.closest('.ed-tbl')) {
-          pasteGrid(cell, text);
-          return;
-        }
         // Bold, italics, superscript and links come across from wherever the text
         // was copied. Everything else is dropped, because the stylesheet is the
         // Manual of Style and there is nothing else to paste into.
@@ -1852,7 +1846,7 @@ const ADMIN = REPO.split('/')[0];
       });
 
       table.addEventListener('paste', (e) => {
-        const dt = e.clipboardData || window.clipboardData;
+        const dt = e.clipboardData;
         const text = dt.getData('text/plain');
         const html = dt.getData('text/html');
         const cellEl = span ? picked()[0] : cellOf(getSelection().anchorNode);
@@ -2784,7 +2778,6 @@ const ADMIN = REPO.split('/')[0];
     });
     dropdown($('#more'), $('#more-menu'));
     dropdown($('#style'), $('#style-menu'));
-    dropdown($('#insert'), $('#insert-menu'));
     dropdown($('#ins'), $('#ins-menu'));
     document.addEventListener('click', () => {
       document.querySelectorAll('.drop-menu').forEach((m) => m.hidden = true);
@@ -2942,13 +2935,6 @@ const ADMIN = REPO.split('/')[0];
       if (!list.children.length) list.innerHTML = '<p class="lp-empty">Type a title, a slug, or a URL.</p>';
     }
 
-    function restoreRange() {
-      if (!savedRange) return;
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(savedRange);
-    }
-
     function applyLink() {
       const target = lpTarget.value.trim();
       if (!target) { lpTarget.focus(); return; }
@@ -2963,7 +2949,7 @@ const ADMIN = REPO.split('/')[0];
       } else {
         const host = activeText();
         host?.focus();
-        restoreRange();
+        if (savedRange) putRange(savedRange);
         document.execCommand('insertHTML', false, html);
         unglue(ceOf(getSelection().anchorNode) || host);
       }
@@ -3018,7 +3004,7 @@ const ADMIN = REPO.split('/')[0];
     });
     $('#canvas-title').addEventListener('paste', (e) => {
       e.preventDefault();
-      document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain'));
+      document.execCommand('insertText', false, e.clipboardData.getData('text/plain'));
     });
 
     // The sidebar heading, edited at the top of the sidebar. The hidden inputs behind
@@ -3047,7 +3033,7 @@ const ADMIN = REPO.split('/')[0];
       });
       el.addEventListener('paste', (e) => {
         e.preventDefault();
-        const t = (e.clipboardData || window.clipboardData).getData('text/plain');
+        const t = e.clipboardData.getData('text/plain');
         document.execCommand('insertText', false, multi ? t : t.replace(/\s*\n+\s*/g, ' '));
       });
     }
@@ -3217,92 +3203,6 @@ const ADMIN = REPO.split('/')[0];
       });
     }
 
-    async function publish() {
-      const slug = slugify(slugValue() || pageSlug || $('#f-title').value);
-      if (!slug) { pubSay('Give the page a title first.', true); return; }
-      const markdown = toMarkdown();
-      const used = [...staged.entries()].filter(([p]) => markdown.includes(p));
-
-      $('#pub-go').disabled = true;
-      try {
-        pubSay('Checking the token…');
-        const me = await gh('/user');
-        const base = await gh(`/repos/${REPO}`);
-        const canPush = !!base.permissions?.push;
-        const mine = (base.owner?.login || '').toLowerCase() === (me.login || '').toLowerCase();
-
-        // Without write access the work goes to a fork of your own, which is how
-        // anyone contributes to a repository they are not a member of.
-        let work = REPO;
-        if (!canPush) {
-          if (mine) {
-            throw new Error(`This token cannot write to ${REPO}, which you own. `
-              + 'It needs the public_repo scope.');
-          }
-          pubSay(`Forking ${REPO}…`);
-          await gh(`/repos/${REPO}/forks`, { method: 'POST' });
-          work = `${me.login}/${base.name}`;
-          // A fork is made in the background, so wait for it to start answering.
-          for (let i = 0; i < 20; i++) {
-            try { await gh(`/repos/${work}`); break; }
-            catch { await new Promise((r) => setTimeout(r, 1500)); }
-          }
-          // An old fork still sits where it was left, so bring it level first.
-          try {
-            await gh(`/repos/${work}/merge-upstream`, {
-              method: 'POST', body: JSON.stringify({ branch: base.default_branch }),
-            });
-          } catch {
-            // GitHub refuses whenever main has changed a workflow file, which this token
-            // may not touch, so a fork can sit days behind. The branch then starts from
-            // that old copy; the Based-on line on each commit is what lets it merge.
-          }
-        }
-
-        const main = base.default_branch;
-        // The branch starts from wherever the work is going, so a fork branches from
-        // its own tip rather than from a commit it may not have.
-        const tip = await gh(`/repos/${work}/git/ref/heads/${main}`);
-        const branch = `talopedia/${slug}-${Date.now().toString(36)}`;
-        pubSay('Making a branch…');
-        await gh(`/repos/${work}/git/refs`, {
-          method: 'POST',
-          body: JSON.stringify({ ref: `refs/heads/${branch}`, sha: tip.object.sha }),
-        });
-
-        pubSay('Committing the page…');
-        await putFile(work, branch, targetPath(slug), b64text(markdown),
-          commitMsg(slug, $('#f-summary').value.trim(), loadedFrom));
-
-        for (const [i, [path, item]] of used.entries()) {
-          pubSay(`Committing image ${i + 1} of ${used.length}…`);
-          const bytes = new Uint8Array(await item.file.arrayBuffer());
-          await putFile(work, branch, 'public' + path, b64(bytes), `${slug}: add ${path.split('/').pop()}`);
-        }
-
-        pubSay('Opening the pull request…');
-        await gh(`/repos/${REPO}/pulls`, {
-          method: 'POST',
-          body: JSON.stringify({
-            title: `${$('#f-title').value || slug}`,
-            head: canPush ? branch : `${me.login}:${branch}`,
-            base: main,
-            body: `Written in the wiki editor by @${me.login}.\n\n`
-              + `Page: \`${targetPath(slug)}\`${used.length ? `\nImages: ${used.length}` : ''}`,
-          }),
-        });
-        pubSay('');
-        $('#pub-panel').hidden = true;
-        // No trip to GitHub. A page of its own merges itself within a minute or two,
-        // and the only thing the writer needs to know is which of those happened.
-        flash(sentWord([{ kind: pageKind, slug, markdown, title: $('#f-title').value }], me.login));
-      } catch (e) {
-        pubSay(String(e.message || e), true);
-      } finally {
-        $('#pub-go').disabled = false;
-      }
-    }
-
     /* ---------- reading a file back in ----------
        The editor writes a narrow slice of YAML, so it can read that slice back without
        carrying a parser. Anything it did not write is not promised. */
@@ -3452,7 +3352,7 @@ const ADMIN = REPO.split('/')[0];
         setInfobox([]);
         body.innerHTML = '';
         navboxBlocks(readGroups(lines)).forEach((b) => body.append(block(b.kind, b)));
-        paintSettings(); sync();
+        sync();
         return;
       }
       const end = src.indexOf('\n---', 3);
@@ -3481,7 +3381,7 @@ const ADMIN = REPO.split('/')[0];
       body.innerHTML = '';
       if (pageKind !== 'portal') parseBody(rest).forEach((b) => body.append(block(b.kind, b)));
       if (!body.children.length && pageKind === 'article') body.append(block('para'));
-      paintSettings(); sync();
+      sync();
     }
 
     if ($('#open-file')) {
@@ -3820,35 +3720,26 @@ const ADMIN = REPO.split('/')[0];
     const slugFile = (n) => n.toLowerCase().replace(/[^a-z0-9.]+/g, '-').replace(/^-|-$/g, '');
     const ALLOWED = /\.(png|jpe?g|webp|gif|avif)$/i;
 
-    /** Dev writes the file to disk; everywhere else it rides along in the zip. */
+    /** Writes an upload to disk. Only the dev server offers uploads, so only it calls this. */
     async function takeImage(file, chosen) {
       if (!ALLOWED.test(file.name)) { flash(`${file.name} is not an allowed image type.`, true); return null; }
-      // Every upload is named by hand; that name, kebab-cased, is the filename
-      // the article and the zip export both carry.
+      // Every upload is named by hand; that name, kebab-cased, is the filename the article carries.
       const ext = (file.name.match(/\.[^.]+$/) || [''])[0].toLowerCase();
       const name = chosen ? slugFile(chosen).replace(/\.[^.]*$/, '') + ext : slugFile(file.name);
-      if (DEV) {
-        const data = await new Promise((res) => {
-          const fr = new FileReader();
-          fr.onload = () => res(String(fr.result).split(',')[1]);
-          fr.readAsDataURL(file);
-        });
-        const r = await fetch(`${BASE.replace(/\/$/, '')}/__upload`, {
-          method: 'POST', headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ name, data }),
-        });
-        const out = await r.json();
-        if (!r.ok) { flash(out.error || 'Upload failed.', true); return null; }
-        flash(`Uploaded ${out.path}`);
-        loadAssets(true);
-        return out.path;
-      }
-      let path = `/assets/media/${name}`;
-      for (let n = 2; staged.has(path); n++) path = `/assets/media/${name.replace(/(\.[^.]+)$/, `-${n}$1`)}`;
-      staged.set(path, { file, url: URL.createObjectURL(file) });
-      flash(`${name} will be included in the download.`);
-      paintAssets();
-      return path;
+      const data = await new Promise((res) => {
+        const fr = new FileReader();
+        fr.onload = () => res(String(fr.result).split(',')[1]);
+        fr.readAsDataURL(file);
+      });
+      const r = await fetch(`${BASE.replace(/\/$/, '')}/__upload`, {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ name, data }),
+      });
+      const out = await r.json();
+      if (!r.ok) { flash(out.error || 'Upload failed.', true); return null; }
+      flash(`Uploaded ${out.path}`);
+      loadAssets(true);
+      return out.path;
     }
 
     /** A staged file has no server path yet, so previews come from the blob. */
@@ -3911,10 +3802,7 @@ const ADMIN = REPO.split('/')[0];
       for (const a of ASSETS) {
         if (!GROUP[a.group] || held.has(a.path)) continue;
         const stem = a.name.replace(/\.[^.]+$/, '');
-        // A badge whose club is not in the football presets keeps its three-letter
-        // code as its name, and a code reads as a code rather than as a word.
-        const label = a.group === 'badges' && /^[a-z]{3}$/.test(stem)
-          ? stem.toUpperCase() : displayOf(stem);
+        const label = displayOf(stem);
         icons.push({ slug: a.path, src: a.path, kind: GROUP[a.group], label, loose: true });
       }
       // Symbols first, next to the arrows, then flags, then emblems.
@@ -4605,16 +4493,6 @@ const ADMIN = REPO.split('/')[0];
       font: 10px var(--body); text-transform: uppercase; letter-spacing: .07em;
       color: var(--muted); padding: 10px 2px 5px;
     }
-    .mp-thumb {
-      display: flex; flex-direction: column; gap: 4px; padding: 4px; height: auto;
-      /* A grid item defaults to min-width:auto, so a 1600px image widens its
-         column and the third one falls off the panel. */
-      min-width: 0;
-      background: none; border: 1px solid transparent; border-radius: 6px; cursor: pointer;
-    }
-    .mp-thumb img { width: 100%; min-width: 0; height: 54px; object-fit: contain; border-radius: 3px; background: var(--paper); }
-    .mp-thumb span { font-size: 10.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
-    .mp-thumb:hover { border-color: var(--rule); background: var(--band); }
     .mp-icon {
       display: flex; align-items: center; gap: 9px; width: 100%; padding: 5px 6px; height: auto;
       background: none; border: 0; border-radius: 6px; cursor: pointer; text-align: left;
@@ -4624,13 +4502,6 @@ const ADMIN = REPO.split('/')[0];
     .mp-icon span { font-size: 12.5px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .mp-icon:hover { background: var(--band); }
     .mp-empty { font-size: 12px; color: var(--muted); padding: 10px 2px; margin: 0; }
-    .mp-foot { padding: 8px; border-top: 1px solid var(--rule); }
-    .mp-foot button {
-      width: 100%; height: 30px; font: 12.5px var(--body); color: var(--ink);
-      background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; cursor: pointer;
-      justify-content: center;
-    }
-    .mp-foot button:hover { background: var(--band); }
     .ed-canvas.drop { outline: 2px dashed var(--link); outline-offset: -10px; border-radius: 10px; }
 
     /* ---- settings strip ---- */
@@ -5046,11 +4917,6 @@ const ADMIN = REPO.split('/')[0];
     .pub-steps ul { margin: 4px 0; padding-left: 18px; }
     .pub-steps b { color: var(--ink); font-weight: 600; }
     .pub-steps code { font: 12px ui-monospace, monospace; color: var(--ink); }
-    .pub-warn { display: block; margin-top: 3px; color: #d0a05a; }
-    .pub-what {
-      font: 12.5px var(--body); color: var(--ink); margin: 10px 0 0;
-      padding: 7px 10px; background: var(--band); border-radius: 5px;
-    }
     .cart-list { margin: 12px 0 4px; max-height: 260px; overflow-y: auto; }
     .cart-row {
       display: flex; align-items: center; gap: 9px; padding: 8px 10px; margin-bottom: 6px;
@@ -5188,7 +5054,6 @@ const ADMIN = REPO.split('/')[0];
       .ed-tools button { height: 36px; min-width: 36px; }
       .ed-tools select, .ed-tools input { height: 36px; }
       .ctl button { min-width: 30px; min-height: 30px; padding: 5px 8px; }
-      .mp-thumb img { height: 64px; }
       .mp-icon { padding: 9px 6px; }
       .drop-menu.list button, .ctl-menu button { height: 38px; }
       .ib-add button { padding: 10px 4px; }

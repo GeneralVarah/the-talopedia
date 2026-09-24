@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { graph } from '../lib/links.mjs';
-import { titleFor, exists, nation, url } from '../lib/registry.mjs';
+import { titleFor, exists, nation, url, hrefOf as href } from '../lib/registry.mjs';
 
 const all = await getCollection('articles');
 const portals = await getCollection('portals');
@@ -31,7 +31,6 @@ for (const [target, askers] of g.in) {
 }
 wanted.sort((a, b) => b.from.length - a.from.length || a.title.localeCompare(b.title));
 
-const href = (s) => (s.startsWith('portal:') ? url(`/portal/${s.slice(7)}`) : url(`/${s}`));
 const flagOf = (id) => (id ? nation(id)?.flag : null);
 ---
 

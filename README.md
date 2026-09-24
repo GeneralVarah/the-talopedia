@@ -49,5 +49,5 @@ src/content/
   data/navboxes/<id>.yaml    navboxes: <nation> for that nation's articles, site for the front page
 src/lib/                     link, icon and navbox resolution
 src/pages/edit.astro         the editor
-scripts/                     the Google Docs converter, and retcon for renaming slugs
+scripts/                     retcon for renaming slugs, sync, and the editor tests
 ```

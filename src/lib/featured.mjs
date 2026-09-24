@@ -68,9 +68,7 @@ function hash(s) {
 const REROLL = 2;
 
 /** A day whose article was chosen by hand. The draw takes over again the next day. */
-const PINNED = {
-  '2026-09-20': 'kriemhilt-von-bismarck',
-};
+const PINNED = {};
 
 export function featured(entries, today = new Date()) {
   const date = today.toISOString().slice(0, 10);

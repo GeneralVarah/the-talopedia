@@ -2,10 +2,9 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Infobox from '../components/Infobox.astro';
-import Navbox from '../components/Navbox.astro';
 import { coordsFor, nation, mapUrl, url } from '../lib/registry.mjs';
 import { categoryOf } from '../lib/categories.mjs';
-import { resolveHtml } from '../lib/navbox.mjs';
+import { resolveHtml, renderNavbox } from '../lib/navbox.mjs';
 
 export async function getStaticPaths() {
   const all = await getCollection('articles');
@@ -40,7 +39,7 @@ const category = categoryOf(d.type);
     )}
     <Fragment set:html={html} />
   </article>
-  {(d.navbox ?? d.nation) && <Navbox id={d.navbox ?? d.nation} title="Navigation" />}
+  {(d.navbox ?? d.nation) && <Fragment set:html={renderNavbox(d.navbox ?? d.nation, 'Navigation')} />}
   <nav class="catlinks" aria-label="Categories">
     <a href={url('/categories')}>Category</a>: <a href={url(`/category/${category.slug}`)}>{category.name}</a>
   </nav>

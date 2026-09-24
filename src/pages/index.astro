@@ -1,16 +1,15 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import Navbox from '../components/Navbox.astro';
 import { navbox, nations, nation, url } from '../lib/registry.mjs';
-import { resolveHtml } from '../lib/navbox.mjs';
-import { asset, icon } from '../lib/inline.mjs';
+import { resolveHtml, renderNavbox } from '../lib/navbox.mjs';
+import { asset, icon, esc } from '../lib/inline.mjs';
 import { createdOf } from '../lib/revisions.mjs';
 import { categoryOf } from '../lib/categories.mjs';
 import { featured, overview, firstImage, linkFirstMention } from '../lib/featured.mjs';
 
 // The front page is an ordinary article, so it opens in the editor like any other.
-export const HOME = 'home';
+const HOME = 'home';
 
 const all = await getCollection('articles');
 const home = all.find((e) => e.id === HOME);
@@ -63,7 +62,6 @@ const featuredPanel = !pick ? '' : (() => {
  * two sit level beside each other.
  */
 const byId = new Map(articles.map((e) => [e.id, e]));
-const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 // A picture on Google's hosting is asked for at a size the tile can use, not 2000 wide.
 const thumb = (src) => asset(src).replace(/^(https:\/\/lh3\.googleusercontent\.com\/.+)=w\d+$/, '$1=w200');
 // A flag, emblem or logo is shown whole inside the tile; a photograph fills it.
@@ -176,7 +174,7 @@ const headings = (rendered?.metadata?.headings ?? []).filter((h) => h.slug !== '
       : <p>The front page lives in <code>src/content/articles/home.md</code>.</p>}
   </div>
   {/* At the foot, as on every article that carries one. */}
-  {home?.data.navbox && home.data.navbox !== 'none' && <Navbox id={home.data.navbox} title="Navigation" />}
+  {home?.data.navbox && home.data.navbox !== 'none' && <Fragment set:html={renderNavbox(home.data.navbox, 'Navigation')} />}
   <script is:inline>
     // The figures settle in on load; static if the reader asked for less motion.
     addEventListener('DOMContentLoaded', () => {

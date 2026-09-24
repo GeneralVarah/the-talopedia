@@ -3,7 +3,7 @@
  * Every page of a type is listed at /category/<slug>, and each article links there
  * from its foot. The names are in-world, so a biography files under People.
  */
-const NAMES = {
+export const NAMES = {
   overview: 'Nations and territories',
   city: 'Cities',
   subdivision: 'Subdivisions',

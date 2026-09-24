@@ -24,10 +24,6 @@ export function icon(slug) {
 }
 
 export function link(slug, display) {
-  // [[#section-id|Text]] jumps within the page and is never a red link.
-  if (slug.startsWith('#')) {
-    return `<a class="wl anchor" href="${slug}">${esc(display || slug.slice(1))}</a>`;
-  }
   const href = hrefOf(slug);
   const text = esc(display || titleFor(slug));
   const missing = !exists(slug) ? ' new' : '';
@@ -64,7 +60,7 @@ function dateText(arg) {
     // A death date is given the birth date and counts to it; a birth date on its own
     // counts to now, which is how old the person is today.
     const n = /^\d{4}-\d{2}-\d{2}$/.test(from || '')
-      ? yearsBetween(from, new Date(Date.UTC(+date.slice(0, 4), +date.slice(5, 7) - 1, +date.slice(8, 10))))
+      ? yearsBetween(from, new Date(date))
       : yearsBetween(date, icNow());
     return `${long} (aged ${n})`;
   }
@@ -116,8 +112,6 @@ export const unesc = (s) =>
   s.replace(/&quot;/g, '"').replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&amp;/g, '&');
 
 /** Render a frontmatter/YAML string: custom syntax plus bold, italic and external links. */
-const SUPSUB = /<(sup|sub)>([\s\S]*?)<\/\1>/g;
-
 export function renderInline(str) {
   if (str == null) return '';
   const both = new RegExp(`${CUSTOM.source}|${MARKS.source}`, 'g');

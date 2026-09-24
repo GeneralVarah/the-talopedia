@@ -43,27 +43,25 @@ const net = (r) => {
       <p>The history is read from the repository, which is not available here. A full
         clone is needed; a shallow one has nothing to show.</p>
     ) : (
-      <>
-        <ol class="revs">
-          {revs.map((r) => (
-            <li>
-              <div class="rev-line">
-                <span class="rev-when">{when(r.date)}</span>
-                <span class="rev-who">{r.author}</span>
-                <span class={'rev-net ' + net(r).cls}>{net(r).text}</span>
-                <span class="rev-plusminus">{'+' + r.added + ' \u2212' + r.removed}</span>
-                {said(r.summary)
-                  ? <span class="rev-said">{said(r.summary)}</span>
-                  : <span class="rev-said none">no summary</span>}
-              </div>
-              <details>
-                <summary>Show changes</summary>
-                <pre class="diff">{lines(r.patch).map((l) => <span class={l.cls}>{l.text + '\n'}</span>)}</pre>
-              </details>
-            </li>
-          ))}
-        </ol>
-      </>
+      <ol class="revs">
+        {revs.map((r) => (
+          <li>
+            <div class="rev-line">
+              <span class="rev-when">{when(r.date)}</span>
+              <span class="rev-who">{r.author}</span>
+              <span class={'rev-net ' + net(r).cls}>{net(r).text}</span>
+              <span class="rev-plusminus">{'+' + r.added + ' \u2212' + r.removed}</span>
+              {said(r.summary)
+                ? <span class="rev-said">{said(r.summary)}</span>
+                : <span class="rev-said none">no summary</span>}
+            </div>
+            <details>
+              <summary>Show changes</summary>
+              <pre class="diff">{lines(r.patch).map((l) => <span class={l.cls}>{l.text + '\n'}</span>)}</pre>
+            </details>
+          </li>
+        ))}
+      </ol>
     )}
   </div>
 </Base>

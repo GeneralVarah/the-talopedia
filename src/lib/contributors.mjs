@@ -33,7 +33,6 @@ export const ACCOUNT_OF = {
 export function contributors(articles) {
   const tally = new Map();
   for (const entry of articles) {
-    if (entry.id === 'home') continue;
     const credits = entry.data.authors?.length ? entry.data.authors
       : entry.data.nation ? [entry.data.nation] : [];
     if (!credits.length) continue;
