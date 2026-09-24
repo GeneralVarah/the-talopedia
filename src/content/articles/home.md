@@ -12,7 +12,7 @@ The Talopedia is a collaborative, Google Docs-based encyclopedia for [[avium]], 
 
 ## Featured Article
 
-## Popular Characters
+## Trending Characters
 
 - [[kriemhilt-von-bismarck]]
 - [[george-elwood]]

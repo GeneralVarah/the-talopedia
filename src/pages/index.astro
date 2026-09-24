@@ -56,7 +56,7 @@ const featuredPanel = !pick ? '' : (() => {
 })();
 
 /**
- * The panels of five under the featured article: Popular Characters, picked by hand
+ * The panels of five under the featured article: Trending Characters, picked by hand
  * on the front page, and New Articles, the pages most recently written. Each row is a
  * rank, a square picture, the title and one line under it, the same in both so the
  * two sit level beside each other.
@@ -96,7 +96,7 @@ function tops(rows) {
 }
 
 /** The list written under the heading, as pages; whatever follows it is the link out. */
-function popularPanel(rest) {
+function trendingPanel(rest) {
   const root = url('/');
   const end = Math.max(rest.lastIndexOf('</ul>'), rest.lastIndexOf('</ol>'));
   const list = end < 0 ? '' : rest.slice(0, end);
@@ -137,7 +137,7 @@ function splitHome(html = '') {
     // under that heading is a leftover and is replaced.
     const isFeatured = /id="featured-article"/.test(head);
     const inner = isFeatured ? featuredPanel
-      : /id="popular-characters"/.test(head) ? popularPanel(rest)
+      : /id="trending-characters"/.test(head) ? trendingPanel(rest)
       : /id="new-articles"/.test(head) ? newPanel
       : rest;
     // How long this one has left. Empty until the script at the foot of the page
