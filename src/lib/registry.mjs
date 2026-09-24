@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import { slugTitle } from './slug-title.mjs';
+import { categoryOf } from './categories.mjs';
 
 const ROOT = path.resolve('src/content');
 const BASE = (process.env.BASE_PATH || '/').replace(/\/+$/, '');
@@ -26,6 +27,7 @@ function scanArticles() {
       out.set(dir === 'portals' ? 'portal:' + slug : slug, {
         title: pick('title') || slug,
         icon: pick('icon') || null,
+        type: pick('type') || null,
         kind: dir,
       });
     }
@@ -64,6 +66,9 @@ export function iconFor(slug) {
 
 /** Title a slug should display right now. Renaming one frontmatter line moves every link. */
 export function titleFor(slug) {
+  if (slug.startsWith('category:')) {
+    return `Category:${categoryNames().get(slug.slice(9)) || slugTitle(slug.slice(9))}`;
+  }
   const a = articles().get(slug);
   if (a) return a.title;
   const n = nation(slug);
@@ -73,7 +78,25 @@ export function titleFor(slug) {
   return slugTitle(slug);
 }
 
-export const exists = (slug) => articles().has(slug);
+/** Each category with pages in it, slug to name. A link can name one as category:<slug>. */
+function categoryNames() {
+  const out = new Map();
+  for (const [slug, a] of articles()) {
+    if (a.kind !== 'articles' || !a.type || slug === 'home') continue;
+    const c = categoryOf(a.type);
+    out.set(c.slug, c.name);
+  }
+  return out;
+}
+
+export const exists = (slug) =>
+  slug.startsWith('category:') ? categoryNames().has(slug.slice(9)) : articles().has(slug);
+
+/** Where a link goes: an article, portal:<id> or category:<slug>. */
+export const hrefOf = (slug) =>
+  slug.startsWith('portal:') ? url(`/portal/${slug.slice(7)}`)
+  : slug.startsWith('category:') ? url(`/category/${slug.slice(9)}`)
+  : url(`/${slug}`);
 
 /**
  * Coordinates come from the map's own coordinates.tsv, the only source for where

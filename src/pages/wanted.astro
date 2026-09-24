@@ -23,7 +23,7 @@ const meta = Object.fromEntries([
  */
 const wanted = [];
 for (const [target, askers] of g.in) {
-  if (target.startsWith('portal:') || exists(target)) continue;
+  if (target.startsWith('portal:') || target.startsWith('category:') || exists(target)) continue;
   const from = [...askers]
     .map((s) => ({ key: s, title: meta[s]?.title || titleFor(s), nation: meta[s]?.nation }))
     .sort((a, b) => a.title.localeCompare(b.title));

@@ -1,9 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import { navbox, nations, url } from '../lib/registry.mjs';
+import { navbox, nations, nation, url } from '../lib/registry.mjs';
 import { resolveHtml } from '../lib/navbox.mjs';
-import { asset } from '../lib/inline.mjs';
+import { asset, icon } from '../lib/inline.mjs';
+import { createdOf } from '../lib/revisions.mjs';
+import { categoryOf } from '../lib/categories.mjs';
 import { featured, overview, firstImage, linkFirstMention } from '../lib/featured.mjs';
 
 // The front page is an ordinary article, so it opens in the editor like any other.
@@ -54,6 +56,67 @@ const featuredPanel = !pick ? '' : (() => {
 })();
 
 /**
+ * The panels of five under the featured article: Popular Characters, picked by hand
+ * on the front page, and New Articles, the pages most recently written. Each row is a
+ * rank, a square picture, the title and one line under it, the same in both so the
+ * two sit level beside each other.
+ */
+const byId = new Map(articles.map((e) => [e.id, e]));
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+// A picture on Google's hosting is asked for at a size the tile can use, not 2000 wide.
+const thumb = (src) => asset(src).replace(/^(https:\/\/lh3\.googleusercontent\.com\/.+)=w\d+$/, '$1=w200');
+// A flag, emblem or logo is shown whole inside the tile; a photograph fills it.
+const WHOLE = /flag|emblem|logo|coat of arms|seal|crest|badge|insignia/i;
+function pictureOf(e) {
+  const row = (e.data.infobox || []).find((r) => r.image || r.images?.[0]?.src);
+  const src = row?.image || row?.images?.[0]?.src;
+  if (src) {
+    const caption = row.caption || row.images?.[0]?.caption || '';
+    return { src: thumb(src), whole: WHOLE.test(caption) || ['overview', 'subdivision'].includes(e.data.type) };
+  }
+  const flag = nation(e.data.nation)?.flag;
+  return flag ? { src: url(flag), whole: true } : null;
+}
+const origin = (e) => {
+  const n = nation(e.data.nation);
+  return n ? `${icon(e.data.nation)} ${esc(n.name)}` : esc(categoryOf(e.data.type).name);
+};
+/** @param {Array<{e, meta: string}>} rows each page and the line under its title */
+function tops(rows) {
+  if (!rows.length) return '<p>Nothing yet.</p>';
+  return '<ol class="tops">' + rows.map(({ e, meta }, i) => {
+    const href = url('/' + e.id);
+    const pic = pictureOf(e);
+    return `<li><span class="tops-n" aria-hidden="true">${i + 1}</span>`
+      + `<a class="tops-pic${pic?.whole ? ' whole' : ''}" href="${href}" tabindex="-1" aria-hidden="true">`
+      + (pic ? `<img src="${pic.src}" alt="" loading="lazy" decoding="async">` : '') + '</a>'
+      + `<span class="tops-text"><a href="${href}">${esc(e.data.title)}</a>`
+      + `<span class="tops-meta">${meta}</span></span></li>`;
+  }).join('') + '</ol>';
+}
+
+/** The list written under the heading, as pages; whatever follows it is the link out. */
+function popularPanel(rest) {
+  const root = url('/');
+  const end = Math.max(rest.lastIndexOf('</ul>'), rest.lastIndexOf('</ol>'));
+  const list = end < 0 ? '' : rest.slice(0, end);
+  const picked = [...list.matchAll(/<li>[\s\S]*?<a\b[^>]*href="([^"]+)"/g)]
+    .map((m) => byId.get(decodeURI(m[1]).slice(root.length).replace(/\/$/, '')))
+    .filter(Boolean);
+  const after = end < 0 ? rest : rest.slice(end + 5);
+  return tops(picked.map((e) => ({ e, meta: origin(e) }))) + after.replace(/<p>/g, '<p class="more">');
+}
+
+const day = (iso) => new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+const newest = articles
+  .map((e) => ({ e, at: createdOf(e.id) }))
+  .filter((x) => x.at)
+  .sort((a, b) => Date.parse(b.at) - Date.parse(a.at) || a.e.data.title.localeCompare(b.e.data.title))
+  .slice(0, 5);
+const newPanel = tops(newest.map(({ e, at }) => ({ e, meta: `${origin(e)} \u00b7 ${day(at)}` })))
+  + `<p class="more"><a href="${url('/categories')}">All categories</a></p>`;
+
+/**
  * Each `## Section` of the front page becomes its own panel, as on Wikipedia's main page.
  * Introduction is the exception: its text belongs in the banner panel, under the counters.
  */
@@ -62,6 +125,9 @@ function splitHome(html = '') {
   const lede = parts[0].startsWith('<h2') ? '' : parts.shift() ?? '';
   let intro = '';
   const boxes = [];
+  // Every panel after the featured article sits two to a row.
+  const pairs = [];
+  let pastFeatured = false;
   for (const chunk of parts) {
     const end = chunk.indexOf('</h2>') + 5;
     const head = chunk.slice(0, end);
@@ -70,15 +136,20 @@ function splitHome(html = '') {
     // The featured panel's contents are generated; whatever the front page has
     // under that heading is a leftover and is replaced.
     const isFeatured = /id="featured-article"/.test(head);
-    const inner = isFeatured ? featuredPanel : rest;
+    const inner = isFeatured ? featuredPanel
+      : /id="popular-characters"/.test(head) ? popularPanel(rest)
+      : /id="new-articles"/.test(head) ? newPanel
+      : rest;
     // How long this one has left. Empty until the script at the foot of the page
     // fills it in, since a build cannot know when the reader is looking.
     const bar = isFeatured
       ? head.replace('</h2>', '<span class="feat-next" data-feat-next hidden></span></h2>')
       : head;
-    boxes.push(`<section class="hbox">${bar}<div class="hbox-body">${inner}</div></section>`);
+    (pastFeatured ? pairs : boxes).push(`<section class="hbox">${bar}<div class="hbox-body">${inner}</div></section>`);
+    if (isFeatured) pastFeatured = true;
   }
-  return { lede, intro, body: boxes.join('') };
+  const split = pairs.length ? `<div class="home-split">${pairs.join('')}</div>` : '';
+  return { lede, intro, body: boxes.join('') + split };
 }
 
 const { lede, intro, body } = splitHome(resolveHtml(home?.rendered?.html));

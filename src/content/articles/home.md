@@ -11,3 +11,15 @@ The Talopedia is a collaborative, Google Docs-based encyclopedia for [[avium]], 
 :navbox[site]
 
 ## Featured Article
+
+## Popular Characters
+
+- [[kriemhilt-von-bismarck]]
+- [[george-elwood]]
+- [[cassandra-conway]]
+- [[kenzo-kamiya]]
+- [[gendo-takahashi]]
+
+[[category:people|All people]]
+
+## New Articles

@@ -1,4 +1,4 @@
-import { titleFor, iconFor, exists, url } from './registry.mjs';
+import { titleFor, iconFor, exists, url, hrefOf } from './registry.mjs';
 import { icNow, longDate, yearsBetween } from './icclock.mjs';
 
 const esc = (s) =>
@@ -28,9 +28,7 @@ export function link(slug, display) {
   if (slug.startsWith('#')) {
     return `<a class="wl anchor" href="${slug}">${esc(display || slug.slice(1))}</a>`;
   }
-  const portal = slug.startsWith('portal:');
-  const bare = portal ? slug.slice(7) : slug;
-  const href = url(portal ? `/portal/${bare}` : `/${bare}`);
+  const href = hrefOf(slug);
   const text = esc(display || titleFor(slug));
   const missing = !exists(slug) ? ' new' : '';
   return `<a class="wl${missing}" href="${href}">${text}</a>`;

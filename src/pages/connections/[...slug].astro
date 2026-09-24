@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import { graph } from '../../lib/links.mjs';
-import { titleFor, exists, nation, url } from '../../lib/registry.mjs';
+import { titleFor, exists, nation, url, hrefOf } from '../../lib/registry.mjs';
 
 export async function getStaticPaths() {
   const all = await getCollection('articles');
@@ -28,7 +28,7 @@ export async function getStaticPaths() {
 const { entry, kind, g, meta } = Astro.props;
 const key = kind === 'portal' ? `portal:${entry.id}` : entry.id;
 
-const href = (s) => (s.startsWith('portal:') ? url(`/portal/${s.slice(7)}`) : url(`/${s}`));
+const href = hrefOf;
 const label = (s) => (s.startsWith('portal:') ? `Portal: ${titleFor(s.slice(7))}` : titleFor(s));
 
 /** A row is the page's flag, its name, and what kind of page it is. */
@@ -49,7 +49,7 @@ const outAll = [...outSet];
 // counted apart: the red ones are this page's share of the backlog.
 const live = outAll.filter((s) => s.startsWith('portal:') || exists(s))
   .map(row).sort(byNationThenName);
-const wanted = outAll.filter((s) => !s.startsWith('portal:') && !exists(s)).sort();
+const wanted = outAll.filter((s) => !s.startsWith('portal:') && !s.startsWith('category:') && !exists(s)).sort();
 ---
 
 <Base title={entry.data.title} slug={key} view="connections">
