@@ -3,7 +3,8 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Infobox from '../components/Infobox.astro';
 import Navbox from '../components/Navbox.astro';
-import { coordsFor, nation, mapUrl } from '../lib/registry.mjs';
+import { coordsFor, nation, mapUrl, url } from '../lib/registry.mjs';
+import { categoryOf } from '../lib/categories.mjs';
 import { resolveHtml } from '../lib/navbox.mjs';
 
 export async function getStaticPaths() {
@@ -24,6 +25,7 @@ const href = found?.type === 'nation' ? mapUrl(nation(d.nation)?.name ?? d.title
   : found?.kind === 'city' ? mapUrl(found.name, 'city')
   : null;
 const coords = found && { ...found, href };
+const category = categoryOf(d.type);
 ---
 <Base title={d.title} description={lede} headings={headings} coords={coords} nationId={d.nation} authorIds={d.authors} slug={entry.id}>
   {d.ooc && (
@@ -39,4 +41,7 @@ const coords = found && { ...found, href };
     <Fragment set:html={html} />
   </article>
   {(d.navbox ?? d.nation) && <Navbox id={d.navbox ?? d.nation} title="Navigation" />}
+  <nav class="catlinks" aria-label="Categories">
+    <a href={url('/categories')}>Category</a>: <a href={url(`/category/${category.slug}`)}>{category.name}</a>
+  </nav>
 </Base>

@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { categories } from '../lib/categories.mjs';
+import { url } from '../lib/registry.mjs';
+
+const all = categories(await getCollection('articles'));
+---
+<Base title="Categories">
+  <div class="article category">
+    <ul class="cat-index">
+      {all.map((c) => (
+        <li><a href={url(`/category/${c.slug}`)}>{c.name}</a><span class="cat-n">{c.pages.length}</span></li>
+      ))}
+    </ul>
+  </div>
+</Base>
