@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import Navbox from '../components/Navbox.astro';
 import { navbox, nations, nation, url } from '../lib/registry.mjs';
 import { resolveHtml } from '../lib/navbox.mjs';
 import { asset, icon } from '../lib/inline.mjs';
@@ -174,6 +175,8 @@ const headings = (rendered?.metadata?.headings ?? []).filter((h) => h.slug !== '
       ? <Fragment set:html={body} />
       : <p>The front page lives in <code>src/content/articles/home.md</code>.</p>}
   </div>
+  {/* At the foot, as on every article that carries one. */}
+  {home?.data.navbox && home.data.navbox !== 'none' && <Navbox id={home.data.navbox} title="Navigation" />}
   <script is:inline>
     // The figures settle in on load; static if the reader asked for less motion.
     addEventListener('DOMContentLoaded', () => {
