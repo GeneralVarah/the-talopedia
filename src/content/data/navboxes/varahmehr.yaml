@@ -26,6 +26,7 @@ groups:
           - "end-of-isolationism"
           - "nichirin-oil-deal"
           - "the-southern-question"
+          - "council-of-free-nabataean-states|The Council of Free Nabataean States"
   - label: "Politics"
     rows:
       - label: "Four Major Factions"
@@ -47,7 +48,7 @@ groups:
   - label: "Economy"
     rows:
       - items:
-          - "list-of-notable-companies"
+          - "list-of-notable-varahmehri-companies"
       - label: "Main Industries"
         items:
           - "manufacturing"
